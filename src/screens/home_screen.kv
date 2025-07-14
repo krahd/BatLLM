@@ -21,15 +21,15 @@
             spacing: "0dp"
             canvas.before:
                 Color:
-                    rgba: 0.6, 0.6, 0.7, 1  
+                    rgba: 0.3, 0.3, 0.4, 0.4  
                 Rectangle:
                     pos: self.pos
                     size: self.size
             Label:
-                text: "BatLLM 0.0.1b"
+                text: "BatLLM"
                 padding: 0
                 bold: True
-                color: 1,1,1, 1
+                color: .1,.1,.1, 1
                 font_size: "20sp"
                 halign: "left"
                 valign: "middle"
@@ -45,62 +45,132 @@
             # First Column (expanded)
             BoxLayout:
                 orientation: "vertical"
-                size_hint_x: 0.306  # Increased from 0.25 to compensate for reduced second column
+                size_hint_x: 0.306  
                 padding: 5
-                spacing: 5
-                canvas.before:
-                    Color:
-                        rgba: 0.3, 0.3, 0.3, 1  # Medium dark gray
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+                spacing: 5                
 
                 ScrollView:
+                    size_hint: (1, .5)
+                    bar_width: 10
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_type: ['bars', 'content'] 
+                    background_color: 1, 1, 1, 1
+
                     TextInput:
                         id: prompt_history_player_1
-                        text: ""
+                        text:""                             
                         multiline: True
                         readonly: True
                         size_hint_y: None
                         height: self.minimum_height
+                        scroll_y: 1
+                        cursor_blink: True
+                        bar_width: 10
+                        background_color: 1, 1, 1, 1  # white
+                        foreground_color: 0, 0, 0, 1  # black text
+                        background_normal: ""        # removes border image
+                        background_active: ""        # removes active border image
+                
+                BoxLayout:
+                    orientation: "horizontal"
+                    height: "20dp"
+                    size_hint_y: None
+                    Button:
+                        text: "<"
+                    Button:
+                        text: "select"
+                    Button:
+                        text: ">"
 
-                TextInput:
-                    id: prompt_player_1
-                    multiline: True
-                    hint_text: "Prompt Player 1"
-                    size_hint_y: 0.15
+                ScrollView:
+                    size_hint: (1, .5)
+                    bar_width: 10
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_type: ['bars', 'content'] 
+
+                    TextInput:
+                        id: prompt_player_1
+                        text: ""
+                        hint_text: "New prompt"
+                        multiline: True
+                        readonly: False
+                        size_hint_y: None
+                        height: self.minimum_height
+                        scroll_y: 1
+                        cursor_blink: True
+                        bar_width: 10   
+                                    
 
                 BoxLayout:
                     size_hint_y: None
-                    height: "40dp"
-                    spacing: 5
+                    height: "20dp"
+                    spacing: 5                    
                     Button:
-                        text: "Copy"
-                    Button:
+                        background_color: .9, .2, .2, 1
                         text: "Submit"
 
                 ScrollView:
+                    size_hint: (1, .5)
+                    bar_width: 10
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_type: ['bars', 'content'] 
+                    background_color: 1, 1, 1, 1
+
                     TextInput:
                         id: prompt_history_player_2
-                        text: ""
+                        text:""                             
                         multiline: True
                         readonly: True
                         size_hint_y: None
                         height: self.minimum_height
+                        scroll_y: 1
+                        cursor_blink: True
+                        bar_width: 10
+                        background_color: 1, 1, 1, 1  # white
+                        foreground_color: 0, 0, 0, 1  # black text
+                        background_normal: ""        # removes border image
+                        background_active: ""        # removes active border image
+                
+                BoxLayout:
+                    orientation: "horizontal"
+                    height: "20dp"
+                    size_hint_y: None
+                    Button:
+                        text: "<"
+                    Button:
+                        text: "select"
+                    Button:
+                        text: ">"
 
-                TextInput:
-                    id: prompt_player_2
-                    multiline: True
-                    hint_text: "Prompt Player 2"
-                    size_hint_y: 0.15
+                ScrollView:
+                    size_hint: (1, .5)
+                    bar_width: 10
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_type: ['bars', 'content'] 
+
+                    TextInput:
+                        id: prompt_player_2
+                        text: ""
+                        hint_text: "New prompt"
+                        multiline: True
+                        readonly: False
+                        size_hint_y: None
+                        height: self.minimum_height
+                        scroll_y: 1
+                        cursor_blink: True
+                        bar_width: 10   
+                                    
 
                 BoxLayout:
                     size_hint_y: None
-                    height: "40dp"
-                    spacing: 5
+                    height: "20dp"
+                    spacing: 5                    
                     Button:
-                        text: "Copy"
-                    Button:
+                        background_color: .9, .2, .2, 1
                         text: "Submit"
 
             # Second Column (reduced)
@@ -109,22 +179,38 @@
                 size_hint_x: 0.10  # Reduced to 1/3 of original 0.166
                 padding: 5
                 spacing: 5
+                    
                 canvas.before:
                     Color:
                         rgba: 0.9, 0.9, 0.9, 1  # Light gray
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
-                   
-
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                
+                Label:
+                    text: "Commands"
+                    bold: 1
+                    padding: 5, 0
+                    color: 0, 0, 0, 1
+                    size_hint_y: None
+                    height: "20dp"
+                
                 ScrollView:
                     TextInput:
-                        padding: 20
+                        padding: 40
                         id: output_history_player_1
-                        text: "la le li lo \nla le li lo \nla le li lo \nla le li lo \nla le li lo \nla le li lo \n"
+                        text: "M\nR20\nS\nS\nB"
                         multiline: True
                         readonly: True
                         size_hint_y: 1
+
+                Label:
+                    text: "Commands"
+                    bold: 1
+                    padding: 5, 0
+                    color: 0, 0, 0, 1
+                    size_hint_y: None
+                    height: "20dp"
 
                 ScrollView:
                     TextInput:
@@ -157,22 +243,30 @@
             size_hint_y: None
             height: "30dp"
             padding: "0dp"
+
             canvas.before:
                 Color:
-                    rgba: 0.6, 0.6, 0.6, 1  #  background
+                    rgba: 0.3, 0.3, 0.4, 1  # White background
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
             Label:
-                text: "BatLLM 0.0.1"
+                text: "https://github.com/krahd/BatLLM"
+                halign: "left"
+                color: 1,1,1,1
+                size_hint_x: 7.4
+
+            Label:
+                text: "BatLLM 0.0.1b"
                 font_size: "14sp"
-                color: 0, 0, 0, 1
+                color: 1,1,1,1
+                halign: "left"
 
             Button:
                 text: "Settings"
-                on_press: root.go_to_settings_screen()
+                on_press: root.go_to_settin_screen()
+                
             Button:
                 text: "Save game"
-                on_press: home_screen.save_game()
-            Label:
-                text: "https://github.com/krahd"
-                halign: "right"
-                color: 0, 0, .6, 1
-                size_hint_x: 7.4
+           
