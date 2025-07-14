@@ -1,0 +1,174 @@
+<HomeScreen>:
+    name: "home"
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  # White background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 10
+        spacing: 10
+
+        # Top bar
+        BoxLayout:
+            size_hint_y: None
+            halign: "left"
+            height: "40dp"
+            padding: "0dp"
+            spacing: "0dp"
+            canvas.before:
+                Color:
+                    rgba: 0.6, 0.6, 0.7, 1  
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                text: "BatLLM 0.0.1b"
+                padding: 0
+                bold: True
+                color: 1,1,1, 1
+                font_size: "20sp"
+                halign: "left"
+                valign: "middle"
+                size_hint_x: None
+                width: self.texture_size[0] + 20
+
+        # Main content area
+        BoxLayout:
+            orientation: "horizontal"
+            spacing: 10
+            size_hint_y: 0.85
+
+            # First Column (expanded)
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.306  # Increased from 0.25 to compensate for reduced second column
+                padding: 5
+                spacing: 5
+                canvas.before:
+                    Color:
+                        rgba: 0.3, 0.3, 0.3, 1  # Medium dark gray
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                ScrollView:
+                    TextInput:
+                        id: prompt_history_player_1
+                        text: ""
+                        multiline: True
+                        readonly: True
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                TextInput:
+                    id: prompt_player_1
+                    multiline: True
+                    hint_text: "Prompt Player 1"
+                    size_hint_y: 0.15
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: "40dp"
+                    spacing: 5
+                    Button:
+                        text: "Copy"
+                    Button:
+                        text: "Submit"
+
+                ScrollView:
+                    TextInput:
+                        id: prompt_history_player_2
+                        text: ""
+                        multiline: True
+                        readonly: True
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                TextInput:
+                    id: prompt_player_2
+                    multiline: True
+                    hint_text: "Prompt Player 2"
+                    size_hint_y: 0.15
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: "40dp"
+                    spacing: 5
+                    Button:
+                        text: "Copy"
+                    Button:
+                        text: "Submit"
+
+            # Second Column (reduced)
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.10  # Reduced to 1/3 of original 0.166
+                padding: 5
+                spacing: 5
+                canvas.before:
+                    Color:
+                        rgba: 0.9, 0.9, 0.9, 1  # Light gray
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                ScrollView:
+                    TextInput:
+                        padding: 20
+                        id: output_history_player_1
+                        text: "la le li lo \nla le li lo \nla le li lo \nla le li lo \nla le li lo \nla le li lo \n"
+                        multiline: True
+                        readonly: True
+                        size_hint_y: 1
+
+                ScrollView:
+                    TextInput:
+                        id: output_history_player_2
+                        text: ""
+                        multiline: True
+                        readonly: True
+                        size_hint_y: 1
+
+            # Third Column (auto)
+            BoxLayout:
+                orientation: "vertical"
+                padding: 5
+                spacing: 5
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1  # White background
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                Label:
+                    text: "Main Content Area"
+                    color: 0, 0, 0, 1
+
+        # Footer
+        BoxLayout:
+            orientation: "horizontal"
+            halign: "left"
+            size_hint_y: None
+            height: "30dp"
+            padding: "0dp"
+            canvas.before:
+                Color:
+                    rgba: 0.6, 0.6, 0.6, 1  # White background
+            Label:
+                text: "BatLLM 0.0.1"
+                font_size: "14sp"
+                color: 0, 0, 0, 1
+            Button:
+                text: "Settings"
+            Button:
+                text: "Save game"
+            Label:
+                text: "https://github.com/krahd"
+                halign: "right"
+                color: 0, 0, .6, 1
+                size_hint_x: 7.4

@@ -1,0 +1,11 @@
+game:
+  bullet_damage: 10
+  independent_models: true
+  initial_health: 71
+  prompt_augmentation: false
+  shield_size: 35
+  total_rounds: 5
+  total_turns: 10
+ui:
+  font_size: 16
+  primary_color: '#0b0b0b'

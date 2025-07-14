@@ -1,0 +1,293 @@
+<SettingsScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  # White background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(40)
+        spacing: dp(25)
+        size_hint: 0.7, None
+        height: self.minimum_height
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+        # Titles
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+            spacing: dp(10)
+            padding: 0, dp(80)
+
+            Label:
+                text: "BattLLM"
+                font_size: sp(44)
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: self.texture_size[1]
+
+            Label:
+                text: "Game Settings"
+                font_size: sp(32)
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        # Game sliders
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: dp(20)
+            size_hint_y: None
+            height: self.minimum_height
+
+            # Total Rounds
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Total Rounds"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                Label:
+                    id: rounds_label
+                    text: str(int(rounds_slider.value))
+                    font_size: sp(20)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.1
+
+                Slider:
+                    id: rounds_slider
+                    min: 1
+                    max: 10
+                    value: root.total_rounds
+                    step: 1
+                    on_value: rounds_label.text = str(int(self.value))
+                    size_hint_x: 0.5
+                    cursor_image: "assets/slider_gray_image.png"
+                    cursor_color: .7, .7, .7, 1
+                    
+
+            # Total Turns
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Total Turns"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                Label:
+                    id: turns_label
+                    text: str(int(turns_slider.value))
+                    font_size: sp(20)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.1
+
+                Slider:
+                    id: turns_slider
+                    min: 1
+                    max: 20
+                    value: root.total_turns
+                    step: 1
+                    on_value: turns_label.text = str(int(self.value))
+                    size_hint_x: 0.5
+                    cursor_color: .7, .7, .7, 1
+                    cursor_image: "assets/slider_gray_image.png"
+
+            # Initial Health
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(40)
+
+                Label:
+                    text: "Initial Health"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                Label:
+                    id: health_label
+                    text: str(int(health_slider.value))
+                    font_size: sp(20)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.1
+
+                Slider:
+                    id: health_slider
+                    min: 1
+                    max: 100
+                    value: root.initial_health
+                    step: 1
+                    on_value: health_label.text = str(int(self.value))
+                    size_hint_x: 0.5
+                    cursor_color: 0, 0, 0, 1
+                    cursor_image: "assets/slider_gray_image.png"
+
+            # Bullet Damage
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Bullet Damage"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                Label:
+                    id: damage_label
+                    text: str(int(damage_slider.value))
+                    font_size: sp(20)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.1
+
+                Slider:
+                    id: damage_slider
+                    min: 1
+                    max: 10
+                    value: root.bullet_damage
+                    step: 1
+                    on_value: damage_label.text = str(int(self.value))
+                    size_hint_x: 0.5
+                    cursor_color: .7, .7, .7, 1
+                    cursor_image: "assets/slider_gray_image.png"
+
+            # Shield Size
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Shield Size (°)"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                Label:
+                    id: shield_label
+                    text: str(int(shield_slider.value))
+                    font_size: sp(20)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.1
+
+                Slider:
+                    id: shield_slider
+                    min: 0
+                    max: 90
+                    value: root.shield_size
+                    step: 1
+                    on_value: shield_label.text = str(int(self.value))
+                    size_hint_x: 0.5
+                    cursor_color: .7, .7, .7, 1
+                    cursor_image: "assets/slider_gray_image.png"
+
+        # Checkbox options
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: self.minimum_height
+     
+            spacing: dp(12)
+
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: -410
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Independent Models"
+                    font_size: sp(22)
+                    color:  0, 0, 0, 1 
+                    halign: "left"
+                    valign: "middle"
+                    padding: 290, 0, 0, 0
+                    
+                    size_hint_x: 0
+                                    
+                CheckBox:
+                    id: independent_checkbox
+                    active: root.independent_models
+                    size_hint_x: 0.02
+                    halign: "left"
+                    background_checkbox_normal: "assets/checkbox_off.png"
+                    background_checkbox_down: "assets/checkbox_on.png"
+                    
+
+            BoxLayout:                   
+                orientation: 'horizontal'
+                spacing: -410
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Prompt Augmentation"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1                   
+                    halign: "left"
+                    valign: "middle"
+                    padding: 325, 0, 0, 0
+                    
+                    size_hint_x: 0
+
+                CheckBox:
+                    id: augmentation_checkbox
+                    active: root.prompt_augmentation
+                    
+                    background_checkbox_normal: "assets/checkbox_off.png"
+                    background_checkbox_down: "assets/checkbox_on.png"
+
+        # Buttons at bottom
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: dp(40)
+            size_hint_y: None
+            height: dp(170)
+            padding: dp(300), dp(60)
+
+            Button:
+                text: "Set as Defaults"
+                font_size: sp(22)
+                size_hint_x: 0.5
+                width: dp(80)
+                on_press: root.set_as_defaults()
+
+            Button:
+                text: "Start"
+                font_size: sp(22)
+                size_hint_x: 0.5
+                width: dp(80)
+                on_press: root.go_to_home_screen()
