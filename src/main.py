@@ -11,9 +11,9 @@ Builder.load_file("screens/home_screen.kv")
 class BattleLLM(App):
     def build(self):
         sm = ScreenManager()
-    
-        sm.add_widget(HomeScreen(name="home")) # starting screen
         sm.add_widget(SettingsScreen(name="settings"))
+        sm.add_widget(HomeScreen(name="home")) # starting screen
+      
         return sm
 
 if __name__ == "__main__":

@@ -112,9 +112,10 @@
                 canvas.before:
                     Color:
                         rgba: 0.9, 0.9, 0.9, 1  # Light gray
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                   
 
                 ScrollView:
                     TextInput:
@@ -158,15 +159,18 @@
             padding: "0dp"
             canvas.before:
                 Color:
-                    rgba: 0.6, 0.6, 0.6, 1  # White background
+                    rgba: 0.6, 0.6, 0.6, 1  #  background
             Label:
                 text: "BatLLM 0.0.1"
                 font_size: "14sp"
                 color: 0, 0, 0, 1
+
             Button:
                 text: "Settings"
+                on_press: root.go_to_settings_screen()
             Button:
                 text: "Save game"
+                on_press: home_screen.save_game()
             Label:
                 text: "https://github.com/krahd"
                 halign: "right"

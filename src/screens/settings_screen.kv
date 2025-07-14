@@ -270,24 +270,63 @@
                     background_checkbox_normal: "assets/checkbox_off.png"
                     background_checkbox_down: "assets/checkbox_on.png"
 
-        # Buttons at bottom
-        BoxLayout:
-            orientation: 'horizontal'
-            spacing: dp(40)
+        # Buttons
+        BoxLayout: 
+            canvas.before:
+                Color:
+                    rgba: 0.6, 0.6, 0.6, 1  # background
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+          
+            orientation: "horizontal"
+            halign: "left"            
             size_hint_y: None
-            height: dp(170)
-            padding: dp(300), dp(60)
+            height: "50dp"
+            padding: "0dp"
+            
+
+            Label:
+                
+                color: 0,0,0,1
+                size_hint_x: 2
+                canvas.before:
+                    Color:
+                        rgba: 1, 0.6, 0.6, 1  # background
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
             Button:
-                text: "Set as Defaults"
-                font_size: sp(22)
-                size_hint_x: 0.5
-                width: dp(80)
+                text: "Set as Deqweqwefaults"                
                 on_press: root.set_as_defaults()
+                text_size: self.size
+                font_size: '25sp'
+                markup: True
+                canvas.before:
+                    Color:
+                        rgba: 0, 1, 0.6, 1  # background
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+            Label:
+                text: " "
+                size_hint_x: 0
+                canvas.before:
+                    Color:
+                        rgba: 1, 0.6, 1, 1  # background
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
 
             Button:
-                text: "Start"
+                text: "Set"
                 font_size: sp(22)
-                size_hint_x: 0.5
-                width: dp(80)
+                
+                
+                
                 on_press: root.go_to_home_screen()
+            Label:
+                text: " "
+                size_hint_x: 2
