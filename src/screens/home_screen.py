@@ -1,5 +1,4 @@
 from kivy.uix.screenmanager import Screen
-from app_config import AppConfig
 from pathlib import Path
 
 class HomeScreen(Screen):
@@ -18,3 +17,11 @@ class HomeScreen(Screen):
                 self.ids.prompt_history_player_1.text = f.read()
         except FileNotFoundError:
             self.ids.prompt_history_player_1.text = "[Error: prompt file not found]"
+
+
+    def render_game(self):
+        game_board_widget = self.ids.game_board_widget
+        if hasattr(game_board_widget, 'render'):
+            game_board_widget.render()
+        else:
+            print("GameBoardWidget does not have a render method.")
