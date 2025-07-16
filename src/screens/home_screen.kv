@@ -1,8 +1,10 @@
+
+#:kivy 2.3.1
 <HomeScreen>:
     name: "home"
     canvas.before:
         Color:
-            rgba: 1, 1, 1, 1  
+            rgba: 1, 1, 1, 1
         Rectangle:
             pos: self.pos
             size: self.size
@@ -104,10 +106,13 @@
                     size_hint_y: None
                     Button:
                         text: "<"
+                        on_press: root.rewind_prompt_history(1)
                     Button:
                         text: "copy"
+                        on_press: root.copy_prompt_history(1)
                     Button:
                         text: ">"
+                        on_press: root.forward_prompt_history(1)
 
                 ScrollView: # prompt input
                     size_hint: (1, .5)
@@ -136,6 +141,7 @@
                     Button:
                         background_color: .9, .2, .2, 1
                         text: "Submit"
+                        on_press: root.submit_prompt(1)
                         bold: 1
 
                 Label:
@@ -198,10 +204,13 @@
                     size_hint_y: None
                     Button:
                         text: "<"
+                        on_press: root.rewind_prompt_history(2)
                     Button:
                         text: "copy"
+                        on_press: root.copy_prompt_history(2)
                     Button:
                         text: ">"
+                        on_press: root.forward_prompt_history(2)
 
                 ScrollView:
                     size_hint: (1, .5)
@@ -232,6 +241,7 @@
                         background_color: .9, .2, .2, 1
                         text: "Submit"
                         bold: 1
+                        on_press: root.submit_prompt(2)
 
            
             BoxLayout:  # Second Column  v
@@ -404,8 +414,9 @@
 
             Button:
                 text: "Settings"
-                on_press: root.go_to_settin_screen()
+                on_press: root.go_to_settings_screen()
 
             Button:
                 text: "Save game"
+                on_press: root.save_game()
            
