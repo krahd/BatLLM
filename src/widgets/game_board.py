@@ -9,7 +9,6 @@ class GameBoardWidget(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.bind(size=self._redraw, pos=self._redraw)
-
         self.ps = []  
         
 
@@ -25,7 +24,7 @@ class GameBoardWidget(Widget):
 
             Color(0, 1, 0, 1)  
             for x, y in self.ps:                               
-                Ellipse(pos=(x, y), size=(0.1, 0.1))
+                Rectangle(pos=(x, y), size=(0.01, 0.01))
             
             
         

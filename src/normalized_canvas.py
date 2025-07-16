@@ -11,7 +11,25 @@ class NormalizedCanvas:
         
         PushMatrix()
         Translate(self.widget.x, self.widget.y + self.widget.height, 0)      
-        Scale(self.widget.width, -self.widget.height, 1)          
+
+        padding = getattr(self.widget, "padding", [0, 0, 0, 0])
+        if isinstance(padding, (int, float)):
+            padding = [padding] * 4
+        elif isinstance(padding, tuple):
+            padding = list(padding)
+        if len(padding) == 2:
+            padding = [padding[0], padding[1], padding[0], padding[1]]
+        elif len(padding) == 1:
+            padding = [padding[0]] * 4
+
+        pad_left, pad_top, pad_right, pad_bottom = padding
+
+        inner_width = self.widget.width - pad_left - pad_right
+        inner_height = self.widget.height - pad_top - pad_bottom
+       
+        #Scale(self.widget.width, -self.widget.height, 1)
+
+        Scale(inner_width, -inner_height, 1)          
         return self._canvas_context 
 
     def __exit__(self, exc_type, exc_val, exc_tb):      
