@@ -37,11 +37,11 @@
                 size_hint_x: None
                 width: self.texture_size[0] + 20
        
-        BoxLayout: # main 
+        BoxLayout: # main window
             orientation: "horizontal"
             size_hint_y: 0.85
           
-            BoxLayout:   # First Column 
+            BoxLayout:   # First Column (prompts)
                 orientation: "vertical"
                 size_hint_x: 0.306  
                 padding: 0, 0
@@ -370,21 +370,60 @@
                     size_hint_y: None                            
                                             
            
-            BoxLayout:  # Third Column (game)
+            BoxLayout:  # Third Column (game area)
                 orientation: "vertical"
-                padding: 5
-                spacing: 5
+                padding: 30, 30          
+
                 canvas.before:
                     Color:
-                        rgba: 1, 1, 1, 1  # White background
+                        rgba: 1, 1, 1, 1
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
-                Label:
-                    text: "Main Content Area"
-                    color: 0, 0, 0, 1
+                
+                BoxLayout:  # Title
+                    orientation: "horizontal"             
 
+                    size_hint_y: None
+                  
+                    size_hint_x: 1          
+                    padding: 0, 34
+                    canvas.before:
+                        Color:                             
+                            rgba: .83, 1, .98, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    Label:
+                        font_size: "14sp"
+                        text: "23 - 25 - 1 | 80 - 50"
+                        bold: 1
+                        halign: "left"
+                        color: 0, 0, 0, 1
+                        size_hint_y: None
+                        size_hint_x: .055
+                        height: "12dp" 
+                        
+                    Label:
+                        size_hint_x: .4
+                    
+                
+
+                GameBoardWidget:
+                    id: game_board
+                    size_hint_x: 1
+                    size_hint_y: 1
+
+                    canvas.before:
+                        Color:
+                            rgba: 0, 0, 1, .2
+
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                                    
        
         BoxLayout:  # Footer
             orientation: "horizontal"
