@@ -5,7 +5,7 @@ import bot
 
 class HomeScreen(Screen):
 
-    bots = [bot.bot(id=i) for i in range(1, 3)]  # Create two bot instances
+    bots = [bot.Bot(id=i) for i in range(1, 3)]  # Create two bot instances
     
     
     

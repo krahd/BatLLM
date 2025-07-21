@@ -28,8 +28,14 @@ class NormalizedCanvas:
         inner_height = self.widget.height - pad_top - pad_bottom
        
         #Scale(self.widget.width, -self.widget.height, 1)
+        
 
-        Scale(inner_width, -inner_height, 1)          
+        # Scale(inner_width, -inner_height, 1)           # TODO calculate scale and position based on widget size
+        Scale(inner_height, -inner_height, 1)          
+        Scale (.95, .95, 1)
+        Translate(0.17, .03, 0)
+        
+        
         return self._canvas_context 
 
     def __exit__(self, exc_type, exc_val, exc_tb):      
@@ -39,7 +45,7 @@ class NormalizedCanvas:
     @staticmethod
     def to(widget, x, y):        
         if widget.width == 0 or widget.height == 0:
-            return 0.0, 0.0  # Avoid division by zero for degenerate widget size
+            return 0.0, 0.0  
    
         local_x = x - widget.x
         local_y = y - widget.y
