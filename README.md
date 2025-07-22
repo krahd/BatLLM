@@ -1,4 +1,4 @@
-# BattleLLM
+# BattLLM
 
 to be written
 tom
