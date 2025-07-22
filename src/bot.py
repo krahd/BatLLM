@@ -1,5 +1,5 @@
 from math import cos, sin
-from kivy.graphics import Color, Rectangle, Ellipse, Line
+from kivy.graphics import Color, Rectangle, Ellipse, Line, Translate, Rotate, PushMatrix, PopMatrix, Scale
 import math
 import random
 
@@ -22,7 +22,7 @@ class Bot:
     colour = None
     
 
-    def render(self):
+    def render2(self):
         x = self.x
         y = self.y
         r = self.radius
@@ -34,15 +34,34 @@ class Bot:
         Ellipse (pos=(x, y), size=(r, r))       
         Color (0, 0, 0, .7)
         Line (ellipse = (x, y, r, r), width=0.0010)
-        Line(points = (x + r / 2, y + r / 2, x + r * cos(rot), y + r * sin(rot)), width=width)
+
         
-        self.shield = True  # TODO get from config
-        
+        Line(points = (x + r / 2, y + r / 2, x + r/2 + r * cos(rot), y + r / 2 + r * sin(rot)), width=width)
+                
         if self.shield:
-            Color (0, .5, 1, 1)
-            Line(ellipse=(x, y, r, r, 90, 180), width=0.0060)
+            Color (0, .5, 1, 1)            
+            Line(ellipse=(x, y, r, r,  - a - math.degrees(rot), a - math.degrees(rot)), width=0.0060)
+            #Line(ellipse=(x, y, r, r, math.degrees(rot) - a, math.degrees(rot) + a), width=0.0060)
             
-            
+    def render(self):
+        PushMatrix()
+        Translate(self.x, self.y)
+        
+        Rotate(math.degrees(self.rot), 0, 0, 1)
+        
+        Color(*self.colour)
+        Ellipse(pos=(-self.radius / 2, -self.radius / 2), size=(self.radius, self.radius))
+        Color(0, 0, 0, .7)
+        r = self.radius
+        Line (ellipse = (-r/2, -r/2, r, r), width=0.002)
+        
+        Line (points=(0, 0, self.radius / 2, 0), width=0.002)
+        
+        Color(0, .5, 1, 1)
+        Line (ellipse = (-r/2, -r/2, r, r, 90-self.shield_range, 90+self.shield_range), width=0.0050)
+        PopMatrix()
+        
+
     
     def __init__(self, id):
         self.radius = 0.1
@@ -50,20 +69,26 @@ class Bot:
         self.id = id
         self.prompt_history = [] 
         self.prompt_history_index = 0
-        self.colour = (1, 0, 0, 1)
+        if id == 1:
+            self.colour = (.8, .88, 1, .7)
+        else:
+            self.colour = (.8, 65, .9, .7)
     
         self.prompt = None
         self.llm_endpoint = "http://localhost:5000" # TODO get from config
         self.augment_prompts = False  # TODO get from config
-        self.x = random.random()  # Random initial position
-        self.y = random.random()
-        self.y = random.random()
-        self.rot = .05
+
+        self.x = random.uniform(0, 1)
+        self.y = random.uniform(0, 1)
+        self.rot = random.uniform(0, 2 * math.pi)
         
-        self.shield = False
-        self.shield_range = 0.3 # TODO get from config
+        
+        self.shield = True # TODO get from config
+        
+        
+        self.shield_range = 45 # TODO get from config
         self.health = 100 # TODO get from config      
-        self.step = 10 # TODO get from config
+        self.step = 0.02 # TODO get from config
         
         
         
@@ -75,6 +100,17 @@ class Bot:
         print(f"Bot moved to position: ({self.x}, {self.y})")   
 
 
+    # rotates the bot by a given angle
+    def rotate(self, angle=0.1):
+        self.rot += angle
+        if self.rot > 2 * math.pi:
+            self.rot -= 2 * math.pi
+        elif self.rot < 0:
+            self.rot += 2 * math.pi
+        print(f"Bot rotated to angle: {self.rot} radians")
+
+
+    # submits a prompt to the LLM endpoint
     def submit_prompt(self, new_prompt):
         self.prompt_history.append(new_prompt)
         self.prompt_history_index = len(self.prompt_history) - 1
