@@ -235,7 +235,7 @@ class Bot (Widget):
             response.raise_for_status()
             result = response.json()
             cmd = result.get("response", "").strip()
-            print ("************ bot: ", self.id, " Bot command: ", cmd)  # Debugging output
+            print ("Bot ", self.id, " response: ", cmd)  # Debugging output
             
             
         except requests.RequestException as e:
@@ -243,21 +243,22 @@ class Bot (Widget):
             return None
 
                
+        command_ok = True
 
+        
         try: 
             if isinstance(cmd, str):
                 command = cmd
             elif isinstance(cmd, list) and len(cmd) > 0:
                 command = cmd[0]
             else:
+                command_ok = False
                 raise ValueError(f"Unexpected command format: {cmd}")
 
             match command[0]:
                 case "M":
                     self.move()
-                   
-                                        
-
+                                                       
                 case "C":
                     angle = float(command[1:])
                     self.rotate(angle)
@@ -267,11 +268,10 @@ class Bot (Widget):
                     self.rotate(-angle)
 
                 case "B":
-                    if hasattr(self, "shoot"):
-                        pass
+                    
+                    pass
                     #self.shoot(b)
                     
-
                 case "S":
                     if len(command) == 1:                        
                         self.toggle_shield()
@@ -281,11 +281,15 @@ class Bot (Widget):
                         elif command[1] == "0":
                             self.shield = False
                         else:
+                            command_ok = False
                             raise ValueError(f"Invalid shield command: {command}")
      
         except Exception as e:
+            command_ok = False
             print(f"bot {self.id} - wrong command: {cmd} || exception: ({e})") 
 
+        if command_ok:
+            self.board_widget.add_command_to_history(self.id, command)
 
         self.canvas.ask_update()
         self.board_widget.canvas.ask_update()

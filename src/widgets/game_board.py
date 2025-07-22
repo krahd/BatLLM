@@ -83,7 +83,7 @@ class GameBoardWidget(Widget):
                 bot.render()    
 
         self.canvas.ask_update()
-        print("[GameBoardWidget] render() called")
+        
                         
     # mouse button down event handler    
     def on_touch_down(self, touch):
@@ -110,6 +110,31 @@ class GameBoardWidget(Widget):
         
         return super().on_touch_move(touch)
 
+
+
+    def find_id_in_parents(self, target_id):
+        parent = self.parent
+        while parent:
+            if hasattr(parent, 'ids') and target_id in parent.ids:
+                return parent.ids[target_id]
+            parent = parent.parent
+        return None
+
+    def add_command_to_history(self, bot_id, command):
+        
+        
+        if bot_id == 1:
+            box = self.find_id_in_parents("output_history_player_1")
+        elif bot_id == 2:
+            box = self.find_id_in_parents("output_history_player_2")
+        else:
+            print(f"Invalid bot_id: {bot_id}")
+            return
+
+        if box is not None:
+            box.text += f"{len(box.text.splitlines()) + 1}. {command}\n"
+        else:
+            print(f"Could not find output history box for bot_id: {bot_id}")
 
  
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
