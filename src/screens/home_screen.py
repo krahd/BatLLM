@@ -12,8 +12,10 @@ class HomeScreen(Screen):
     augment_prompts = None  # TODO get from config
 
     def __init__(self, **kwargs):
+        
         super(HomeScreen, self).__init__(**kwargs)
-        self.bots = [bot.Bot(id=i) for i in range(1, 3)]  # Create two bot instances
+        gbw = self.ids.game_board
+        self.bots = [bot.Bot(id = i, parent = gbw) for i in range(1, 3)]  # Create two bot instances
         self.augment_prompts = False  # TODO get from config
         
     
@@ -109,10 +111,6 @@ class HomeScreen(Screen):
         
         
 
-    # TODO call this when there's an update on the game
-    def render_game(self):
-        self.ids.game_board_widget.render()
-        
 
     # tells the bot to submit the prompt to the LLM
     def submit_prompt(self, bot_id):
@@ -148,6 +146,8 @@ class HomeScreen(Screen):
                 # LLM etc.
                 for b in bs:
                     b.execute_prompt_in_llm()
+
+
 
                   
             turn = turn + 1

@@ -28,7 +28,8 @@ class Bot:
 
     diameter = None
     colour = None
-    
+
+    parent = None
 
             
     def render(self):
@@ -89,13 +90,13 @@ class Bot:
         
 
 
-    def __init__(self, id):
+    def __init__(self, id, parent):
         self.diameter = 0.1 # TODO get from config
                 
         self.id = id
         self.prompt_history = [] 
         self.prompt_history_index = 0
-
+        self.parent = parent
 
         
         
@@ -212,6 +213,9 @@ class Bot:
 
 
     def execute_prompt_in_llm(self):
+
+
+
         
         port = 5000 + self.id  # e.g., id=1 => port=5001
         url = f"http://localhost:{port}/api/generate"
@@ -247,6 +251,7 @@ class Bot:
             match command[0]:
                 case "M":
                     self.move()
+                    print ("move command received")
 
                 case "C":
                     angle = float(command[1:])
@@ -276,7 +281,8 @@ class Bot:
         except Exception as e:
             print(f"bot {self.id} - wrong command: {cmd} || exception: ({e})") 
 
-        self.render()  # Render the bot after executing the command
-        
+
+        self.prompt_submitted = False  # Reset the prompt submitted flag after execution
+        self.parent.render()
 
 

@@ -20,7 +20,7 @@ class GameBoardWidget(Widget):
         self.bind(size=self._redraw, pos=self._redraw)
         self.ps = []  
 
-        self.bots = [Bot(id = i) for i in range(1, 3)]  # Create two bot instances
+        self.bots = [Bot(id = i, parent = self) for i in range(1, 3)]  # Create two bot instances
 
 
 
@@ -71,7 +71,7 @@ class GameBoardWidget(Widget):
            Rectangle(pos=(0, 0), size=(1, 1))                 
 
            for bot in self.bots:
-                bot.render(self.canvas)    
+                bot.render()    
 
                 
                         
