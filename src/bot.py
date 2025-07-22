@@ -70,7 +70,8 @@ class Bot:
             Color (0, 0, 0, 1)
         
             PopMatrix()
-            
+
+            #TODO FIX: can't draw text at all!
         with canvas:
             mylabel = CoreLabel(text = "Hi there!", font_size = 25, color = (0, 0, 0, 1))
             # Force refresh to compute things and generate the texture
