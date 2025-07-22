@@ -60,16 +60,15 @@ class Bot (Widget):
 
         # shield
         if self.shield:
-            Color(0, .5, 1, 1)            
-            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.0050) # TODO check 90-
+            Color(.7, .5, 1, 1)            
+            Color(.3,.3,.6,1)
+            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) # TODO check 90-
         
         PopMatrix()
 
         # info box
         PushMatrix()
         Translate(self.x, self.y)
-
-        
         Color (0, 0, 0, .2)
         Line(rectangle=(r, r, .107, .116), width=0.001)
         
@@ -83,19 +82,13 @@ class Bot (Widget):
         mylabel = Label(text=t, font_size=24, color=(0, 0, 0, .7))
         mylabel.refresh()
         texture = mylabel.texture        
-    
-        
         Rectangle(pos=(0.064, 0.157), texture=texture, size=(.081, -.101))
+        # /info box
 
-        
-    
+
         PopMatrix()
 
         
-    
-      
-
-
 
 
     def __init__(self, id, board_widget, **kwargs):
