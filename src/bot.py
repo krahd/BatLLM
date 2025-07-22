@@ -2,7 +2,7 @@ from math import cos, sin
 from kivy.graphics import Color, Rectangle, Ellipse, Line, Translate, Rotate, PushMatrix, PopMatrix, Scale
 import math
 import random
-from kivy.core.text import Label as CoreLabel
+from kivy.core.text import Label 
 from kivy.uix.widget import Widget
 from normalized_canvas import NormalizedCanvas
 import requests
@@ -68,30 +68,34 @@ class Bot (Widget):
         # info box
         PushMatrix()
         Translate(self.x, self.y)
+
         
         Color (0, 0, 0, .2)
-        Line(rectangle=(r, r, .2, .2), width=0.001)
+        Line(rectangle=(r, r, .107, .116), width=0.001)
         
         Color (1, 1, 1, .6)
-        Rectangle(pos=(r, r), size=(.2, .2))
+        Rectangle(pos=(r, r), size=(.107, .116))
 
-        Color (0, 0, 0, 1)
+        t = "x: {:.2f}\ny: {:.2f}\nrot: {:.2f}°\nshield: {}\nhealth: {}".format(
+            self.x, self.y, math.degrees(self.rot), "ON" if self.shield else "OFF", self.health)
+        
+        Color (0, 0, 0, .7)
+        mylabel = Label(text=t, font_size=24, color=(0, 0, 0, .7))
+        mylabel.refresh()
+        texture = mylabel.texture        
+    
+        
+        Rectangle(pos=(0.064, 0.157), texture=texture, size=(.081, -.101))
+
+        
     
         PopMatrix()
 
-        #TODO FIX: can't draw text at all!
-    
-        mylabel = CoreLabel(text = "Hi there!", font_size = 25, color = (0, 0, 0, 1))
-        # Force refresh to compute things and generate the texture
-        mylabel.refresh()
-        # Get the texture and the texture size
-        texture = mylabel.texture
-        texture_size = list(texture.size)
-        # Draw the texture on any widget canvas
-        myWidget = Widget()
-        myWidget.canvas.add(Rectangle(texture = texture, size = texture_size))
-
         
+    
+      
+
+
 
 
     def __init__(self, id, board_widget, **kwargs):

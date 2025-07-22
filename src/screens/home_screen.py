@@ -48,11 +48,15 @@ class HomeScreen(Screen):
             print ("Prompt file not found:", prompt_path)
 
 
+
+
     def get_bot_by_id(self, id):
         for bot_instance in self.bots:
             if bot_instance.id == id:
                 return bot_instance
         return None
+
+
 
 
     def get_prompt_text(self, id):
@@ -64,6 +68,8 @@ class HomeScreen(Screen):
             print(f"No TextInput found for id: {input_id}")
             return ""
 
+
+
     def set_prompt_text(self, id, text):
         input_id = f"prompt_player_{id}"
         text_input = self.ids.get(input_id)
@@ -71,6 +77,8 @@ class HomeScreen(Screen):
             text_input.text = text
         else:
             print(f"No TextInput found for id: {input_id}")
+
+
             
 
     def get_prompt_history_text(self, id):
@@ -82,6 +90,8 @@ class HomeScreen(Screen):
             print(f"No TextInput found for id: {input_id}")
             return ""
 
+
+
     def set_prompt_history_text(self, id, text):
         input_id = f"prompt_history_player_{id}"
         text_input = self.ids.get(input_id)
@@ -90,12 +100,16 @@ class HomeScreen(Screen):
         else:
             print(f"No TextInput found for id: {input_id}")
         
+
+
     
     def rewind_prompt_history(self, bot_id):
         b = self.get_bot_by_id(bot_id)
         b.rewind_prompt_history()    
         self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
         
+
+
         
     def forward_prompt_history(self, bot_id):
         b = self.get_bot_by_id(bot_id)
@@ -142,19 +156,17 @@ class HomeScreen(Screen):
             print ("Turn: ", turn)                
             
             # Get the commands from both bots
-            for b in bs:
-                
-                
+            for b in bs:            
                 b.execute_prompt_in_llm()
 
-
-
-                  
+  
             turn = turn + 1
             # TODO create one window per bot where prompts and commands are shown
             
-        popup = Popup(title='Round Ended', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
+        popup = Popup(title='', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
         popup.open()
+
+        
                           
                         
 

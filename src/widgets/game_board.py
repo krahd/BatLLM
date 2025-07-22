@@ -1,9 +1,8 @@
 from kivy.uix.widget import Widget
-from kivy.graphics import Color, Rectangle, Ellipse
+from kivy.graphics import Color, Rectangle, Line
 from bot import Bot
 from normalized_canvas import NormalizedCanvas
 from kivy.core.window import Window
-
 
 
 class GameBoardWidget(Widget):
@@ -41,30 +40,14 @@ class GameBoardWidget(Widget):
         self.render()
 
 
-
-    def drawBoard(self):
-
-        Color(0, 0, 0, .3)
-        brd = 0.01
-        Rectangle(pos=(brd, brd), size=(1 - 2 * brd, 1 - 2 * brd))
-        
-        Color (1,1,1,.99)
-        brd = 0.011
-        Rectangle(pos=(brd, brd), size=(1 - 2 * brd, 1 - 2 * brd))
-
-        
-        
             
-    def render(self, *args):  
-        
-        
-        print ("*")
+    def render(self, *args):                          
         self.canvas.clear()
-
         
         # keep bots inside bounds
         for bot in self.bots:
             r = bot.diameter / 2
+            
             if bot.x < r:
                 bot.x = r
             elif bot.x > 1 - r:
@@ -76,14 +59,21 @@ class GameBoardWidget(Widget):
                 bot.y = 1 - r
         
         with NormalizedCanvas(self):
-           Color(0.3, 0, 0, .05)
-           Rectangle(pos=(0, 0), size=(1, 1))                 
+           c = 1
+           Color(c, c, c, 1)  
+           Rectangle(pos=(0, 0), size=(1, 1))    
+           c = .2
+           Color(c, c, c, .6)  
+           Line(rectangle=(0, 0, 1, 1), width=0.001)           
 
            for bot in self.bots:
-                bot.render()    
+                bot.render()                               
 
         self.canvas.ask_update()
         
+        
+        
+
                         
     # mouse button down event handler    
     def on_touch_down(self, touch):
