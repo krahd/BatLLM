@@ -7,7 +7,7 @@ from kivy.core.window import Window
 
 
 class GameBoardWidget(Widget):
-    ps = []
+    
     bots = []
 
     
@@ -18,15 +18,21 @@ class GameBoardWidget(Widget):
         self._keyboard.bind(on_key_down = self._on_keyboard_down)
         
         self.bind(size=self._redraw, pos=self._redraw)
-        self.ps = []  
 
-        self.bots = [Bot(id = i, parent = self) for i in range(1, 3)]  # Create two bot instances
+    def add_bots(self, bots):
+        self.bots = bots
+        
+            
+    def on_kv_post(self, base_widget):
+        super().on_kv_post(base_widget)
+        self.bots = [Bot(id=i, board_widget=self) for i in range(1, 3)]
+        
 
 
 
     def _keyboard_closed(self): # virtual keyboard closed handler
         print('keyboard have been closed!')
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard.unbind(on_key_down = self._on_keyboard_down)
         self._keyboard = None
 
 
@@ -49,7 +55,10 @@ class GameBoardWidget(Widget):
         
         
             
-    def render(self, *args):        
+    def render(self, *args):  
+        
+        
+        print ("*")
         self.canvas.clear()
 
         
@@ -73,14 +82,17 @@ class GameBoardWidget(Widget):
            for bot in self.bots:
                 bot.render()    
 
-                
+        self.canvas.ask_update()
+        print("[GameBoardWidget] render() called")
                         
     # mouse button down event handler    
     def on_touch_down(self, touch):
         if self.collide_point(touch.x, touch.y):         
             nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
-            self.ps.append((nx, ny))
+            
             self.render()
+            for bot in self.bots:
+                print ("-- " , bot.x)
             
             return True   
                 
@@ -92,7 +104,7 @@ class GameBoardWidget(Widget):
     def on_touch_move(self, touch):
         if self.collide_point(touch.x, touch.y):
             nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
-            self.ps.append((nx, ny))
+           
             self.render()
             return True
         
@@ -108,6 +120,7 @@ class GameBoardWidget(Widget):
 
         if keycode[0] == 109:
             for bot in self.bots:
+                print ("-- " , bot.x)
                 bot.move()
                 
             self.render()

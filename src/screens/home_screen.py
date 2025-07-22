@@ -15,7 +15,8 @@ class HomeScreen(Screen):
         
         super(HomeScreen, self).__init__(**kwargs)
         gbw = self.ids.game_board
-        self.bots = [bot.Bot(id = i, parent = gbw) for i in range(1, 3)]  # Create two bot instances
+        self.bots = [bot.Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
+        gbw.add_bots(self.bots)
         self.augment_prompts = False  # TODO get from config
         
     
@@ -133,7 +134,7 @@ class HomeScreen(Screen):
         bs = random.sample(self.bots, 2)
 
         turn = 1
-        round_turns = 4 # TODO get round count from config
+        round_turns = 14 # TODO get round count from config
         # Loop through the turns of the round        
 
         for turn in range(1, round_turns): 
@@ -143,9 +144,8 @@ class HomeScreen(Screen):
             # Get the commands from both bots
             for b in bs:
                 
-                # LLM etc.
-                for b in bs:
-                    b.execute_prompt_in_llm()
+                
+                b.execute_prompt_in_llm()
 
 
 

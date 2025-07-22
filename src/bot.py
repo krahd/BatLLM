@@ -7,29 +7,33 @@ from kivy.uix.widget import Widget
 from normalized_canvas import NormalizedCanvas
 import requests
 import json
+from kivy.clock import Clock
+from kivy.properties import NumericProperty, ObjectProperty
 
 
 
-class Bot:
-    id = None
+class Bot (Widget):
+    id = NumericProperty(0)
+    x = NumericProperty(0)
+    y = NumericProperty(0)
+    rot = NumericProperty(0) # in radians
+    shield = ObjectProperty(None)
+    health = NumericProperty(0)
+    board_widget = ObjectProperty(None)
+
     prompt_history = None
     prompt_history_index = None
     prompt_submitted = None
     
     llm_endpoint = None
     
-    x = None
-    y = None
-    rot = None # in radians
-    shield = None
     shield_range = None
-    health = None
     step = None
 
     diameter = None
     colour = None
 
-    parent = None
+    
 
             
     def render(self):
@@ -90,13 +94,15 @@ class Bot:
         
 
 
-    def __init__(self, id, parent):
+    def __init__(self, id, board_widget, **kwargs):
+        super().__init__(**kwargs)
+        
         self.diameter = 0.1 # TODO get from config
                 
         self.id = id
         self.prompt_history = [] 
         self.prompt_history_index = 0
-        self.parent = parent
+        self.board_widget = board_widget
 
         
         
@@ -110,8 +116,7 @@ class Bot:
 
 
         self.llm_endpoint = "http://localhost:" + port + "/api/generate"
-     
-
+        
         self.x = random.uniform(0, 1) 
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 2 * math.pi)        
@@ -169,7 +174,6 @@ class Bot:
 
 
 
-
     def forward_prompt_history(self):
         if self.prompt_history_index is not None and self.prompt_history_index < len(self.prompt_history) - 1:
             self.prompt_history_index += 1                        
@@ -198,7 +202,10 @@ class Bot:
     def copy_prompt_history(self):
         """Copies the current prompt history to the clipboard."""
                 
-        self.prompt_history[self.prompt_history_index]
+        try:
+            self.prompt_history[self.prompt_history_index]
+        except Exception as e:
+            print(f"Error accessing prompt history: {e}")
         
 
         
@@ -213,9 +220,6 @@ class Bot:
 
 
     def execute_prompt_in_llm(self):
-
-
-
         
         port = 5000 + self.id  # e.g., id=1 => port=5001
         url = f"http://localhost:{port}/api/generate"
@@ -251,7 +255,8 @@ class Bot:
             match command[0]:
                 case "M":
                     self.move()
-                    print ("move command received")
+                   
+                                        
 
                 case "C":
                     angle = float(command[1:])
@@ -277,12 +282,18 @@ class Bot:
                             self.shield = False
                         else:
                             raise ValueError(f"Invalid shield command: {command}")
-
+     
         except Exception as e:
             print(f"bot {self.id} - wrong command: {cmd} || exception: ({e})") 
 
 
+        self.canvas.ask_update()
+        self.board_widget.canvas.ask_update()
+        Clock.schedule_once(lambda dt: self.board_widget.render())
         self.prompt_submitted = False  # Reset the prompt submitted flag after execution
-        self.parent.render()
+        self.board_widget.render()
 
-
+    def toggle_shield(self):
+        """Toggles the shield state."""
+        self.shield = not self.shield
+        
