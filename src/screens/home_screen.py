@@ -33,6 +33,7 @@ class HomeScreen(Screen):
 
 
     def on_kv_post(self, gbw, *args):
+        
         gbw = self.ids.game_board
         gbw.render()
       
@@ -51,6 +52,7 @@ class HomeScreen(Screen):
 
 
     def get_bot_by_id(self, id):
+        """Returns the bot instance with the specified ID."""
         for bot_instance in self.bots:
             if bot_instance.id == id:
                 return bot_instance
@@ -60,6 +62,7 @@ class HomeScreen(Screen):
 
 
     def get_prompt_text(self, id):
+        """Returns the text from the TextInput for the specified bot ID."""
         input_id = f"prompt_player_{id}"
         text_input = self.ids.get(input_id)
         if text_input:
@@ -71,6 +74,7 @@ class HomeScreen(Screen):
 
 
     def set_prompt_text(self, id, text):
+        """Sets the text of the TextInput for the specified bot ID."""
         input_id = f"prompt_player_{id}"
         text_input = self.ids.get(input_id)
         if text_input:
@@ -82,6 +86,7 @@ class HomeScreen(Screen):
             
 
     def get_prompt_history_text(self, id):
+        """Returns the text from the TextInput for the prompt history of the specified bot ID."""
         input_id = f"prompt_history_player_{id}"
         text_input = self.ids.get(input_id)
         if text_input:
@@ -93,6 +98,7 @@ class HomeScreen(Screen):
 
 
     def set_prompt_history_text(self, id, text):
+        """Sets the text of the TextInput for the prompt history of the specified bot ID."""
         input_id = f"prompt_history_player_{id}"
         text_input = self.ids.get(input_id)
         if text_input:
@@ -104,6 +110,7 @@ class HomeScreen(Screen):
 
     
     def rewind_prompt_history(self, bot_id):
+        """Rewinds the prompt history for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         b.rewind_prompt_history()    
         self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
@@ -112,6 +119,7 @@ class HomeScreen(Screen):
 
         
     def forward_prompt_history(self, bot_id):
+        """Forwards the prompt history for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         b.forward_prompt_history()        
         self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
@@ -119,6 +127,7 @@ class HomeScreen(Screen):
 
 
     def copy_prompt_history(self, bot_id):
+        """Copies the current prompt history to the clipboard for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         b.copy_prompt_history()   
         self.set_prompt_text(bot_id, b.get_prompt())
@@ -129,6 +138,7 @@ class HomeScreen(Screen):
 
     # tells the bot to submit the prompt to the LLM
     def submit_prompt(self, bot_id):
+        """Submits the prompt for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         new_prompt = self.get_prompt_text(bot_id)
         b.submit_prompt (new_prompt)
@@ -137,13 +147,13 @@ class HomeScreen(Screen):
         # Clear the input field 
         self.set_prompt_text(bot_id, "")
 
-
         if all(b.prompt_submitted for b in self.bots):
             self.play_round()
 
 
     # game logic for playing a round
     def play_round(self):
+        """Plays a round of the game with the current bot commands."""
         print("Playing round...") # TODO cound rounds
         bs = random.sample(self.bots, 2)
 
@@ -166,9 +176,7 @@ class HomeScreen(Screen):
         popup = Popup(title='', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
         popup.open()
 
-        
-                          
-                        
+                                                          
 
                 
     def shoot(self, b):

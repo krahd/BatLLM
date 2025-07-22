@@ -4,6 +4,7 @@ import math
 import random
 from kivy.core.text import Label 
 from kivy.uix.widget import Widget
+from bullet import Bullet
 from normalized_canvas import NormalizedCanvas
 import requests
 import json
@@ -56,7 +57,7 @@ class Bot (Widget):
         Line (ellipse = (-r, -r, d, d), width=0.002)
 
         # pointing direction
-        Line (points=(0, 0, d / 1.8, 0), width=0.002)
+        Line (points=(0, 0, r, 0), width=0.002)
 
         # shield
         if self.shield:
@@ -84,7 +85,6 @@ class Bot (Widget):
         texture = mylabel.texture        
         Rectangle(pos=(0.064, 0.157), texture=texture, size=(.081, -.101))
         # /info box
-
 
         PopMatrix()
 
@@ -124,7 +124,6 @@ class Bot (Widget):
         self.health = 100 # TODO get from config      
         self.step = 0.02 # TODO get from config
 
-        
         self.prompt_submitted = False
         
 
@@ -137,7 +136,7 @@ class Bot (Widget):
 
 
     # rotates the bot by a given angle
-    def rotate(self, angle=0.1):
+    def rotate(self, angle):
         self.rot += angle
         if self.rot > 2 * math.pi:
             self.rot -= 2 * math.pi
@@ -197,8 +196,7 @@ class Bot (Widget):
     
     
     def copy_prompt_history(self):
-        """Copies the current prompt history to the clipboard."""
-                
+        """Copies the current prompt history to the clipboard."""                
         try:
             self.prompt_history[self.prompt_history_index]
         except Exception as e:
@@ -216,8 +214,7 @@ class Bot (Widget):
 
 
 
-    def execute_prompt_in_llm(self):
-        
+    def execute_prompt_in_llm(self):        
         port = 5000 + self.id  # e.g., id=1 => port=5001
         url = f"http://localhost:{port}/api/generate"
         headers = {"Content-Type": "application/json"}
@@ -232,16 +229,13 @@ class Bot (Widget):
             response.raise_for_status()
             result = response.json()
             cmd = result.get("response", "").strip()
-            print ("Bot ", self.id, " response: ", cmd)  # Debugging output
-            
+            print ("Bot ", self.id, " response: ", cmd)  # Debugging output            
             
         except requests.RequestException as e:
             print(f"Error querying Ollama on port {port}: {e}")
             return None
-
                
         command_ok = True
-
         
         try: 
             if isinstance(cmd, str):
@@ -264,10 +258,8 @@ class Bot (Widget):
                     angle = float(command[1:])
                     self.rotate(-angle)
 
-                case "B":
-                    
-                    pass
-                    #self.shoot(b)
+                case "B":                    
+                    return self.shoot() # TODO handle bullet shooting from command
                     
                 case "S":
                     if len(command) == 1:                        
@@ -288,13 +280,29 @@ class Bot (Widget):
         if command_ok:
             self.board_widget.add_command_to_history(self.id, command)
 
+        self.prompt_submitted = False # reset the prompt submitted flag after execution, when all bots have this flag in true then a round starts
+        ''' # TODO fix render the board after each command 
+
         self.canvas.ask_update()
         self.board_widget.canvas.ask_update()
         Clock.schedule_once(lambda dt: self.board_widget.render())
-        self.prompt_submitted = False  # Reset the prompt submitted flag after execution
+        # Reset the prompt submitted flag after execution
         self.board_widget.render()
+'''
+
 
     def toggle_shield(self):
         """Toggles the shield state."""
         self.shield = not self.shield
+
+
+    def shoot(self):
+        """Shoots a projectile from the bot."""
+        if not self.shield:
+            print(f"Bot {self.id} shoots!")
+            bullet = Bullet(self.id, self.x, self.y, self.rot)            
+            return bullet
+        else:
+            print(f"Bot {self.id} cannot shoot while shield is active.")
+            return None
         
