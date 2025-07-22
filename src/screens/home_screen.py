@@ -1,12 +1,21 @@
+import random
 from kivy.uix.screenmanager import Screen
 from pathlib import Path
 import bot
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 
 
 class HomeScreen(Screen):
 
-    bots = [bot.Bot(id=i) for i in range(1, 3)]  # Create two bot instances
-    
+    bots = []
+    augment_prompts = None  # TODO get from config
+
+    def __init__(self, **kwargs):
+        super(HomeScreen, self).__init__(**kwargs)
+        self.bots = [bot.Bot(id=i) for i in range(1, 3)]  # Create two bot instances
+        self.augment_prompts = False  # TODO get from config
+        
     
     
     def save_game (self):
@@ -84,10 +93,12 @@ class HomeScreen(Screen):
         b.rewind_prompt_history()    
         self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
         
+        
     def forward_prompt_history(self, bot_id):
         b = self.get_bot_by_id(bot_id)
         b.forward_prompt_history()        
         self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
+        
 
 
     def copy_prompt_history(self, bot_id):
@@ -95,17 +106,93 @@ class HomeScreen(Screen):
         b.copy_prompt_history()   
         self.set_prompt_text(bot_id, b.get_prompt())
         
+        
+        
 
     # TODO call this when there's an update on the game
     def render_game(self):
         self.ids.game_board_widget.render()
         
 
+    # tells the bot to submit the prompt to the LLM
     def submit_prompt(self, bot_id):
         b = self.get_bot_by_id(bot_id)
         new_prompt = self.get_prompt_text(bot_id)
         b.submit_prompt (new_prompt)
         self.set_prompt_history_text(bot_id, b.get_current_prompt_history())
            
-        # Clear the input field after submission
+        # Clear the input field 
         self.set_prompt_text(bot_id, "")
+
+
+        if all(b.prompt_submitted for b in self.bots):
+            self.play_round()
+
+
+    def play_round(self):
+        print("Playing round...") # TODO cound rounds
+        bs = random.sample(self.bots, 2)
+
+        turn = 1
+
+        # execute the following till round is over
+        
+
+        for turn in range(1, 4): # TODO get round count from config        
+
+            print ("Turn:", turn)                
+            
+            # Get the commands from both bots
+            for b in bs:
+                
+                # LLM etc.
+                for b in bs:
+                    cmd = b.submit_prompt_to_llm()
+
+                    try: 
+                        match cmd[0]:
+                            case "M":
+                                b.move()
+
+                            case "C":
+                                angle =  float(cmd[1:])
+                                b.rotate(angle)
+
+                            case "A":
+                                angle =  float(cmd[1:])
+                                b.rotate(-angle)
+
+                            case "B":
+                                self.shoot(b)
+                                
+
+                                
+
+                            case "S":
+                                if len(cmd) == 1:
+                                    b.toggle_shield()
+                                else:
+                                    if cmd[1] == "1":
+                                        b.shield = True
+                                    elif cmd[1] == "0":
+                                        b.shield = False
+                                    else:
+                                        raise ValueError(f"Invalid shield command: {cmd}")
+
+                            
+                                        
+
+                    except Exception as e:
+                        print(f"bot {b.id} - wrong command: {cmd} || exception: ({e})") 
+            b.end_round()
+        popup = Popup(title='Round Ended', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
+        popup.open()
+                          
+                        
+
+                
+    def shoot(self, b):
+        pass       
+            
+        
+        

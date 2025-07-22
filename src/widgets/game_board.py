@@ -5,9 +5,11 @@ from normalized_canvas import NormalizedCanvas
 from kivy.core.window import Window
 
 
+
 class GameBoardWidget(Widget):
     ps = []
     bots = []
+
     
     def __init__(self, **kwargs):
         super(GameBoardWidget, self).__init__(**kwargs)
@@ -20,13 +22,19 @@ class GameBoardWidget(Widget):
 
         self.bots = [Bot(id = i) for i in range(1, 3)]  # Create two bot instances
 
+
+
     def _keyboard_closed(self): # virtual keyboard closed handler
-        print('My keyboard have been closed!')
+        print('keyboard have been closed!')
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
+
+
     def _redraw(self, *args):
         self.render()
+
+
 
     def drawBoard(self):
 
@@ -43,24 +51,42 @@ class GameBoardWidget(Widget):
             
     def render(self, *args):        
         self.canvas.clear()
+
+        
+        # keep bots inside bounds
+        for bot in self.bots:
+            r = bot.diameter / 2
+            if bot.x < r:
+                bot.x = r
+            elif bot.x > 1 - r:
+                bot.x = 1 - r
+            
+            if bot.y < r:
+                bot.y = r
+            elif bot.y > 1 - r:   
+                bot.y = 1 - r
         
         with NormalizedCanvas(self):
-           Color(0, 0, 1, .05)
+           Color(0.3, 0, 0, .05)
            Rectangle(pos=(0, 0), size=(1, 1))                 
 
            for bot in self.bots:
-                bot.render()    
+                bot.render(self.canvas)    
+
                 
                         
     # mouse button down event handler    
     def on_touch_down(self, touch):
-        if self.collide_point(touch.x, touch.y):
+        if self.collide_point(touch.x, touch.y):         
             nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
             self.ps.append((nx, ny))
             self.render()
+            
             return True   
                 
         return super().on_touch_down(touch)  
+
+
 
     # mouse drag event handler
     def on_touch_move(self, touch):
@@ -71,34 +97,23 @@ class GameBoardWidget(Widget):
             return True
         
         return super().on_touch_move(touch)
+
+
  
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-
-        # Keycode is composed of an integer + a string
-        '''
-        print('The key', keycode, 'have been pressed')
-        print(' - text is %r' % text)
-        print(' - modifiers are %r' % modifiers)
-'''
-        
+       
         # escape, release the keyboard
         if keycode[1] == 'escape':
             keyboard.release()
 
-        print ("**")
-        print (keycode[0])
         if keycode[0] == 109:
-            print("Moving bots")             
-
             for bot in self.bots:
                 bot.move()
                 
             self.render()
             return True
 
-        if keycode[1] == 'r':
-            print("Rotating bots")             
-
+        if keycode[1] == 'r':                
             for bot in self.bots:
                 bot.rotate()
                 

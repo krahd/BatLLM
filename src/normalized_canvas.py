@@ -27,13 +27,17 @@ class NormalizedCanvas:
         inner_width = self.widget.width - pad_left - pad_right
         inner_height = self.widget.height - pad_top - pad_bottom
        
-        #Scale(self.widget.width, -self.widget.height, 1)
+        #Scale(self.widget.width, -self.widget.height, 1)    
         
-
-        # Scale(inner_width, -inner_height, 1)           # TODO calculate scale and position based on widget size
-        Scale(inner_height, -inner_height, 1)          
+        # Scale to the smaller of inner_width and inner_height to keep the board square
+        scale_size = min(inner_width, inner_height)              
+        
+        
+    
+        Scale(scale_size, -scale_size, 1)
         Scale (.95, .95, 1)
         Translate(0.17, .03, 0)
+        #Translate(offset_x, offset_y, 0)
         
         
         return self._canvas_context 
@@ -46,7 +50,7 @@ class NormalizedCanvas:
     def to(widget, x, y):        
         if widget.width == 0 or widget.height == 0:
             return 0.0, 0.0  
-   
+            
         local_x = x - widget.x
         local_y = y - widget.y
         nx = local_x / float(widget.width)
