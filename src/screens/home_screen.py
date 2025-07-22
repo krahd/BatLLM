@@ -129,62 +129,30 @@ class HomeScreen(Screen):
             self.play_round()
 
 
+    # game logic for playing a round
     def play_round(self):
         print("Playing round...") # TODO cound rounds
         bs = random.sample(self.bots, 2)
 
         turn = 1
+        round_turns = 4 # TODO get round count from config
+        # Loop through the turns of the round        
 
-        # execute the following till round is over
-        
+        for turn in range(1, round_turns): 
 
-        for turn in range(1, 4): # TODO get round count from config        
-
-            print ("Turn:", turn)                
+            print ("Turn: ", turn)                
             
             # Get the commands from both bots
             for b in bs:
                 
                 # LLM etc.
                 for b in bs:
-                    cmd = b.submit_prompt_to_llm()
+                    b.execute_prompt_in_llm()
 
-                    try: 
-                        match cmd[0]:
-                            case "M":
-                                b.move()
-
-                            case "C":
-                                angle =  float(cmd[1:])
-                                b.rotate(angle)
-
-                            case "A":
-                                angle =  float(cmd[1:])
-                                b.rotate(-angle)
-
-                            case "B":
-                                self.shoot(b)
-                                
-
-                                
-
-                            case "S":
-                                if len(cmd) == 1:
-                                    b.toggle_shield()
-                                else:
-                                    if cmd[1] == "1":
-                                        b.shield = True
-                                    elif cmd[1] == "0":
-                                        b.shield = False
-                                    else:
-                                        raise ValueError(f"Invalid shield command: {cmd}")
-
-                            
-                                        
-
-                    except Exception as e:
-                        print(f"bot {b.id} - wrong command: {cmd} || exception: ({e})") 
-            b.end_round()
+                  
+            turn = turn + 1
+            # TODO create one window per bot where prompts and commands are shown
+            
         popup = Popup(title='Round Ended', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
         popup.open()
                           

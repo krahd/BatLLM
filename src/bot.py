@@ -5,6 +5,9 @@ import random
 from kivy.core.text import Label as CoreLabel
 from kivy.uix.widget import Widget
 from normalized_canvas import NormalizedCanvas
+import requests
+import json
+
 
 
 class Bot:
@@ -28,77 +31,84 @@ class Bot:
     
 
             
-    def render(self, canvas):
+    def render(self):
         r = self.diameter / 2
         d = self.diameter
 
-        with canvas:
-
-            PushMatrix()
-            Translate(self.x, self.y)
-            
-            Rotate(math.degrees(self.rot), 0, 0, 1)
-
-            # fill
-            Color(*self.colour)
-            Ellipse(pos=(-r, -r), size=(d, d))
-            Color(0, 0, 0, .7)
-
-            # border
-            Line (ellipse = (-r, -r, d, d), width=0.002)
-
-            # pointing direction
-            Line (points=(0, 0, d / 1.8, 0), width=0.002)
-
-            # shield
-            if self.shield:
-                Color(0, .5, 1, 1)            
-                Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.0050) # TODO check 90-
-            
-            PopMatrix()
-
-            # info box
-            PushMatrix()
-            Translate(self.x, self.y)
-            
-            Color (0, 0, 0, .2)
-            Line(rectangle=(r, r, .2, .2), width=0.001)
-            
-            Color (1, 1, 1, .6)
-            Rectangle(pos=(r, r), size=(.2, .2))
-
-            Color (0, 0, 0, 1)
-        
-            PopMatrix()
-
-            #TODO FIX: can't draw text at all!
-        with canvas:
-            mylabel = CoreLabel(text = "Hi there!", font_size = 25, color = (0, 0, 0, 1))
-            # Force refresh to compute things and generate the texture
-            mylabel.refresh()
-            # Get the texture and the texture size
-            texture = mylabel.texture
-            texture_size = list(texture.size)
-            # Draw the texture on any widget canvas
-            myWidget = Widget()
-            myWidget.canvas.add(Rectangle(texture = texture, size = texture_size))
-
-            
-
     
+
+        PushMatrix()
+        Translate(self.x, self.y)
+        
+        Rotate(math.degrees(self.rot), 0, 0, 1)
+
+        # fill
+        Color(*self.colour)
+        Ellipse(pos=(-r, -r), size=(d, d))
+        Color(0, 0, 0, .7)
+
+        # border
+        Line (ellipse = (-r, -r, d, d), width=0.002)
+
+        # pointing direction
+        Line (points=(0, 0, d / 1.8, 0), width=0.002)
+
+        # shield
+        if self.shield:
+            Color(0, .5, 1, 1)            
+            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.0050) # TODO check 90-
+        
+        PopMatrix()
+
+        # info box
+        PushMatrix()
+        Translate(self.x, self.y)
+        
+        Color (0, 0, 0, .2)
+        Line(rectangle=(r, r, .2, .2), width=0.001)
+        
+        Color (1, 1, 1, .6)
+        Rectangle(pos=(r, r), size=(.2, .2))
+
+        Color (0, 0, 0, 1)
+    
+        PopMatrix()
+
+        #TODO FIX: can't draw text at all!
+    
+        mylabel = CoreLabel(text = "Hi there!", font_size = 25, color = (0, 0, 0, 1))
+        # Force refresh to compute things and generate the texture
+        mylabel.refresh()
+        # Get the texture and the texture size
+        texture = mylabel.texture
+        texture_size = list(texture.size)
+        # Draw the texture on any widget canvas
+        myWidget = Widget()
+        myWidget.canvas.add(Rectangle(texture = texture, size = texture_size))
+
+        
+
+
     def __init__(self, id):
         self.diameter = 0.1 # TODO get from config
                 
         self.id = id
         self.prompt_history = [] 
         self.prompt_history_index = 0
+
+
+        
         
         if id == 1:
             self.colour = (.8, .88, 1, .85) # TODO get from config
-            self.llm_endpoint = "http://localhost:5000" # TODO get from config
+            port = "5001"
+           
         else:
             self.colour = (.8, 65, .9, .85) # TODO get from config
-            self.llm_endpoint = "http://localhost:5000" # TODO get from config
+            port = "5002"
+
+
+        self.llm_endpoint = "http://localhost:" + port + "/api/generate"
      
 
         self.x = random.uniform(0, 1) 
@@ -139,6 +149,8 @@ class Bot:
         self.prompt_history.append(new_prompt)
         self.prompt_history_index = len(self.prompt_history) - 1        
         self.prompt_submitted = True
+
+         
             
 
 
@@ -199,7 +211,72 @@ class Bot:
 
 
 
-    def submit_prompt_to_llm(self):
-         return "M"
+    def execute_prompt_in_llm(self):
+        
+        port = 5000 + self.id  # e.g., id=1 => port=5001
+        url = f"http://localhost:{port}/api/generate"
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "model": "llama3.2:latest",
+            "prompt": self.get_current_prompt(),
+            "stream": False
+        }
+
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            response.raise_for_status()
+            result = response.json()
+            cmd = result.get("response", "").strip()
+            print ("************ bot: ", self.id, " Bot command: ", cmd)  # Debugging output
+            
+            
+        except requests.RequestException as e:
+            print(f"Error querying Ollama on port {port}: {e}")
+            return None
+
+               
+
+        try: 
+            if isinstance(cmd, str):
+                command = cmd
+            elif isinstance(cmd, list) and len(cmd) > 0:
+                command = cmd[0]
+            else:
+                raise ValueError(f"Unexpected command format: {cmd}")
+
+            match command[0]:
+                case "M":
+                    self.move()
+
+                case "C":
+                    angle = float(command[1:])
+                    self.rotate(angle)
+
+                case "A":
+                    angle = float(command[1:])
+                    self.rotate(-angle)
+
+                case "B":
+                    if hasattr(self, "shoot"):
+                        pass
+                    #self.shoot(b)
+                    
+
+                case "S":
+                    if len(command) == 1:                        
+                        self.toggle_shield()
+                    else:
+                        if command[1] == "1":
+                            self.shield = True
+                        elif command[1] == "0":
+                            self.shield = False
+                        else:
+                            raise ValueError(f"Invalid shield command: {command}")
+
+        except Exception as e:
+            print(f"bot {self.id} - wrong command: {cmd} || exception: ({e})") 
+
+        self.render()  # Render the bot after executing the command
+        
 
 
