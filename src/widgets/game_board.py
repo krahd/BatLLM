@@ -186,19 +186,21 @@ class GameBoardWidget(Widget):
                     bullet = bot.shoot()
                     self.bullet_alpha = 1
                     alive = True                    
-                    damaged_bot = None
+                    damaged_bot_id = None
 
                     if bullet is None:
                         alive = False
 
                     while alive:
 
-                        (alive, damaged_bot) = bullet.update(self.bots)
+                        (alive, damaged_bot_id) = bullet.update(self.bots)
                         self.bulletTrace.append((bullet.x, bullet.y))
                         
                     
-                    if damaged_bot is not None:
-                        print(f"Bot {damaged_bot} was hit by a bullet from Bot {bot.id}!")
+                    if damaged_bot_id is not None:
+                        print(f"Bot {damaged_bot_id} was hit by a bullet from Bot {bot.id}!")
+                        self.get_bot_by_id(damaged_bot_id)
+                        self.get_bot_by_id(damaged_bot_id).damage()
                         
                     else:
                         print(f"Bullet from Bot {bot.id} did not hit any bot.")

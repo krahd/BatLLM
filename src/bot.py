@@ -291,6 +291,14 @@ class Bot (Widget):
 '''
 
 
+    def damage(self):
+        """Damages the bot, reducing its health."""
+        self.health -= 10 # TODO get from config
+        if self.health < 0:
+            self.health = 0
+            print(f"Bot {self.id} has been destroyed!")
+
+
     def toggle_shield(self):
         """Toggles the shield state."""
         self.shield = not self.shield
