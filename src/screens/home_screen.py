@@ -28,6 +28,7 @@ class HomeScreen(Screen):
 
     def __init__(self, **kwargs):        
         super(HomeScreen, self).__init__(**kwargs)
+
         self.augment_prompts = False  # TODO get from config
         self.total_rounds = 10  # TODO get from config
         self.total_turns = 14  # TODO get from config
@@ -40,8 +41,8 @@ class HomeScreen(Screen):
 
 
     def on_enter(self):
-
-
+        pass
+        '''        This method is called when the screen is entered.
         try:
             settings_screen = self.manager.get_screen("settings")
 
@@ -66,7 +67,7 @@ class HomeScreen(Screen):
             self.independent_models = True
             self.prompt_augmentation = False  
 
-
+        '''
     
     def save_game (self):
         print ("Saving game...(TODO)")

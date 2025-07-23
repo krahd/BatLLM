@@ -186,9 +186,11 @@ class GameBoardWidget(Widget):
                 case 's':
                     bot.toggle_shield()
 
-                case 'spacebar':                    
+                case 'spacebar':           
+
                     bullet = bot.shoot()
                     self.bullet_alpha = 1
+
                     alive = True                    
                     damaged_bot_id = None
 
@@ -198,8 +200,11 @@ class GameBoardWidget(Widget):
                     while alive:
 
                         (alive, damaged_bot_id) = bullet.update(self.bots)
-                        self.bulletTrace.append((bullet.x, bullet.y))
-                        
+
+                        # only draw bulltes outside the shooting bot                        
+                        dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
+                        if dist *.97 > bot.diameter / 2:
+                            self.bulletTrace.append((bullet.x, bullet.y))
                     
                     if damaged_bot_id is not None:
                         print(f"Bot {damaged_bot_id} was hit by a bullet from Bot {bot.id}!")

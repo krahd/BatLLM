@@ -9,14 +9,14 @@ class Bullet:
         self.y = y
         self.rot = rot
         self.step = 0.01  # Step size for movement
-        self.radius = 0.02  # Radius of the bullet
+        self.diameter = 0.02  # Diameter of the drawn bullet, internally bullets have no diameter, they are just a point
         self.colour = (1, 0, 0, 1)  #
 
-    def render(self):
+    def render(self):        
         PushMatrix()
         Translate(self.x, self.y)
         Color(*self.colour)
-        Ellipse(pos=(-self.radius / 2, -self.radius / 2), size=(self.radius, self.radius))
+        Ellipse(pos=(0,0 ), size=(self.diameter, self.diameter))
         PopMatrix()
 
 
