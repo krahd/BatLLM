@@ -1,10 +1,14 @@
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle, Line, Ellipse
-from bot import Bot
+
 from normalized_canvas import NormalizedCanvas
 from kivy.core.window import Window
 from kivy.clock import Clock
 
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from bot import Bot
 
 class GameBoardWidget(Widget):
     

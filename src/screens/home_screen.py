@@ -1,17 +1,22 @@
 import random
 from kivy.uix.screenmanager import Screen
 from pathlib import Path
-import bot
+
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 
 
+from widgets.game_board import GameBoardWidget
+from bot import Bot
+from screens.settings_screen import SettingsScreen
+
+
+
+
+
 class HomeScreen(Screen):
-
-
-
     bots = []
-    augment_prompts = None  # TODO get from config
+    augment_prompts = None  # TODO get from config, etc
     total_rounds = None
     total_turns = None
     initial_health = None
@@ -23,9 +28,6 @@ class HomeScreen(Screen):
 
     def __init__(self, **kwargs):        
         super(HomeScreen, self).__init__(**kwargs)
-        gbw = self.ids.game_board
-        self.bots = [bot.Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
-        gbw.add_bots(self.bots)
         self.augment_prompts = False  # TODO get from config
         self.total_rounds = 10  # TODO get from config
         self.total_turns = 14  # TODO get from config
@@ -38,25 +40,31 @@ class HomeScreen(Screen):
 
 
     def on_enter(self):
-        settings_screen = self.manager.get_screen("settings")
-        self.total_rounds = settings_screen.total_rounds
-        self.total_turns = settings_screen.total_turns
-        self.initial_health = settings_screen.initial_health
-        self.bullet_damage = settings_screen.bullet_damage
-        self.shield_size = settings_screen.shield_size
-        self.independent_models = settings_screen.independent_models
-        self.prompt_augmentation = settings_screen.prompt_augmentation  
 
 
-        """
-            total_rounds = NumericProperty(config.get("game", "total_rounds"))        
-            total_turns = NumericProperty(config.get("game", "total_turns"))
-            initial_health = NumericProperty(config.get("game", "initial_health"))
-            bullet_damage = NumericProperty(config.get("game", "bullet_damage"))
-            shield_size = NumericProperty(config.get("game", "shield_size"))
-            independent_models = BooleanProperty(config.get("game", "independent_models"))
-            prompt_augmentation = BooleanProperty(config.get("game", "prompt_augmentation"))
-        """
+        try:
+            settings_screen = self.manager.get_screen("settings")
+
+            self.augment_prompts = settings_screen.augment_prompts
+            self.total_rounds = settings_screen.total_rounds
+            self.total_turns = settings_screen.total_turns
+            self.initial_health = settings_screen.initial_health
+            self.bullet_damage = settings_screen.bullet_damage
+            self.shield_size = settings_screen.shield_size
+            self.independent_models = settings_screen.independent_models
+            self.prompt_augmentation = settings_screen.prompt_augmentation
+
+        except KeyError:
+            print("Settings screen not found, using default values.")
+            # Use default values if settings screen is not found
+            self.augment_prompts = False
+            self.total_rounds = 10
+            self.total_turns = 14
+            self.initial_health = 100
+            self.bullet_damage = 10
+            self.shield_size = 45
+            self.independent_models = True
+            self.prompt_augmentation = False  
 
 
     
@@ -71,11 +79,12 @@ class HomeScreen(Screen):
 
 
 
-    def on_kv_post(self, gbw, *args):        
+    def on_kv_post(self, base_widget):
         gbw = self.ids.game_board
+        self.bots = [Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
+        gbw.add_bots(self.bots)
         gbw.render()
-      
-
+       
 
     def load_prompt_from_file(self, player_id, path= "../assets/prompts/prompt_2.txt"):
         prompt_path = Path(__file__).parent / path
@@ -102,6 +111,7 @@ class HomeScreen(Screen):
         """Returns the text from the TextInput for the specified bot ID."""
         input_id = f"prompt_player_{id}"
         text_input = self.ids.get(input_id)
+
         if text_input:
             return text_input.text
         else:
@@ -172,6 +182,11 @@ class HomeScreen(Screen):
         """Submits the prompt for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         new_prompt = self.get_prompt_text(bot_id)
+
+        if self.augment_prompts:
+            self.get_bot_by_id(bot_id).augment_prompt(True)
+
+            
         b.submit_prompt (new_prompt)
         self.set_prompt_history_text(bot_id, b.get_current_prompt_history())
            
