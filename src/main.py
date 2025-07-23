@@ -1,8 +1,10 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
+
 from screens.home_screen import HomeScreen
 from screens.settings_screen import SettingsScreen
+
 from kivy.core.window import Window
 
 

@@ -1,14 +1,16 @@
 import random
+from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import Screen
 from pathlib import Path
+
+from bot import Bot
 
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 
-
 from widgets.game_board import GameBoardWidget
-from bot import Bot
 from screens.settings_screen import SettingsScreen
+
 
 
 
@@ -24,6 +26,7 @@ class HomeScreen(Screen):
     shield_size = None
     independent_models = None
     prompt_augmentation = None
+    maanger = None
 
 
     def __init__(self, **kwargs):        
@@ -37,14 +40,17 @@ class HomeScreen(Screen):
         self.shield_size = 45  # TODO get from config
         self.independent_models = True  # TODO get from config -- needs to be implemented still
         self.prompt_augmentation = False  # TODO get from config
+        self.manager = None  # Screen manager will be set in on_kv_post
+        
         
 
 
-    def on_enter(self):
-        pass
-        '''        This method is called when the screen is entered.
+    def get_values_from_settings(self):
+                
         try:
-            settings_screen = self.manager.get_screen("settings")
+            sm = self.get_screen_manager()
+            
+            settings_screen = sm.get_screen("settings")
 
             self.augment_prompts = settings_screen.augment_prompts
             self.total_rounds = settings_screen.total_rounds
@@ -55,8 +61,11 @@ class HomeScreen(Screen):
             self.independent_models = settings_screen.independent_models
             self.prompt_augmentation = settings_screen.prompt_augmentation
 
-        except KeyError:
-            print("Settings screen not found, using default values.")
+        except Exception as e:
+            print("Exception type:", type(e).__name__)
+            print ("Exception message:", str(e))
+           
+            print("***************************** Settings screen not found, using default values.")
             # Use default values if settings screen is not found
             self.augment_prompts = False
             self.total_rounds = 10
@@ -67,7 +76,7 @@ class HomeScreen(Screen):
             self.independent_models = True
             self.prompt_augmentation = False  
 
-        '''
+        
     
     def save_game (self):
         print ("Saving game...(TODO)")
@@ -80,11 +89,21 @@ class HomeScreen(Screen):
 
 
 
+    def get_screen_manager(self):
+        # Helper to obtain the screen manager
+        return self.parent #if hasattr(self.parent, 'current') else None
+
     def on_kv_post(self, base_widget):
+
+        self.get_values_from_settings()
+        
+
         gbw = self.ids.game_board
         self.bots = [Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
         gbw.add_bots(self.bots)
         gbw.render()
+
+        
        
 
     def load_prompt_from_file(self, player_id, path= "../assets/prompts/prompt_2.txt"):
