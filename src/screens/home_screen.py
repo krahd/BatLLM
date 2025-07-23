@@ -8,18 +8,57 @@ from kivy.uix.label import Label
 
 class HomeScreen(Screen):
 
+
+
     bots = []
     augment_prompts = None  # TODO get from config
+    total_rounds = None
+    total_turns = None
+    initial_health = None
+    bullet_damage = None
+    shield_size = None
+    independent_models = None
+    prompt_augmentation = None
 
-    def __init__(self, **kwargs):
-        
+
+    def __init__(self, **kwargs):        
         super(HomeScreen, self).__init__(**kwargs)
         gbw = self.ids.game_board
         self.bots = [bot.Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
         gbw.add_bots(self.bots)
         self.augment_prompts = False  # TODO get from config
+        self.total_rounds = 10  # TODO get from config
+        self.total_turns = 14  # TODO get from config
+        self.initial_health = 100  # TODO get from config
+        self.bullet_damage = 10  # TODO get from config
+        self.shield_size = 45  # TODO get from config
+        self.independent_models = True  # TODO get from config -- needs to be implemented still
+        self.prompt_augmentation = False  # TODO get from config
         
-    
+
+
+    def on_enter(self):
+        settings_screen = self.manager.get_screen("settings")
+        self.total_rounds = settings_screen.total_rounds
+        self.total_turns = settings_screen.total_turns
+        self.initial_health = settings_screen.initial_health
+        self.bullet_damage = settings_screen.bullet_damage
+        self.shield_size = settings_screen.shield_size
+        self.independent_models = settings_screen.independent_models
+        self.prompt_augmentation = settings_screen.prompt_augmentation  
+
+
+        """
+            total_rounds = NumericProperty(config.get("game", "total_rounds"))        
+            total_turns = NumericProperty(config.get("game", "total_turns"))
+            initial_health = NumericProperty(config.get("game", "initial_health"))
+            bullet_damage = NumericProperty(config.get("game", "bullet_damage"))
+            shield_size = NumericProperty(config.get("game", "shield_size"))
+            independent_models = BooleanProperty(config.get("game", "independent_models"))
+            prompt_augmentation = BooleanProperty(config.get("game", "prompt_augmentation"))
+        """
+
+
     
     def save_game (self):
         print ("Saving game...(TODO)")
@@ -32,11 +71,11 @@ class HomeScreen(Screen):
 
 
 
-    def on_kv_post(self, gbw, *args):
-        
+    def on_kv_post(self, gbw, *args):        
         gbw = self.ids.game_board
         gbw.render()
       
+
 
     def load_prompt_from_file(self, player_id, path= "../assets/prompts/prompt_2.txt"):
         prompt_path = Path(__file__).parent / path
@@ -50,14 +89,12 @@ class HomeScreen(Screen):
 
 
 
-
     def get_bot_by_id(self, id):
         """Returns the bot instance with the specified ID."""
         for bot_instance in self.bots:
             if bot_instance.id == id:
                 return bot_instance
         return None
-
 
 
 
@@ -84,7 +121,6 @@ class HomeScreen(Screen):
 
 
             
-
     def get_prompt_history_text(self, id):
         """Returns the text from the TextInput for the prompt history of the specified bot ID."""
         input_id = f"prompt_history_player_{id}"
@@ -108,14 +144,12 @@ class HomeScreen(Screen):
         
 
 
-    
     def rewind_prompt_history(self, bot_id):
         """Rewinds the prompt history for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         b.rewind_prompt_history()    
         self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
         
-
 
         
     def forward_prompt_history(self, bot_id):
@@ -133,9 +167,6 @@ class HomeScreen(Screen):
         self.set_prompt_text(bot_id, b.get_prompt())
         
         
-        
-
-
     # tells the bot to submit the prompt to the LLM
     def submit_prompt(self, bot_id):
         """Submits the prompt for the specified bot ID."""
@@ -175,12 +206,8 @@ class HomeScreen(Screen):
             
         popup = Popup(title='', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
         popup.open()
+                                              
 
-                                                          
-
-                
-    def shoot(self, b):
-        pass       
-            
+      
         
         

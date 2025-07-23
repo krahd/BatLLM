@@ -224,8 +224,14 @@ class Bot (Widget):
             "stream": False
         }
 
+        # if so chosen we augment the prompt, kind of a RAG
+        
+
+
+
+        # ********* Sending the prompt to the LLM *********
         try:
-            response = requests.post(url, headers=headers, data=json.dumps(data))
+            response = requests.post(url, headers = headers, data = json.dumps(data))
             response.raise_for_status()
             result = response.json()
             cmd = result.get("response", "").strip()
@@ -237,6 +243,11 @@ class Bot (Widget):
                
         command_ok = True
         
+
+
+
+
+        # ********* Processing the response *********
         try: 
             if isinstance(cmd, str):
                 command = cmd

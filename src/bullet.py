@@ -1,4 +1,4 @@
-from kivy.graphics import Color, Rectangle, Ellipse, Line, Translate, Rotate, PushMatrix, PopMatrix, Scale
+from kivy.graphics import Color, Ellipse, Translate,  PushMatrix, PopMatrix
 import math
 
 

@@ -1,5 +1,5 @@
 from kivy.uix.widget import Widget
-from kivy.graphics import Color, Rectangle, Line, Ellipse, Translate, Rotate, PushMatrix, PopMatrix
+from kivy.graphics import Color, Rectangle, Line, Ellipse
 from bot import Bot
 from normalized_canvas import NormalizedCanvas
 from kivy.core.window import Window
