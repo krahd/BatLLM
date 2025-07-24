@@ -13,7 +13,7 @@ Builder.load_file("screens/home_screen.kv")
 
 
 class BattleLLM(App):
-    
+  
     def build(self):
         sm = ScreenManager()
         sm.add_widget(HomeScreen(name = "home")) # starting screen

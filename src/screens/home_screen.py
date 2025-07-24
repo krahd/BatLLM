@@ -1,19 +1,13 @@
 import random
-from kivy.uix.screenmanager import ScreenManager
-from kivy.uix.screenmanager import Screen
 from pathlib import Path
 
-from bot import Bot
-
-from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.screenmanager import Screen, ScreenManager
 
-from widgets.game_board import GameBoardWidget
+from bot import Bot
 from screens.settings_screen import SettingsScreen
-
-
-
-
+from widgets.game_board import GameBoardWidget
 
 
 class HomeScreen(Screen):
@@ -80,7 +74,7 @@ class HomeScreen(Screen):
     
     def save_game (self):
         print ("Saving game...(TODO)")
-        # TODO
+        # TODO implement saving game state
         
 
 
