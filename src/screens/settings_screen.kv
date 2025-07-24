@@ -281,6 +281,24 @@
             #padding: 100, 100
 
            
+            Label:
+                text: " "
+                color: 0, 0, 0, 1
+                size_hint_x: 0.25
+               
+            Button:
+                id: cancel_btn
+                text: "Cancel and return"
+                font_size: '24sp'
+                size_hint: None, None
+                padding: 25, 15
+                size: self.texture_size
+                color: 1,1,1,1
+                background_color:  .6, .8, .9, .8
+
+                on_press: root.go_to_home_screen()
+                on_texture_size: self.size = [self.texture_size[0] + self.padding[0]*2, self.texture_size[1] + self.padding[1]*2]
+
 
             Label:
                 text: " "
@@ -316,7 +334,7 @@
                 color: 1,1,1,1
                 background_color: 178/255., 197/255., 219/255., 1
 
-                on_press: root.go_to_home_screen()
+                on_press: root.set_and_return()
                 on_texture_size: self.size = [self.texture_size[0] + self.padding[0]*2, self.texture_size[1] + self.padding[1]*2]
 
               

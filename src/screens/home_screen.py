@@ -8,67 +8,35 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from bot import Bot
 from screens.settings_screen import SettingsScreen
 from widgets.game_board import GameBoardWidget
+from app_config import config
 
 
 class HomeScreen(Screen):
     bots = []
-    augment_prompts = None  # TODO get from config, etc
-    total_rounds = None
-    total_turns = None
-    initial_health = None
-    bullet_damage = None
-    shield_size = None
-    independent_models = None
-    prompt_augmentation = None
-    maanger = None
-
 
     def __init__(self, **kwargs):        
         super(HomeScreen, self).__init__(**kwargs)
-
-        self.augment_prompts = False  # TODO get from config
-        self.total_rounds = 10  # TODO get from config
-        self.total_turns = 14  # TODO get from config
-        self.initial_health = 100  # TODO get from config
-        self.bullet_damage = 10  # TODO get from config
-        self.shield_size = 45  # TODO get from config
-        self.independent_models = True  # TODO get from config -- needs to be implemented still
-        self.prompt_augmentation = False  # TODO get from config
-        self.manager = None  # Screen manager will be set in on_kv_post
         
         
-
-
-    def get_values_from_settings(self):
-                
+        
+    def get_total_rounds_from_settings(self):
+        """
+        Gets the value of total_rounds from the SettingsScreen instance
+        in the same manager as this screen.
+        """
         try:
-            sm = self.get_screen_manager()
-            
+            # Get the screen manager (self.manager is set by Kivy)            
+            sm = self.manager if self.manager is not None else self.get_screen_manager()
+                
             settings_screen = sm.get_screen("settings")
-
-            self.augment_prompts = settings_screen.augment_prompts
-            self.total_rounds = settings_screen.total_rounds
-            self.total_turns = settings_screen.total_turns
-            self.initial_health = settings_screen.initial_health
-            self.bullet_damage = settings_screen.bullet_damage
-            self.shield_size = settings_screen.shield_size
-            self.independent_models = settings_screen.independent_models
-            self.prompt_augmentation = settings_screen.prompt_augmentation
-
+            
+            return settings_screen.total_rounds
+        
         except Exception as e:
             print("Exception type:", type(e).__name__)
-            print ("Exception message:", str(e))
-           
-            print("***************************** Settings screen not found, using default values.")
-            # Use default values if settings screen is not found
-            self.augment_prompts = False
-            self.total_rounds = 10
-            self.total_turns = 14
-            self.initial_health = 100
-            self.bullet_damage = 10
-            self.shield_size = 45
-            self.independent_models = True
-            self.prompt_augmentation = False  
+            print("Exception message:", str(e))
+            print("Could not get total_rounds from SettingsScreen, returning default")
+
 
         
     
@@ -83,15 +51,8 @@ class HomeScreen(Screen):
 
 
 
-    def get_screen_manager(self):
-        # Helper to obtain the screen manager
-        return self.parent #if hasattr(self.parent, 'current') else None
-
-    def on_kv_post(self, base_widget):
-
-        self.get_values_from_settings()
+    def on_kv_post(self, base_widget):        
         
-
         gbw = self.ids.game_board
         self.bots = [Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
         gbw.add_bots(self.bots)
@@ -197,10 +158,9 @@ class HomeScreen(Screen):
         b = self.get_bot_by_id(bot_id)
         new_prompt = self.get_prompt_text(bot_id)
 
-        if self.augment_prompts:
-            self.get_bot_by_id(bot_id).augment_prompt(True)
-
-            
+        # Toggle the augment_promts flag in the bot
+        self.get_bot_by_id(bot_id).augment_prompt(self.augment_prompts)
+        
         b.submit_prompt (new_prompt)
         self.set_prompt_history_text(bot_id, b.get_current_prompt_history())
            
@@ -218,17 +178,16 @@ class HomeScreen(Screen):
         bs = random.sample(self.bots, 2)
 
         turn = 1
-        round_turns = 14 # TODO get round count from config
+       
         # Loop through the turns of the round        
 
-        for turn in range(1, round_turns): 
+        for turn in range(1, config.get("game", "total_turns")): 
 
-            print ("Turn: ", turn)                
-            
+            #TODO update header with turn info
+                        
             # Get the commands from both bots
             for b in bs:            
                 b.execute_prompt_in_llm()
-
   
             turn = turn + 1
             # TODO create one window per bot where prompts and commands are shown

@@ -15,11 +15,17 @@ Builder.load_file("screens/home_screen.kv")
 class BattleLLM(App):
   
     def build(self):
+        
         sm = ScreenManager()
-        sm.add_widget(HomeScreen(name = "home")) # starting screen
+        sm.add_widget(HomeScreen(name = "home"))          # starting screen
         sm.add_widget(SettingsScreen(name = "settings"))
+        
+        #TODO create a new screen to show the round being played, animated, with the result of each prompt rendered, with a timeline where the players can go back and forth in the game
+
+        
         self.icon = "assets/checkbox_off.png" # TODO create an icon
-        self.title = "BattLLM"
+        self.title = "BattLLM" # TODO add version from config
+        
         return sm
 
 

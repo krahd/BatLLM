@@ -4,7 +4,7 @@ game:
   initial_health: 42
   prompt_augmentation: false
   shield_size: 35
-  total_rounds: 4
+  total_rounds: 5
   total_turns: 13
 ui:
   font_size: 16

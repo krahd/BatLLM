@@ -58,7 +58,6 @@ class AppConfig:
         if section not in self._config:
             self._config[section] = {}
         self._config[section][key] = value
-        self.save()
 
     def as_dict(self):
         return self._config

@@ -9,6 +9,7 @@ from kivy.uix.widget import Widget
 
 from normalized_canvas import NormalizedCanvas
 
+from app_config import config
 from bot import Bot
 
 
@@ -82,23 +83,23 @@ class GameBoardWidget(Widget):
 				bot.y = 1 - r
 		
 		with NormalizedCanvas(self):
-		   c = 1
-		   Color(c, c, c, 1)  
-		   Rectangle(pos=(0, 0), size=(1, 1))    
-		   c = .2
-		   Color(c, c, c, .6)  
-		   Line(rectangle=(0, 0, 1, 1), width=0.001)           
+			c = 1
+			Color(c, c, c, 1)
+			Rectangle(pos=(0, 0), size=(1, 1))
+			c = .2
+			Color(c, c, c, .6)
+			Line(rectangle=(0, 0, 1, 1), width=0.001)
 
-		   for bot in self.bots:
-				bot.render()          
+			for bot in self.bots:
+				bot.render()
 
-		   for (x, y) in self.bulletTrace:                     
-			   Color (1, 0, 0, self.bullet_alpha)  # Red color for bullet trace
-			   Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
-			   if (self.bullet_alpha > 0):
-				   self.bullet_alpha -= 0.01  # Decrease alpha for fading effect
-			   else: 
-				   self.bulletTrace.clear() 
+			for (x, y) in self.bulletTrace:
+				Color (1, 0, 0, self.bullet_alpha)  # Red color for bullet trace
+				Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
+				if (self.bullet_alpha > 0):
+					self.bullet_alpha -= 0.01  # Decrease alpha for fading effect
+				else:
+					self.bulletTrace.clear()
 			   
 
 		
@@ -178,6 +179,15 @@ class GameBoardWidget(Widget):
 
 		else:
 			match keycode[1]:
+
+				case '1':
+					total_rounds = config.get("game", "total_rounds")
+					
+									
+					print("---- total rounds: ", total_rounds)
+  
+					
+       
 				case 'm':
 					bot.move()
 				  

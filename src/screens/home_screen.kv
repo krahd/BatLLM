@@ -372,12 +372,12 @@
            
             BoxLayout:  # Third Column (game area)
                 orientation: "vertical"
-                padding: 20, 20          
+                padding: 0, 0   
                 
                 canvas.before:
                     Color:
                         #rgba: 0, 0, 0, .15
-                        rgba: .8,.83,.8,.5
+                        rgba: .8,.83,.8,1
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -385,32 +385,34 @@
                 
 
 
-#                BoxLayout:  # Title
-#                    orientation: "horizontal"             
-
-#                    size_hint_y: None
+                BoxLayout:  # Title
+                    orientation: "horizontal"             
+                    height: "48dp"
+                    size_hint_y: None
                   
-#                    size_hint_x: 1          
-#                    padding: 0, 34
-#                    canvas.before:
-#                        Color:                             
-#                            rgba: 0, 0, 0, .1
-#                        Rectangle:
-#                            pos: self.pos
-#                            size: self.size
+                    size_hint_x: 1          
+                    padding: 340, 34
+                    canvas.before:
+                        Color:                             
+                            rgba: 0, 0, 0, .1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
-#                    Label:
-#                        font_size: "14sp"
-#                        text: "23 - 25 - 1 | 80 - 50"
-#                        bold: 1
-#                        halign: "left"
-#                        color: 0, 0, 0, 1
-#                        size_hint_y: None
-#                        size_hint_x: .055
-#                        height: "12dp" 
+                    Label:
+                        font_size: "14sp"
                         
-#                    Label:
-#                        size_hint_x: .4
+                        text: "Round #23.  Turn #3."
+                        
+                        bold: 1
+                        halign: "left"
+                        color: 0, 0, 0, 1
+                        size_hint_y: None
+                        size_hint_x: .055
+                        height: "12dp" 
+                        
+                    Label:
+                        size_hint_x: .4
                     
                 
 

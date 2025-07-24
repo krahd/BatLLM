@@ -27,10 +27,8 @@ class Bot (Widget):
     prompt_submitted = None
     
     llm_endpoint = None
-    
     shield_range = None
     step = None
-
     diameter = None
     colour = None
 
@@ -63,18 +61,25 @@ class Bot (Widget):
         if self.shield:
             Color(.7, .5, 1, 1)            
             Color(.3,.3,.6,1)
-            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) # TODO check 90-
+            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) # TODO find out why 90+
         
         PopMatrix()
 
         # info box
         PushMatrix()
-        Translate(self.x, self.y)
+
+        x = min (.95 - .116, self.x + 0.01)
+        y = min (.97 - .101, self.y)
+
+        sx = r
+        sy = .005
+        
+        Translate(x, y)
         Color (0, 0, 0, .2)
-        Line(rectangle=(r, r, .107, .116), width=0.001)
+        Line(rectangle=(sx, sy, .107, .116), width=0.001)
         
         Color (1, 1, 1, .6)
-        Rectangle(pos=(r, r), size=(.107, .116))
+        Rectangle(pos=(sx, sy), size=(.107, .116))
 
         t = "x: {:.2f}\ny: {:.2f}\nrot: {:.2f}°\nshield: {}\nhealth: {}".format(
             self.x, self.y, math.degrees(self.rot), "ON" if self.shield else "OFF", self.health)
@@ -83,7 +88,7 @@ class Bot (Widget):
         mylabel = Label(text=t, font_size=24, color=(0, 0, 0, .7))
         mylabel.refresh()
         texture = mylabel.texture        
-        Rectangle(pos=(0.064, 0.157), texture=texture, size=(.081, -.101))
+        Rectangle(pos=(0.064, 0.109), texture=texture, size=(.081, -.101))
         # /info box
 
         PopMatrix()
@@ -119,7 +124,6 @@ class Bot (Widget):
         self.rot = random.uniform(0, 2 * math.pi)        
         
         self.shield = True # TODO get from config
-        
         self.shield_range = 45 # TODO get from config
         self.health = 100 # TODO get from config      
         self.step = 0.02 # TODO get from config

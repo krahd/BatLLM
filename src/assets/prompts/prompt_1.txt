@@ -32,9 +32,7 @@ The existing commands are:
 
     Any other command is ignored (this means that bot does nothing in this turn).
 
-When a bot shoots a bullet, the world waits until it either hits the other bot or exits the screen before running the other bot's next command. This means that after one bot fires, the other bot cannot move until the bullet hits it or leaves the screen.
 
-When a bot is hit by a bullet its energy decreases by BULLET_DAMAGE. If a bullet hits the rised shield it does not cause any damage. The shield only protects the 'front' of the bot. It will only stop bullets that hit it in its front, plus minus SHIELD_SIZE degrees.
 
 From the users point of view, everything runs in the graphical interface. The UI must draw the bots, the bullets, the shields, and the bullets. It must also display all relevant game information (round number, total number of rounds, turn number, total number of turns, bot health).
 
