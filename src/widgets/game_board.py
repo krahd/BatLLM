@@ -4,6 +4,8 @@ from kivy.graphics import Color, Rectangle, Line, Ellipse
 from normalized_canvas import NormalizedCanvas
 from kivy.core.window import Window
 from kivy.clock import Clock
+from kivy.core.audio import SoundLoader
+
 
 import sys
 from pathlib import Path
@@ -15,6 +17,8 @@ class GameBoardWidget(Widget):
     bots = []
     bulletTrace = []
     bullet_alpha = 1
+    snd_shoot = None
+    snd_hit = None
 
     def __init__(self, **kwargs):
         super(GameBoardWidget, self).__init__(**kwargs)
@@ -29,7 +33,8 @@ class GameBoardWidget(Widget):
 
         Clock.schedule_interval(self._redraw, 1.0 / 10.0)  # Schedule redraw at 60 FPS  
 
-
+        self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
+        self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav")
 
     def add_bots(self, bots):
         """Adds a list of bots to the game board."""
@@ -56,8 +61,6 @@ class GameBoardWidget(Widget):
 
     def _redraw(self, *args):
         self.render()
-
-
 
             
     def render(self, *args):      
@@ -155,7 +158,8 @@ class GameBoardWidget(Widget):
             print(f"Could not find output history box for bot_id: {bot_id}")
 
  
-
+    def play_sound(self, sound):
+        sound.play()
  
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """Handles keyboard input for bot commands."""
@@ -188,7 +192,14 @@ class GameBoardWidget(Widget):
 
                 case 'spacebar':           
 
-                    bullet = bot.shoot()
+
+                    # TODO move bot sounds inside the bot class
+                    if not bot.shield:
+                        Clock.schedule_once(lambda dt: self.play_sound(self.snd_shoot))
+
+                    bullet = bot.shoot()                    
+                        
+
                     self.bullet_alpha = 1
 
                     alive = True                    
@@ -208,6 +219,10 @@ class GameBoardWidget(Widget):
                     
                     if damaged_bot_id is not None:
                         print(f"Bot {damaged_bot_id} was hit by a bullet from Bot {bot.id}!")
+
+
+                        Clock.schedule_once(lambda dt: self.play_sound(self.snd_hit))
+
                         self.get_bot_by_id(damaged_bot_id)
                         self.get_bot_by_id(damaged_bot_id).damage()
                         
