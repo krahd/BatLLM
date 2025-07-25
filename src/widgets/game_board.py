@@ -122,22 +122,18 @@ class GameBoardWidget(Widget):
 		
 			
 						
-	# mouse button down event handler    
+	# mouse button down event handler - it does nothing as of now.
 	def on_touch_down(self, touch):
 		"""Handles mouse click events on the game board."""
 		if self.collide_point(touch.x, touch.y):         
 			nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
-			
-			for bot in self.bots:
-				print ("-- " , bot.x)
-			
 			return True   
 				
 		return super().on_touch_down(touch)  
 
 
 
-	# mouse drag event handler
+	# mouse drag event handler - it does nothing as of now.
 	def on_touch_move(self, touch):
 		"""Handles mouse drag events on the game board."""
 		if self.collide_point(touch.x, touch.y):
@@ -149,13 +145,14 @@ class GameBoardWidget(Widget):
 
 
 
-	def find_id_in_parents(self, target_id):
+	def find_id_in_parents(self, target_id):  # TODO move to util class
 		parent = self.parent
 		while parent:
 			if hasattr(parent, 'ids') and target_id in parent.ids:
 				return parent.ids[target_id]
 			parent = parent.parent
 		return None
+
 
 
 	def add_text_to_llm_response_history(self, bot_id, text):
@@ -192,31 +189,50 @@ class GameBoardWidget(Widget):
 		if self.current_round is None:
 			self.current_round = 0
 
-		self.current_round += 1
-		
-   
-		print(f"Playing round {self.current_round}") # TODO count rounds
+		self.current_round += 1		
 
 		for b in self.bots:
 			self.add_text_to_llm_response_history(b.id, f"\nRound {self.current_round}.\n")
-	
 			b.ready_for_next_round = False  # need a new prompt for a new round
 
-
-		# shuffle bots for this round
+		# shuffle bots for this coming round
 		self.shuffled_bots = random.sample(self.bots, 2)
 		self.play_turn(0)
 		
 
+	def game_over(self):
+		"""Checks if the game is over."""
+  
+		for b in self.bots:
+			if b.health <= 0:
+				return True
+		if self.current_round >= config.get("game", "rounds"):
+			return True
+
+		return False
+
+
+
 	def play_turn(self, dt):
      
-		if not self.current_turn < config.get("game", "turns_per_round"):
+		if not self.current_turn < config.get("game", "turns_per_round"):  # round's over
+
+			round_res = "\n"
+			if (self.game_over()):
+				round_res += "Final Results:\n"
+				for b in self.bots:
+					round_res += f"Bot {b.id}'s health: {b.health}\n"
+     
+				popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+				
+			else:
+   
+				for b in self.bots:
+					round_res += f"Bot {b.id}'s health: {b.health}\n"				
 		
-			round_res = "b1 health: " + str(self.bots[0].health) + "\n" + \
-						"b2 health: " + str(self.bots[1].health)
-	
-			popup = Popup(title=f'Round {self.current_round} ended', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
-			popup.open()			
+				popup = Popup(title=f'Round {self.current_round} is Over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+				popup.open()	
+
 			return
 
 		title_label = self.find_id_in_parents("header_label")

@@ -1,23 +1,21 @@
 game:
-  bullet_damage: 10
-  independent_models: True
-  initial_health: 42
-  prompt_augmentation: False
-  shield_size: 35
-  shield_initial_state: True
-  total_rounds: 2
-  turns_per_round: 30
-  step_length: 0.02
   bot_diameter: 0.1
-
-  
+  bullet_damage: 10
+  independent_models: false
+  initial_health: 42
+  prompt_augmentation: false
+  shield_initial_state: true
+  shield_size: 35
+  step_length: 0.02
+  total_rounds: 2
+  total_turns: 5
+  turns_per_round: 30
+llm:
+  augmentation_header_file: assets/prompts/augmentation_header_1.txt
+  path: /api/generate
+  port_base: 5000
+  url: http://localhost
 ui:
   font_size: 16
-  primary_color: '#0b0b0b'
   frame_rate: 60
-  
-
-llm:
-  url: "http://localhost"
-  port_base: 5000
-  path: "/api/generate"
+  primary_color: '#0b0b0b'
