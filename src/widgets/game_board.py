@@ -10,11 +10,11 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from normalized_canvas import NormalizedCanvas
-from util import show_confirmation_dialog
+
 
 from app_config import config
 from bot import Bot
-
+from history_manager import HistoryManager
 
 
 
@@ -23,12 +23,13 @@ class GameBoardWidget(Widget):
 	bots = []
 	bulletTrace = []
 	bullet_alpha = 1
-	snd_shoot = None # TODO move to Bot class
-	snd_hit = None # TODO move to Bot class
+	snd_shoot = None # TODO move to Bot class, or better to a singleton SoundManager class
+	snd_hit = None # TODO move to Bot class, or better to a singleton SoundManager class
 	current_turn = None
 	current_round = None
 	shuffled_bots = None
 	games_started = None
+	history_manager = None
  
 	def __init__(self, **kwargs):
 		super(GameBoardWidget, self).__init__(**kwargs)
@@ -41,19 +42,23 @@ class GameBoardWidget(Widget):
 		self.bulletTrace = []  # Initialize bullet trace list
 		self.bullet_alpha = 1  # Initialize bullet alpha value		
 
-		self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav") # TODO move to Bot class
-		self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav") # TODO move to Bot class		
+		self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
+		self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav") 
 
 		self.current_turn = None
 		self.current_round = None		
 		self.shuffled_bots = None
 		self.games_started = 0
-  
+
+		self.history_manager = HistoryManager()  # Create the session history manager
+		# render loop
 		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
 
 
-	def start_new_game(self):
 
+
+
+	def start_new_game(self):
 		# reset values
 		self.current_turn = None
 		self.current_round = None		
@@ -70,14 +75,17 @@ class GameBoardWidget(Widget):
 
 		self.games_started += 1
 
+		self.history_manager.start_new_game(self))
+		
+
+
+	def save_session(self, filename):
+		self.history_manager.save_session(filename)
+		
 
 
 
-	def save_session(self):
-		print ("TODO")
-		pass
-
-			
+   
 	def on_kv_post(self, base_widget):
 		"""This method is called after the KV rules have been applied."""
 		super().on_kv_post(base_widget)
@@ -86,7 +94,6 @@ class GameBoardWidget(Widget):
 
 		
 		
-
 
 
 	def _keyboard_closed(self): # virtual keyboard closed handler
@@ -211,7 +218,7 @@ class GameBoardWidget(Widget):
 		if self.current_round is None:
 			self.current_round = 0
 
-		self.current_round += 1		
+		self.current_round += 1				
 
 		for b in self.bots:
 			self.add_text_to_llm_response_history(b.id, f"\nRound {self.current_round}.\n")
@@ -219,25 +226,28 @@ class GameBoardWidget(Widget):
 
 		# shuffle bots for this coming round
 		self.shuffled_bots = random.sample(self.bots, 2)
-		self.play_turn(0)
+
+		self.history_manager.start_new_round(self)	
 		
+		self.play_turn(0)
+		self.history_manager.end_turn(self)
+
+
 
 	def game_over(self):
 		"""Checks if the game is over."""
   
 		for b in self.bots:
-			if b.health <= 0:
+			if b.health <= 0:				
 				return True
-		if self.current_round >= config.get("game", "total_rounds"):
+		if self.current_round >= config.get("game", "total_rounds"):			
 			return True
 
 		return False
 
-
-
    
 		
-
+# self.history_manager.end_game(self)
 
 	def play_turn(self, dt):
      
@@ -257,15 +267,18 @@ class GameBoardWidget(Widget):
 					round_res += f"Bot {b.id}'s health: {b.health}\n\n"				
 		
 				popup = Popup(title=f'Round {self.current_round} is over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
-				popup.open()	
+				popup.open()
+
+			self.history_manager.end_round(self)
 
 			return
 
 		title_label = self.find_id_in_parents("header_label")
 
 		if title_label is not None:	
-			title_label.text = f"Round {self.current_round}.  Turn {self.current_turn + 1}."
-
+			title_label.text = f"Game {self.games_started}.   Round {self.current_round}.  Turn {self.current_turn + 1}."
+   
+		self.history_manager.start_turn(self)
 
 		for b in self.shuffled_bots:
 			b.ready_for_next_turn = False  
@@ -278,7 +291,8 @@ class GameBoardWidget(Widget):
 		bot.ready_for_next_turn = True
   		
 		if all(b.ready_for_next_turn for b in self.bots):      
-			self.current_turn += 1	
+			self.current_turn += 1
+			self.history_manager.end_turn(self)
 			Clock.schedule_once(self.play_turn, 0)
 			
 			
@@ -291,6 +305,9 @@ class GameBoardWidget(Widget):
 			if bot_instance.id == id:
 				return bot_instance
 		return None
+
+
+
 
 	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
 		"""Handles keyboard input for bot commands."""	
@@ -326,8 +343,7 @@ class GameBoardWidget(Widget):
 					if not bot.shield:
 						Clock.schedule_once(lambda dt: self.snd_shoot.play())
 
-					bullet = bot.shoot()                    
-						
+					bullet = bot.shoot()                    						
 
 					self.bullet_alpha = 1
 
@@ -338,7 +354,6 @@ class GameBoardWidget(Widget):
 						alive = False
 
 					while alive:
-
 						(alive, damaged_bot_id) = bullet.update(self.bots)
 
 						# only draw bulltes outside the shooting bot                        
@@ -346,16 +361,12 @@ class GameBoardWidget(Widget):
 						if dist *.97 > bot.diameter / 2:
 							self.bulletTrace.append((bullet.x, bullet.y))
 					
-					if damaged_bot_id is not None:
-						print(f"Bot {damaged_bot_id} was hit by a bullet from Bot {bot.id}!")
-
-
-						Clock.schedule_once(lambda dt: self.snd_hit.play())
-						
+					if damaged_bot_id is not None:						
+						Clock.schedule_once(lambda dt: self.snd_hit.play())						
 						self.get_bot_by_id(damaged_bot_id).damage()
 						
 					else:
-						print(f"Bullet from Bot {bot.id} did not hit any bot.")
+						pass
 												   
 			
 			return True

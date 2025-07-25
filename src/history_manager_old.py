@@ -2,6 +2,7 @@ import json
 from dataclasses import dataclass, field, asdict
 from typing import List, Dict
 from datetime import datetime
+from app_config import config
 
 @dataclass
 class TurnRecord:
@@ -78,7 +79,15 @@ class HistoryManager:
             self._current_round = None
             self._current_game_config = {}
 
+
+
+
+    # Save the session history to a file
     def save_session(self, filepath: str):
+
+        filepath = config.get("get", "saved_sessions_folder") + filepath
+         
+        
         self.session_end = datetime.now().isoformat()
         session_data = {
             "session_start": self.session_start,

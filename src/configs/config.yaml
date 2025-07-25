@@ -19,3 +19,5 @@ ui:
   frame_rate: 60
   primary_color: '#0b0b0b'
   title : BatLLM
+data:
+  saved_sessions_folder: saved_sessions

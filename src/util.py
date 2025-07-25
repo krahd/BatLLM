@@ -51,6 +51,7 @@ def show_filename_dialog(on_confirm, on_cancel=None, title="Save As", default_fi
 
     input_field = TextInput(hint_text="Enter filename", multiline = False)
     input_field.text = default_filename
+    input_field.font_size = 40
     layout.add_widget(Label(text="Please enter a filename:"))
     layout.add_widget(input_field)
 
@@ -61,7 +62,7 @@ def show_filename_dialog(on_confirm, on_cancel=None, title="Save As", default_fi
     popup = Popup(title=title, content=layout, size_hint=(None, None), size=(800, 400), auto_dismiss=False)
 
     def confirm_action(*args):
-        filename = input_field.text.strip()
+        filename = input_field.text.strip()        
         if filename:
             popup.dismiss()
             on_confirm(filename)
@@ -78,3 +79,5 @@ def show_filename_dialog(on_confirm, on_cancel=None, title="Save As", default_fi
 
     layout.add_widget(btn_layout)
     popup.open()
+
+

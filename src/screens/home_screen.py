@@ -7,7 +7,7 @@ from bot import Bot
 from kivy.clock import Clock
 from widgets.game_board import GameBoardWidget
 from app_config import config
-from util import show_confirmation_dialog
+from util import show_confirmation_dialog, show_filename_dialog
 
 class HomeScreen(Screen):    
 
@@ -21,9 +21,27 @@ class HomeScreen(Screen):
         
     
     def save_session (self):
-         show_confirmation_dialog("Save Session",
+        def on_saving_confirmed():
+            print ("here")
+            show_filename_dialog(on_confirm=on_filename_confirmed)
+
+        def on_filename_confirmed(filename):
+            if filename:
+                self.ids.game_board.save_session(filename)                
+            else:
+                pass
+
+        def on_saving_cancelled():
+            pass
+
+        
+        
+        show_confirmation_dialog("Save Session",
                                  "Are you sure you want to save the session?",
-                                 self.ids.game_board.save_session())
+                                    on_saving_confirmed, on_saving_cancelled)
+
+        
+                                 
 
         
     def start_new_game(self):
