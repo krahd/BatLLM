@@ -158,18 +158,20 @@ class GameBoardWidget(Widget):
 		return None
 
 
-
-
-	def add_llm_response_to_history(self, bot_id, command):
-		"""Adds a command to the output history box for the specified bot."""  
-
-        #TODO move this function to the HomeScreen class	
+	def add_text_to_llm_response_history(self, bot_id, text):
+		 #TODO move this function to the HomeScreen class?
 		box = self.find_id_in_parents(f"output_history_player_{bot_id}")
    
 		if box is not None:
-			box.text += f"{len(box.text.splitlines()) + 1}. {command}\n"
+			box.text += text
 		else:
 			print(f"Could not find output history box for bot_id: {bot_id}")
+
+	def add_llm_response_to_history(self, bot_id, command):
+		"""Adds a command to the output history box for the specified bot."""  
+		text = f"   {self.current_turn}. {command}\n" 
+		self.add_text_to_llm_response_history(bot_id, text)
+        
 
 
 
@@ -191,10 +193,13 @@ class GameBoardWidget(Widget):
 			self.current_round = 0
 
 		self.current_round += 1
+		
    
 		print(f"Playing round {self.current_round}") # TODO count rounds
 
 		for b in self.bots:
+			self.add_text_to_llm_response_history(b.id, f"\nRound {self.current_round}.\n")
+	
 			b.ready_for_next_round = False  # need a new prompt for a new round
 
 
