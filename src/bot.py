@@ -27,6 +27,7 @@ class Bot (Widget):
     prompt_history = None
     prompt_history_index = None
     ready_for_next_round = None
+    ready_for_next_turn = None
     agmenting_prompt = None
     
     llm_endpoint = None
@@ -45,6 +46,7 @@ class Bot (Widget):
         self.prompt_history_index = 0
         self.board_widget = board_widget
         self.ready_for_next_round = False
+        self.ready_for_next_turn = False
         self.agmenting_prompt = config.get("game", "augment_prompts")        
         
         if id == 1:
@@ -193,8 +195,7 @@ class Bot (Widget):
 
     def prepare_prompt_submission(self, new_prompt):
         """Gets ready to execute"""
-        self.append_prompt_to_history(new_prompt)
-        self.ready_for_next_round = True
+        self.append_prompt_to_history(new_prompt)        
                 
 
 
@@ -297,7 +298,7 @@ Remember, your task is to receive the game state and to output a valid command, 
                      
         command_ok = True
         cmd = result.get("response", "").strip()
-        print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
+        # print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
             
         # ********* Processing the response *********
         try: 
@@ -341,17 +342,15 @@ Remember, your task is to receive the game state and to output a valid command, 
         except Exception as e:
             command_ok = False
             print (f"exception: {e}") 
-
         
         if not command_ok:
             #TODO play a subbtle sound if command_ok is False
             print(f"bot {self.id} - wrong command: {cmd}")
-
-                  
+       
         self.board_widget.add_llm_response_to_history(self.id, command)
-                
-        self.p.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id
-        print ("out")
+
+        self.ready_for_next_turn = True
+        self.board_widget.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id        
 
 
 

@@ -186,6 +186,12 @@ class GameBoardWidget(Widget):
 
 	def play_round(self):
 		self.current_turn = 0
+  
+		if self.current_round is None:
+			self.current_round = 0
+
+		self.current_round += 1
+   
 		print(f"Playing round {self.current_round}") # TODO count rounds
 
 		for b in self.bots:
@@ -198,6 +204,7 @@ class GameBoardWidget(Widget):
 		
 
 	def play_turn(self, dt):
+     
 		if not self.current_turn < config.get("game", "turns_per_round"):
 		
 			round_res = "b1 health: " + str(self.bots[0].health) + "\n" + \
@@ -207,21 +214,26 @@ class GameBoardWidget(Widget):
 			popup.open()			
 			return
 
-		print(f"Playing turn {self.current_turn}...")
-		for b in self.shuffled_bots:     
+		title_label = self.find_id_in_parents("header_label")
+
+		if title_label is not None:	
+			title_label.text = f"Round {self.current_round}.  Turn {self.current_turn + 1}."
+
+
+		for b in self.shuffled_bots:
+			b.ready_for_next_turn = False  
 			b.submit_prompt_to_llm()
 		
 		
 
 	def on_bot_llm_interaction_complete(self, bot):
 		"""Callback when a bot's LLM interaction is complete."""
-  
-		print(f"Bot {bot.id} interaction complete.")
-
-		self.current_turn = (self.current_turn + 1) % len(self.bots) # ++ every 2
-  
-		Clock.schedule_once(self.play_turn, 0)
-      
+		bot.ready_for_next_turn = True
+  		
+		if all(b.ready_for_next_turn for b in self.bots):      
+			self.current_turn += 1	
+			Clock.schedule_once(self.play_turn, 0)
+			
 			
       				
 

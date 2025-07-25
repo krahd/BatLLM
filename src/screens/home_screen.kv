@@ -109,7 +109,7 @@
                         on_press: root.rewind_prompt_history(1)
                     Button:
                         text: "copy"
-                        on_press: root.copy_prompt_history(1)
+                        on_press: root.copy_prompt_history_selected_text(1)
                     Button:
                         text: ">"
                         on_press: root.forward_prompt_history(1)
@@ -208,7 +208,7 @@
                         on_press: root.rewind_prompt_history(2)
                     Button:
                         text: "copy"
-                        on_press: root.copy_prompt_history(2)
+                        on_press: root.copy_prompt_history_selected_text(2)
                     Button:
                         text: ">"
                         on_press: root.forward_prompt_history(2)
@@ -312,7 +312,7 @@
                         
                         TextInput:
                             padding: 35, 20
-                            id: output_history_player_2
+                            id: output_history_player_1
                             text: ""
                             multiline: True
                             readonly: False
@@ -359,8 +359,7 @@
                         Label:
                             text: "Commands"
                             bold: 1
-                            halign: "left"
-                            
+                            halign: "left"                            
                             color: 0, 0, 0, 1
                             size_hint_y: None
                             size_hint_x: None
@@ -417,8 +416,7 @@
                 BoxLayout:  # Title
                     orientation: "horizontal"             
                     height: "48dp"
-                    size_hint_y: None
-                  
+                    size_hint_y: None                  
                     size_hint_x: 1          
                     padding: 340, 34
                     canvas.before:
@@ -430,9 +428,8 @@
 
                     Label:
                         font_size: "14sp"
-                        
-                        text: "Round #23.  Turn #3."
-                        
+                        id: header_label
+                        text: ""                        
                         bold: 1
                         halign: "left"
                         color: 0, 0, 0, 1
