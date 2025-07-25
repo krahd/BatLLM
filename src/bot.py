@@ -26,7 +26,7 @@ class Bot (Widget):
 
     prompt_history = None
     prompt_history_index = None
-    ready_to_submit_prompt_to_llm = None
+    ready_for_next_round = None
     agmenting_prompt = None
     
     llm_endpoint = None
@@ -44,8 +44,8 @@ class Bot (Widget):
         self.prompt_history = [] 
         self.prompt_history_index = 0
         self.board_widget = board_widget
-        self.ready_to_submit_prompt_to_llm = False
-        self.agmenting_prompt = config.get("game", "augment_prompts")
+        self.ready_for_next_round = False
+        self.agmenting_prompt = config.get("game", "augment_prompts")        
         
         if id == 1:
             self.colour = (.8, .88, 1, .85)                        
@@ -150,7 +150,7 @@ class Bot (Widget):
     def append_prompt_to_history(self, new_prompt):
         self.prompt_history.append(new_prompt)
         self.prompt_history_index = len(self.prompt_history) - 1        
-        self.ready_to_submit_prompt_to_llm = True
+        self.ready_for_next_round = True
 
         
     def rewind_prompt_history(self):
@@ -194,11 +194,11 @@ class Bot (Widget):
     def prepare_prompt_submission(self, new_prompt):
         """Gets ready to execute"""
         self.append_prompt_to_history(new_prompt)
-        self.ready_to_submit_prompt_to_llm = True
+        self.ready_for_next_round = True
                 
 
 
-    async def submit_prompt_to_llm(self):    
+    def submit_prompt_to_llm(self):    
         
         headers = {"Content-Type": "application/json"}
         
@@ -269,26 +269,27 @@ Remember, your task is to receive the game state and to output a valid command, 
             data["prompt"] += "User prompt: "            
 
         data["prompt"] += self.get_current_prompt() + "\n"
-
-        # ********* Sending the prompt to the LLM *********
-        # Initiate a non-blocking POST request using Kivy UrlRequest
+        # ********* Sending the prompt to the LLM not blockingly *********
+        
         UrlRequest(
-            url=self.llm_url,
-            req_body=data, # TODO check if json.dumps(data) is needed
-            req_headers=headers, #TODO move to a global variable
-            on_success=self._on_llm_response,
-            on_failure=self._on_llm_error,   # handles HTTP errors (4xx, 5xx)
-            on_error=self._on_llm_error,     # handles other errors (no connection, etc.)
-            timeout=30,
-            method='POST'
+            url = self.llm_endpoint,
+            req_body = json.dumps(data), 
+            req_headers = headers, #TODO move to a global variable
+            on_success = self._on_llm_response,
+            on_failure = self._on_llm_error,   # HTTP errors 4xx, 5xx
+            on_error = self._on_llm_error,     # other errors (no connection, etc.)
+            timeout = 30,
+            method = 'POST'
         )
 
     
     def _on_llm_error(self, request, error):
         """Callback for errors or HTTP failures."""
-        print(f"[{self.name}] LLM request failed: {error}")
+        print(f"[{self.id}] LLM request failed: {error}")
+        
         #TODO play a subbtle sound if command_ok is False        
-        self.gameboard.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id
+        self.board_widget.on_bot_llm_interaction_complete(self)  
+        #TODO perhaps just return self.id, or nothing even
         
 
                  
@@ -348,8 +349,9 @@ Remember, your task is to receive the game state and to output a valid command, 
 
                   
         self.board_widget.add_llm_response_to_history(self.id, command)
-        self.ready_to_submit_prompt_to_llm = False # we are not ready for a new prompt yet
-        self.gameboard.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id
+                
+        self.p.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id
+        print ("out")
 
 
 

@@ -14,7 +14,7 @@ from normalized_canvas import NormalizedCanvas
 from app_config import config
 from bot import Bot
 
-from widgets.game_board_ux import _on_keyboard_down
+
 
 
 class GameBoardWidget(Widget):
@@ -32,7 +32,7 @@ class GameBoardWidget(Widget):
 		super(GameBoardWidget, self).__init__(**kwargs)
 		
 		self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
-		self._keyboard.bind(on_key_down = _on_keyboard_down)
+		self._keyboard.bind(on_key_down = self._on_keyboard_down)
 		
 		self.bind(size=self._redraw, pos=self._redraw)
 
@@ -61,6 +61,8 @@ class GameBoardWidget(Widget):
 
 		# Create two bot instances with reference to this GameBoardWidget
 		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
+
+		
 		
 
 
@@ -177,7 +179,7 @@ class GameBoardWidget(Widget):
 		bot = self.get_bot_by_id(bot_id)
 		bot.prepare_prompt_submission(new_prompt)
 
-		if all(b.ready_to_submit_prompt_to_llm for b in self.bots):
+		if all(b.ready_for_next_round for b in self.bots):
 			self.play_round()
 
 
@@ -186,12 +188,16 @@ class GameBoardWidget(Widget):
 		self.current_turn = 0
 		print(f"Playing round {self.current_round}") # TODO count rounds
 
+		for b in self.bots:
+			b.ready_for_next_round = False  # need a new prompt for a new round
+
+
 		# shuffle bots for this round
 		self.shuffled_bots = random.sample(self.bots, 2)
-		self.play_turn()
+		self.play_turn(0)
 		
 
-	def play_turn(self):
+	def play_turn(self, dt):
 		if not self.current_turn < config.get("game", "turns_per_round"):
 		
 			round_res = "b1 health: " + str(self.bots[0].health) + "\n" + \
@@ -202,7 +208,7 @@ class GameBoardWidget(Widget):
 			return
 
 		print(f"Playing turn {self.current_turn}...")
-		for b in self.shuffled_bots:            
+		for b in self.shuffled_bots:     
 			b.submit_prompt_to_llm()
 		
 		
@@ -212,7 +218,7 @@ class GameBoardWidget(Widget):
   
 		print(f"Bot {bot.id} interaction complete.")
 
-		self.turn_index = (self.turn_index + 1) % len(self.bots) # ++ every 2
+		self.current_turn = (self.current_turn + 1) % len(self.bots) # ++ every 2
   
 		Clock.schedule_once(self.play_turn, 0)
       
@@ -226,3 +232,71 @@ class GameBoardWidget(Widget):
 			if bot_instance.id == id:
 				return bot_instance
 		return None
+
+	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+		"""Handles keyboard input for bot commands."""	
+
+		if modifiers and 'shift' in modifiers:
+			bot_id = 2
+		else:
+			bot_id = 1
+
+		bot = self.get_bot_by_id(bot_id)
+
+
+		if keycode[1] == 'escape':            
+				keyboard.release()
+
+		else:
+			match keycode[1]:
+				
+				case 'm':
+					bot.move()
+				  
+				case 'r':
+					bot.rotate(.2)
+
+				case 't':
+					bot.rotate(-.2)
+				  
+				case 's':
+					bot.toggle_shield()
+
+				case 'spacebar':           
+					# TODO move bot sounds inside the bot class
+					if not bot.shield:
+						Clock.schedule_once(lambda dt: self.snd_shoot.play())
+
+					bullet = bot.shoot()                    
+						
+
+					self.bullet_alpha = 1
+
+					alive = True                    
+					damaged_bot_id = None
+
+					if bullet is None:
+						alive = False
+
+					while alive:
+
+						(alive, damaged_bot_id) = bullet.update(self.bots)
+
+						# only draw bulltes outside the shooting bot                        
+						dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
+						if dist *.97 > bot.diameter / 2:
+							self.bulletTrace.append((bullet.x, bullet.y))
+					
+					if damaged_bot_id is not None:
+						print(f"Bot {damaged_bot_id} was hit by a bullet from Bot {bot.id}!")
+
+
+						Clock.schedule_once(lambda dt: self.snd_hit.play())
+						
+						self.get_bot_by_id(damaged_bot_id).damage()
+						
+					else:
+						print(f"Bullet from Bot {bot.id} did not hit any bot.")
+												   
+			
+			return True
