@@ -10,7 +10,7 @@ import requests
 import json
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, ObjectProperty
-
+from app_config import config
 
 
 class Bot (Widget):
@@ -24,7 +24,8 @@ class Bot (Widget):
 
     prompt_history = None
     prompt_history_index = None
-    prompt_submitted = None
+    ready_to_submit_prompt_to_llm = None
+    agmenting_prompt = None
     
     llm_endpoint = None
     shield_range = None
@@ -32,9 +33,41 @@ class Bot (Widget):
     diameter = None
     colour = None
 
-    
+        
 
-            
+    def __init__(self, id, board_widget, **kwargs):
+        super().__init__(**kwargs)
+        
+        self.id = id
+        self.prompt_history = [] 
+        self.prompt_history_index = 0
+        self.board_widget = board_widget
+        self.ready_to_submit_prompt_to_llm = False
+        self.agmenting_prompt = config.get("game", "augment_prompts")
+        
+        if id == 1:
+            self.colour = (.8, .88, 1, .85)                        
+        elif id:
+            self.colour = (.8, 65, .9, .85) 
+        else:
+            self.colour = (0, 1, 0, 1)
+
+        port = f"{config.get("llm", "port_base") + id}"  # id=1 -> port=5001
+        self.llm_endpoint = config.get("llm", "url") + ":" + port + config.get("llm", "path")
+        
+        self.diameter = config.get("game", "bot_diameter")  
+        self.shield = config.get("game", "shield_initial_state") 
+        self.shield_range = config.get("game", "shield_size") 
+        self.health = config.get("game", "initial_health")
+        self.step = config.get("game", "step_length") 
+
+        self.x = random.uniform(0, 1) 
+        self.y = random.uniform(0, 1)
+        self.rot = random.uniform(0, 2 * math.pi)   
+        
+
+
+
     def render(self):
         r = self.diameter / 2
         d = self.diameter
@@ -46,12 +79,10 @@ class Bot (Widget):
         
         Rotate(math.degrees(self.rot), 0, 0, 1)
 
-        # fill
-        Color(*self.colour)
+        Color(*self.colour) # fill
         Ellipse(pos=(-r, -r), size=(d, d))
-        Color(0, 0, 0, .7)
 
-        # border
+        Color(0, 0, 0, .7) # outline
         Line (ellipse = (-r, -r, d, d), width=0.002)
 
         # pointing direction
@@ -93,43 +124,8 @@ class Bot (Widget):
 
         PopMatrix()
 
-        
 
 
-    def __init__(self, id, board_widget, **kwargs):
-        super().__init__(**kwargs)
-        
-        self.diameter = 0.1 # TODO get from config
-                
-        self.id = id
-        self.prompt_history = [] 
-        self.prompt_history_index = 0
-        self.board_widget = board_widget
-
-        
-        
-        if id == 1:
-            self.colour = (.8, .88, 1, .85) # TODO get from config
-            port = "5001"
-           
-        else:
-            self.colour = (.8, 65, .9, .85) # TODO get from config
-            port = "5002"
-
-
-        self.llm_endpoint = "http://localhost:" + port + "/api/generate"
-        
-        self.x = random.uniform(0, 1) 
-        self.y = random.uniform(0, 1)
-        self.rot = random.uniform(0, 2 * math.pi)        
-        
-        self.shield = True # TODO get from config
-        self.shield_range = 45 # TODO get from config
-        self.health = 100 # TODO get from config      
-        self.step = 0.02 # TODO get from config
-
-        self.prompt_submitted = False
-        
 
     # takes a step
     def move(self):        
@@ -151,18 +147,14 @@ class Bot (Widget):
 
 
     # adds the prompt to the history    
-    def submit_prompt(self, new_prompt):
+    def append_prompt_to_history(self, new_prompt):
         self.prompt_history.append(new_prompt)
         self.prompt_history_index = len(self.prompt_history) - 1        
-        self.prompt_submitted = True
+        self.ready_to_submit_prompt_to_llm = True
 
          
             
 
-
-    # called when the round ends, sets the prompt submitted flag to False
-    def end_round(self):
-        self.prompt_submitted = False
 
 
 
@@ -182,7 +174,7 @@ class Bot (Widget):
 
 
 
-    def get_current_prompt_history(self):
+    def get_current_prompt_from_history(self):
         res = ""
         try:
             res = self.prompt_history[self.prompt_history_index]
@@ -190,46 +182,34 @@ class Bot (Widget):
             res = ""
         
         return res
-
-
 
     def get_current_prompt(self):
         """Returns the current prompt."""
-        return self.get_current_prompt_history()    
+        return self.get_current_prompt_from_history()    
 
-    
-    
-    def copy_prompt_history(self):
-        """Copies the current prompt history to the clipboard."""                
-        try:
-            self.prompt_history[self.prompt_history_index]
-        except Exception as e:
-            print(f"Error accessing prompt history: {e}")
-        
-
-        
     def get_prompt(self):
-        res = ""
-        try:
-            res = self.prompt_history[self.prompt_history_index]
-        except (IndexError, TypeError):
-            res = ""
-        return res
+        return self.get_current_prompt_from_history()
+    
+    
+
+    def augmenting_prompt(self, augmenting):
+        """Controls whether the prompt is augmented with additional information."""
+        self.agmenting_prompt = augmenting
+                
+
+    def prepare_prompt_submission(self, new_prompt):
+        """Gets ready to execute"""
+        self.append_prompt_to_history(new_prompt)
+        self.ready_to_submit_prompt_to_llm = True
+                
 
 
-    def augment_prompt(self, augment):
-        """Augments the prompt with additional information if augment is True."""
-        self.board_widget.augment_prompt = augment
-        if augment:
-            print("Prompt augmentation enabled.")
-        else:
-            print("Prompt augmentation disabled.")
-
-
-    def execute_prompt_in_llm(self):        
-        port = 5000 + self.id  # e.g., id=1 => port=5001
-        url = f"http://localhost:{port}/api/generate"
+    def submit_prompt_to_llm(self):    
+        """Executes the prompt in the LLM."""
+        port = 5000 + self.id  # e.g., id=1 => port=5001. #TODO get from config
+        url = f"http://localhost:{port}/api/generate" #TODO get from config
         headers = {"Content-Type": "application/json"}
+        
         data = {
             "model": "llama3.2:latest",
             "prompt": self.get_current_prompt(),
@@ -237,7 +217,7 @@ class Bot (Widget):
         }
 
         # if so chosen we augment the prompt, kind of a RAG
-        if self.board_widget.augment_prompt: #TODO move this text to a text file
+        if config.get("game", "augment_prompts"): #TODO move this text to a text file or to config
             data["prompt"] += """You are an expert gamer. Your task is to control a bot in a videogame called BatLLM, a two-player battle game where an LLM like you controls a bot. You receive information about the game state and a prompt written by the human player that guides your behaviours.
 
 We refer to the human players as "player", to you as "llama", and to the in-game battle bot as "bot". We refer to the environment where the bots run as "world". The world holds the game state, receives commands from the llama, executes them and updates the game state. The prompt given to the llama is a combination of the game status and the prompt written by the player in charge of the bot.
@@ -281,20 +261,20 @@ Before each round starts, the players enter their prompts.
 
 Remember, your task is to receive the game state and to output a valid command, using the user's prompt as guideline."""
 
-        data["prompt"] += "\n\n" + "World state:\n"
-        data["prompt"] += f"Self.x: {self.x}, Self.y: {self.y}\n"
-        data["prompt"] += f"Self.rot: {math.degrees(self.rot)}\n"
-        data["prompt"] += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
-        data["prompt"] += f"Self.health: {self.health}\n"
-        data["prompt"] += f"Opponent.x: {self.board_widget.get_bot_by_id(3 - self.id).x}, Opponent.y: {self.board_widget.get_bot_by_id(3 - self.id).y}\n"
-        data["prompt"] += f"Opponent.rot: {math.degrees(self.board_widget.get_bot_by_id(3 - self.id).rot)}\n"
-        data["prompt"] += f"Opponent.shield: {'ON' if self.board_widget.get_bot_by_id(3 - self.id).shield else 'OFF'}\n"
-        data["prompt"] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
-        data["prompt"] += f"User prompt: {self.get_current_prompt()}\n"
+            data["prompt"] += "\n\n" + "World state:\n"
+            data["prompt"] += f"Self.x: {self.x}, Self.y: {self.y}\n"
+            data["prompt"] += f"Self.rot: {math.degrees(self.rot)}\n"
+            data["prompt"] += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
+            data["prompt"] += f"Self.health: {self.health}\n"
+            data["prompt"] += f"Opponent.x: {self.board_widget.get_bot_by_id(3 - self.id).x}, Opponent.y: {self.board_widget.get_bot_by_id(3 - self.id).y}\n"
+            data["prompt"] += f"Opponent.rot: {math.degrees(self.board_widget.get_bot_by_id(3 - self.id).rot)}\n"
+            data["prompt"] += f"Opponent.shield: {'ON' if self.board_widget.get_bot_by_id(3 - self.id).shield else 'OFF'}\n"
+            data["prompt"] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
+            data["prompt"] += f"User prompt: {self.get_current_prompt()}\n"
 
-        print("-" * 100)
-        print (data["prompt"])
-        print("-" * 100)
+            print("-" * 100)
+            print (data["prompt"])
+            print("-" * 100)
 
 
 
@@ -312,10 +292,6 @@ Remember, your task is to receive the game state and to output a valid command, 
                
         command_ok = True
         
-
-
-
-
         # ********* Processing the response *********
         try: 
             if isinstance(cmd, str):
@@ -327,7 +303,8 @@ Remember, your task is to receive the game state and to output a valid command, 
                 raise ValueError(f"Unexpected command format: {cmd}")
 
             match command[0]:
-                case "M":
+                
+                case "M":                    
                     self.move()
                                                        
                 case "C":
@@ -339,7 +316,7 @@ Remember, your task is to receive the game state and to output a valid command, 
                     self.rotate(-angle)
 
                 case "B":                    
-                    return self.shoot() # TODO handle bullet shooting from command
+                    return self.shoot() 
                     
                 case "S":
                     if len(command) == 1:                        
@@ -357,18 +334,15 @@ Remember, your task is to receive the game state and to output a valid command, 
             command_ok = False
             print(f"bot {self.id} - wrong command: {cmd} || exception: ({e})") 
 
-        if command_ok:
-            self.board_widget.add_command_to_history(self.id, command)
+        
+        if not command_ok:
+            pass #TODO play a subbtle sound if command_ok is False
+        
+        self.board_widget.add_llm_response_to_history(self.id, command)
 
-        self.prompt_submitted = False # reset the prompt submitted flag after execution, when all bots have this flag in true then a round starts
-        ''' # TODO fix render the board after each command 
+        self.ready_to_submit_prompt_to_llm = False # reset the prompt submitted flag after execution, when all bots have this flag in true then a round starts
+       
 
-        self.canvas.ask_update()
-        self.board_widget.canvas.ask_update()
-        Clock.schedule_once(lambda dt: self.board_widget.render())
-        # Reset the prompt submitted flag after execution
-        self.board_widget.render()
-'''
 
 
     def damage(self):

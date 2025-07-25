@@ -24,7 +24,8 @@ DEFAULTS = {
     },
     "ui": {
         "primary_color": "#ffffff",
-        "font_size": 14
+        "font_size": 14,
+        "frame_rate": 60
     }
 }
 
@@ -66,13 +67,3 @@ class AppConfig:
 # Singleton instance
 config = AppConfig()
 
-# Convenient top-level access (optional)
-TOTAL_ROUNDS = config.get("game", "total_rounds")
-TOTAL_TURNS = config.get("game", "total_turns")
-INDEPENDENT_MODELS = config.get("game", "independent_models")
-PROMPT_AUGMENTATION = config.get("game", "prompt_augmentation")
-INITIAL_HEALTH = config.get("game", "initial_health")
-BULLET_DAMAGE = config.get("game", "bullet_damage")
-SHIELD_SIZE = config.get("game", "shield_size")
-PRIMARY_COLOR = config.get("ui", "primary_color")
-FONT_SIZE = config.get("ui", "font_size")

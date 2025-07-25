@@ -1,11 +1,23 @@
 game:
   bullet_damage: 10
-  independent_models: true
+  independent_models: True
   initial_health: 42
-  prompt_augmentation: false
+  prompt_augmentation: False
   shield_size: 35
-  total_rounds: 5
-  total_turns: 13
+  shield_initial_state: True
+  total_rounds: 2
+  turns_per_round: 30
+  step_length: 0.02
+  bot_diameter: 0.1
+
+  
 ui:
   font_size: 16
   primary_color: '#0b0b0b'
+  frame_rate: 60
+  
+
+llm:
+  url: "http://localhost"
+  port_base: 5000
+  path: "/api/generate"

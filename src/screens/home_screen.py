@@ -1,48 +1,23 @@
-import random
+
 from pathlib import Path
 
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.screenmanager import Screen
 
 from bot import Bot
-from screens.settings_screen import SettingsScreen
+from kivy.clock import Clock
 from widgets.game_board import GameBoardWidget
 from app_config import config
 
 
-class HomeScreen(Screen):
-    bots = []
-
+class HomeScreen(Screen):    
     def __init__(self, **kwargs):        
         super(HomeScreen, self).__init__(**kwargs)
         
         
-        
-    def get_total_rounds_from_settings(self):
-        """
-        Gets the value of total_rounds from the SettingsScreen instance
-        in the same manager as this screen.
-        """
-        try:
-            # Get the screen manager (self.manager is set by Kivy)            
-            sm = self.manager if self.manager is not None else self.get_screen_manager()
-                
-            settings_screen = sm.get_screen("settings")
-            
-            return settings_screen.total_rounds
-        
-        except Exception as e:
-            print("Exception type:", type(e).__name__)
-            print("Exception message:", str(e))
-            print("Could not get total_rounds from SettingsScreen, returning default")
-
-
-        
     
     def save_game (self):
         print ("Saving game...(TODO)")
-        # TODO implement saving game state
+        # TODO save the game history for future processing
         
 
 
@@ -51,12 +26,13 @@ class HomeScreen(Screen):
 
 
 
-    def on_kv_post(self, base_widget):        
+#    def on_kv_post(self, base_widget):     
+#        """This method is called after the KV rules have been applied."""   
         
-        gbw = self.ids.game_board
-        self.bots = [Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
-        gbw.add_bots(self.bots)
-        gbw.render()
+#        gbw = self.ids.game_board
+#        self.bots = [Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
+#        gbw.set_bots(self.bots)
+#        gbw.render()
 
         
        
@@ -66,23 +42,23 @@ class HomeScreen(Screen):
         try:
             with open(prompt_path, "r", encoding="utf-8") as f:
                 new_prompt = f.read()
-            self.set_prompt_text(player_id, new_prompt)
+            self.set_prompt_input_text(player_id, new_prompt)
             
         except FileNotFoundError:
             print ("Prompt file not found:", prompt_path)
 
 
 
-    def get_bot_by_id(self, id):
+#    def get_bot_by_id(self, id):
         """Returns the bot instance with the specified ID."""
-        for bot_instance in self.bots:
-            if bot_instance.id == id:
-                return bot_instance
-        return None
+#        for bot_instance in self.bots:
+#            if bot_instance.id == id:
+#                return bot_instance
+#        return None
 
 
 
-    def get_prompt_text(self, id):
+    def get_prompt_input_text(self, id):
         """Returns the text from the TextInput for the specified bot ID."""
         input_id = f"prompt_player_{id}"
         text_input = self.ids.get(input_id)
@@ -95,7 +71,7 @@ class HomeScreen(Screen):
 
 
 
-    def set_prompt_text(self, id, text):
+    def set_prompt_input_text(self, id, text):
         """Sets the text of the TextInput for the specified bot ID."""
         input_id = f"prompt_player_{id}"
         text_input = self.ids.get(input_id)
@@ -106,10 +82,11 @@ class HomeScreen(Screen):
 
 
             
-    def get_prompt_history_text(self, id):
+    def get_prompt_history_selected_text(self, id):
         """Returns the text from the TextInput for the prompt history of the specified bot ID."""
         input_id = f"prompt_history_player_{id}"
         text_input = self.ids.get(input_id)
+        
         if text_input:
             return text_input.text
         else:
@@ -118,7 +95,7 @@ class HomeScreen(Screen):
 
 
 
-    def set_prompt_history_text(self, id, text):
+    def prompt_history_add_text(self, id, text):
         """Sets the text of the TextInput for the prompt history of the specified bot ID."""
         input_id = f"prompt_history_player_{id}"
         text_input = self.ids.get(input_id)
@@ -133,7 +110,7 @@ class HomeScreen(Screen):
         """Rewinds the prompt history for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         b.rewind_prompt_history()    
-        self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
+        self.prompt_history_add_text (bot_id, b.get_current_prompt_history())
         
 
         
@@ -141,61 +118,76 @@ class HomeScreen(Screen):
         """Forwards the prompt history for the specified bot ID."""
         b = self.get_bot_by_id(bot_id)
         b.forward_prompt_history()        
-        self.set_prompt_history_text (bot_id, b.get_current_prompt_history())
+        self.prompt_history_add_text (bot_id, b.get_current_prompt_history())
         
 
 
-    def copy_prompt_history(self, bot_id):
-        """Copies the current prompt history to the clipboard for the specified bot ID."""
-        b = self.get_bot_by_id(bot_id)
-        b.copy_prompt_history()   
-        self.set_prompt_text(bot_id, b.get_prompt())
+    def copy_prompt_history_selected_text(self, bot_id):
+        """Copies the selected prompt in the history to the prompt input field."""
+        new_prompt = self.get_prompt_history_selected_text(bot_id)
+        self.set_prompt_input_text(bot_id, new_prompt)
         
         
     # tells the bot to submit the prompt to the LLM
     def submit_prompt(self, bot_id):
         """Submits the prompt for the specified bot ID."""
-        b = self.get_bot_by_id(bot_id)
-        new_prompt = self.get_prompt_text(bot_id)
-
-        # Toggle the augment_promts flag in the bot
-        self.get_bot_by_id(bot_id).augment_prompt(self.augment_prompts)
         
-        b.submit_prompt (new_prompt)
-        self.set_prompt_history_text(bot_id, b.get_current_prompt_history())
+        new_prompt = self.get_prompt_input_text(bot_id)
+        self.prompt_history_add_text(bot_id, new_prompt)
+        self.set_prompt_input_text(bot_id, "") # Clear the input field 
+
+        # tell the board to submit the prompt for this bot_id
+        gbw = self.ids.game_board
+        gbw.submit_prompt (bot_id, new_prompt)
+        
+        
            
-        # Clear the input field 
-        self.set_prompt_text(bot_id, "")
-
-        if all(b.prompt_submitted for b in self.bots):
-            self.play_round()
-
+        
+        
+      
 
     # game logic for playing a round
-    def play_round(self):
+    #def play_round(self):
         """Plays a round of the game with the current bot commands."""
-        print("Playing round...") # TODO cound rounds
-        bs = random.sample(self.bots, 2)
+    #    print("Playing round...") # TODO cound rounds
+    #    bs = random.sample(self.bots, 2)
 
-        turn = 1
+    #    turn = 1
+
        
-        # Loop through the turns of the round        
+        # Loop through the turns of the round
 
-        for turn in range(1, config.get("game", "total_turns")): 
+        
+
+    #    for turn in range(1, config.get("game", "total_turns")): 
 
             #TODO update header with turn info
                         
             # Get the commands from both bots
-            for b in bs:            
-                b.execute_prompt_in_llm()
+    #        for b in bs:            
+    #            b.execute_prompt_in_llm()
   
-            turn = turn + 1
+    #        turn = turn + 1
             # TODO create one window per bot where prompts and commands are shown
+
+
+
             
-        popup = Popup(title='', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
-        popup.open()
+    #    popup = Popup(title='', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
+        #popup.open()
                                               
 
       
         
-        
+   # def play_turn (self, bots, turn_number):
+        """Plays a turn of the game with the current bot commands."""
+
+    #    if turn_number < config.get("game", "total_turns"):
+     #       print(f"Playing turn {turn_number}...")
+            
+      #      for b in bots:            
+       #         b.execute_prompt_in_llm()
+
+
+        #    Clock.schedule_once(lambda dt: self.play_turn(bots, turn_number + 1))
+            

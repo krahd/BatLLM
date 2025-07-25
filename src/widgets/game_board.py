@@ -1,5 +1,4 @@
-import sys
-from pathlib import Path
+import random
 
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
@@ -7,10 +6,15 @@ from kivy.core.window import Window
 from kivy.graphics import Color, Ellipse, Line, Rectangle
 from kivy.uix.widget import Widget
 
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+
 from normalized_canvas import NormalizedCanvas
 
 from app_config import config
 from bot import Bot
+
+from widgets.game_board_ux import _on_keyboard_down
 
 
 class GameBoardWidget(Widget):
@@ -18,27 +22,27 @@ class GameBoardWidget(Widget):
 	bots = []
 	bulletTrace = []
 	bullet_alpha = 1
-	snd_shoot = None
-	snd_hit = None
-
+	snd_shoot = None # TODO move to Bot class
+	snd_hit = None # TODO move to Bot class
+	
 	def __init__(self, **kwargs):
 		super(GameBoardWidget, self).__init__(**kwargs)
 		
 		self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
-		self._keyboard.bind(on_key_down = self._on_keyboard_down)
+		self._keyboard.bind(on_key_down = _on_keyboard_down)
 		
 		self.bind(size=self._redraw, pos=self._redraw)
 
 		self.bulletTrace = []  # Initialize bullet trace list
-		self.bullet_alpha = 1  # Initialize bullet alpha value
+		self.bullet_alpha = 1  # Initialize bullet alpha value		
 
-		Clock.schedule_interval(self._redraw, 1.0 / 10.0)  # Schedule redraw at 60 FPS  
+		self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav") # TODO move to Bot class
+		self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav") # TODO move to Bot class		
 
-		self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
-		self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav")
+		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
 
-	def add_bots(self, bots):
-		"""Adds a list of bots to the game board."""
+
+	def set_bots(self, bots):
 		self.bots = bots
 
 
@@ -47,7 +51,9 @@ class GameBoardWidget(Widget):
 	def on_kv_post(self, base_widget):
 		"""This method is called after the KV rules have been applied."""
 		super().on_kv_post(base_widget)
-		self.bots = [Bot(id=i, board_widget=self) for i in range(1, 3)]
+
+		# Create two bot instances with reference to this GameBoardWidget
+		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
 		
 
 
@@ -62,6 +68,8 @@ class GameBoardWidget(Widget):
 
 	def _redraw(self, *args):
 		self.render()
+
+
 
 			
 	def render(self, *args):      
@@ -143,109 +151,62 @@ class GameBoardWidget(Widget):
 
 
 
-	def add_command_to_history(self, bot_id, command):
-		"""Adds a command to the output history box for the specified bot."""            
-		if bot_id == 1:
-			box = self.find_id_in_parents("output_history_player_1")
-		elif bot_id == 2:
-			box = self.find_id_in_parents("output_history_player_2")
-		else:
-			print(f"Invalid bot_id: {bot_id}")
-			return
+	def add_llm_response_to_history(self, bot_id, command):
+		"""Adds a command to the output history box for the specified bot."""  
 
+        #TODO move this function to the HomeScreen class	
+		box = self.find_id_in_parents(f"output_history_player_{bot_id}")
+   
 		if box is not None:
 			box.text += f"{len(box.text.splitlines()) + 1}. {command}\n"
 		else:
 			print(f"Could not find output history box for bot_id: {bot_id}")
 
- 
-	def play_sound(self, sound):
-		sound.play()
- 
-	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-		"""Handles keyboard input for bot commands."""
-	
-
-		if modifiers and 'shift' in modifiers:
-			bot_id = 2
-		else:
-			bot_id = 1
-
-		bot = self.get_bot_by_id(bot_id)
 
 
-		if keycode[1] == 'escape':            
-				keyboard.release()
-
-		else:
-			match keycode[1]:
-
-				case '1':
-					total_rounds = config.get("game", "total_rounds")
-					
-									
-					print("---- total rounds: ", total_rounds)
-  
-					
-       
-				case 'm':
-					bot.move()
-				  
-				case 'r':
-					bot.rotate(.2)
-
-				case 't':
-					bot.rotate(-.2)
-				  
-				case 's':
-					bot.toggle_shield()
-
-				case 'spacebar':           
-
-
-					# TODO move bot sounds inside the bot class
-					if not bot.shield:
-						Clock.schedule_once(lambda dt: self.play_sound(self.snd_shoot))
-
-					bullet = bot.shoot()                    
-						
-
-					self.bullet_alpha = 1
-
-					alive = True                    
-					damaged_bot_id = None
-
-					if bullet is None:
-						alive = False
-
-					while alive:
-
-						(alive, damaged_bot_id) = bullet.update(self.bots)
-
-						# only draw bulltes outside the shooting bot                        
-						dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
-						if dist *.97 > bot.diameter / 2:
-							self.bulletTrace.append((bullet.x, bullet.y))
-					
-					if damaged_bot_id is not None:
-						print(f"Bot {damaged_bot_id} was hit by a bullet from Bot {bot.id}!")
-
-
-						Clock.schedule_once(lambda dt: self.play_sound(self.snd_hit))
-
-						self.get_bot_by_id(damaged_bot_id)
-						self.get_bot_by_id(damaged_bot_id).damage()
-						
-					else:
-						print(f"Bullet from Bot {bot.id} did not hit any bot.")
-												   
-			
-			return True
-
+	def submit_prompt(self, bot_id, new_prompt):
+		"""Submits the prompt for the specified bot."""
 		
+		bot = self.get_bot_by_id(bot_id)
+		bot.prepare_prompt_submission(new_prompt)
 
-	#TODO move this to a separate file and import it, do the same in home_screen.py
-	#TODO create a class Bots that holds all bots and this kind of methods
+		if all(b.ready_to_submit_prompt_to_llm for b in self.bots):
+			self.play_round()
+
+
+
+	def play_round(self):
+		
+		print("Playing round...") # TODO count rounds
+		bs = random.sample(self.bots, 2)
+		
+		Clock.schedule_once(lambda dt: self.play_turn(bs, 0))
+
+
+
+	def play_turn(self, bs, turn_number):
+		"""Plays a turn of the game with the current bot commands."""
+		
+		if turn_number < config.get("game", "turns_per_round"):
+			print(f"Playing turn {turn_number + 1}...")
+
+			for b in bs:            
+				b.submit_prompt_to_llm()
+				print ("back")
+
+			Clock.schedule_once(lambda dt: self.play_turn(bs, turn_number + 1))
+   
+		else:
+
+			round_res = "b1 health: " + str(self.bots[0].health) + "\n" + \
+						"b2 health: " + str(self.bots[1].health)
+      
+			popup = Popup(title='Round Ended', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+   
+			popup.open()
+      				
+
+
 	def get_bot_by_id(self, id):
 		"""Returns the bot instance with the specified ID."""
 		for bot_instance in self.bots:

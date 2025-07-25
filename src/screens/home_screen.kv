@@ -114,7 +114,7 @@
                         text: ">"
                         on_press: root.forward_prompt_history(1)
 
-                ScrollView: # prompt input
+                ScrollView: # prompt input 1
                     size_hint: (1, .5)
                     bar_width: 10
                     do_scroll_x: False
@@ -123,7 +123,8 @@
 
                     TextInput:
                         id: prompt_player_1
-                        text: ""
+                        #text: ""
+                        text: "reply with M, just the single letter. your response should be literally \"M\" (without the \")\""
                         hint_text: "New prompt"
                         multiline: True
                         readonly: False
@@ -175,7 +176,7 @@
 
                
 
-                ScrollView: # pl 2
+                ScrollView: # prompt history 2
                     size_hint: (1, .5)
                     bar_width: 10
                     do_scroll_x: False
@@ -184,7 +185,7 @@
                     background_color: 1, 1, 1, 1
 
                     TextInput:
-                        id: prompt_history_player_2
+                        id: prompt_history_player_2                        
                         text:""                             
                         multiline: True
                         readonly: True
@@ -212,7 +213,7 @@
                         text: ">"
                         on_press: root.forward_prompt_history(2)
 
-                ScrollView:
+                ScrollView: # prompt input 2
                     size_hint: (1, .5)
                     bar_width: 10
                     do_scroll_x: False
@@ -220,8 +221,9 @@
                     scroll_type: ['bars', 'content'] 
 
                     TextInput:
-                        id: prompt_player_2
-                        text: ""
+                        id: prompt_player_2                        
+                        #text: ""
+                        text: "reply with M, just the single letter. your response should be literally \"M\" (without the \")\""
                         hint_text: "New prompt"
                         multiline: True
                         readonly: False
@@ -244,7 +246,8 @@
                         on_press: root.submit_prompt(2)
 
            
-            BoxLayout:  # Second Column  v
+            BoxLayout:  # Second Column (commands histories)
+                
                 orientation: "vertical"
                 size_hint_x: 0.10 
                 size_hint_y: 1
@@ -253,7 +256,11 @@
                 
                 canvas.before:
                     Color:
-                        rgba: 0.4, 1, 1, 0 # todo remove
+                        rgba: .95, .96, .95, 1
+                    Line:
+                        width: 1
+                        rectangle: self.x, self.y, self.width, self.height
+                    
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -263,7 +270,7 @@
                     
                     canvas.before:
                         Color:                           
-                            rgba: .8, .88, 1, .5
+                            rgba: .95, .96, .95, 1# .8, .88, 1, .5
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -296,14 +303,25 @@
 
                     
                     
-                    ScrollView:
+                    ScrollView: # llm output history player 1
+                        size_hint: (1, .5) 
+                        bar_width: 10
+                        do_scroll_x: False
+                        do_scroll_y: True                    
+                        scroll_type: ['bars', 'content'] 
+                        
                         TextInput:
                             padding: 35, 20
-                            id: output_history_player_1                          
-                            text:
+                            id: output_history_player_2
+                            text: ""
                             multiline: True
-                            readonly: True
-                            size_hint_y: 1                        
+                            readonly: False
+                            size_hint_y: None  
+                            height: self.minimum_height                     
+                            scroll_y: 1                
+                            cursor_blink: False            
+                            bar_width: 10                               
+                                                        
                             background_color: .95, .96, .95, 1
                             background_normal: ""        # removes border image
                             background_active: ""        # removes active border image
@@ -320,7 +338,7 @@
                     orientation: "vertical"                    
                     canvas.before:
                         Color:                        
-                            rgba: 0, 0, 1, 1
+                            rgba: .95, .96, .95, 1
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -352,18 +370,29 @@
                             size_hint_x: .02
 
 
-                    ScrollView:
+                    ScrollView: # llm output history player 2
+                        size_hint: (1, .5) 
+                        bar_width: 10
+                        do_scroll_x: False
+                        do_scroll_y: True                    
+                        scroll_type: ['bars', 'content'] 
+                        
                         TextInput:
                             padding: 35, 20
                             id: output_history_player_2
                             text: ""
                             multiline: True
-                            readonly: True
-                            size_hint_y: 1
+                            readonly: False
+                            size_hint_y: None  
+                            height: self.minimum_height                     
+                            scroll_y: 1                
+                            cursor_blink: False            
+                            bar_width: 10                               
+                                                        
                             background_color: .95, .96, .95, 1
                             background_normal: ""        # removes border image
                             background_active: ""        # removes active border image
-
+                        
                 Label: # separator
                     text: "."
                     height: "24dp"
