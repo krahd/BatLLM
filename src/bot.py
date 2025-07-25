@@ -36,6 +36,8 @@ class Bot (Widget):
     diameter = None
     colour = None
 
+    last_llm_response = None  
+
     session_history = ObjectProperty(None)  # Reference to the history widget, if needed
         
 
@@ -77,8 +79,9 @@ class Bot (Widget):
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 2 * math.pi)   
         
-        self.session_history = []
+                
 
+    
 
     def render(self):
         r = self.diameter / 2
@@ -208,13 +211,12 @@ class Bot (Widget):
 
 
     def submit_prompt_to_llm(self):    
-        
         headers = {"Content-Type": "application/json"}
         
         data = {
-            "model": "llama3.2:latest",
+            "model": "llama3.2:latest",  # TODO get this from config
             "prompt": "",
-            "stream": False
+            "stream": False # TODO get this from config
         }
 
         # if so chosen we augment the prompt, kind of a RAG
@@ -269,8 +271,8 @@ class Bot (Widget):
                  
     def _on_llm_response(self, req, result):        
         print (f"[{self.id}] LLM response received: {result.get('response', '')}")  
-                   
-        cmd = result.get("response", "").strip()
+        self.last_llm_response = result.get("response", "").strip()  
+        cmd = self.last_llm_response
         # print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
             
         # ********* Processing the response *********
