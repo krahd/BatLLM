@@ -60,7 +60,7 @@ class Bot (Widget):
         port_base = config.get("llm", "port_base")
         if not config.get("game", "independet_models"):
             port = f"{port_base + 1}"  # shared model for both bots in 5000. It could be a third one. 
-            #TODO consider adding the functionality to the home screen to restart the LLMs
+            
         else:            
             port = f"{port_base + id}"  # ports 5001, 5002, etc. for each bot
             
@@ -102,7 +102,7 @@ class Bot (Widget):
         if self.shield:
             Color(.7, .5, 1, 1)            
             Color(.3,.3,.6,1)
-            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) # TODO find out why 90+
+            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) 
         
         PopMatrix()
 
@@ -244,7 +244,7 @@ class Bot (Widget):
         UrlRequest(
             url = self.llm_endpoint,
             req_body = json.dumps(data), 
-            req_headers = headers, #TODO move to a global variable
+            req_headers = headers,
             on_success = self._on_llm_response,
             on_failure = self._on_llm_failure,   # HTTP errors 4xx, 5xx
             on_error = self._on_llm_error,     # other errors (no connection, etc.)
@@ -317,8 +317,7 @@ class Bot (Widget):
             command_ok = False
             print (f"exception: {e}") 
         
-        if not command_ok:
-            #TODO play a subtle sound if command_ok is False?
+        if not command_ok:            
             print(f"[{self.id}] Invalid command: {command}")
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
         else:

@@ -1,33 +1,92 @@
+import json
+from dataclasses import dataclass, field, asdict
+from typing import List, Dict
+from datetime import datetime
 
-"""
-Data Structure for a Bot's Session History
+@dataclass
+class TurnRecord:
+    turn_number: int
+    order: int
+    llm_response: str
+    pre_state: Dict[str, float]
+    post_state: Dict[str, float]
 
-To make the history easy to save as JSON, use a nested dictionary/list structure of basic data types. Each Bot will maintain its own session history. At a high level, the structure can be:
+@dataclass
+class RoundRecord:
+    round_number: int
+    prompts: List[str]  # [prompt_bot1, prompt_bot2]
+    augmented: bool
+    independent_llms: bool
+    turns: List[TurnRecord] = field(default_factory=list)
 
-	•	Bot session history (dict):
-		•	bot_id: the bot’s ID (int)
-		•	games: a list of game entries (each game is a dict)
-  
-	•	Game entry (dict):
-		•	number: game index (e.g. 0 for the first game, 1 for the next, etc.)
-		•	total_rounds: total rounds played in this game (filled in when game ends)
-		•	turns_per_round: maximum turns per round (from config, for reference)
-		•	rounds: a list of round entries (each round is a dict)
-  
-	•	Round entry (dict):
-		•	number: round index within the game
-		•	user_prompt: the prompt text the player entered for this round
-		•	prompt_augmented: 1 if prompt augmentation is ON, 0 if OFF (from config)
-		•	independent_llms: 1 if using separate LLMs per player, 0 if a single LLM (from config)
-		•	turns: a list of turn entries (each turn is a dict)
-  
-	•	Turn entry (dict):
-		•	number: turn index within the round (for that bot)
-		•	order: 0 if this bot acted first in that turn cycle, or 1 if it acted second
-		•	response: the command the bot issued (e.g. “M”, “B”, “C20”, etc.)
-		•	before: the bot’s state before executing the command (position, rotation, shield, health)
-		•	after: the bot’s state after executing the command
+@dataclass
+class GameRecord:
+    game_number: int
+    turns_per_round: int
+    rounds: List[RoundRecord] = field(default_factory=list)
+    total_rounds: int = 0
 
-This mirrors the example structure you outlined, and because it’s composed of dictionaries, lists, and primitive types, it can be directly serialized to JSON using Python’s json module.
+class HistoryManager:
+    def __init__(self):
+        self.session_start = datetime.now().isoformat()
+        self.session_end = None
+        self.games: List[GameRecord] = []
+        self._current_game: GameRecord = None
+        self._current_round: RoundRecord = None
+        self._current_game_config = {}
 
-"""
+    def start_new_game(self, augmented: bool, independent_llms: bool):
+        game_num = len(self.games) + 1
+        game = GameRecord(game_number=game_num, turns_per_round=2)
+        self.games.append(game)
+        self._current_game = game
+        self._current_game_config = {
+            "augmented": augmented,
+            "independent_llms": independent_llms
+        }
+
+    def start_new_round(self, prompt_bot1: str, prompt_bot2: str):
+        if self._current_game is None:
+            raise RuntimeError("No active game to start a round in.")
+        round_num = len(self._current_game.rounds) + 1
+        new_round = RoundRecord(
+            round_number=round_num,
+            prompts=[prompt_bot1, prompt_bot2],
+            augmented=self._current_game_config["augmented"],
+            independent_llms=self._current_game_config["independent_llms"]
+        )
+        self._current_game.rounds.append(new_round)
+        self._current_round = new_round
+
+    def record_turn(self, order: int, llm_response: str, pre_state: Dict[str, float], post_state: Dict[str, float]):
+        if self._current_round is None:
+            raise RuntimeError("No active round to record a turn in.")
+        turn_num = len(self._current_round.turns) + 1
+        turn_entry = TurnRecord(
+            turn_number=turn_num,
+            order=order,
+            llm_response=llm_response,
+            pre_state=pre_state.copy(),
+            post_state=post_state.copy()
+        )
+        self._current_round.turns.append(turn_entry)
+
+    def end_current_game(self):
+        if self._current_game:
+            self._current_game.total_rounds = len(self._current_game.rounds)
+            self._current_game = None
+            self._current_round = None
+            self._current_game_config = {}
+
+    def save_session(self, filepath: str):
+        self.session_end = datetime.now().isoformat()
+        session_data = {
+            "session_start": self.session_start,
+            "session_end": self.session_end,
+            "games": [asdict(game) for game in self.games]
+        }
+        with open(filepath, 'w') as f:
+            json.dump(session_data, f, indent=4)
+
+    def clear_history(self):
+        self.__init__()

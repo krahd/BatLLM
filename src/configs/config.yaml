@@ -18,3 +18,4 @@ ui:
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'
+  title : BatLLM

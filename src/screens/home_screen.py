@@ -2,24 +2,37 @@
 from pathlib import Path
 
 from kivy.uix.screenmanager import Screen
-
+from history_manager import HistoryManager
 from bot import Bot
 from kivy.clock import Clock
 from widgets.game_board import GameBoardWidget
 from app_config import config
-
+from util import show_confirmation_dialog
 
 class HomeScreen(Screen):    
+
+    history = None
+
+    
     def __init__(self, **kwargs):        
         super(HomeScreen, self).__init__(**kwargs)
+        self.history = HistoryManager()
         
         
     
-    def save_game (self):
-        print ("Saving game...(TODO)")
-        # TODO save the game history for future processing
-        
+    def save_session (self):
+         show_confirmation_dialog("Save Session",
+                                 "Are you sure you want to save the session?",
+                                 self.ids.game_board.save_session())
 
+        
+    def start_new_game(self):
+        show_confirmation_dialog("New Game",
+                                 "Abandon current game and start a new one?",
+                                 self.ids.game_board.start_new_game())
+        
+        
+    
 
     def go_to_settings_screen(self):
         self.manager.current = "settings"

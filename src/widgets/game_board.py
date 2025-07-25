@@ -10,6 +10,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from normalized_canvas import NormalizedCanvas
+from util import show_confirmation_dialog
 
 from app_config import config
 from bot import Bot
@@ -27,6 +28,7 @@ class GameBoardWidget(Widget):
 	current_turn = None
 	current_round = None
 	shuffled_bots = None
+	games_started = None
  
 	def __init__(self, **kwargs):
 		super(GameBoardWidget, self).__init__(**kwargs)
@@ -45,22 +47,42 @@ class GameBoardWidget(Widget):
 		self.current_turn = None
 		self.current_round = None		
 		self.shuffled_bots = None
+		self.games_started = 0
   
 		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
 
 
+	def start_new_game(self):
 
-	def set_bots(self, bots):
-		self.bots = bots
+		# reset values
+		self.current_turn = None
+		self.current_round = None		
+		self.shuffled_bots = None
+  
+     
+     	# Create two bot instances with reference to this GameBoardWidget
+		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
 
+		if self.games_started > 0:
+			for b in self.bots:
+				self.add_text_to_llm_response_history(b.id, "\n\nNew Game\n\n")
+				b.ready_for_next_round = False  # need a new prompt for a new round
+
+		self.games_started += 1
+
+
+
+
+	def save_session(self):
+		print ("TODO")
+		pass
 
 			
 	def on_kv_post(self, base_widget):
 		"""This method is called after the KV rules have been applied."""
 		super().on_kv_post(base_widget)
 
-		# Create two bot instances with reference to this GameBoardWidget
-		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
+		self.start_new_game()
 
 		
 		
@@ -211,6 +233,10 @@ class GameBoardWidget(Widget):
 
 		return False
 
+
+
+   
+		
 
 
 	def play_turn(self, dt):

@@ -6,6 +6,7 @@ from screens.home_screen import HomeScreen
 from screens.settings_screen import SettingsScreen
 
 from kivy.core.window import Window
+from app_config import config
 
 Builder.load_file("screens/settings_screen.kv")
 Builder.load_file("screens/home_screen.kv")
@@ -21,7 +22,7 @@ class BattleLLM(App):
 
         
         self.icon = "assets/checkbox_off.png" # TODO create an icon
-        self.title = "BattLLM" # TODO add version from config
+        self.title = config.get("ui", "title") 
         
         return sm
 
