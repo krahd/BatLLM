@@ -10,7 +10,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from normalized_canvas import NormalizedCanvas
-
+import os
 
 from app_config import config
 from bot import Bot
@@ -75,14 +75,20 @@ class GameBoardWidget(Widget):
 
 		self.games_started += 1
 
-		self.history_manager.start_new_game(self))
+		self.history_manager.start_game(self)
 		
 
 
 	def save_session(self, filename):
-		self.history_manager.save_session(filename)
-		
+		folder = f"{config.get("data", "saved_sessions_folder")}"		
+		os.makedirs(folder, exist_ok=True)
 
+		filepath = os.path.join(folder, filename)
+		print ("saving session to", filepath)
+		self.history_manager.save_session(filepath)
+		print ("done")
+
+		print (self.history_manager.to_text())
 
 
    
@@ -227,7 +233,7 @@ class GameBoardWidget(Widget):
 		# shuffle bots for this coming round
 		self.shuffled_bots = random.sample(self.bots, 2)
 
-		self.history_manager.start_new_round(self)	
+		self.history_manager.start_round(self)	
 		
 		self.play_turn(0)
 		self.history_manager.end_turn(self)
@@ -247,19 +253,26 @@ class GameBoardWidget(Widget):
 
    
 		
-# self.history_manager.end_game(self)
+
 
 	def play_turn(self, dt):
      
 		if not self.current_turn < config.get("game", "turns_per_round"):  # round's over
 
+			self.history_manager.end_round(self)
+   
 			round_res = "\n"
+   
 			if (self.game_over()):
+				self.history_manager.end_game(self)				
+    
 				round_res += "Final Results:\n"
 				for b in self.bots:
 					round_res += f"Bot {b.id}'s health: {b.health}\n\n"
      
 				popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+				popup.open()
+				self.start_new_game()				
 				
 			else:
    
@@ -267,9 +280,7 @@ class GameBoardWidget(Widget):
 					round_res += f"Bot {b.id}'s health: {b.health}\n\n"				
 		
 				popup = Popup(title=f'Round {self.current_round} is over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
-				popup.open()
-
-			self.history_manager.end_round(self)
+				popup.open()			
 
 			return
 

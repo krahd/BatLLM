@@ -37,8 +37,6 @@ class Bot (Widget):
     colour = None
 
     last_llm_response = None  
-
-    session_history = ObjectProperty(None)  # Reference to the history widget, if needed
         
 
     def __init__(self, id, board_widget, **kwargs):

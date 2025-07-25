@@ -21,8 +21,7 @@ class HomeScreen(Screen):
         
     
     def save_session (self):
-        def on_saving_confirmed():
-            print ("here")
+        def on_saving_confirmed():            
             show_filename_dialog(on_confirm=on_filename_confirmed)
 
         def on_filename_confirmed(filename):

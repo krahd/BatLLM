@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from app_config import config
 
 class HistoryManager:
     def __init__(self):
@@ -271,26 +272,36 @@ class HistoryManager:
             # Either no bots alive (draw or both died) or more than one alive (no winner yet)
             return None
 
+
+    def save_session(self, filepath):
+        """
+        Save the entire session history to a JSON file.
+        This will include all games played in this session.
+        """
+        
+        with open(filepath, 'w', encoding="utf-8") as f:  # JSON spec requires UTF-8 support by decoders. 
+            json.dump(self.games, f, indent=4, ensure_ascii = False)
+        
     def to_json(self):
         """
-        Get the full history as a JSON string.
-        This will include all games if multiple were recorded.
-        """
-        # If only one session, you could dump self.sessions[0] instead, but as a general case, dump all
+        Get the full history as a JSON string.        
+        """        
         return json.dumps(self.games, indent=4)
 
 
     def to_text(self):
         """
         Get the full history in a human-readable indented text format (key: value style).
-        Returns a multi-line string.
+        Returns a multi-line string.        
         """
         lines = []
+        game_num = 1
         for game in self.games:            
             total_rounds = len(game.get("rounds", []))
             
             # Session header
-            lines.append(f"Game {game.game_id}:")
+            lines.append(f"Game {game_num}:")
+            game_num += 1
             
             # Game-level details
             if "start_time" in game:

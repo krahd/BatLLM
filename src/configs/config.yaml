@@ -1,14 +1,16 @@
+data:
+  saved_sessions_folder: saved_sessions
 game:
   bot_diameter: 0.1
   bullet_damage: 10
-  independent_models: false
+  independent_models: true
   initial_health: 42
   prompt_augmentation: false
   shield_initial_state: true
   shield_size: 35
   step_length: 0.02
   total_rounds: 2
-  turns_per_round: 30
+  turns_per_round: 3
 llm:
   augmentation_header_file: assets/prompts/augmentation_header_1.txt
   path: /api/generate
@@ -18,6 +20,4 @@ ui:
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'
-  title : BatLLM
-data:
-  saved_sessions_folder: saved_sessions
+  title: BatLLM
