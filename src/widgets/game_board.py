@@ -206,7 +206,7 @@ class GameBoardWidget(Widget):
 		for b in self.bots:
 			if b.health <= 0:
 				return True
-		if self.current_round >= config.get("game", "rounds"):
+		if self.current_round >= config.get("game", "total_rounds"):
 			return True
 
 		return False
@@ -221,16 +221,16 @@ class GameBoardWidget(Widget):
 			if (self.game_over()):
 				round_res += "Final Results:\n"
 				for b in self.bots:
-					round_res += f"Bot {b.id}'s health: {b.health}\n"
+					round_res += f"Bot {b.id}'s health: {b.health}\n\n"
      
 				popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
 				
 			else:
    
 				for b in self.bots:
-					round_res += f"Bot {b.id}'s health: {b.health}\n"				
+					round_res += f"Bot {b.id}'s health: {b.health}\n\n"				
 		
-				popup = Popup(title=f'Round {self.current_round} is Over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+				popup = Popup(title=f'Round {self.current_round} is over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
 				popup.open()	
 
 			return

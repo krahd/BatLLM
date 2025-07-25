@@ -59,7 +59,7 @@ class Bot (Widget):
 
         port_base = config.get("llm", "port_base")
         if not config.get("game", "independet_models"):
-            port = f"{port_base}"  # shared model for both bots in 5000. It could be a third one. 
+            port = f"{port_base + 1}"  # shared model for both bots in 5000. It could be a third one. 
             #TODO consider adding the functionality to the home screen to restart the LLMs
         else:            
             port = f"{port_base + id}"  # ports 5001, 5002, etc. for each bot
@@ -238,7 +238,7 @@ class Bot (Widget):
         data["prompt"] += self.get_current_prompt() + "\n"
         
         # print(f"[{self.id}] Sending prompt to LLM: {data['prompt']}")
-        # TODO fromat these prints better and output them into to a log window that can be opened and closed by the user instead of the console
+        # TODO format these prints better and output them into to a log window that can be opened and closed by the user instead of the console
         print(f"[{self.id}] Sending the prompt to the LLM")
         
         UrlRequest(
@@ -246,21 +246,26 @@ class Bot (Widget):
             req_body = json.dumps(data), 
             req_headers = headers, #TODO move to a global variable
             on_success = self._on_llm_response,
-            on_failure = self._on_llm_error,   # HTTP errors 4xx, 5xx
+            on_failure = self._on_llm_failure,   # HTTP errors 4xx, 5xx
             on_error = self._on_llm_error,     # other errors (no connection, etc.)
             timeout = 30,
             method = 'POST'
         )
+        
 
-    
+
+    def _on_llm_failure(self, request, error):
+        """Callback for HTTP failures."""
+        print(f"[{self.id}] LLM request failed: {error}")                
+        self.board_widget.on_bot_llm_interaction_complete(self) 
+
+
+        
     def _on_llm_error(self, request, error):
         """Callback for errors or HTTP failures."""
-        print(f"[{self.id}] LLM request failed: {error}")
-        
-        #TODO play a subbtle sound if command_ok is False        
+        print(f"[{self.id}] Error during LLM request: {error}")                 
         self.board_widget.on_bot_llm_interaction_complete(self)  
                 
-
                  
     def _on_llm_response(self, req, result):        
         print (f"[{self.id}] LLM response received: {result.get('response', '')}")  

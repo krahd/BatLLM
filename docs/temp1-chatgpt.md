@@ -256,7 +256,7 @@ BatLLM can be configured via a YAML file (`configs/config.yaml`) or by modifying
   * `shield_size`: Shield coverage in degrees to each side of the bot’s facing direction (e.g., 20 degrees means a 40° front arc; increase this for a larger protective arc).
   * `step_length`: How far a bot moves on `M` command (this is a fraction of the arena size since the arena is normalized 0-1).
   * `total_rounds`: Maximum number of rounds in a match (e.g., 3). The game doesn’t force an end-of-match on rounds yet, but this could be used for a “best of N rounds” rule among players.
-  * `turns_per_round` (or `total_turns`): Number of turns per round (default 5). After this many turns, if no bot is destroyed, the round ends.
+  * `turns_per_round`: Number of turns per round (default 5). After this many turns, if no bot is destroyed, the round ends.
 
 * **UI Settings:** In config you can adjust UI aspects like `frame_rate` (the refresh rate of the game loop; default 60 FPS), colors, font sizes, etc., if needed.
 
@@ -268,8 +268,8 @@ game:
   initial_health: 20
   bullet_damage: 3
   shield_size: 20       # degrees (front arc coverage)
-  total_turns: 5        # turns per round
-  total_rounds: 3       # rounds per match (if used)
+  turns_per_round: 5   
+  total_rounds: 3      
 llm:
   url: "http://localhost"
   port_base: 5000

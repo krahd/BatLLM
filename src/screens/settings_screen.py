@@ -6,7 +6,7 @@ from app_config import config
 class SettingsScreen(Screen):
     
     total_rounds = NumericProperty(config.get("game", "total_rounds"))
-    total_turns = NumericProperty(config.get("game", "total_turns"))
+    turns_per_round = NumericProperty(config.get("game", "turns_per_round"))
     initial_health = NumericProperty(config.get("game", "initial_health"))
     bullet_damage = NumericProperty(config.get("game", "bullet_damage"))
     shield_size = NumericProperty(config.get("game", "shield_size"))
@@ -28,7 +28,7 @@ class SettingsScreen(Screen):
         """
    
         config.set("game", "total_rounds", int(self.ids.rounds_slider.value))
-        config.set("game", "total_turns", int(self.ids.turns_slider.value))
+        config.set("game", "turns_per_round", int(self.ids.turns_slider.value))
         config.set("game", "initial_health", int(self.ids.health_slider.value))
         config.set("game", "bullet_damage", int(self.ids.damage_slider.value))
         config.set("game", "shield_size", int(self.ids.shield_slider.value))        

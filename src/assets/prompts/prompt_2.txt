@@ -41,7 +41,7 @@ There are two main game modes: 1) There is only one Ollama instance that is prom
 
 There are also two types of prompting, 1) the game adds all the relevant information to the prompt (location, rotation, shield state, etc), and 2) only the exact prompt provided by the player is passed to the LLM without adding any information whatsoever.
 
-Before the game starts, the players can set the values for TOTAL_ROUNDS, TOTAL_TURNS, INITIAL_HEALTH, BULLET_DAMAGE, SHIELD_SIZE.
+Before the game starts, the players can set the values for TOTAL_ROUNDS, TURNS_PER_ROUND, INITIAL_HEALTH, BULLET_DAMAGE, SHIELD_SIZE.
 
 Likewise, the players will enter their prompts in text fields floating over the game world. On top of the text fields there will be a scrollable history with all the previous prompts. Players can select a previous prompt to be copied into the text field for editing. Once both players have entered their prompts they can click a button labelled "FIGHT" to start the round.
 

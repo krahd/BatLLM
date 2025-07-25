@@ -15,7 +15,7 @@ KivyConfig.set('graphics', 'window_state', 'maximized')
 DEFAULTS = {
     "game": {
         "total_rounds": 3,
-        "total_turns": 5,
+        "turns_per_round": 5,
         "independent_models": True,
         "prompt_augmentation": False,
         "initial_health": 20,
