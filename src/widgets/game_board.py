@@ -24,7 +24,10 @@ class GameBoardWidget(Widget):
 	bullet_alpha = 1
 	snd_shoot = None # TODO move to Bot class
 	snd_hit = None # TODO move to Bot class
-	
+	current_turn = None
+	current_round = None
+	shuffled_bots = None
+ 
 	def __init__(self, **kwargs):
 		super(GameBoardWidget, self).__init__(**kwargs)
 		
@@ -39,12 +42,16 @@ class GameBoardWidget(Widget):
 		self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav") # TODO move to Bot class
 		self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav") # TODO move to Bot class		
 
+		self.current_turn = None
+		self.current_round = None		
+		self.shuffled_bots = None
+  
 		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
+
 
 
 	def set_bots(self, bots):
 		self.bots = bots
-
 
 
 			
@@ -176,34 +183,40 @@ class GameBoardWidget(Widget):
 
 
 	def play_round(self):
+		self.current_turn = 0
+		print(f"Playing round {self.current_round}") # TODO count rounds
+
+		# shuffle bots for this round
+		self.shuffled_bots = random.sample(self.bots, 2)
+		self.play_turn()
 		
-		print("Playing round...") # TODO count rounds
-		bs = random.sample(self.bots, 2)
+
+	def play_turn(self):
+		if not self.current_turn < config.get("game", "turns_per_round"):
 		
-		Clock.schedule_once(lambda dt: self.play_turn(bs, 0))
-
-
-
-	def play_turn(self, bs, turn_number):
-		"""Plays a turn of the game with the current bot commands."""
-		
-		if turn_number < config.get("game", "turns_per_round"):
-			print(f"Playing turn {turn_number + 1}...")
-
-			for b in bs:            
-				b.submit_prompt_to_llm()
-				print ("back")
-
-			Clock.schedule_once(lambda dt: self.play_turn(bs, turn_number + 1))
-   
-		else:
-
 			round_res = "b1 health: " + str(self.bots[0].health) + "\n" + \
 						"b2 health: " + str(self.bots[1].health)
+	
+			popup = Popup(title=f'Round {self.current_round} ended', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+			popup.open()			
+			return
+
+		print(f"Playing turn {self.current_turn}...")
+		for b in self.shuffled_bots:            
+			b.submit_prompt_to_llm()
+		
+		
+
+	def on_bot_llm_interaction_complete(self, bot):
+		"""Callback when a bot's LLM interaction is complete."""
+  
+		print(f"Bot {bot.id} interaction complete.")
+
+		self.turn_index = (self.turn_index + 1) % len(self.bots) # ++ every 2
+  
+		Clock.schedule_once(self.play_turn, 0)
       
-			popup = Popup(title='Round Ended', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
-   
-			popup.open()
+			
       				
 
 

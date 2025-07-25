@@ -6,11 +6,13 @@ from kivy.core.text import Label
 from kivy.uix.widget import Widget
 from bullet import Bullet
 from normalized_canvas import NormalizedCanvas
-import requests
+from kivy.network.urlrequest import UrlRequest
 import json
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, ObjectProperty
 from app_config import config
+
+
 
 
 class Bot (Widget):
@@ -71,8 +73,6 @@ class Bot (Widget):
     def render(self):
         r = self.diameter / 2
         d = self.diameter
-
-    
 
         PushMatrix()
         Translate(self.x, self.y)
@@ -152,12 +152,6 @@ class Bot (Widget):
         self.prompt_history_index = len(self.prompt_history) - 1        
         self.ready_to_submit_prompt_to_llm = True
 
-         
-            
-
-
-
-
         
     def rewind_prompt_history(self):
         if self.prompt_history_index is not None and self.prompt_history_index > 0:
@@ -204,21 +198,21 @@ class Bot (Widget):
                 
 
 
-    def submit_prompt_to_llm(self):    
-        """Executes the prompt in the LLM."""
-        port = 5000 + self.id  # e.g., id=1 => port=5001. #TODO get from config
-        url = f"http://localhost:{port}/api/generate" #TODO get from config
+    async def submit_prompt_to_llm(self):    
+        
         headers = {"Content-Type": "application/json"}
         
         data = {
             "model": "llama3.2:latest",
-            "prompt": self.get_current_prompt(),
+            "prompt": "",
             "stream": False
         }
 
         # if so chosen we augment the prompt, kind of a RAG
         if config.get("game", "augment_prompts"): #TODO move this text to a text file or to config
-            data["prompt"] += """You are an expert gamer. Your task is to control a bot in a videogame called BatLLM, a two-player battle game where an LLM like you controls a bot. You receive information about the game state and a prompt written by the human player that guides your behaviours.
+            data["prompt"] += """
+
+You are an expert gamer. Your task is to control a bot in a videogame called BatLLM, a two-player battle game where an LLM like you controls a bot. You receive information about the game state and a prompt written by the human player that guides your behaviours.
 
 We refer to the human players as "player", to you as "llama", and to the in-game battle bot as "bot". We refer to the environment where the bots run as "world". The world holds the game state, receives commands from the llama, executes them and updates the game state. The prompt given to the llama is a combination of the game status and the prompt written by the player in charge of the bot.
 
@@ -259,7 +253,9 @@ When a bot is hit by a bullet in a place not covered by a raised shield, its ene
 
 Before each round starts, the players enter their prompts. 
 
-Remember, your task is to receive the game state and to output a valid command, using the user's prompt as guideline."""
+Remember, your task is to receive the game state and to output a valid command, using the user's prompt as guideline.
+
+            """
 
             data["prompt"] += "\n\n" + "World state:\n"
             data["prompt"] += f"Self.x: {self.x}, Self.y: {self.y}\n"
@@ -270,28 +266,38 @@ Remember, your task is to receive the game state and to output a valid command, 
             data["prompt"] += f"Opponent.rot: {math.degrees(self.board_widget.get_bot_by_id(3 - self.id).rot)}\n"
             data["prompt"] += f"Opponent.shield: {'ON' if self.board_widget.get_bot_by_id(3 - self.id).shield else 'OFF'}\n"
             data["prompt"] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
-            data["prompt"] += f"User prompt: {self.get_current_prompt()}\n"
+            data["prompt"] += "User prompt: "            
 
-            print("-" * 100)
-            print (data["prompt"])
-            print("-" * 100)
-
-
+        data["prompt"] += self.get_current_prompt() + "\n"
 
         # ********* Sending the prompt to the LLM *********
-        try:
-            response = requests.post(url, headers = headers, data = json.dumps(data))
-            response.raise_for_status()
-            result = response.json()
-            cmd = result.get("response", "").strip()
-            print ("Bot ", self.id, " response: ", cmd)  # Debugging output            
-            
-        except requests.RequestException as e:
-            print(f"Error querying Ollama on port {port}: {e}")
-            return None
-               
-        command_ok = True
+        # Initiate a non-blocking POST request using Kivy UrlRequest
+        UrlRequest(
+            url=self.llm_url,
+            req_body=data, # TODO check if json.dumps(data) is needed
+            req_headers=headers, #TODO move to a global variable
+            on_success=self._on_llm_response,
+            on_failure=self._on_llm_error,   # handles HTTP errors (4xx, 5xx)
+            on_error=self._on_llm_error,     # handles other errors (no connection, etc.)
+            timeout=30,
+            method='POST'
+        )
+
+    
+    def _on_llm_error(self, request, error):
+        """Callback for errors or HTTP failures."""
+        print(f"[{self.name}] LLM request failed: {error}")
+        #TODO play a subbtle sound if command_ok is False        
+        self.gameboard.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id
         
+
+                 
+    def _on_llm_response(self, req, result):
+                     
+        command_ok = True
+        cmd = result.get("response", "").strip()
+        print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
+            
         # ********* Processing the response *********
         try: 
             if isinstance(cmd, str):
@@ -300,48 +306,50 @@ Remember, your task is to receive the game state and to output a valid command, 
                 command = cmd[0]
             else:
                 command_ok = False
-                raise ValueError(f"Unexpected command format: {cmd}")
-
-            match command[0]:
                 
-                case "M":                    
-                    self.move()
-                                                       
-                case "C":
-                    angle = float(command[1:])
-                    self.rotate(angle)
-
-                case "A":
-                    angle = float(command[1:])
-                    self.rotate(-angle)
-
-                case "B":                    
-                    return self.shoot() 
+            if command_ok:
+                match command[0]:
                     
-                case "S":
-                    if len(command) == 1:                        
-                        self.toggle_shield()
-                    else:
-                        if command[1] == "1":
-                            self.shield = True
-                        elif command[1] == "0":
-                            self.shield = False
+                    case "M":                    
+                        self.move()
+                                                        
+                    case "C":
+                        angle = float(command[1:])
+                        self.rotate(angle)
+
+                    case "A":
+                        angle = float(command[1:])
+                        self.rotate(-angle)
+
+                    case "B":                    
+                        return self.shoot() 
+                        
+                    case "S":
+                        if len(command) == 1:                        
+                            self.toggle_shield()
+                            
                         else:
-                            command_ok = False
-                            raise ValueError(f"Invalid shield command: {command}")
+                            if command[1] == "1":
+                                self.shield = True
+                            elif command[1] == "0":
+                                self.shield = False
+                            else:
+                                command_ok = False
+                                
      
         except Exception as e:
             command_ok = False
-            print(f"bot {self.id} - wrong command: {cmd} || exception: ({e})") 
+            print (f"exception: {e}") 
 
         
         if not command_ok:
-            pass #TODO play a subbtle sound if command_ok is False
-        
-        self.board_widget.add_llm_response_to_history(self.id, command)
+            #TODO play a subbtle sound if command_ok is False
+            print(f"bot {self.id} - wrong command: {cmd}")
 
-        self.ready_to_submit_prompt_to_llm = False # reset the prompt submitted flag after execution, when all bots have this flag in true then a round starts
-       
+                  
+        self.board_widget.add_llm_response_to_history(self.id, command)
+        self.ready_to_submit_prompt_to_llm = False # we are not ready for a new prompt yet
+        self.gameboard.on_bot_llm_interaction_complete(self)  #TODO perhaps just return self.id
 
 
 

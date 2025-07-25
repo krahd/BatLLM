@@ -7,7 +7,6 @@ from screens.settings_screen import SettingsScreen
 
 from kivy.core.window import Window
 
-
 Builder.load_file("screens/settings_screen.kv")
 Builder.load_file("screens/home_screen.kv")
 
@@ -18,9 +17,7 @@ class BattleLLM(App):
         
         sm = ScreenManager()
         sm.add_widget(HomeScreen(name = "home"))          # starting screen
-        sm.add_widget(SettingsScreen(name = "settings"))
-        
-        #TODO create a new screen to show the round being played, animated, with the result of each prompt rendered, with a timeline where the players can go back and forth in the game
+        sm.add_widget(SettingsScreen(name = "settings"))        
 
         
         self.icon = "assets/checkbox_off.png" # TODO create an icon

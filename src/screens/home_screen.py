@@ -23,18 +23,6 @@ class HomeScreen(Screen):
 
     def go_to_settings_screen(self):
         self.manager.current = "settings"
-
-
-
-#    def on_kv_post(self, base_widget):     
-#        """This method is called after the KV rules have been applied."""   
-        
-#        gbw = self.ids.game_board
-#        self.bots = [Bot(id = i, board_widget = gbw) for i in range(1, 3)]  # Create two bot instances
-#        gbw.set_bots(self.bots)
-#        gbw.render()
-
-        
        
 
     def load_prompt_from_file(self, player_id, path= "../assets/prompts/prompt_2.txt"):
@@ -46,16 +34,6 @@ class HomeScreen(Screen):
             
         except FileNotFoundError:
             print ("Prompt file not found:", prompt_path)
-
-
-
-#    def get_bot_by_id(self, id):
-        """Returns the bot instance with the specified ID."""
-#        for bot_instance in self.bots:
-#            if bot_instance.id == id:
-#                return bot_instance
-#        return None
-
 
 
     def get_prompt_input_text(self, id):
@@ -146,48 +124,4 @@ class HomeScreen(Screen):
         
       
 
-    # game logic for playing a round
-    #def play_round(self):
-        """Plays a round of the game with the current bot commands."""
-    #    print("Playing round...") # TODO cound rounds
-    #    bs = random.sample(self.bots, 2)
-
-    #    turn = 1
-
-       
-        # Loop through the turns of the round
-
-        
-
-    #    for turn in range(1, config.get("game", "total_turns")): 
-
-            #TODO update header with turn info
-                        
-            # Get the commands from both bots
-    #        for b in bs:            
-    #            b.execute_prompt_in_llm()
-  
-    #        turn = turn + 1
-            # TODO create one window per bot where prompts and commands are shown
-
-
-
-            
-    #    popup = Popup(title='', content=Label(text='Round Ended'), size_hint=(None, None), size=(400, 400))
-        #popup.open()
-                                              
-
-      
-        
-   # def play_turn (self, bots, turn_number):
-        """Plays a turn of the game with the current bot commands."""
-
-    #    if turn_number < config.get("game", "total_turns"):
-     #       print(f"Playing turn {turn_number}...")
-            
-      #      for b in bots:            
-       #         b.execute_prompt_in_llm()
-
-
-        #    Clock.schedule_once(lambda dt: self.play_turn(bots, turn_number + 1))
-            
+    
