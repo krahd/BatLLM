@@ -21,7 +21,7 @@ class BattleLLM(App):
         sm.add_widget(SettingsScreen(name = "settings"))        
 
         
-        self.icon = "assets/checkbox_off.png" # TODO create an icon
+        self.icon = "assets/logo_small.png" # TODO create an icon
         self.title = config.get("ui", "title") 
         
         return sm
