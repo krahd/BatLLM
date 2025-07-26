@@ -2,9 +2,9 @@
 # BatLLM
 ***Democratising AI through play***
 
-> [!NOTE]
-> **[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
-
+<p style="background-color: #bacbe4ff; padding: 1em;">
+**[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
+</p>
 
 **BatLLM** is an open-source, two-player, turn-based battle game with a twist: instead of interacting directly with the game, players must use an AI model to interact on their behalf. 
 
@@ -18,9 +18,9 @@ By combining language, strategy, and AI-driven gameplay, **BatLLM** offers a saf
 
 This document provides a rather superficial overview of the project. To know more about **BatLLM**, its objectives and technical details, please refer to the [[#BatLLM|main documentation files]].
 
-> [!NOTE]
-> **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
-
+<p style="background-color: #ffa55bff; padding: 1em;">
+**BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
+</p>
 
 
 ## Quick Start
@@ -74,5 +74,6 @@ Each player has a text bot where they can add prompts to their collection. After
 
 In addition, you may use the buttons at the bottom right to change some of BatLLM's options, to start a new game, or to save the information of the current execution of BatLLM as a JSON file.
 
->[! ] 
->**[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)**
+<p style="background-color: #bacbe4ff; padding: 1em;">
+**[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
+</p>
