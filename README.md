@@ -1,7 +1,4 @@
-
-
-
-![logo](docs/attachments/logo-small.png\|100)
+![alt text](https://github.com/krahd/BatLLM/blob/73db28aefa217d101717c081971deee7a53e9198/docs/attachments/logo-small.png "Bat LLM logo")
 # BatLLM
 ***Democratising AI through play***
 
