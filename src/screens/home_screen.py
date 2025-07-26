@@ -44,12 +44,17 @@ class HomeScreen(Screen):
 
         
     def start_new_game(self):
+        
+        def _start_new_game():
+            print("Starting a new game...")
+            self.ids.game_board.start_new_game()
+            
         show_confirmation_dialog("New Game",
                                  "Abandon current game and start a new one?",
-                                 self.ids.game_board.start_new_game())
+                                 _start_new_game)
+                                 
         
         
-    
 
     def go_to_settings_screen(self):
         self.manager.current = "settings"
