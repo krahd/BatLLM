@@ -8,7 +8,16 @@ from kivy.clock import Clock
 from kivy.uix.modalview import ModalView
 
 
+
 def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
+    """Displays a modal confirmation dialog with a title and message.
+
+    Args:
+        title (_type_): the title of the dialog
+        message (_type_): the message to display in the dialog
+        on_confirm (_type_): function to call when the user confirms
+        on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.    
+    """    
     content = BoxLayout(orientation='vertical', spacing=10, padding=10)
 
     label = Label(text=message, halign='center')
@@ -49,31 +58,17 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
 
 
 
-def show_fading_alert2(title, message, duration=1.0, fade_duration=1.0):
+def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
+    """ Displays a modal alert with a title and message that fades out and closes itsel.
+
+    Args:
+        title (_type_): the title of the alert
+        message (_type_): the message to display in the alert
+        duration (float, optional): How long does it take for the alert to start fading out. Defaults to 1.0.
+        fade_duration (float, optional): How long does the fade out process take. Defaults to 1.0.
+    """    
     content = BoxLayout(orientation='vertical', spacing=10, padding=10)
-    label = Label(text=message, halign='center')
-    content.add_widget(label)
-
-    w = 400 + 20 * max(len(line) for line in message.splitlines())
-    h = 100 + 40 * len(message.splitlines())
-
-    popup = ModalView(size_hint=(None, None), size=(w, h),
-                      auto_dismiss=False, background_color=(0, 0, 0, 0))  # transparent background
-    popup.add_widget(content)
-
-    def fade_and_close(*args):
-        anim = Animation(opacity=0, duration=fade_duration)
-        anim.bind(on_complete=lambda *a: popup.dismiss())
-        anim.start(content)  # animate the content, not the ModalView itself
-
-    popup.open()
-    Clock.schedule_once(fade_and_close, duration)
-
-
-def show_fading_alert(title, message, duration= 
-                      1.0, fade_duration=1.0):
-    content = BoxLayout(orientation='vertical', spacing=10, padding=10)
-
+    
     label = Label(text=message, halign='center')
     content.add_widget(label)
 
@@ -94,11 +89,21 @@ def show_fading_alert(title, message, duration=
 
 
 
-def show_filename_dialog(on_confirm, on_cancel=None, title="Save As", default_filename="session.json"):
+def show_text_input_dialog(on_confirm, on_cancel=None, title="", default_text="", input_hint="Enter a text"):
+    """A modal dialog to enter a filename for saving. # TODO change it into a generic dialog for entering text.
+
+    Args:
+        on_confirm (_type_): function to call when the user confirms the filename
+        on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
+        title (str, optional): title of the dialog. Defaults to "".
+        default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
+        input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". It is only visible if the default value is empty
+    """    
+    
     layout = BoxLayout(orientation='vertical', spacing=10, padding=10)
 
-    input_field = TextInput(hint_text="Enter filename", multiline = False)
-    input_field.text = default_filename
+    input_field = TextInput(hint_text=input_hint, multiline = False) # 
+    input_field.text = default_text
     input_field.font_size = 40
     layout.add_widget(Label(text="Please enter a filename:"))
     layout.add_widget(input_field)
@@ -110,10 +115,10 @@ def show_filename_dialog(on_confirm, on_cancel=None, title="Save As", default_fi
     popup = Popup(title=title, content=layout, size_hint=(None, None), size=(800, 400), auto_dismiss=False)
 
     def confirm_action(*args):
-        filename = input_field.text.strip()        
-        if filename:
+        value = input_field.text.strip()        
+        if value:
             popup.dismiss()
-            on_confirm(filename)
+            on_confirm(value)
 
     def cancel_action(*args):
         popup.dismiss()
@@ -129,3 +134,20 @@ def show_filename_dialog(on_confirm, on_cancel=None, title="Save As", default_fi
     popup.open()
 
 
+
+
+def find_id_in_parents(self, target_id):
+    """Searches for an element among the ancestors of a Kivy element by its id
+
+    Args:
+        target_id (_type_): the id of the object to find.
+
+    Returns:
+    _type_: The found object or None
+    """    
+    parent = self.parent
+    while parent:
+        if hasattr(parent, 'ids') and target_id in parent.ids:
+            return parent.ids[target_id]
+        parent = parent.parent
+    return None

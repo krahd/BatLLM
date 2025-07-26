@@ -16,6 +16,12 @@ from app_config import config
 
 
 class Bot (Widget):
+    """This class models a game bot.
+
+    Args:
+        Widget (_type_): Kivy's base Widget class
+
+    """
     id = NumericProperty(0)
     x = NumericProperty(0)
     y = NumericProperty(0)
@@ -40,6 +46,12 @@ class Bot (Widget):
         
 
     def __init__(self, id, board_widget, **kwargs):
+        """Constructor
+        
+        Args:
+            id (_type_): the bot id
+            board_widget (_type_): its parent, that is the game board where the bot lives.
+        """        
         super().__init__(**kwargs)
         
         self.id = id
@@ -82,6 +94,8 @@ class Bot (Widget):
     
 
     def render(self):
+        """Draws itself. It assumes a NormalizedCanvas.
+        """        
         r = self.diameter / 2
         d = self.diameter
 
@@ -138,33 +152,44 @@ class Bot (Widget):
 
 
 
-    # takes a step
+    
     def move(self):        
+        """The bot takes a step. Corresponds to the command 'M'
+        """        
         self.x += self.step * cos(self.rot)
         self.y += self.step * sin(self.rot)
         # print(f"Bot moved to position: ({self.x}, {self.y})")   
 
 
 
-    # rotates the bot by a given angle
+    
     def rotate(self, angle):
+        """The bot rotates by a given angle. Corresponds to the commands 'C' and 'A'
+        """    
         self.rot += angle
         if self.rot > 2 * math.pi:
             self.rot -= 2 * math.pi
         elif self.rot < 0:
             self.rot += 2 * math.pi
-        # print(f"Bot rotated to angle: {self.rot} radians = {math.degrees(self.rot)} degrees")
+        
 
 
-
-    # adds the prompt to the history    
+    
     def append_prompt_to_history(self, new_prompt):
+        """Adds the new prompt to the prompt.history object.
+        It is now ready to run it.
+
+        Args:
+            new_prompt (_type_): the new prompt
+        """        
         self.prompt_history.append(new_prompt)
         self.prompt_history_index = len(self.prompt_history) - 1        
         self.ready_for_next_round = True
 
         
     def rewind_prompt_history(self):
+        """Rewinds 
+        """        
         if self.prompt_history_index is not None and self.prompt_history_index > 0:
             self.prompt_history_index -= 1            
             # print(f"Rewound to prompt: {self.prompt_history_index}")
@@ -172,6 +197,8 @@ class Bot (Widget):
 
 
     def forward_prompt_history(self):
+        """Forwards
+        """        
         if self.prompt_history_index is not None and self.prompt_history_index < len(self.prompt_history) - 1:
             self.prompt_history_index += 1                        
             # print(f"Forwarded to prompt: {self.prompt_history_index}")
@@ -180,6 +207,11 @@ class Bot (Widget):
 
 
     def get_current_prompt_from_history(self):
+        """Returns a prompt from the history using a cursor. Rewind and Forward move the cursor.
+
+        Returns:
+            _type_: a string with the prompt
+        """        
         res = ""
         try:
             res = self.prompt_history[self.prompt_history_index]
@@ -188,27 +220,48 @@ class Bot (Widget):
         
         return res
 
+
     def get_current_prompt(self):
-        """Returns the current prompt."""
+        """Returns the current prompt. It is equivalent to get_prompt.
+
+        Returns:
+            _type_: a string with the prompt
+        """        
         return self.get_current_prompt_from_history()    
 
-    def get_prompt(self):
+
+    def get_prompt(self):         
+        """Returns the current prompt. It is equivalent to get_current_prompt_from_history.
+        Returns:
+            _type_: a string with the prompt
+        """        
         return self.get_current_prompt_from_history()
     
     
 
     def augmenting_prompt(self, augmenting):
-        """Controls whether the prompt is augmented with additional information."""
+        """Toggles the flag indicating if the player prompts are augmented with game info.
+
+        Args:
+            augmenting (_type_): the new flag value
+        """        
+        
         self.agmenting_prompt = augmenting
                 
 
     def prepare_prompt_submission(self, new_prompt):
-        """Gets ready to execute"""
+        """Gets ready to execute
+
+        Args:
+            new_prompt (_type_): the prompt to use
+        """
         self.append_prompt_to_history(new_prompt)        
                 
 
 
-    def submit_prompt_to_llm(self):    
+    def submit_prompt_to_llm(self):  
+        """Takes care of the interaction with the LLM
+        """        
         headers = {"Content-Type": "application/json"}
         
         data = {
@@ -255,19 +308,40 @@ class Bot (Widget):
 
 
     def _on_llm_failure(self, request, error):
-        """Callback for HTTP failures."""
+        """Error handler for HTTP errors 4xx, 5xx
+
+        Args:
+            request (_type_): the request objevt
+            error (_type_): the error obtained
+        """        
+        
         print(f"[{self.id}] LLM request failed: {error}")                
         self.board_widget.on_bot_llm_interaction_complete(self) 
 
 
         
     def _on_llm_error(self, request, error):
-        """Callback for errors or HTTP failures."""
+        """Error handler for errors outside the web protocol (no connection, etc)
+
+        Args:
+            request (_type_): the request object
+            error (_type_): the error obtained
+        """        
+         
         print(f"[{self.id}] Error during LLM request: {error}")                 
         self.board_widget.on_bot_llm_interaction_complete(self)  
                 
                  
-    def _on_llm_response(self, req, result):        
+    def _on_llm_response(self, req, result):
+        """Event handler of a successul interaction with the LLM
+
+        Args:
+            req (_type_): the request object
+            result (_type_): the interaction result
+
+        """
+
+        # Replace these printouts for appropriate logging.        
         print (f"[{self.id}] LLM response received: {result.get('response', '')}")  
         self.last_llm_response = result.get("response", "").strip()  
         cmd = self.last_llm_response
@@ -331,7 +405,8 @@ class Bot (Widget):
 
 
     def damage(self):
-        """Damages the bot, reducing its health."""
+        """The bot's been hitl        
+        """
         self.health -= config.get("game", "bullet_damage")
         
         if self.health < 0:
@@ -340,12 +415,17 @@ class Bot (Widget):
 
 
     def toggle_shield(self):
-        """Toggles the shield state."""
+        """Toggles the shield state.
+        """        
         self.shield = not self.shield
 
 
     def shoot(self):
-        """Shoots a projectile from the bot."""
+        """Tries to shoot a bullet. It will only succeed if the shield is down.
+
+        Returns:
+            _type_: the bullet shot or None
+        """        
         if not self.shield:            
             bullet = Bullet(self.id, self.x, self.y, self.rot)            
             return bullet

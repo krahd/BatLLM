@@ -3,6 +3,8 @@ import math
 
 
 class Bullet:
+    """This class models the bullets shot by the bots. It takes care of its own rendering and the detection of collission against the opponent and the arena's limits.
+    """    
     def __init__(self, parent_id, x, y, rot):
         self.parent_id = parent_id  # ID of the parent bot
         self.x = x
@@ -22,8 +24,14 @@ class Bullet:
 
     def update(self, bots):
         """Check for out of bounds and collisions with bots.
-        Returns (alive, damaged_bot_id).
+
+        Args:
+            bots (_type_): all the game bots 
+
+        Returns:
+            _type_: (alive, damaged_bot_id).
         """
+        
         x, y = self.x, self.y
         nx = x + self.step * math.cos(self.rot)
         ny = y + self.step * math.sin(self.rot)
@@ -67,10 +75,17 @@ class Bullet:
         return True, None
 
     def segment_hits_bot(self, bot, p1, p2):
-        """
-        Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
-        Returns True if the bot is hit (taking damage), or False if no hit or the hit is blocked by the shield.
-        """
+        """Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
+
+        Args:
+            bot (_type_): the bot
+            p1 (_type_): segment start
+            p2 (_type_): segment end
+
+        Returns:
+            _type_: True if the bot is hit (taking damage), or False if no hit or the hit is blocked by the shield
+        """        
+        
         cx, cy = bot.x, bot.y
         radius = bot.diameter / 2
 

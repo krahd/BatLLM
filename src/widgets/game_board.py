@@ -15,11 +15,19 @@ import os
 from app_config import config
 from bot import Bot
 from history_manager import HistoryManager
-from util import show_fading_alert
+from util import show_fading_alert, find_id_in_parents
 
 
 
 class GameBoardWidget(Widget):
+	"""The GameBoardWidget is BatLLM's game world.
+    It takes care of all the in-game logic, interacts with the bots and the history_manager.
+    The HomeScreen is BatLLM with the outside world and GameBoardWidget is the interface with the inside world (with the exception of the LLMs that are contacted directly, instead of through HomeWindow)
+
+	Args:
+		Widget (_type_): Kivi's base Widget
+	
+	"""    
 	
 	bots = []
 	bulletTrace = []
@@ -33,6 +41,8 @@ class GameBoardWidget(Widget):
 	history_manager = None
  
 	def __init__(self, **kwargs):
+		"""Constructor
+		"""     
 		super(GameBoardWidget, self).__init__(**kwargs)
 		
 		self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
@@ -60,6 +70,8 @@ class GameBoardWidget(Widget):
 
 
 	def start_new_game(self):
+		"""Starts a new game. It resets all the information pertaining to the previous game.
+		"""     
 		# reset values
 		self.current_turn = None
 		self.current_round = None		
@@ -81,6 +93,11 @@ class GameBoardWidget(Widget):
 
 
 	def save_session(self, filename):
+		"""Upon user confirmation it asks the HistoryManager to save all the session information recorded until this moment.
+
+		Args:
+			filename (_type_): the name of the json file.
+		"""     
 		folder = f"{config.get("data", "saved_sessions_folder")}"		
 		os.makedirs(folder, exist_ok=True)
 
@@ -89,36 +106,46 @@ class GameBoardWidget(Widget):
 		self.history_manager.save_session(filepath)
 		print ("done")
 
-		print (self.history_manager.to_text())
+		print (self.history_manager.to_text()) # TODO After designing a new a screen to display the history. The screen's data will be updated here. Meanwhile the history as string is printed directly on the terminal.
 
 
    
 	def on_kv_post(self, base_widget):
-		"""This method is called after the KV rules have been applied."""
+		"""This method is called after the KV rules have been applied
+
+		Args:
+			base_widget (_type_): The root of the tree of elements to check
+		"""		
 		super().on_kv_post(base_widget)
 
-		self.start_new_game()
+		self.start_new_game() # The first game of the session is created automatically.
 
 		
 		
 
 
-	def _keyboard_closed(self): # virtual keyboard closed handler
+	def _keyboard_closed(self):
+		"""virtual keyboard closed handler. It has no use in a desktop app.
+		"""     
 		print('keyboard have been closed!')
 		self._keyboard.unbind(on_key_down = self._on_keyboard_down)
 		self._keyboard = None
 
 
 
-
 	def _redraw(self, *args):
+		"""Refreshes the screen by calling render()
+		"""     
 		self.render()
 
 
 
 			
 	def render(self, *args):      
-		"""Renders the game board and all bots."""              
+		"""Draws the game world in its current state.
+		It uses NormalizedCanvas instead of Kivy's standard canvas to simplfy drawing.
+		# TODO improve the game graphics
+		"""		              
 		self.canvas.clear()
 		
 		# keep bots inside bounds
@@ -158,9 +185,17 @@ class GameBoardWidget(Widget):
 		
 			
 						
-	# mouse button down event handler - it does nothing as of now.
+	
 	def on_touch_down(self, touch):
-		"""Handles mouse click events on the game board."""
+		"""Mouse click and touch event handler - it does nothing as of now.
+
+		Args:
+			touch (_type_): touch event
+
+		Returns:
+			_type_: True iff the event has been handled
+		"""     
+		
 		if self.collide_point(touch.x, touch.y):         
 			nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
 			return True   
@@ -169,30 +204,35 @@ class GameBoardWidget(Widget):
 
 
 
-	# mouse drag event handler - it does nothing as of now.
+	
 	def on_touch_move(self, touch):
-		"""Handles mouse drag events on the game board."""
+		"""Mouse drag and finger drag event handler - it does nothing as of now.
+		Args:
+			touch (_type_): touch event
+
+		Returns:
+			_type_: True iff the event has been handled
+		"""     
+		
 		if self.collide_point(touch.x, touch.y):
-			nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
-		   
+			nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)		   
 			return True
 		
 		return super().on_touch_move(touch)
 
 
 
-	def find_id_in_parents(self, target_id):  # TODO move to util class
-		parent = self.parent
-		while parent:
-			if hasattr(parent, 'ids') and target_id in parent.ids:
-				return parent.ids[target_id]
-			parent = parent.parent
-		return None
-
+	
 
 
 	def add_text_to_llm_response_history(self, bot_id, text):
-		 #TODO move this function to the HomeScreen class?
+		"""Seems a duplicate #TODO check and if so move this function to the HomeScreen class?
+
+		Args:
+			bot_id (_type_): bot id
+			text (_type_): text to add
+		"""		
+		 
 		box = self.find_id_in_parents(f"output_history_player_{bot_id}")
    
 		if box is not None:
@@ -200,8 +240,14 @@ class GameBoardWidget(Widget):
 		else:
 			print(f"Could not find output history box for bot_id: {bot_id}")
 
+
 	def add_llm_response_to_history(self, bot_id, command):
-		"""Adds a command to the output history box for the specified bot."""  
+		"""Adds the command parsed from the llm response to the output history next to the history widget.
+
+		Args:
+			bot_id (_type_): bot id
+			command (_type_): the command to add
+		"""		  
 		text = f"   {self.current_turn}. {command}\n" 
 		self.add_text_to_llm_response_history(bot_id, text)
         
@@ -209,7 +255,13 @@ class GameBoardWidget(Widget):
 
 
 	def submit_prompt(self, bot_id, new_prompt):
-		"""Submits the prompt for the specified bot."""
+		"""Tells the bot with bot_id to start working on submitting the new_prompt to the llm
+  		If all the bots have submitted a new prompt, it starts the next round.
+
+		Args:
+			bot_id (_type_): the bot id
+			new_prompt (_type_): the player's prompt
+		"""		
 		
 		bot = self.get_bot_by_id(bot_id)
 		bot.prepare_prompt_submission(new_prompt)
@@ -220,6 +272,8 @@ class GameBoardWidget(Widget):
 
 
 	def play_round(self):
+		"""It runs recursively taking care of a complete game round
+		"""     
 		self.current_turn = 0
   
 		if self.current_round is None:
@@ -242,7 +296,12 @@ class GameBoardWidget(Widget):
 
 
 	def game_over(self):
-		"""Checks if the game is over."""
+		"""Checks if the game is over.
+
+		Returns:
+			_type_: true iff the game is over (either only one bot is alive, no bot is or the max number if rounds has been met)
+		"""		
+	
   
 		for b in self.bots:
 			if b.health <= 0:				
@@ -257,6 +316,11 @@ class GameBoardWidget(Widget):
 
 
 	def play_turn(self, dt):
+		"""Executes one turn
+
+		Args:
+			dt (_type_): it is not used yet can't be deleted.
+		"""     
      
 		if not self.current_turn < config.get("game", "turns_per_round"):  # round's over
 
@@ -299,7 +363,11 @@ class GameBoardWidget(Widget):
 		
 
 	def on_bot_llm_interaction_complete(self, bot):
-		"""Callback when a bot's LLM interaction is complete."""
+		"""Callback method executed after a prompt-response cycle has been completed by a bot 
+
+		Args:
+			bot (_type_): the bot id
+		"""		
 		bot.ready_for_next_turn = True
   		
 		if all(b.ready_for_next_turn for b in self.bots):      
@@ -312,7 +380,11 @@ class GameBoardWidget(Widget):
 
 
 	def get_bot_by_id(self, id):
-		"""Returns the bot instance with the specified ID."""
+		"""Returns the bot instance with the specified ID.
+
+		Args:
+			id (_type_): The bot with the id or None if not found.
+  		"""
 		for bot_instance in self.bots:
 			if bot_instance.id == id:
 				return bot_instance
@@ -322,7 +394,18 @@ class GameBoardWidget(Widget):
 
 
 	def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-		"""Handles keyboard input for bot commands."""	
+		"""Keyboard handler for the game board. It is used for debug and testing purposes alone.
+		Once the codebase is more mature it will probably be removed (commented out, actually)
+
+		Args:
+			keyboard (_type_): type of keyboard
+			keycode (_type_): the code of the pressed key
+			text (_type_): the symbol correspnding to the key
+			modifiers (_type_): the modifiers being pressed (shift, command, etc).
+
+		Returns:
+			_type_: True # TODO check this.
+		"""
 
 		if modifiers and 'shift' in modifiers:
 			bot_id = 2
@@ -351,7 +434,7 @@ class GameBoardWidget(Widget):
 					bot.toggle_shield()
 
 				case 'spacebar':           
-					# TODO move bot sounds inside the bot class
+					# TODO move bot sounds inside util
 					if not bot.shield:
 						Clock.schedule_once(lambda dt: self.snd_shoot.play())
 
