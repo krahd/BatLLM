@@ -2,8 +2,9 @@
 # BatLLM
 ***Democratising AI through play***
 
->[!Documentation Index] 
->**[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)**
+> [!NOTE]
+> **[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
+
 
 **BatLLM** is an open-source, two-player, turn-based battle game with a twist: instead of interacting directly with the game, players must use an AI model to interact on their behalf. 
 
@@ -17,7 +18,7 @@ By combining language, strategy, and AI-driven gameplay, **BatLLM** offers a saf
 
 This document provides a rather superficial overview of the project. To know more about **BatLLM**, its objectives and technical details, please refer to the [[#BatLLM|main documentation files]].
 
->[!Thanks!]
+> [!NOTE]
 > **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
 
 
