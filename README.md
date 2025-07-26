@@ -1,7 +1,7 @@
 
 
-![[docs/attachments/logo-small.png\|100]] 
 
+![logo](docs/attachments/logo-small.png\|100)
 # BatLLM
 ***Democratising AI through play***
 
