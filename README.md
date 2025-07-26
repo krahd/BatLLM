@@ -41,7 +41,7 @@ This document provides a rather superficial overview of the project. To know mor
 
 To run **BatLLM** on your computer you must download the project and run it using Python. To achieve this you may:
 
-**Clone this repository, create and activate a Python virtual environment. Install the project requirements using PIP.
+**Clone this repository, create and activate a Python virtual environment. Install the project requirements using PIP.**
 ```bash
 git clone https://github.com/krahd/batllm.git
 cd batllm
