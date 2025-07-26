@@ -76,10 +76,11 @@ class AppConfig:
         """Sets a configuration value for the specified section and key.    
         If the section does not exist, it creates it.
         """
+        
         if not isinstance(value, (str, int, float, bool)):
-        if section not in self._config:
-            self._config[section] = {}
-        self._config[section][key] = value
+            if section not in self._config:
+                self._config[section] = {}
+            self._config[section][key] = value
 
 
 

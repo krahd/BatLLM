@@ -331,11 +331,11 @@ class GameBoardWidget(Widget):
 			if (self.game_over()):
 				self.history_manager.end_game(self)				
     
-				round_res += "Final Results:\n"
+				round_res += "Final Results:\n\n"
 				for b in self.bots:
-					round_res += f"Bot {b.id}'s health: {b.health}\n\n"
+					round_res += f"        Bot {b.id}'s health: {b.health}\n"
      
-				popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
+				popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (470, 460))
 				popup.open()
 				self.start_new_game()				
 				
@@ -349,7 +349,7 @@ class GameBoardWidget(Widget):
 
 			return
 
-		title_label = self.find_id_in_parents("header_label")
+		title_label = find_id_in_parents(self, "header_label")
 
 		if title_label is not None:	
 			title_label.text = f"Game {self.games_started}.   Round {self.current_round}.  Turn {self.current_turn + 1}."

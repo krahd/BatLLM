@@ -201,12 +201,15 @@ class HomeScreen(Screen):
         """        
         
         new_prompt = self.get_prompt_input_text(bot_id)
-        self.prompt_history_add_text(bot_id, new_prompt)
-        self.set_prompt_input_text(bot_id, "") # Clear the input field 
+        
+        if len(new_prompt) > 0:  # ignore empty prompts
+        
+            self.prompt_history_add_text(bot_id, new_prompt)
+            self.set_prompt_input_text(bot_id, "") # Clear the input field 
 
-        # tell the board to submit the prompt for this bot_id
-        gbw = self.ids.game_board
-        gbw.submit_prompt (bot_id, new_prompt)
+            # tell the board to submit the prompt for this bot_id
+            gbw = self.ids.game_board
+            gbw.submit_prompt (bot_id, new_prompt)
         
         
            
