@@ -63,6 +63,7 @@ class HomeScreen(Screen):
         
         def _start_new_game():            
             self.ids.game_board.start_new_game()
+            self.update_title_label()
             
         show_confirmation_dialog("New Game",
                                  "Abandon current game and start a new one?",

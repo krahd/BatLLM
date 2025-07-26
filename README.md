@@ -1,10 +1,10 @@
-![alt text](https://github.com/krahd/BatLLM/blob/73db28aefa217d101717c081971deee7a53e9198/docs/attachments/logo-small.png "Bat LLM logo")
+![alt text](https://github.com/krahd/BatLLM/blob/73db28aefa217d101717c081971deee7a53e9198/docs/images/logo-small.png "Bat LLM logo")
 # BatLLM
 ***Democratising AI through play***
 
 > [!NOTE]
-> Index:
-> **[Readme](README.md)  &mdash;  [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
+> ** Main Sections:
+> [Readme](README.md)  &mdash;  [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTING.md)  &mdash; [FAQ](docs/FAQ.md)  &mdash; [Credits](docs/CREDITS.md)** 
 
 
 **BatLLM** is an open-source, two-player, turn-based battle game with a twist: instead of interacting directly with the game, players must use an AI model to interact on their behalf. 
@@ -75,6 +75,8 @@ Each player has a text bot where they can add prompts to their collection. After
 
 In addition, you may use the buttons at the bottom right to change some of BatLLM's options, to start a new game, or to save the information of the current execution of BatLLM as a JSON file.
 
+
 > [!NOTE]
-> Index:
-> **[Readme](README.md)  &mdash;  [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
+> ** Main Sections:
+> [Readme](README.md)  &mdash;  [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTING.md)  &mdash; [FAQ](docs/FAQ.md)  &mdash; [Credits](docs/CREDITS.md)** 
+

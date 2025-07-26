@@ -349,18 +349,25 @@ class GameBoardWidget(Widget):
 
 			return
 
-		title_label = find_id_in_parents(self, "header_label")
-
-		if title_label is not None:	
-			title_label.text = f"Game {self.games_started}.   Round {self.current_round}.  Turn {self.current_turn + 1}."
+		self.update_title_label()
    
 		self.history_manager.start_turn(self)
 
 		for b in self.shuffled_bots:
 			b.ready_for_next_turn = False  
 			b.submit_prompt_to_llm()
-		
-		
+
+  
+
+	def update_title_label(self):
+		"""Updates the label above the game board with the current game, round and turn information.
+		"""		
+		title_label = find_id_in_parents(self, "header_label")
+		if title_label is not None:	
+			title_label.text = f"Game {self.games_started}.   Round {self.current_round}.  Turn {self.current_turn + 1}."		
+
+
+
 
 	def on_bot_llm_interaction_complete(self, bot):
 		"""Callback method executed after a prompt-response cycle has been completed by a bot 
