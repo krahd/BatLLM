@@ -1,4 +1,4 @@
-# BatLLM API 
+# BatLLM's API 
 This file was generated using docstrings and pydoc-markdown. 
 BatLLM's docstrings do need work.
 
