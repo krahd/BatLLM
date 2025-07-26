@@ -59,7 +59,7 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
 
 
 def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
-    """ Displays a modal alert with a title and message that fades out and closes itsel.
+    """Displays a modal alert with a title and message that fades out and closes itsel.
 
     Args:
         title (_type_): the title of the alert
@@ -90,7 +90,8 @@ def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
 
 
 def show_text_input_dialog(on_confirm, on_cancel=None, title="", default_text="", input_hint="Enter a text"):
-    """A modal dialog to enter a filename for saving. # TODO change it into a generic dialog for entering text.
+    """A modal dialog for the user to enter a text input.
+    
 
     Args:
         on_confirm (_type_): function to call when the user confirms the filename
@@ -140,13 +141,14 @@ def find_id_in_parents(searcher, target_id):
     """Searches recursively for an element among the ancestors of a Kivy element by its id
 
     Args:
-        searcher (_type_): The object that starts the search, usually a Kivy widget.
-        target_id (_type_): The id of the object to find.
+        searcher (_type_): the object that starts the search, usually a Kivy widget.
+        target_id (_type_): the object's id to find.
 
     Returns:
-        _type_: The found object or None
-    """
+        _type_: the found object or None
+    """    
 
+    
     parent = searcher.parent
     while parent:
         if hasattr(parent, 'ids') and target_id in parent.ids:

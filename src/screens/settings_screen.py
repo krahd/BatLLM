@@ -4,6 +4,11 @@ from app_config import config
 
 
 class SettingsScreen(Screen):
+    """A screen for configuring game settings.
+
+    Args:
+        Screen (_type_): Kivy's base screen class.
+    """    
     
     total_rounds = NumericProperty(config.get("game", "total_rounds"))
     turns_per_round = NumericProperty(config.get("game", "turns_per_round"))
@@ -26,6 +31,8 @@ class SettingsScreen(Screen):
     def update_config(self):
         """Updates the configuration with the values from the sliders and checkboxes.
         """
+
+        # TODO should settings changes be stored in HistoryManager?
    
         config.set("game", "total_rounds", int(self.ids.rounds_slider.value))
         config.set("game", "turns_per_round", int(self.ids.turns_slider.value))
@@ -34,14 +41,17 @@ class SettingsScreen(Screen):
         config.set("game", "shield_size", int(self.ids.shield_slider.value))        
         config.set("game", "independent_models", self.ids.independent_checkbox.active)
         config.set("game", "prompt_augmentation", self.ids.augmentation_checkbox.active)
-        
-        print("[Settings] Configurations saved to config.yaml")
+            
 
 
     def set_and_return(self):
+        """Updates the configuration and returns to the home screen.
+        """
         self.update_config()
         self.go_to_home_screen()
 
 
     def go_to_home_screen(self):
+        """Switches the current screen to the home screen.
+        """
         self.manager.current = "home"

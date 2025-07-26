@@ -5,6 +5,7 @@ import math
 class Bullet:
     """This class models the bullets shot by the bots. It takes care of its own rendering and the detection of collission against the opponent and the arena's limits.
     """    
+    
     def __init__(self, parent_id, x, y, rot):
         self.parent_id = parent_id  # ID of the parent bot
         self.x = x
@@ -15,6 +16,7 @@ class Bullet:
         self.colour = (1, 0, 0, 1)  #
 
     def render(self):        
+        """Renders the bullet as a circle at its current position with the specified color."""
         PushMatrix()
         Translate(self.x, self.y)
         Color(*self.colour)
@@ -73,6 +75,7 @@ class Bullet:
         # No collision with any bot; update bullet position
         self.x, self.y = nx, ny
         return True, None
+
 
     def segment_hits_bot(self, bot, p1, p2):
         """Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
