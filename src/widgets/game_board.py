@@ -233,7 +233,7 @@ class GameBoardWidget(Widget):
 			text (_type_): text to add
 		"""		
 		 
-		box = self.find_id_in_parents(f"output_history_player_{bot_id}")
+		box = find_id_in_parents(self, f"output_history_player_{bot_id}")
    
 		if box is not None:
 			box.text += text

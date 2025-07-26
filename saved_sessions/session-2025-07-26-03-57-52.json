@@ -1,0 +1,30 @@
+[
+    {
+        "game_id": 1,
+        "start_time": "2025-07-26T03:57:47.522250",
+        "initial_state": {
+            "1": {
+                "id": 1,
+                "health": 42,
+                "x": 0.37780498788838623,
+                "y": 0.051641498956268794,
+                "rot": 1.7961395409035479,
+                "shield": true,
+                "prompt": "",
+                "llm_response": null
+            },
+            "2": {
+                "id": 2,
+                "health": 42,
+                "x": 0.09965174301947666,
+                "y": 0.695578603939992,
+                "rot": 4.997478140560147,
+                "shield": true,
+                "prompt": "",
+                "llm_response": null
+            }
+        },
+        "rounds": [],
+        "winner": null
+    }
+]

@@ -136,16 +136,18 @@ def show_text_input_dialog(on_confirm, on_cancel=None, title="", default_text=""
 
 
 
-def find_id_in_parents(self, target_id):
-    """Searches for an element among the ancestors of a Kivy element by its id
+def find_id_in_parents(searcher, target_id):
+    """Searches recursively for an element among the ancestors of a Kivy element by its id
 
     Args:
-        target_id (_type_): the id of the object to find.
+        searcher (_type_): The object that starts the search, usually a Kivy widget.
+        target_id (_type_): The id of the object to find.
 
     Returns:
-    _type_: The found object or None
-    """    
-    parent = self.parent
+        _type_: The found object or None
+    """
+
+    parent = searcher.parent
     while parent:
         if hasattr(parent, 'ids') and target_id in parent.ids:
             return parent.ids[target_id]

@@ -61,8 +61,7 @@ class HomeScreen(Screen):
         Takes care of the user interaction and delegates the actual logic to GameBoardWidget.
         """        
         
-        def _start_new_game():
-            print("Starting a new game...")
+        def _start_new_game():            
             self.ids.game_board.start_new_game()
             
         show_confirmation_dialog("New Game",
