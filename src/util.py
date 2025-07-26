@@ -3,6 +3,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.animation import Animation
+from kivy.clock import Clock
+from kivy.uix.modalview import ModalView
 
 
 def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
@@ -43,6 +46,51 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
 
     popup.open()
 
+
+
+
+def show_fading_alert2(title, message, duration=1.0, fade_duration=1.0):
+    content = BoxLayout(orientation='vertical', spacing=10, padding=10)
+    label = Label(text=message, halign='center')
+    content.add_widget(label)
+
+    w = 400 + 20 * max(len(line) for line in message.splitlines())
+    h = 100 + 40 * len(message.splitlines())
+
+    popup = ModalView(size_hint=(None, None), size=(w, h),
+                      auto_dismiss=False, background_color=(0, 0, 0, 0))  # transparent background
+    popup.add_widget(content)
+
+    def fade_and_close(*args):
+        anim = Animation(opacity=0, duration=fade_duration)
+        anim.bind(on_complete=lambda *a: popup.dismiss())
+        anim.start(content)  # animate the content, not the ModalView itself
+
+    popup.open()
+    Clock.schedule_once(fade_and_close, duration)
+
+
+def show_fading_alert(title, message, duration= 
+                      1.0, fade_duration=1.0):
+    content = BoxLayout(orientation='vertical', spacing=10, padding=10)
+
+    label = Label(text=message, halign='center')
+    content.add_widget(label)
+
+    w = 400 + 20 * max(len(line) for line in message.splitlines())
+    h = 400 + 20 * len(message.splitlines())
+    
+    popup = Popup(title=title, content=content,
+                  size_hint=(None, None), size=(w, h),
+                  opacity=1)
+
+    def fade_and_close(*args):
+        anim = Animation(opacity=0, duration=fade_duration)
+        anim.bind(on_complete=lambda *a: popup.dismiss())
+        anim.start(popup)
+   
+    popup.open()
+    Clock.schedule_once(fade_and_close, duration)
 
 
 

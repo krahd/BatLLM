@@ -121,17 +121,18 @@ class HomeScreen(Screen):
 
     def rewind_prompt_history(self, bot_id):
         """Rewinds the prompt history for the specified bot ID."""
-        b = self.get_bot_by_id(bot_id)
+        
+        b = self.ids.game_board.get_bot_by_id(bot_id)
         b.rewind_prompt_history()    
-        self.prompt_history_add_text (bot_id, b.get_current_prompt_history())
+        self.prompt_history_add_text (bot_id, b.get_current_prompt_from_history())
         
 
         
     def forward_prompt_history(self, bot_id):
         """Forwards the prompt history for the specified bot ID."""
-        b = self.get_bot_by_id(bot_id)
+        b = self.ids.game_board.get_bot_by_id(bot_id)
         b.forward_prompt_history()        
-        self.prompt_history_add_text (bot_id, b.get_current_prompt_history())
+        self.prompt_history_add_text (bot_id, b.get_current_prompt_from_history())
         
 
 

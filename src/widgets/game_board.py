@@ -15,6 +15,7 @@ import os
 from app_config import config
 from bot import Bot
 from history_manager import HistoryManager
+from util import show_fading_alert
 
 
 
@@ -279,8 +280,8 @@ class GameBoardWidget(Widget):
 				for b in self.bots:
 					round_res += f"Bot {b.id}'s health: {b.health}\n\n"				
 		
-				popup = Popup(title=f'Round {self.current_round} is over', content=Label(text = round_res), size_hint = (None, None), size = (400, 400))
-				popup.open()			
+					
+				show_fading_alert(f'Round {self.current_round} is over', round_res, duration=.6, fade_duration=0.5)
 
 			return
 
