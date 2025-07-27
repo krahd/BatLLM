@@ -5,7 +5,7 @@ from kivy.uix.screenmanager import Screen
 from game.history_manager import HistoryManager
 from game.bot import Bot
 from kivy.clock import Clock
-from game.game_board import GameBoardWidget
+from game.game_board import GameBoard
 
  
 from configs.app_config import config
@@ -13,7 +13,7 @@ from util.util import show_confirmation_dialog, show_text_input_dialog
 
 class HomeScreen(Screen):    
     """A HomeScreen instance is the main screen of the application. 
-    It contains the UX components for game control, prompting, and the game board (GameBoardWidget)
+    It contains the UX components for game control, prompting, and the game board (GameBoard)
     
     Args:
         Screen (_type_): Kivy's base screen class.
@@ -33,7 +33,7 @@ class HomeScreen(Screen):
     
     def save_session (self):
         """Handler for the save session button.
-        Takes care of the user interaction and delegates the actual saving to the GameBoardWidget.
+        Takes care of the user interaction and delegates the actual saving to the GameBoard.
         """        
         def on_saving_confirmed():                        
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -53,15 +53,10 @@ class HomeScreen(Screen):
                                     on_saving_confirmed, on_saving_cancelled)
 
         
-
-
-
-                                 
-
         
     def start_new_game(self):
         """Handler for the start new game button.
-        Takes care of the user interaction and delegates the actual logic to GameBoardWidget.
+        Takes care of the user interaction and delegates the actual logic to GameBoard.
         """        
         
         def _start_new_game():            
@@ -71,10 +66,9 @@ class HomeScreen(Screen):
         show_confirmation_dialog("New Game",
                                  "Abandon current game and start a new one?",
                                  _start_new_game)
-                                 
+    
         
-        
-
+    
     def go_to_settings_screen(self):
         """Handler for the settings button.
         Switches the current screen to the settings screen.
@@ -119,9 +113,8 @@ class HomeScreen(Screen):
             text_input.text = text
         else:
             pass
-            
-
-
+    
+        
             
     def get_prompt_history_selected_text(self, id):
         """Returns the text from the TextInput for the prompt history of the specified bot ID.
@@ -196,7 +189,7 @@ class HomeScreen(Screen):
         self.set_prompt_input_text(bot_id, new_prompt)
         
         
-    # tells the bot to submit the prompt to the LLM
+    
     def submit_prompt(self, bot_id):
         """Tells the bot to use the text in the input text as the prompt for the upcoming round.
 
@@ -214,6 +207,46 @@ class HomeScreen(Screen):
             # tell the board to submit the prompt for this bot_id
             gbw = self.ids.game_board
             gbw.submit_prompt (bot_id, new_prompt)
+        
+        
+
+    def on_request_close(self, *args):
+        """Handles the request to close the application.
+        Shows a confirmation dialog before closing.
+        If the user confirms it offers to save the session to a file 
+        """
+        show_confirmation_dialog("Exit",
+                                 "Are you sure you want to exit?",
+                                 _on_exit_confirmed,
+                                _on_exit_cancelled)
+
+        
+        
+    def _on_exit_confirmed(self, *args):
+        """Callback for the exit confirmation dialog.
+        If the user confirms, it offers to save the session to a file.
+        """
+        def on_saving_confirmed():
+            self.save_session()
+            self.manager.app.stop()
+
+        def on_saving_cancelled():
+            self.manager.app.stop() 
+
+        show_confirmation_dialog("Save Session",
+                                 "Do you want to save the current session before exiting?",
+                                    on_saving_confirmed, on_saving_cancelled)
+        
+
+
+    def _on_exit_cancelled(self, *args):
+        """Callback for the exit cancellation dialog.
+        If the user cancels, it does nothing.
+        """
+        pass    
+        
+        
+
         
         
            

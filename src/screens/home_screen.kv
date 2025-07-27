@@ -457,6 +457,7 @@
             BoxLayout:  # Third Column (game area) is also divided in three.
                 orientation: "vertical"
                 padding: 1
+                spacing: 1
                 canvas.before:
                     Color:                        
                         rgba: 0, 0, 0, 1 
@@ -465,22 +466,12 @@
                         size: self.size
                 
 
-                Label:
-                    font_size: "15sp"
-                    height: "48dp"  
-                    size_hint_x: 1
-                    size_hint_y: None
-                    text: "Hola"
-                    
-                    id: header_label                                 
-                    markup: True
-
-                    halign: "left"
-                    valign: "middle"
-
-                    color: 0, 0, 0, 1                    
-                    text_size: self.width, self.height
-
+                BoxLayout:  # Header with two labels
+                    orientation: "horizontal"
+                    size_hint: 1, None
+                    height: "48dp"                      
+                    padding: 60, 0, 0, 0
+                    spacing: 0
                     canvas.before:
                         Color:                              
                             rgba: .8, .83, .8, 1
@@ -488,21 +479,55 @@
                             pos: self.pos
                             size: self.size
 
-                FloatLayout:
+                   
+                    Label:
+                        font_size: "20sp"
+                        text: "[b]BatLLM[/b]"
+                        
+                        size_hint_x: None                    
+                        size_hint_y: None
+                        width: 450
+                        
+                        id: header_label                                 
+                        markup: True
+
+                        halign: "left"
+                        valign: "middle"
+
+                        color: 0, 0, 0, 1                    
+                        text_size: self.width, self.height
+
+
+                    Label:
+                        id: game_title_label
+                        font_size: "16sp"
+                        
+                        size_hint_x: 1
+                        size_hint_y: None
+                                                
+                        markup: True
+
+                        halign: "left"
+                        valign: "middle"
+
+                        color: 0, 0, 0, 1                    
+                        text_size: self.width, self.height
+
                     
+
+                AnchorLayout:
+                    anchor_x: "center"
+                    anchor_y: "center"                    
                     canvas.before:
                         Color:                              
                             rgba: .8, .83, .8, 1
                         Rectangle:
                             pos: self.pos
-                            size: self.size                    
-                                                
-                    GameBoardWidget:
+                            size: self.size                                                                    
+                    GameBoard:
                         id: game_board
+                        size_hint: 1, 1
 
-                        size_hint_x: 1
-                        size_hint_y: 1
-                        padding: 0, 0
 
 
                                 

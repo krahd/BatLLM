@@ -19,16 +19,16 @@ from util.util import show_fading_alert, find_id_in_parents
 
 
 
-class GameBoardWidget(Widget):
-	"""The GameBoardWidget is BatLLM's game world.
+class GameBoard(Widget):
+	"""The GameBoard is BatLLM's game world. It is algo a Kivi Widget, so it can be used in the Kivy UI.
     It takes care of all the in-game logic, interacts with the bots and the history_manager.
-    The HomeScreen is BatLLM with the outside world and GameBoardWidget is the interface with the inside world (with the exception of the LLMs that are contacted directly, instead of through HomeWindow)
+    The HomeScreen is BatLLM with the outside world and GameBoard is the inside world implementation of everything in the game (with the exception of the LLMs, which are contacted directly by the bots).
 
 	Args:
 		Widget (_type_): Kivi's base Widget
 	
 	"""    
-	
+
 	bots = []
 	bulletTrace = []
 	bullet_alpha = 1
@@ -43,7 +43,7 @@ class GameBoardWidget(Widget):
 	def __init__(self, **kwargs):
 		"""Constructor
 		"""     
-		super(GameBoardWidget, self).__init__(**kwargs)
+		super(GameBoard, self).__init__(**kwargs)
 		
 		self._keyboard = Window.request_keyboard(self._keyboard_closed, self, 'text')
 		self._keyboard.bind(on_key_down = self._on_keyboard_down)
@@ -65,7 +65,6 @@ class GameBoardWidget(Widget):
 		# render loop
 		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
 
-
 	
 
 	def start_new_game(self):
@@ -78,7 +77,7 @@ class GameBoardWidget(Widget):
   				
 
      
-     	# Create two bot instances with reference to this GameBoardWidget
+     	# Create two bot instances with reference to this GameBoard
 		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
 
 		if self.games_started > 0:
@@ -108,7 +107,6 @@ class GameBoardWidget(Widget):
 
 		print (self.history_manager.to_text()) # TODO After designing a new a screen to display the history. The screen's data will be updated here. Meanwhile the history as string is printed directly on the terminal.
 
-
    
 
 	def on_kv_post(self, base_widget):
@@ -121,9 +119,7 @@ class GameBoardWidget(Widget):
 
 		Clock.schedule_once(lambda dt: self.start_new_game(), 0)  # Start a new game after the KV rules have been applied
 		self.start_new_game() # The first game of the session is created automatically.
-		
-		
-		
+			
 
 
 	def _keyboard_closed(self):
@@ -139,7 +135,6 @@ class GameBoardWidget(Widget):
 		"""Refreshes the screen by calling render()
 		"""     
 		self.render()
-
 
 
 			
@@ -183,9 +178,7 @@ class GameBoardWidget(Widget):
 				else:
 					self.bulletTrace.clear()
 			   
-		
-			
-						
+											
 	
 	def on_touch_down(self, touch):
 		"""Mouse click and touch event handler - it does nothing as of now.
@@ -204,7 +197,6 @@ class GameBoardWidget(Widget):
 		return super().on_touch_down(touch)  
 
 
-
 	
 	def on_touch_move(self, touch):
 		"""Mouse drag and finger drag event handler - it does nothing as of now.
@@ -220,9 +212,6 @@ class GameBoardWidget(Widget):
 			return True
 		
 		return super().on_touch_move(touch)
-
-
-
 	
 
 
@@ -242,6 +231,7 @@ class GameBoardWidget(Widget):
 			print(f"Could not find output history box for bot_id: {bot_id}")
 
 
+
 	def add_llm_response_to_history(self, bot_id, command):
 		"""Adds the command parsed from the llm response to the output history next to the history widget.
 
@@ -252,7 +242,6 @@ class GameBoardWidget(Widget):
 		text = f"   {self.current_turn}. {command}\n" 
 		self.add_text_to_llm_response_history(bot_id, text)
         
-
 
 
 	def submit_prompt(self, bot_id, new_prompt):
@@ -296,14 +285,13 @@ class GameBoardWidget(Widget):
 
 
 
-	def game_over(self):
+	def game_is_over(self):
 		"""Checks if the game is over.
 
 		Returns:
 			_type_: true iff the game is over (either only one bot is alive, no bot is or the max number if rounds has been met)
 		"""		
 	
-  
 		for b in self.bots:
 			if b.health <= 0:				
 				return True
@@ -313,9 +301,7 @@ class GameBoardWidget(Widget):
 
 		return False
 
-   
 		
-
 
 	def play_turn(self, dt):
 		"""Executes one turn
@@ -329,60 +315,63 @@ class GameBoardWidget(Widget):
 			self.history_manager.end_round(self)
 			for b in self.bots:
 				self.add_text_to_llm_response_history(b.id, "\n\n")
-			
-
-
    
 			round_res = "\n"
    
-			if (self.game_over()):
+			if (self.game_is_over()):
 				self.history_manager.end_game(self)				
-    
-				round_res += "Final Results:\n\n"
-				for b in self.bots:
-					round_res += f"        Bot {b.id}'s health: {b.health}\n"
-     
-				popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (470, 460))
-				popup.open()
+				self.end_game()				
 				self.start_new_game()				
 				
 			else:
-   
 				for b in self.bots:
 					round_res += f"Bot {b.id}'s health: {b.health}\n\n"				
-		
-					
+							
 				show_fading_alert(f'Round {self.current_round} is over', round_res, duration=.6, fade_duration=0.5)
 
 			return
 
-		self.update_title_label()
-   
+		self.update_title_label()   
 		self.history_manager.start_turn(self)
-
 		for b in self.shuffled_bots:
 			b.ready_for_next_turn = False  
 			b.submit_prompt_to_llm()
 
+
+
+	def 
   
+
+	def end_game(self):
+		"""Ends the game and displays the final results.
+		"""     
+		round_res = "Final Results:\n\n"
+		for b in self.bots:
+			round_res += f"        Bot {b.id}'s health: {b.health}\n"
+
+		popup = Popup(title='Game Over', content=Label(text = round_res), size_hint = (None, None), size = (470, 460))
+		popup.open()
+
+		# TODO Check if there is any manintenance to do after the game is over and before starting a new one.
+
 
 	def update_title_label(self):
 		"""Updates the label above the game board with the current game, round and turn information.
 		"""		
-		title_label = find_id_in_parents(self, "header_label")
-		if title_label is not None:	
-			title_label.text = f"  [size=34][b]BatLLM[/b][/size]                 "
-			title_label.text += f"[size=32]Game {self.games_started}."
+		game_title_label = find_id_in_parents(self, "game_title_label")
+		if game_title_label is not None:	
+
+			game_title_label.text = f"[size=32]Game {self.games_started}."
    
 			if self.current_round is not None:
-				title_label.text += "   "       
-				title_label.text += f"Round {self.current_round}."
+				game_title_label.text += "   "       
+				game_title_label.text += f"Round {self.current_round}."
 	
 				if self.current_turn is not None:
-					title_label.text += "   "
-					title_label.text += f"Turn {self.current_turn + 1}."
+					game_title_label.text += "   "
+					game_title_label.text += f"Turn {self.current_turn + 1}."
      
-			title_label.text += "[/size]"
+			game_title_label.text += "[/size]"
 
 
 
@@ -399,9 +388,7 @@ class GameBoardWidget(Widget):
 			self.history_manager.end_turn(self)
 			Clock.schedule_once(self.play_turn, 0)
 			
-			
-      				
-
+			      				
 
 	def get_bot_by_id(self, id):
 		"""Returns the bot instance with the specified ID.
@@ -413,7 +400,6 @@ class GameBoardWidget(Widget):
 			if bot_instance.id == id:
 				return bot_instance
 		return None
-
 
 
 
@@ -438,10 +424,8 @@ class GameBoardWidget(Widget):
 
 		bot = self.get_bot_by_id(bot_id)
 
-
 		if keycode[1] == 'escape':            
 				keyboard.release()
-
 		else:
 			match keycode[1]:
 				
@@ -457,35 +441,44 @@ class GameBoardWidget(Widget):
 				case 's':
 					bot.toggle_shield()
 
-				case 'spacebar':           
-					# TODO move bot sounds inside util
-					if not bot.shield:
-						Clock.schedule_once(lambda dt: self.snd_shoot.play())
-
-					bullet = bot.shoot()                    						
-
-					self.bullet_alpha = 1
-
-					alive = True                    
-					damaged_bot_id = None
-
-					if bullet is None:
-						alive = False
-
-					while alive:
-						(alive, damaged_bot_id) = bullet.update(self.bots)
-
-						# only draw bulltes outside the shooting bot                        
-						dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
-						if dist *.97 > bot.diameter / 2:
-							self.bulletTrace.append((bullet.x, bullet.y))
+				case 'b':    
+					self.shoot(bot.id)												   			       
 					
-					if damaged_bot_id is not None:						
-						Clock.schedule_once(lambda dt: self.snd_hit.play())						
-						self.get_bot_by_id(damaged_bot_id).damage()
-						
-					else:
-						pass
-												   
-			
 			return True
+	 
+
+	def shoot(self, bot_id):
+		"""A bullet is shot by a bot.
+		Args:
+			bot_id (_type_): "The id of the bot that shoots."
+		"""		
+		bot = self.get_bot_by_id(bot_id)
+		bullet = bot.shoot()                    						
+		self.bullet_alpha = 1
+		bullet_is_alive = True                    
+		damaged_bot_id = None
+
+		if bullet is not None:
+			Clock.schedule_once(lambda dt: self.snd_shoot.play())
+		else:		
+			bullet_is_alive = False
+
+		while bullet_is_alive:
+			(bullet_is_alive, damaged_bot_id) = bullet.update(self.bots)
+
+			# only draw the bullet when it is outside the bot that fires it
+			dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
+			if dist *.97 > bot.diameter / 2:
+				self.bulletTrace.append((bullet.x, bullet.y))
+		
+		if damaged_bot_id is not None:						
+			Clock.schedule_once(lambda dt: self.snd_hit.play())						
+			
+			self.get_bot_by_id(damaged_bot_id).damage()
+
+			if self.game_is_over():
+				self.end_game()
+				self.start_new_game()
+			
+
+						

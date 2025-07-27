@@ -20,17 +20,24 @@ class BattLLM(App):
         App (_type_): Kivy's base application class.
     """    
   
-    def build(self):        
-        Builder.load_file("screens/home_screen.kv")
+    def build(self):                        
         sm = ScreenManager()
         sm.add_widget(HomeScreen(name = "home"))  # starting screen        
         sm.add_widget(SettingsScreen(name = "settings"))        
         
-        self.icon = "assets/logo_small.png" # TODO create an icon
+        self.icon = "assets/images/logo_small.png" # TODO create an icon
         self.title = config.get("ui", "title") 
+
+
+        Window.bind(on_request_close=sm.home.on_request_close)  # Bind the request close event to the home screen's on_request_close method
+        
         
         return sm
 
+
+    def on_request_close(self, *args):
+        self.textpopup(title='Exit', text='Are you sure?')
+        return True
 
 if __name__ == "__main__":
     Window.maximize()

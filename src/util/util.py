@@ -57,7 +57,6 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
 
 
 
-
 def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
     """Displays a modal alert with a title and message that fades out and closes itsel.
 
@@ -133,7 +132,6 @@ def show_text_input_dialog(on_confirm, on_cancel=None, title="", default_text=""
 
     layout.add_widget(btn_layout)
     popup.open()
-
 
 
 

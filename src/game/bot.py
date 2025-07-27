@@ -411,7 +411,7 @@ class Bot (Widget):
         
         if self.health < 0:
             self.health = 0
-            print(f"Bot {self.id} has been destroyed!")
+            
 
 
     def toggle_shield(self):
