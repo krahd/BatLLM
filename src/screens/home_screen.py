@@ -9,6 +9,7 @@ from game.game_board import GameBoard
 import sys
 from configs.app_config import config
 from util.util import show_confirmation_dialog, show_text_input_dialog
+from kivy.app import App
 
 class HomeScreen(Screen):    
     """A HomeScreen instance is the main screen of the application. 
@@ -36,7 +37,7 @@ class HomeScreen(Screen):
         """        
         def on_saving_confirmed():                        
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            show_text_input_dialog(on_confirm=on_filename_confirmed, title="Save As", default_text=f"session-{timestamp}.json")
+            show_text_input_dialog(on_confirm=on_filename_confirmed, title="Save as", message="Please enter a filename:",  default_text=f"session-{timestamp}.json")
 
         def on_filename_confirmed(filename):
             if filename:
@@ -208,11 +209,11 @@ class HomeScreen(Screen):
         
         
 
-    def on_request_close(self, *args):
+    def on_request_close(self, *args, **kwargs):
         """Handles the request to close the application.
         Shows a confirmation dialog before closing.
         If the user confirms it offers to save the session to a file   
-        """
+        """        
 
         def _on_exit_cancelled():
             """Callback for the exit cancellation dialog.
@@ -223,29 +224,34 @@ class HomeScreen(Screen):
         def _on_exit_confirmed():
             """Callback for the exit confirmation dialog.
             If the user confirms, it offers to save the session to a file.
-            """
+            """            
 
-            def _on_saving_confirmed():
+            def _on_filename_confirmed(filename):
                 """Callback for the saving confirmation dialog.
                 If the user confirms, it offers to save the session to a file.      
                 """
-                self.save_session()
+                if filename:
+                    self.ids.game_board.save_session(filename)                                
                 force_exit()
 
-            def _on_saving_cancelled():
+            def _on_filename_cancelled():
                 """Callback for the saving confirmation dialog."""
                 force_exit()
 
             def force_exit():
                 """Force exit the application."""
-                self.manager.app.stop()                
+                App.get_running_app().stop() 
                 sys.exit(0)
 
-            show_confirmation_dialog("Save Session",
-                                    "Do you want to save the current session before exiting?",
-                                    on_confirm=_on_saving_confirmed, on_cancel=_on_saving_cancelled)
+
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            show_text_input_dialog(on_confirm=_on_filename_confirmed, on_cancel=_on_filename_cancelled, title="Save As", message="Please enter a filename or cancel\nto exit without saving.", default_text=f"session-{timestamp}.json")
+            return True
+
 
         show_confirmation_dialog("Exit", "Are you sure you want to exit?", on_confirm=_on_exit_confirmed, on_cancel=_on_exit_cancelled)
+        return True
+
         
 
 

@@ -30,14 +30,17 @@ class BatLLM(App):
 
     def build(self):                        
         sm = ScreenManager()
-        sm.add_widget(HomeScreen(name = "home"))  # starting screen        
+
+        home = HomeScreen(name="home")
+        #sm.add_widget(HomeScreen(name = "home"))  # starting screen        
+        sm.add_widget(home)
         sm.add_widget(SettingsScreen(name = "settings"))                
         
         self.icon = "assets/images/logo_small.png" # TODO create an icon
         self.title = config.get("ui", "title") 
 
         #Window.bind(on_request_close=self.on_request_close)
-        Window.bind(on_request_close=self.on_request_close)
+        Window.bind(on_request_close=home.on_request_close)
 
         return sm
 
@@ -53,7 +56,7 @@ class BatLLM(App):
                     self.theme_colors[key.strip()] = get_color_from_hex(value.strip())
 
 
-    def on_reqest_close(self, *args):
+    def on_request_close(self, *args, **kwargs):
         """Handles the request to close the application.
         Prompts the user to confirm if they want to exit.
         """
