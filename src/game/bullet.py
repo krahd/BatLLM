@@ -17,6 +17,7 @@ class Bullet:
 
     def render(self):        
         """Renders the bullet as a circle at its current position with the specified color."""
+        # TODO improve the rendering, at least a little bit.
         PushMatrix()
         Translate(self.x, self.y)
         Color(*self.colour)

@@ -12,51 +12,79 @@ from util.util import show_confirmation_dialog, show_text_input_dialog
 from kivy.app import App
 
 class HomeScreen(Screen):    
-    """A HomeScreen instance is the main screen of the application. 
-    It contains the UX components for game control, prompting, and the game board (GameBoard)
+    """
+    A HomeScreen instance implements BotLLM's main screen. 
+    It contains the UX components for game control, prompting, and holds the GameBoard and a HistoryManager instance.
     
     Args:
-        Screen (_type_): Kivy's base screen class.
-            
+        Screen (_type_): Kivy's base screen class.            
     """    
 
     history = None
     
     def __init__(self, **kwargs):     
-        """Constructor for the HomeScreen class.
+        """
+        Constructor for the HomeScreen class.
         Initializes the screen and sets up the history manager.
-        """           
+        """        
+
         super().__init__(**kwargs)
         self.history = HistoryManager()
         
         
     
     def save_session (self):
-        """Handler for the save session button.
-        Takes care of the user interaction and delegates the actual saving to the GameBoard.
+        """
+        Presents a confirmation dialog to the user to save the current game session.
+        If the user confirms, it saves the session to a file.
+        If the user cancels, it does nothing.        
         """        
-        def on_saving_confirmed():                        
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            show_text_input_dialog(on_confirm=on_filename_confirmed, title="Save as", message="Please enter a filename:",  default_text=f"session-{timestamp}.json")
 
-        def on_filename_confirmed(filename):
+        def _on_saving_confirmed():
+            """
+            Proposes a timestamped filename to save the session.
+
+            Returns:
+                _type_: _description_
+            """
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            show_text_input_dialog(on_confirm=_on_filename_confirmed, 
+                                   title="Save as", 
+                                   message="Please enter a filename:",  
+                                   default_filename=f"session-{timestamp}.json")
+            return True
+
+
+        def _on_filename_confirmed(filename):
+            """
+            It asks the GameBoard to save the session to the specified filename.
+
+            Args:
+                filename (_type_): The filename to save the session to.
+            """
             if filename:
                 self.ids.game_board.save_session(filename)                
             else:
                 pass
 
-        def on_saving_cancelled():
+        def _on_saving_cancelled():
+            """
+            Do nothing if the user cancels the saving dialog.
+            """
             pass        
         
         show_confirmation_dialog("Save Session",
                                  "Are you sure you want to save the session?",
-                                    on_saving_confirmed, on_saving_cancelled)
+                                   _on_saving_confirmed, 
+                                   _on_saving_cancelled)
 
         
         
     def start_new_game(self):
-        """Handler for the start new game button.
-        Takes care of the user interaction and delegates the actual logic to GameBoard.
+        """
+        Presents a confirmation dialog to the user to start a new game.
+        If the user confirms, it asks the GameBoard to start a new game.
+        If the user cancels, it does nothing.
         """        
         
         def _start_new_game():            
@@ -68,22 +96,47 @@ class HomeScreen(Screen):
     
         
     
-    def go_to_settings_screen(self):
-        """Handler for the settings button.
+    def go_to_settings_screen(self):        
+        """
+        Handler for the settings button.
         Switches the current screen to the settings screen.
         """        
         self.manager.current = "settings"
        
 
 
-    def get_prompt_input_text(self, id):
-        """Returns the text in the prompt input field for the specified player bot ID.
+    
+
+
+    def set_prompt_input_text(self, id, text):
+        """
+        Copies the text to the bot's prompt edition field.
+        If the bot is not found, it does nothing.
 
         Args:
-            id (_type_): The bot ID
+            id (_type_): The bot  id
+            text (_type_): The prompt.
+        
+        """
+        
+        input_id = f"prompt_player_{id}"
+        text_input = self.ids.get(input_id)
+
+        if text_input:
+            text_input.text = text
+        else:
+            pass
+    
+        
+    def get_prompt_input_text(self, id):
+        """
+        It returns the current state of the prompt edition field for the specified bot id.
+
+        Args:
+            id (_type_): The id.
 
         Returns:
-            _type_: Returns the text int the text input or "" if None
+            _type_: The text or an empty string if there's no bot with that id..
         """        
         
         input_id = f"prompt_player_{id}"
@@ -91,32 +144,14 @@ class HomeScreen(Screen):
 
         if text_input:
             return text_input.text
-        else:   
-            pass         
+        
         return ""
-
-
-
-    def set_prompt_input_text(self, id, text):
-        """Sets the text of the TextInput for the specified bot ID.
-
-        Args:
-            id (_type_): the bot id
-            text (_type_): the text to enter
         
-        """
-        
-        input_id = f"prompt_player_{id}"
-        text_input = self.ids.get(input_id)
-        if text_input:
-            text_input.text = text
-        else:
-            pass
-    
-        
-            
+
+
     def get_prompt_history_selected_text(self, id):
-        """Returns the text from the TextInput for the prompt history of the specified bot ID.
+        """
+        Returns the text being edited by the prompt.
 
         Args:
             id (_type_): the bot id
@@ -137,7 +172,9 @@ class HomeScreen(Screen):
 
 
     def prompt_history_add_text(self, id, text):
-        """Sets the text of the TextInput for the prompt history of the specified bot ID.
+        """
+        Stores the current state of the prompt being edited in the prompt history for the specified bot id.
+
 
         Args:
             id (_type_): bot id
@@ -146,19 +183,20 @@ class HomeScreen(Screen):
         
         input_id = f"prompt_history_player_{id}"
         text_input = self.ids.get(input_id)
+
         if text_input:
             text_input.text = text
-        else:
-            pass
+        
         
 
-
     def rewind_prompt_history(self, bot_id):
-        """Rewinds the prompt history for the specified bot ID.
+        """
+        Selects the previous prompt in the bot's prompt history and sets it as the current prompt.
 
         Args:
             bot_id (_type_): the bot id
-        """        
+        """       
+
         b = self.ids.game_board.get_bot_by_id(bot_id)
         b.rewind_prompt_history()    
         self.prompt_history_add_text (bot_id, b.get_current_prompt_from_history())
@@ -166,11 +204,13 @@ class HomeScreen(Screen):
 
         
     def forward_prompt_history(self, bot_id):
-        """Forwards the prompt history for the specified bot ID.
+        """
+        Selects the prenext  prompt in the bot's prompt history and sets it as the current prompt.
 
         Args:
-            bot_id (_type_): the bot id
+            bot_id (_type_): The bot id
         """        
+
         b = self.ids.game_board.get_bot_by_id(bot_id)
         b.forward_prompt_history()        
         self.prompt_history_add_text (bot_id, b.get_current_prompt_from_history())
@@ -178,10 +218,11 @@ class HomeScreen(Screen):
 
 
     def copy_prompt_history_selected_text(self, bot_id):
-        """Copies the selected prompt in the history to the prompt input field.
+        """
+        Copies the selected prompt from the bot's prompt history to the editing area.
 
         Args:
-            bot_id (_type_): the bot id
+            bot_id (_type_): The bot id.
         """        
         
         new_prompt = self.get_prompt_history_selected_text(bot_id)
@@ -190,10 +231,14 @@ class HomeScreen(Screen):
         
     
     def submit_prompt(self, bot_id):
-        """Tells the bot to use the text in the input text as the prompt for the upcoming round.
+        """
+        Stores the text in the prompt edition field in the bot's prompt history and selects it.
+        Flags the bot as ready to submit the prompt to its LLM.
+
+        
 
         Args:
-            bot_id (_type_): the bot id
+            bot_id (_type_): tTe bot id
         """        
         
         new_prompt = self.get_prompt_input_text(bot_id)
@@ -210,63 +255,89 @@ class HomeScreen(Screen):
         
 
     def on_request_close(self, *args, **kwargs):
-        """Handles the request to close the application.
+        """
+        Handles the request to close the application.
         Shows a confirmation dialog before closing.
         If the user confirms it offers to save the session to a file   
         """        
 
         def _on_exit_cancelled():
-            """Callback for the exit cancellation dialog.
+            """
+            Callback for the exit cancellation dialog.
             If the user cancels, it does nothing.
             """
             pass    
 
         def _on_exit_confirmed():
-            """Callback for the exit confirmation dialog.
+            """
+            Callback for the exit confirmation dialog.
             If the user confirms, it offers to save the session to a file.
             """            
 
             def _on_filename_confirmed(filename):
-                """Callback for the saving confirmation dialog.
+                """
+                Callback for the saving confirmation dialog.
                 If the user confirms, it offers to save the session to a file.      
                 """
+
                 if filename:
                     self.ids.game_board.save_session(filename)                                
+
                 force_exit()
 
             def _on_filename_cancelled():
-                """Callback for the saving confirmation dialog."""
+                """
+                Exits the application without saving the session.
+                """
                 force_exit()
 
             def force_exit():
-                """Force exit the application."""
+                """
+                Exits the application.
+                """
+
                 App.get_running_app().stop() 
                 sys.exit(0)
 
 
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            show_text_input_dialog(on_confirm=_on_filename_confirmed, on_cancel=_on_filename_cancelled, title="Save As", message="Please enter a filename or cancel\nto exit without saving.", default_text=f"session-{timestamp}.json")
+            show_text_input_dialog(on_confirm=_on_filename_confirmed, 
+                                   on_cancel=_on_filename_cancelled, 
+                                   title="Save As", 
+                                   message="Please enter a filename or cancel\nto exit without saving.", 
+                                   default_text=f"session-{timestamp}.json")
+            
             return True
 
 
-        show_confirmation_dialog("Exit", "Are you sure you want to exit?", on_confirm=_on_exit_confirmed, on_cancel=_on_exit_cancelled)
+        show_confirmation_dialog(title="Exit", 
+                                 message="Are you sure that you want to exit?", 
+                                 on_confirm=_on_exit_confirmed,
+                                 on_cancel=_on_exit_cancelled)
         return True
 
         
 
 
     def load_prompt(self, bot_id):
-        """Loads a prompt from a file and sets it as the current prompt for the specified bot ID.
+        """
+        Allows the user to select a file and loads its content into the bot's prompt edition field.
 
         Args:
             bot_id (_type_): the bot id
         """        
+
         def on_file_selected(file_path):
-            """Callback for when a file is selected."""
+            """
+            Callback for when a file is selected. 
+            Loads the file and stores it in the bot's prompt edition field.
+            """
+            
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     text = f.read()
                     self.set_prompt_input_text(bot_id, text)
+
             except Exception as e:
                 print(f"Error reading file: {e}")
 
