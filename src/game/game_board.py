@@ -4,6 +4,7 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.graphics import Color, Ellipse, Line, Rectangle
+from kivy.properties import NumericProperty
 from kivy.uix.widget import Widget
 
 from kivy.uix.label import Label
@@ -16,13 +17,14 @@ from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
 from util.util import show_fading_alert, find_id_in_parents
+from kivy.event import EventDispatcher
 
 
 
-class GameBoard(Widget):
+class GameBoard(Widget, EventDispatcher):
 	"""The GameBoard is BatLLM's game world. It is algo a Kivi Widget, so it can be used in the Kivy UI.
-    It takes care of all the in-game logic, interacts with the bots and the history_manager.
-    The HomeScreen is BatLLM with the outside world and GameBoard is the inside world implementation of everything in the game (with the exception of the LLMs, which are contacted directly by the bots).
+	It takes care of all the in-game logic, interacts with the bots and the history_manager.
+	The HomeScreen is BatLLM with the outside world and GameBoard is the inside world implementation of everything in the game (with the exception of the LLMs, which are contacted directly by the bots).
 
 	Args:
 		Widget (_type_): Kivi's base Widget
@@ -32,12 +34,12 @@ class GameBoard(Widget):
 	bots = []
 	bulletTrace = []
 	bullet_alpha = 1
-	snd_shoot = None # TODO move to Bot class, or better to a singleton SoundManager class
-	snd_hit = None # TODO move to Bot class, or better to a singleton SoundManager class
-	current_turn = None
-	current_round = None
+	sound_shoot = None
+	sound_bot_hit = None 
+	current_turn = NumericProperty(0)  # Start with turn 0
+	current_round = NumericProperty(0)  # Start with round 0	
+	games_started = NumericProperty(0)  # Count of games started in this session
 	shuffled_bots = None
-	games_started = None
 	history_manager = None
  
 	def __init__(self, **kwargs):
@@ -53,31 +55,67 @@ class GameBoard(Widget):
 		self.bulletTrace = []  # Initialize bullet trace list
 		self.bullet_alpha = 1  # Initialize bullet alpha value		
 
-		self.snd_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
-		self.snd_hit = SoundLoader.load("assets/sounds/bot_hit.wav") 
+		self.sound_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
+		self.sound_bot_hit = SoundLoader.load("assets/sounds/bot_hit.wav") 
 
-		self.current_turn = None
-		self.current_round = None		
-		self.shuffled_bots = None
+		self.current_turn = 0
+		self.current_round = 0				
 		self.games_started = 0
+		self.shuffled_bots = None
 
 		self.history_manager = HistoryManager()  # Create the session history manager
-		# render loop
+
+		# Render loop
 		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
 
 	
 
+	def on_current_turn(self, instance, value):
+		"""Callback for current_turn property change.
+		It updates the title label with the new turn information.
+
+		Args:
+			instance (_type_): The instance of the GameBoard.
+			value (_type_): The new value of the current_turn property.
+		"""		
+		self.update_title_label()
+
+
+
+	def on_current_round(self, instance, value):
+		"""Callback for current_round property change.
+		It updates the title label with the new round information.
+
+		Args:
+			instance (_type_): The instance of the GameBoard.
+			value (_type_): The new value of the current_round property.
+		"""		
+		self.update_title_label()		
+
+
+
+	def on_games_started(self, instance, value):
+		"""Callback for games_started property change.
+		It updates the title label with the new game count.
+
+		Args:
+			instance (_type_): The instance of the GameBoard.
+			value (_type_): The new value of the games_started property.
+		"""		
+		self.update_title_label()	
+	
+	
+	
 	def start_new_game(self):
 		"""Starts a new game. It resets all the information pertaining to the previous game.
 		"""     
 		# reset values
-		self.current_turn = None
-		self.current_round = None		
+		self.current_turn = 0
+		self.current_round = 0		
 		self.shuffled_bots = None
-  				
+				
 
-     
-     	# Create two bot instances with reference to this GameBoard
+		# Create two bot instances with reference to this GameBoard
 		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
 
 		if self.games_started > 0:
@@ -87,7 +125,6 @@ class GameBoard(Widget):
 
 		self.games_started += 1
 		self.history_manager.start_game(self)
-		self.update_title_label()
 		
 
 
@@ -118,7 +155,6 @@ class GameBoard(Widget):
 		super().on_kv_post(base_widget)
 
 		Clock.schedule_once(lambda dt: self.start_new_game(), 0)  # Start a new game after the KV rules have been applied
-		self.start_new_game() # The first game of the session is created automatically.
 			
 
 
@@ -336,10 +372,7 @@ class GameBoard(Widget):
 		for b in self.shuffled_bots:
 			b.ready_for_next_turn = False  
 			b.submit_prompt_to_llm()
-
-
-
-	def 
+	
   
 
 	def end_game(self):
@@ -360,16 +393,15 @@ class GameBoard(Widget):
 		"""		
 		game_title_label = find_id_in_parents(self, "game_title_label")
 		if game_title_label is not None:	
-
-			game_title_label.text = f"[size=32]Game {self.games_started}."
+			game_title_label.text = f"[size=30]Game {self.games_started}"
    
 			if self.current_round is not None:
-				game_title_label.text += "   "       
-				game_title_label.text += f"Round {self.current_round}."
+				game_title_label.text += " > "       
+				game_title_label.text += f"Round {self.current_round}"
 	
 				if self.current_turn is not None:
-					game_title_label.text += "   "
-					game_title_label.text += f"Turn {self.current_turn + 1}."
+					game_title_label.text += " > "
+					game_title_label.text += f"Turn {self.current_turn}"
      
 			game_title_label.text += "[/size]"
 
@@ -459,7 +491,7 @@ class GameBoard(Widget):
 		damaged_bot_id = None
 
 		if bullet is not None:
-			Clock.schedule_once(lambda dt: self.snd_shoot.play())
+			Clock.schedule_once(lambda dt: self.sound_shoot.play())
 		else:		
 			bullet_is_alive = False
 
@@ -472,7 +504,7 @@ class GameBoard(Widget):
 				self.bulletTrace.append((bullet.x, bullet.y))
 		
 		if damaged_bot_id is not None:						
-			Clock.schedule_once(lambda dt: self.snd_hit.play())						
+			Clock.schedule_once(lambda dt: self.sound_bot_hit.play())						
 			
 			self.get_bot_by_id(damaged_bot_id).damage()
 

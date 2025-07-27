@@ -1,10 +1,10 @@
-
 #:kivy 2.3.1
+#:import get_color_from_hex kivy.utils.get_color_from_hex
 <HomeScreen>:
     name: "home"
     canvas.before:
         Color:
-            rgba: 0, 0, 0, 1
+            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])
         Rectangle:
             pos: self.pos
             size: self.size
@@ -15,7 +15,7 @@
         spacing: 0
         canvas.before:
             Color:                              
-                rgba: 0, 0, 0, 1                    
+                rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])                    
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -28,7 +28,7 @@
 
             canvas.before:
                 Color:                              
-                    rgba: 0, 0, 0, 1                    
+                    rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])                    
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -41,7 +41,7 @@
 
                 canvas.before:
                     Color:                                                      
-                        rgba: 0, 0, 0, 1
+                        rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -75,8 +75,7 @@
                     TextInput:
                         padding: 20, 20
                         id: prompt_history_player_1
-                        text:""     
-                        markup: True                                                                              
+                        text:""                             
                         multiline: True
                         readonly: True                        
                         height: self.minimum_height
@@ -99,7 +98,7 @@
 
                     canvas.before:
                         Color:                              
-                            rgba: 0, 0, 0, 1   # behind the arrow buttons 1                                                    
+                            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])   # behind the arrow buttons 1                                                    
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -137,7 +136,6 @@
                         padding: 20, 20
                         id: prompt_player_1                                            
                         hint_text: ""
-                        markup: True                                                      
                         multiline: True
                         readonly: False
                         size_hint_y: 1
@@ -159,7 +157,7 @@
 
                     canvas.before:
                         Color:                              
-                            rgba: 0, 0, 0, 1   # behind the prompt buttons 1                                                    
+                            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])   # behind the prompt buttons 1                                                    
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -218,7 +216,6 @@
                         padding: 20, 20
                         id: prompt_history_player_2                        
                         text:""                             
-                        markup: True                                                      
                         multiline: True
                         readonly: True                        
                         height: self.minimum_height
@@ -239,7 +236,7 @@
 
                     canvas.before:
                         Color:                              
-                            rgba: 0, 0, 0, 1   # behind the arrow buttons 2                                                   
+                            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])   # behind the arrow buttons 2                                                   
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -277,7 +274,6 @@
                         padding: 20, 20
                         id: prompt_player_2                                                
                         hint_text: ""
-                        markup: True                                                      
                         multiline: True
                         readonly: False
                         size_hint_y: 1
@@ -298,7 +294,7 @@
 
                     canvas.before:
                         Color:                              
-                            rgba: 0, 0, 0, 1   # behind the prompt buttons 2
+                            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])   # behind the prompt buttons 2
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -337,7 +333,7 @@
                 
                 canvas.before:
                     Color:
-                        rgba: 0, 0, 0, 1                        
+                        rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])                        
                     Rectangle:  
                         pos: self.pos
                         size: self.size
@@ -348,7 +344,7 @@
                     spacing: 1
                     canvas.before:
                         Color:                           
-                            rgba: 0, 0, 0, 1     
+                            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])     
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -402,7 +398,7 @@
 
                     canvas.before:
                         Color:                        
-                            rgba: 0, 0, 0, 1   
+                            rgba: get_color_from_hex(app.theme_colors['color.prompt_text'])   
                         Rectangle:
                             pos: self.pos
                             size: self.size
@@ -454,7 +450,7 @@
                 spacing: 1
                 canvas.before:
                     Color:                        
-                        rgba: 0, 0, 0, 1 
+                        rgba: get_color_from_hex(app.theme_colors['color.prompt_text']) 
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -535,7 +531,7 @@
 
             canvas.before:
                 Color:
-                    rgba: 0.3, 0.3, 0.4, 1
+                    rgba: get_color_from_hex(app.theme_colors['color.footer_bg'])
                 Rectangle:
                     pos: self.pos
                     size: self.size

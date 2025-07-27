@@ -6,11 +6,12 @@ from kivy.uix.textinput import TextInput
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.uix.modalview import ModalView
-
+from colorsys import rgb_to_hls, hls_to_rgb
 
 
 def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
-    """Displays a modal confirmation dialog with a title and message.
+    """
+    Displays a modal confirmation dialog with a title and message.
 
     Args:
         title (_type_): the title of the dialog
@@ -58,7 +59,8 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
 
 
 def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
-    """Displays a modal alert with a title and message that fades out and closes itsel.
+    """
+    Displays a modal alert with a title and message that fades out and closes itsel.
 
     Args:
         title (_type_): the title of the alert
@@ -89,9 +91,9 @@ def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
 
 
 def show_text_input_dialog(on_confirm, on_cancel=None, title="", default_text="", input_hint="Enter a text"):
-    """A modal dialog for the user to enter a text input.
+    """
+    A modal dialog for the user to enter a text input.
     
-
     Args:
         on_confirm (_type_): function to call when the user confirms the filename
         on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
@@ -136,7 +138,8 @@ def show_text_input_dialog(on_confirm, on_cancel=None, title="", default_text=""
 
 
 def find_id_in_parents(searcher, target_id):
-    """Searches recursively for an element among the ancestors of a Kivy element by its id
+    """
+    Searches recursively for an element among the ancestors of a Kivy element by its id
 
     Args:
         searcher (_type_): the object that starts the search, usually a Kivy widget.
@@ -153,3 +156,27 @@ def find_id_in_parents(searcher, target_id):
             return parent.ids[target_id]
         parent = parent.parent
     return None
+
+
+
+
+def tame_color(color, desaturation=0.0, lighten=0.0):
+    """
+    Desaturates and lightens an RGB color.
+
+    Args:
+        color (tuple): A 3-tuple of RGB in range 0–1, e.g., (0.5, 0.2, 0.8)
+        desaturation (float): 0 = no change, 1 = fully desaturated (greyscale)
+        lighten (float): 0 = no change, 1 = fully white
+
+    Returns:
+        tuple: Modified RGB tuple in range 0–1
+    """
+    r, g, b = color
+    h, l, s = rgb_to_hls(r, g, b)
+
+    s = s * (1 - desaturation)
+    l = l + (1 - l) * lighten  # shift l toward 1 (white)
+
+    r_out, g_out, b_out = hls_to_rgb(h, l, s)
+    return (r_out, g_out, b_out)

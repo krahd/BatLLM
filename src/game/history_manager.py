@@ -15,7 +15,6 @@ class HistoryManager:
         return datetime.now().isoformat()  # e.g. "2025-07-25T21:05:30.123456"
 
 
-
     def start_game(self, game_board):
         """
         Start a new game. Initialize the game log with start time and initial bot states.

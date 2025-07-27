@@ -6,8 +6,7 @@ from game.history_manager import HistoryManager
 from game.bot import Bot
 from kivy.clock import Clock
 from game.game_board import GameBoard
-
- 
+import sys
 from configs.app_config import config
 from util.util import show_confirmation_dialog, show_text_input_dialog
 
@@ -60,8 +59,7 @@ class HomeScreen(Screen):
         """        
         
         def _start_new_game():            
-            self.ids.game_board.start_new_game()
-            self.update_title_label()
+            self.ids.game_board.start_new_game()            
             
         show_confirmation_dialog("New Game",
                                  "Abandon current game and start a new one?",
@@ -213,45 +211,59 @@ class HomeScreen(Screen):
     def on_request_close(self, *args):
         """Handles the request to close the application.
         Shows a confirmation dialog before closing.
-        If the user confirms it offers to save the session to a file 
+        If the user confirms it offers to save the session to a file   
         """
-        show_confirmation_dialog("Exit",
-                                 "Are you sure you want to exit?",
-                                 _on_exit_confirmed,
-                                _on_exit_cancelled)
+
+        def _on_exit_cancelled():
+            """Callback for the exit cancellation dialog.
+            If the user cancels, it does nothing.
+            """
+            pass    
+
+        def _on_exit_confirmed():
+            """Callback for the exit confirmation dialog.
+            If the user confirms, it offers to save the session to a file.
+            """
+
+            def _on_saving_confirmed():
+                """Callback for the saving confirmation dialog.
+                If the user confirms, it offers to save the session to a file.      
+                """
+                self.save_session()
+                force_exit()
+
+            def _on_saving_cancelled():
+                """Callback for the saving confirmation dialog."""
+                force_exit()
+
+            def force_exit():
+                """Force exit the application."""
+                self.manager.app.stop()                
+                sys.exit(0)
+
+            show_confirmation_dialog("Save Session",
+                                    "Do you want to save the current session before exiting?",
+                                    on_confirm=_on_saving_confirmed, on_cancel=_on_saving_cancelled)
+
+        show_confirmation_dialog("Exit", "Are you sure you want to exit?", on_confirm=_on_exit_confirmed, on_cancel=_on_exit_cancelled)
+        
+
+
+    def load_prompt(self, bot_id):
+        """Loads a prompt from a file and sets it as the current prompt for the specified bot ID.
+
+        Args:
+            bot_id (_type_): the bot id
+        """        
+        def on_file_selected(file_path):
+            """Callback for when a file is selected."""
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                    self.set_prompt_input_text(bot_id, text)
+            except Exception as e:
+                print(f"Error reading file: {e}")
 
         
-        
-    def _on_exit_confirmed(self, *args):
-        """Callback for the exit confirmation dialog.
-        If the user confirms, it offers to save the session to a file.
-        """
-        def on_saving_confirmed():
-            self.save_session()
-            self.manager.app.stop()
 
-        def on_saving_cancelled():
-            self.manager.app.stop() 
-
-        show_confirmation_dialog("Save Session",
-                                 "Do you want to save the current session before exiting?",
-                                    on_saving_confirmed, on_saving_cancelled)
-        
-
-
-    def _on_exit_cancelled(self, *args):
-        """Callback for the exit cancellation dialog.
-        If the user cancels, it does nothing.
-        """
-        pass    
-        
-        
-
-        
-        
-           
-        
-        
-      
-
-    
+       

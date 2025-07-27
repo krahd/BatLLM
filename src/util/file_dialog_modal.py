@@ -1,4 +1,3 @@
-
 from kivy.app import App
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
@@ -11,69 +10,6 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 import os
-
-# KV Layout embedded directly in Python source
-Builder.load_string("""
-<FileDialogPopup>:
-    BoxLayout:
-        orientation: 'horizontal'
-        padding: 10
-        spacing: 10
-
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint_x: None
-            width: min(self.parent.width * 0.4, 400)
-            spacing: 5
-
-            BoxLayout:
-                size_hint_y: None
-                height: '40dp'
-                spacing: 5
-                Button:
-                    text: 'Parent'
-                    on_release: root.go_to_parent()
-                Button:
-                    text: 'Back'
-                    on_release: root.go_back()
-
-            FileChooserListView:
-                id: filechooser
-                filters: ['*.txt']
-                on_selection: root.update_preview(self.selection)
-                on_submit: root.load_file()
-                multiselect: False
-                root.filechooser: self
-
-            BoxLayout:
-                size_hint_y: None
-                height: '40dp'
-                spacing: 5
-                Button:
-                    text: 'Cancel'
-                    on_release: root.dismiss()
-                Button:
-                    text: 'Load'
-                    on_release: root.load_file()
-
-        ScrollView:
-            bar_width: '10dp'
-            do_scroll_x: False
-            on_touch_down: root.preview_double_tap(*args)
-            TextInput:
-                id: preview
-                readonly: True
-                font_size: '14sp'
-                background_color: 1,1,1,1
-                foreground_color: 0,0,0,1
-                text: ''
-                size_hint_y: None
-                height: self.minimum_height
-                multiline: True
-                word_wrap: True
-                cursor_width: 0
-                root.preview: self
-""")
 
 class FileDialogPopup(Popup):
     filechooser = ObjectProperty(None)
@@ -135,14 +71,5 @@ class FileDialogPopup(Popup):
         if instance.collide_point(*touch.pos) and touch.is_double_tap:
             self.load_file()
 
-class FileDialogApp(App):
-    def build(self):
-        def handle_file(path):
-            print(f"Selected file: {path}")
-        dialog = FileDialogPopup(title="Open Text File", size_hint=(0.9, 0.9),
-                                 auto_dismiss=False, on_file_selected=handle_file)
-        dialog.open()
-        return Label(text="Main App Window")
 
-if __name__ == '__main__':
-    FileDialogApp().run()
+        
