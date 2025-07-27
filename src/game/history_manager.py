@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from app_config import config
+from configs.app_config import config
 
 class HistoryManager:
     def __init__(self):
@@ -14,16 +14,18 @@ class HistoryManager:
         """Get current timestamp string in ISO 8601 format."""
         return datetime.now().isoformat()  # e.g. "2025-07-25T21:05:30.123456"
 
-    def start_game(self, game):
+
+
+    def start_game(self, game_board):
         """
         Start a new game. Initialize the game log with start time and initial bot states.
-        `game` is the BoardGameWidget
+        `game_board` is the BoardGameWidget
         """
         
         # If a game was in progress without proper ending, finalize it (to keep data consistent)
         if self.current_game and 'end_time' not in self.current_game:
             # Finalize previous session if not already ended
-            self.end_game(game, force=True)
+            self.end_game(game_board, force=True)
         
         # Create new game entry
         self.current_game = {
@@ -35,7 +37,7 @@ class HistoryManager:
         }
         
         # Record initial state of all bots at game start  TODO probably remove this
-        bots_state = self._get_bots_state(game)
+        bots_state = self._get_bots_state(game_board)
         self.current_game["initial_state"] = bots_state
         
         # We could store static info or config data here

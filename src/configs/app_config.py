@@ -5,8 +5,8 @@ import yaml
 from pathlib import Path
 import copy
 
-APP_NAME = "BattleLLM"
-CONFIG_PATH = Path(__file__).parent / "configs/config.yaml"
+APP_NAME = "BatLLM"
+CONFIG_PATH = Path(__file__).parent / "config.yaml"
 
 # Maximize the window on startup
 KivyConfig.set('graphics', 'window_state', 'maximized')
@@ -35,33 +35,53 @@ class AppConfig:
     It loads the configuration from a YAML file and provides methods to get and set configuration values.
     """    
 
+    config = None
+    path = None
+
     
     def __init__(self, path=CONFIG_PATH):
         self._config = copy.deepcopy(DEFAULTS)
         self._path = path
         self.load(path)
 
-    def load(self, path):
+
+
+    def load(self, path=CONFIG_PATH):
         """Loads the configuration from the specified path.
         If the file does not exist, it initializes with default values.
         """
+        
         if path.exists():
             with open(path, "r") as f:
                 user_config = yaml.safe_load(f) or {}
+                
                 for section, values in user_config.items():
                     if section not in self._config:
                         self._config[section] = {}
+                        
                     self._config[section].update(values)
 
-    def save(self, path=None):
+
+
+
+
+
+
+    def save(self, path=CONFIG_PATH):
         """Saves the current configuration to the specified path or the default path.
         If the path is None, it uses the path set during initialization.
         """
+
+        
         if path is None:
             path = self._path
+            
         path.parent.mkdir(parents=True, exist_ok=True)
+        
         with open(path, "w") as f:
             yaml.dump(self._config, f)
+
+
 
 
 
@@ -80,7 +100,8 @@ class AppConfig:
         if not isinstance(value, (str, int, float, bool)):
             if section not in self._config:
                 self._config[section] = {}
-            self._config[section][key] = value
+                
+        self._config[section][key] = value
 
 
 

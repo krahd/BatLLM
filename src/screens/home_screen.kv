@@ -4,453 +4,511 @@
     name: "home"
     canvas.before:
         Color:
-            rgba: 1, 1, 1, 1
+            rgba: 0, 0, 0, 1
         Rectangle:
             pos: self.pos
             size: self.size
 
-    BoxLayout: # header, main, footer
+    BoxLayout: # main, footer
         orientation: "vertical"
         padding: 0
         spacing: 0
-      
-        BoxLayout:   # header
-            size_hint_y: None
-            halign: "left"
-            height: "40dp"
-            padding: "0dp"
-            spacing: "0dp"
+        canvas.before:
+            Color:                              
+                rgba: 0, 0, 0, 1                    
+            Rectangle:
+                pos: self.pos
+                size: self.size
+                                      
+        BoxLayout: # above footer, split into 3 columns: prompts, commands, game
+            orientation: "horizontal"
+            size_hint_y: 0.85
+            padding: 0
+            spacing: 0
+
             canvas.before:
-                Color:
-                    rgba: .8, .88, 1, 1
+                Color:                              
+                    rgba: 0, 0, 0, 1                    
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            Label:
-                text: "BatLLM"
-                padding: 10
-                bold: True
-                color: .1,.1,.1, 1
-                font_size: "20sp"
-                halign: "left"
-                valign: "middle"
-                size_hint_x: None
-                width: self.texture_size[0] + 20
-       
-        BoxLayout: # main window
-            orientation: "horizontal"
-            size_hint_y: 0.85
           
-            BoxLayout:   # First Column (prompts)
+            BoxLayout:   # The first column column is divided in 10, 5 per player            
                 orientation: "vertical"
                 size_hint_x: 0.306  
-                padding: 0, 0
+                padding: 0, 1, 1, 1
+                spacing: 1
+
                 canvas.before:
-                    Color:                              
-                        rgba: 1,0,1,0
+                    Color:                                                      
+                        rgba: 0, 0, 0, 1
                     Rectangle:
                         pos: self.pos
                         size: self.size
 
-                BoxLayout: # text prompt title 1
-                    orientation: "horizontal"
-                    halign: "left"
-                    height: "48dp"
+                Label:  # "Player One"
+                    text: "  [b]Player One[/b]"
+                    markup: True                                                      
+                    color: 0, 0, 0, 1
                     size_hint_y: None
-                    padding: 50, 15
+                    size_hint_x: 1
+                    
+                    height: "48dp"
+                    text_size: self.width, self.height
+                    font_size: "14sp"
+                    valign: "middle"
+                    halign: "left"       
                     canvas.before:
                         Color:                              
-                            rgba: .8, .88, 1, .7
+                            rgba: .67, .75, .87, 1  # Header "Player One"
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size                                                         
+
+                ScrollView: # Prompt history 1
+                    size_hint: (1, .5)
+                    bar_width: 20
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_type: ['bars', 'content']                     
+                    
+                    TextInput:
+                        padding: 20, 20
+                        id: prompt_history_player_1
+                        text:""                             
+                        multiline: True
+                        readonly: True                        
+                        height: self.minimum_height
+                        size_hint_y: 1
+                        size_hint_x: 1
+                        scroll_y: 1
+                        cursor_blink: True                        
+                        background_color: .8, .88, 1, 1 # History 1                        
+                        foreground_color: 0, 0, 0, 1 
+                        background_normal: ""
+                        background_down: ""  
+                        
+                
+                BoxLayout: # Prompt History 1 Buttons
+                    orientation: "horizontal"
+                    height: "20dp"
+                    padding: 0, 1, 0, 1
+                    spacing: 1
+                    size_hint_y: None
+
+                    canvas.before:
+                        Color:                              
+                            rgba: 0, 0, 0, 1   # behind the arrow buttons 1                                                    
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
-                    Label:
-                        text: "Player One's Prompting Area"
-                        bold: 1                                                             
-                        color: 0, 0, 0, .8
-                        halign: "left"
-                        padding: 0
-                    
-                    Label:
-                        text:""
-                        size_hint_x: .9
-
-                ScrollView: # prompt history 1
-                    size_hint: (1, .5)
-                    bar_width: 10
-                    do_scroll_x: False
-                    do_scroll_y: True
-                    scroll_type: ['bars', 'content'] 
-                    background_color: 1, 1, 1, 1                    
-
-                    TextInput:
-                        padding: 20, 10
-                        id: prompt_history_player_1
-                        text:""                             
-                        multiline: True
-                        readonly: True
-                        size_hint_y: None
-                        height: self.minimum_height
-                        scroll_y: 1
-                        cursor_blink: True
-                        bar_width: 10
-                        background_color: 1, 1, 1, 1  # white
-                        foreground_color: 0, 0, 0, 1  # black text
-                        background_normal: ""        # removes border image
-                        background_active: ""        # removes active border image
-                
-                BoxLayout: # buttons
-                    orientation: "horizontal"
-                    height: "20dp"
-                    size_hint_y: None
                     Button:
-                        text: "<"
+                        background_color: 0.682, 0.722, 0.804, 1
+                        background_normal: "" # necessary for colours to work
+                        background_down: ""  
+                        text: "[b]<[/b]"
+                        markup: True                        
                         on_press: root.rewind_prompt_history(1)
                     Button:
-                        text: "copy"
+                        background_color: 0.752, 0.762, 0.834, 1
+                        background_normal: ""
+                        background_down: ""   
+                        text: "[b]v[/b]"
+                        markup: True
                         on_press: root.copy_prompt_history_selected_text(1)
                     Button:
-                        text: ">"
+                        background_color: 0.682, 0.722, 0.804, 1
+                        background_normal: ""
+                        background_down: ""  
+                        text: "[b]>[/b]"
+                        markup: True
                         on_press: root.forward_prompt_history(1)
 
-                ScrollView: # prompt input 1
+                ScrollView: # Prompt Text Input 1
                     size_hint: (1, .5)
-                    bar_width: 10
+                    bar_width: 20
                     do_scroll_x: False
                     do_scroll_y: True                    
                     scroll_type: ['bars', 'content'] 
 
                     TextInput:
-                        id: prompt_player_1
-                        #text: ""
-                        text: ""
-                        hint_text: "New prompt"
+                        padding: 20, 20
+                        id: prompt_player_1                                            
+                        hint_text: ""
                         multiline: True
                         readonly: False
-                        size_hint_y: None
-                        height: self.minimum_height
+                        size_hint_y: 1
                         scroll_y: 1
-                        cursor_blink: True
-                        bar_width: 10   
+                        height: self.minimum_height                        
+                        cursor_blink: True                                      
+                        background_color: .79, .87, .99, 1 # input 1
+                        foreground_color: 0, 0, 0, 1 
+                        background_normal: ""
+                        background_down: ""  
                                     
 
-                BoxLayout: # submit button
+                BoxLayout: # Prompt buttons 1
+                    orientation: "horizontal"
                     size_hint_y: None
                     height: "30dp"
-                    spacing: 5                    
-                    Button:
-                        background_color: .9, .2, .2, 1
-                        text: "Submit"
-                        on_press: root.submit_prompt(1)
-                        bold: 1
+                    padding: 0, 1, 0, 5
+                    spacing: 2
 
-                Label:
-                    text:""
-                    height: "8dp"
-                    size_hint_y: None
-
-                BoxLayout: # text prompt title 2
-                    orientation: "horizontal"
-                    halign: "left"
-                    height: "48dp"
-                    size_hint_y: None
-                    padding: 50, 15
                     canvas.before:
                         Color:                              
-                            rgba: .8, 65, .9, .7
+                            rgba: 0, 0, 0, 1   # behind the prompt buttons 1                                                    
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                                       
+                    Button:
+                        background_color: .6, .5, .4, 1
+                        background_normal: ""
+                        background_down: ""  
+                        text: "Submit"
+                        bold: 1
+                        on_press: root.submit_prompt(1)
+
+                    Button:
+                        background_color: .4, .5, .6, 1
+                        background_normal: ""
+                        background_down: ""  
+                        text: "Load"
+                        bold: 1
+                        on_press: root.load_prompt(1)
+
+                    Button:
+                        background_color: .4, .6, .5, 1
+                        background_normal: ""
+                        background_down: ""   
+                        text: "Save"
+                        bold: 1
+                        on_press: root.save_prompt(1)
+
+
+                Label: # "Player Two"
+                    text: "  [b]Player Two[/b]"
+                    markup: True
+                    color: 0, 0, 0, 1
+                    size_hint_y: None
+                    height: "48dp"
+                    text_size: self.width, self.height
+                    font_size: "14sp"
+                    valign: "middle"
+                    halign: "left"    
+                    canvas.before:
+                        Color:                              
+                            rgba: 0.86, 0.73, 0.91, 1 # Header "Player Two"                             	
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                        
+                                   
+                ScrollView: # Prompt history 2
+                    size_hint: (1, .5)
+                    bar_width: 20
+                    do_scroll_x: False
+                    do_scroll_y: True
+                    scroll_type: ['bars', 'content'] 
+
+                    TextInput:
+                        padding: 20, 20
+                        id: prompt_history_player_2                        
+                        text:""                             
+                        multiline: True
+                        readonly: True                        
+                        height: self.minimum_height
+                        size_hint_y: 1
+                        scroll_y: 1
+                        cursor_blink: True                        
+                        background_color: 0.99, 0.87, 1, 1 # History 2                        
+                        foreground_color: 0, 0, 0, 1
+                        background_normal: ""
+                        background_down: ""  
+                                        
+                BoxLayout: # Prompt History 2 Buttons
+                    orientation: "horizontal"
+                    height: "20dp"
+                    padding: 0, 1, 0, 1
+                    spacing: 1
+                    size_hint_y: None
+
+                    canvas.before:
+                        Color:                              
+                            rgba: 0, 0, 0, 1   # behind the arrow buttons 2                                                   
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
-                    Label:
-                        text: "Player Two's Prompting Area"
-                        bold: 1                                                             
-                        color: 0, 0, 0, .8
-                        halign: "left"
-                        padding: 0
-                    
-                    
-                    Label:
-                        text:""
-
-               
-
-                ScrollView: # prompt history 2
-                    size_hint: (1, .5)
-                    bar_width: 10
-                    do_scroll_x: False
-                    do_scroll_y: True
-                    scroll_type: ['bars', 'content'] 
-                    background_color: 1, 1, 1, 1
-
-                    TextInput:
-                        id: prompt_history_player_2                        
-                        text:""                             
-                        multiline: True
-                        readonly: True
-                        size_hint_y: None
-                        height: self.minimum_height
-                        scroll_y: 1
-                        cursor_blink: True
-                        bar_width: 10
-                        background_color: 1, 1, 1, 1  # white
-                        foreground_color: 0, 0, 0, 1  # black text
-                        background_normal: ""        # removes border image
-                        background_active: ""        # removes active border image
-                
-                BoxLayout:
-                    orientation: "horizontal"
-                    height: "20dp"
-                    size_hint_y: None
                     Button:
-                        text: "<"
+                        background_color: 0.804, 0.722, 0.682, 1
+                        background_normal: "" # necessary for colours to work
+                        background_down: ""  
+                        text: "[b]<[/b]"
+                        markup: True                        
                         on_press: root.rewind_prompt_history(2)
                     Button:
-                        text: "copy"
+                        background_color: 0.834, 0.762, 0.752, 1
+                        background_normal: ""
+                        background_down: ""   
+                        text: "[b]v[/b]"
+                        markup: True
                         on_press: root.copy_prompt_history_selected_text(2)
                     Button:
-                        text: ">"
+                        background_color: 0.804, 0.722, 0.682, 1
+                        background_normal: ""
+                        background_down: ""  
+                        text: "[b]>[/b]"
+                        markup: True
                         on_press: root.forward_prompt_history(2)
 
-                ScrollView: # prompt input 2
+                ScrollView: # Prompt Text Input 2
                     size_hint: (1, .5)
-                    bar_width: 10
+                    bar_width: 20
                     do_scroll_x: False
                     do_scroll_y: True
                     scroll_type: ['bars', 'content'] 
 
                     TextInput:
-                        id: prompt_player_2                        
-                        #text: ""
-                        text: ""
-                        hint_text: "New prompt"
+                        padding: 20, 20
+                        id: prompt_player_2                                                
+                        hint_text: ""
                         multiline: True
                         readonly: False
-                        size_hint_y: None
-                        height: self.minimum_height
+                        size_hint_y: 1
                         scroll_y: 1
-                        cursor_blink: True
-                        bar_width: 10   
-                                    
+                        height: self.minimum_height                        
+                        cursor_blink: True                          
+                        background_color: 0.98, 0.86, .99, 1 # input 2  
+                        foreground_color: 0, 0, 0, 1     
+                        background_normal: ""
+                        background_down: ""                                 
 
-                BoxLayout: # submit button 1
+                BoxLayout: # Prompt buttons 2
+                    orientation: "horizontal"
                     size_hint_y: None
                     height: "30dp"
-                    spacing: 5                    
-                    
-                    Button:                        
-                        background_color: .9, .2, .2, 1
+                    padding: 0, 1, 0, 0
+                    spacing: 2
+
+                    canvas.before:
+                        Color:                              
+                            rgba: 0, 0, 0, 1   # behind the prompt buttons 2
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+                                       
+                    Button:
+                        background_color: .6, .5, .4, 1
+                        background_normal: ""
+                        background_down: ""  
                         text: "Submit"
                         bold: 1
                         on_press: root.submit_prompt(2)
 
+                    Button:
+                        background_color: .4, .5, .6, 1
+                        background_normal: ""
+                        background_down: ""  
+                        text: "Load"
+                        bold: 1
+                        on_press: root.load_prompt(2)
+
+                    Button:
+                        background_color: .4, .6, .5, 1
+                        background_normal: ""
+                        background_down: ""   
+                        text: "Save"
+                        bold: 1
+                        on_press: root.save_prompt(2)
+
            
-            BoxLayout:  # Second Column (commands histories)                
+            BoxLayout:  # The second column is divided in 4, 2 per player: Commands and Output History                
                 orientation: "vertical"
                 size_hint_x: 0.10 
-                size_hint_y: 1
-                halign: "left"
-                padding: 0, 0
+                size_hint_y: 1          
+                padding: 0, 1, 0, 1   
+                spacing: 0
                 
                 canvas.before:
                     Color:
-                        rgba: .95, .96, .95, 1
-                    Line:
-                        width: 1
-                        rectangle: self.x, self.y, self.width, self.height
-                    
-                    Rectangle:
+                        rgba: 0, 0, 0, 1                        
+                    Rectangle:  
                         pos: self.pos
                         size: self.size
                     
-                BoxLayout: # 2 col, play 1 v
+                BoxLayout: # Player 1's commands and output history
                     orientation: "vertical"
-                    
+                    padding: 1, 0, 1, 5
+                    spacing: 1
                     canvas.before:
                         Color:                           
-                            rgba: .95, .96, .95, 1# .8, .88, 1, .5
+                            rgba: 0, 0, 0, 1
                         Rectangle:
                             pos: self.pos
                             size: self.size
                         
-                    BoxLayout: # title commands 1
-                        orientation: "horizontal"
+                    Label: # Title "Commands" 1
+                        size_hint_x: 1
+                        size_hint_y: None                        
+                        text: "[b]Commands[/b]"
+                        markup: True
+                        halign: "left"                                                        
+                        color: 0, 0, 0, 1    
                         height: "48dp"
-                        size_hint_y: None
-                        padding: 50, 35
-                        
                         canvas.before:
-                            Color:                                
-                                rgba: .8, .88, 1, .5
+                            Color:                                                                                                
+                                rgba: .68, .76, .88, 1   # command one         
                             Rectangle:
                                 pos: self.pos
-                                size: self.size
-
-                        Label:
-                            text: "Commands"
-                            bold: 1                        
-                            halign: "left"                            
-                            
-                            color: 0, 0, 0, 1
-                            size_hint_y: None
-                            size_hint_x: None
-                            height: "12dp" 
-                            
-                        Label:
-                            size_hint_x: .02
-
+                                size: self.size      
+                                                        
                     
-                    
-                    ScrollView: # llm output history player 1
-                        size_hint: (1, .5) 
-                        bar_width: 10
+                    ScrollView: # LLM output parsed by Bot 1
+                        bar_width: 20                        
                         do_scroll_x: False
                         do_scroll_y: True                    
-                        scroll_type: ['bars', 'content'] 
+                        scroll_type: ['bars', 'content']                                             
                         
-                        TextInput:
-                            padding: 35, 20
-                            id: output_history_player_1
-                            text: ""
-                            multiline: True
-                            readonly: False
-                            size_hint_y: None  
-                            height: self.minimum_height                     
-                            scroll_y: 1                
-                            cursor_blink: False            
-                            bar_width: 10                               
-                                                        
-                            background_color: .95, .96, .95, 1
-                            background_normal: ""        # removes border image
-                            background_active: ""        # removes active border image
-                   
+                        Label:
+                            id: output_history_player_1   
+                            canvas.before:
+                                Color:                                
+                                    rgba: .6, .68, .80, 1      
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
 
-                Label: # separator
-                    text: "."
-                    height: "32dp"
-                    size_hint_y: None
-                
+                                                     
+                            spacing: 10
+                            color: 0, 0, 0, 1  
+
+                            
+                            text: "line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10"                                                        
+                            
+                            markup: True                            
+                            size_hint_y: None                           
+                            height: self.texture_size[1]
+                            text_size: self.width, None                            
+                            valign: 'top'   
+                            halign: 'center'
+                                                                                    
 
 
-                BoxLayout: # 2 col, play 2, v
-                    orientation: "vertical"                    
+                BoxLayout: # Player 2's commands and output history                    
+                    orientation: "vertical"                            
+                    padding: 1, 0, 1, 1
+                    spacing: 1
+
                     canvas.before:
                         Color:                        
-                            rgba: .95, .96, .95, 1
+                            rgba: 0, 0, 0, 1
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
-
-                    BoxLayout: # title commands 2
-                        orientation: "horizontal"                        
+                    Label: # Title "Commands" 2
+                        size_hint_x: 1
+                        size_hint_y: None                        
+                        text: "[b]Commands[/b]"
+                        markup: True
+                        halign: "left"                            
+                        color: 0, 0, 0, 1    
                         height: "48dp"
-                        size_hint_y: None
-                        padding: 50, 35
                         canvas.before:
-                            Color:                             
-                                rgba: .83, 1, .98, 1
+                            Color:                                
+                                rgba: 0.9, 0.77, 0.91, 1                                	
                             Rectangle:
                                 pos: self.pos
-                                size: self.size
-
-                        Label:
-                            text: "Commands"
-                            bold: 1
-                            halign: "left"                            
-                            color: 0, 0, 0, 1
-                            size_hint_y: None
-                            size_hint_x: None
-                            height: "12dp" 
+                                size: self.size                                               
                             
-                        Label:
-                            size_hint_x: .02
 
-
-                    ScrollView: # llm output history player 2
-                        size_hint: (1, .5) 
-                        bar_width: 10
+                    ScrollView: # LLM output parsed by Bot 2                       
+                        bar_width: 20
                         do_scroll_x: False
                         do_scroll_y: True                    
-                        scroll_type: ['bars', 'content'] 
+                        scroll_type: ['bars', 'content']                                                 
                         
-                        TextInput:
-                            padding: 35, 20
+                        Label:
                             id: output_history_player_2
-                            text: ""
-                            multiline: True
-                            readonly: False
-                            size_hint_y: None  
-                            height: self.minimum_height                     
-                            scroll_y: 1                
-                            cursor_blink: False            
-                            bar_width: 10                               
+                            canvas.before:
+                                Color:                                
+                                    rgba: 0.9, 0.85, 0.95, 1                                	
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size
+
+                            
+                            spacing: 10                        
+                            color: 0, 0, 0, 1                            
+
+                            text: "line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10line 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10"                      
                                                         
-                            background_color: .95, .96, .95, 1
-                            background_normal: ""        # removes border image
-                            background_active: ""        # removes active border image
-                        
-                Label: # separator
-                    text: "."
-                    height: "24dp"
-                    size_hint_y: None                            
-                                            
-           
-            BoxLayout:  # Third Column (game area)
-                orientation: "vertical"
-                padding: 0, 0   
+                            markup: True
+                            size_hint_y: None
+                            height: self.texture_size[1]                                                           
+                            text_size: self.width, None                            
+                            valign: 'top'   
+                            halign: 'center'
+                                                                                                                
                 
+           
+            BoxLayout:  # Third Column (game area) is also divided in three.
+                orientation: "vertical"
+                padding: 1
                 canvas.before:
-                    Color:
-                        #rgba: 0, 0, 0, .15
-                        rgba: .8,.83,.8,1
+                    Color:                        
+                        rgba: 0, 0, 0, 1 
                     Rectangle:
                         pos: self.pos
                         size: self.size
-
                 
 
+                Label:
+                    font_size: "15sp"
+                    height: "48dp"  
+                    size_hint_x: 1
+                    size_hint_y: None
+                    text: "Hola"
+                    
+                    id: header_label                                 
+                    markup: True
 
-                BoxLayout:  # Title
-                    orientation: "horizontal"             
-                    height: "48dp"
-                    size_hint_y: None                  
-                    size_hint_x: 1          
-                    padding: 430, 34
+                    halign: "left"
+                    valign: "middle"
+
+                    color: 0, 0, 0, 1                    
+                    text_size: self.width, self.height
+
                     canvas.before:
-                        Color:                             
-                            rgba: 0, 0, 0, .1
+                        Color:                              
+                            rgba: .8, .83, .8, 1
                         Rectangle:
                             pos: self.pos
                             size: self.size
 
-                    Label:
-                        font_size: "14sp"
-                        id: header_label
-                        text: ""                        
-                        bold: 1
-                        halign: "left"
-                        color: 0, 0, 0, 1
-                        size_hint_y: None
-                        size_hint_x: .055
-                        height: "12dp" 
-                        
-                    Label:
-                        size_hint_x: .4
-                                    
-                GameBoardWidget:
-                    id: game_board
-                    size_hint_x: 1
-                    size_hint_y: 1
-                    padding: 0, 0
+                FloatLayout:
+                    
+                    canvas.before:
+                        Color:                              
+                            rgba: .8, .83, .8, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size                    
+                                                
+                    GameBoardWidget:
+                        id: game_board
 
-                   
-                                    
+                        size_hint_x: 1
+                        size_hint_y: 1
+                        padding: 0, 0
+
+
+                                
        
         BoxLayout:  # Footer
-            orientation: "horizontal"
-            halign: "left"
+            orientation: "horizontal"            
             size_hint_y: None
             height: "40dp"
             padding: "0dp"
@@ -458,7 +516,7 @@
 
             canvas.before:
                 Color:
-                    rgba: 0.3, 0.3, 0.4, 1  
+                    rgba: 0.3, 0.3, 0.4, 1
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -473,7 +531,7 @@
             Label:
                 text: "BatLLM 0.0.1"
                 font_size: "16sp"
-                color: 1,1,1,1
+                color: 1, 1, 1, 1
                 halign: "left"
                 size_hint_x: 4
                 
@@ -491,5 +549,4 @@
             Button:
                 text: "Save Session"
                 font_size: "16sp"
-                on_press: root.save_session()
-           
+                on_press: root.save_session()  

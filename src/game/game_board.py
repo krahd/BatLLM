@@ -9,13 +9,13 @@ from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
-from normalized_canvas import NormalizedCanvas
+from util.normalized_canvas import NormalizedCanvas
 import os
 
-from app_config import config
-from bot import Bot
-from history_manager import HistoryManager
-from util import show_fading_alert, find_id_in_parents
+from configs.app_config import config
+from game.bot import Bot
+from game.history_manager import HistoryManager
+from util.util import show_fading_alert, find_id_in_parents
 
 
 
@@ -66,8 +66,7 @@ class GameBoardWidget(Widget):
 		Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate")) 
 
 
-
-
+	
 
 	def start_new_game(self):
 		"""Starts a new game. It resets all the information pertaining to the previous game.
@@ -76,19 +75,20 @@ class GameBoardWidget(Widget):
 		self.current_turn = None
 		self.current_round = None		
 		self.shuffled_bots = None
-  
+  				
+
      
      	# Create two bot instances with reference to this GameBoardWidget
 		self.bots = [Bot(id = i, board_widget = self) for i in range(1, 3)]
 
 		if self.games_started > 0:
 			for b in self.bots:
-				self.add_text_to_llm_response_history(b.id, "\n\nNew Game\n\n")
+				self.add_text_to_llm_response_history(b.id, "[b][color=#ffa0a0]\n\nNew Game\n\n[/color][/b]")
 				b.ready_for_next_round = False  # need a new prompt for a new round
 
 		self.games_started += 1
-
 		self.history_manager.start_game(self)
+		self.update_title_label()
 		
 
 
@@ -110,6 +110,7 @@ class GameBoardWidget(Widget):
 
 
    
+
 	def on_kv_post(self, base_widget):
 		"""This method is called after the KV rules have been applied
 
@@ -118,8 +119,9 @@ class GameBoardWidget(Widget):
 		"""		
 		super().on_kv_post(base_widget)
 
+		Clock.schedule_once(lambda dt: self.start_new_game(), 0)  # Start a new game after the KV rules have been applied
 		self.start_new_game() # The first game of the session is created automatically.
-
+		
 		
 		
 
@@ -181,7 +183,6 @@ class GameBoardWidget(Widget):
 				else:
 					self.bulletTrace.clear()
 			   
-
 		
 			
 						
@@ -226,7 +227,7 @@ class GameBoardWidget(Widget):
 
 
 	def add_text_to_llm_response_history(self, bot_id, text):
-		"""Seems a duplicate #TODO check and if so move this function to the HomeScreen class?
+		"""Adds the text to the output history box next to the bot's prompt input. 
 
 		Args:
 			bot_id (_type_): bot id
@@ -282,7 +283,7 @@ class GameBoardWidget(Widget):
 		self.current_round += 1				
 
 		for b in self.bots:
-			self.add_text_to_llm_response_history(b.id, f"\nRound {self.current_round}.\n")
+			self.add_text_to_llm_response_history(b.id, f"[b]Round {self.current_round}:[/b]\n")
 			b.ready_for_next_round = False  # need a new prompt for a new round
 
 		# shuffle bots for this coming round
@@ -306,6 +307,7 @@ class GameBoardWidget(Widget):
 		for b in self.bots:
 			if b.health <= 0:				
 				return True
+
 		if self.current_round >= config.get("game", "total_rounds"):			
 			return True
 
@@ -325,6 +327,11 @@ class GameBoardWidget(Widget):
 		if not self.current_turn < config.get("game", "turns_per_round"):  # round's over
 
 			self.history_manager.end_round(self)
+			for b in self.bots:
+				self.add_text_to_llm_response_history(b.id, "\n\n")
+			
+
+
    
 			round_res = "\n"
    
@@ -364,8 +371,18 @@ class GameBoardWidget(Widget):
 		"""		
 		title_label = find_id_in_parents(self, "header_label")
 		if title_label is not None:	
-			title_label.text = f"Game {self.games_started}.   Round {self.current_round}.  Turn {self.current_turn + 1}."		
-
+			title_label.text = f"  [size=34][b]BatLLM[/b][/size]                 "
+			title_label.text += f"[size=32]Game {self.games_started}."
+   
+			if self.current_round is not None:
+				title_label.text += "   "       
+				title_label.text += f"Round {self.current_round}."
+	
+				if self.current_turn is not None:
+					title_label.text += "   "
+					title_label.text += f"Turn {self.current_turn + 1}."
+     
+			title_label.text += "[/size]"
 
 
 

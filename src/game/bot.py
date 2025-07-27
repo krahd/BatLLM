@@ -4,13 +4,13 @@ import math
 import random
 from kivy.core.text import Label 
 from kivy.uix.widget import Widget
-from bullet import Bullet
-from normalized_canvas import NormalizedCanvas
+from game.bullet import Bullet
+from util.normalized_canvas import NormalizedCanvas
 from kivy.network.urlrequest import UrlRequest
 import json
 from kivy.clock import Clock
 from kivy.properties import NumericProperty, ObjectProperty
-from app_config import config
+from configs.app_config import config
 
 
 
@@ -40,7 +40,7 @@ class Bot (Widget):
     shield_range = None
     step = None
     diameter = None
-    colour = None
+    color = None
 
     last_llm_response = None  
         
@@ -63,15 +63,15 @@ class Bot (Widget):
         self.agmenting_prompt = config.get("game", "prompt_augmentation")        
         
         if id == 1:
-            self.colour = (.8, .88, 1, .85)                        
+            self.color = (.8, .88, 1, .85)                        
         elif id:
-            self.colour = (.8, 65, .9, .85) 
+            self.color = (.8, .65, .9, .85) 
         else:
-            self.colour = (0, 1, 0, 1)
+            self.color = (0, 1, 0, 1)
 
         port_base = config.get("llm", "port_base")
         if not config.get("game", "independet_models"):
-            port = f"{port_base + 1}"  # shared model for both bots in 5000. It could be a third one. 
+            port = f"{port_base + 1}"  # sh ared model for both bots in 5000. It could be a third one. 
             
         else:            
             port = f"{port_base + id}"  # ports 5001, 5002, etc. for each bot
@@ -104,7 +104,7 @@ class Bot (Widget):
         
         Rotate(math.degrees(self.rot), 0, 0, 1)
 
-        Color(*self.colour) # fill
+        Color(*self.color) # fill
         Ellipse(pos=(-r, -r), size=(d, d))
 
         Color(0, 0, 0, .7) # outline

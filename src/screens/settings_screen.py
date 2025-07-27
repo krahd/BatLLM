@@ -1,6 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from kivy.properties import NumericProperty, BooleanProperty
-from app_config import config
+from configs.app_config import config
 
 
 class SettingsScreen(Screen):
@@ -25,6 +25,7 @@ class SettingsScreen(Screen):
         """
         self.update_config()
         config.save()
+        self.go_to_home_screen()        
 
 
 

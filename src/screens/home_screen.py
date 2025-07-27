@@ -2,12 +2,14 @@
 from pathlib import Path
 import datetime
 from kivy.uix.screenmanager import Screen
-from history_manager import HistoryManager
-from bot import Bot
+from game.history_manager import HistoryManager
+from game.bot import Bot
 from kivy.clock import Clock
-from widgets.game_board import GameBoardWidget
-from app_config import config
-from util import show_confirmation_dialog, show_text_input_dialog
+from game.game_board import GameBoardWidget
+
+ 
+from configs.app_config import config
+from util.util import show_confirmation_dialog, show_text_input_dialog
 
 class HomeScreen(Screen):    
     """A HomeScreen instance is the main screen of the application. 
@@ -19,11 +21,12 @@ class HomeScreen(Screen):
     """    
 
     history = None
+    
     def __init__(self, **kwargs):     
         """Constructor for the HomeScreen class.
         Initializes the screen and sets up the history manager.
         """           
-        super(HomeScreen, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.history = HistoryManager()
         
         
