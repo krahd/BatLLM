@@ -12,6 +12,8 @@ ignore/
 
 # BatLLM specific
 saved_sessions/  # the default folder for saving sessions
+.obsidian/
+.ollama/
 
 
 

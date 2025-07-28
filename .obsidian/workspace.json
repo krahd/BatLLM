@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/USER_GUIDE.md",
-                "mode": "source",
+                "file": "README.md",
+                "mode": "preview",
                 "source": true
               },
               "icon": "lucide-file",
-              "title": "USER_GUIDE"
+              "title": "README"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "docs/USER_GUIDE.md",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for USER_GUIDE"
+              "title": "Backlinks for README"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "docs/USER_GUIDE.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from USER_GUIDE"
+              "title": "Outgoing links from README"
             }
           },
           {
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "docs/USER_GUIDE.md",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of USER_GUIDE"
+              "title": "Outline of README"
             }
           }
         ]
@@ -170,6 +170,7 @@
   },
   "active": "80c70f73eccf8f66",
   "lastOpenFiles": [
+    "docs/USER_GUIDE.md",
     "src/util/dialogs.kv",
     "src/util/__pycache__/utils.cpython-312.pyc",
     "src/util/__pycache__/dialogs.cpython-312.pyc",
