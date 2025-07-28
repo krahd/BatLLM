@@ -31,6 +31,7 @@ class HomeScreen(Screen):
         super().__init__(**kwargs)
         self.history = HistoryManager()
         
+        self.adjust_lightness(0.5)
         
     
     def save_session (self):

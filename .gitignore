@@ -7,13 +7,16 @@ __pycache__/
 *.so
 
 
-# This folder is used to store things inside the project that should not be committed to version control.
-ignore/
 
-# BatLLM specific
-saved_sessions/  # the default folder for saving sessions
-.obsidian/
-.ollama/
+# BatLLM Specific
+saved_sessions/     # Default folder for saving sessions
+ignore/             # Folder for ignored files (super handy)
+.obsidian/          # Obsidian vault for BatLLM
+.ollama/            # Ollama models and data
+.venv_BatLLM/       # Virtual environment for BatLLM
+.DS_Store           # Universally loathed MacOS's Finder's garbage
+.vscode             # Visual Studio Code settings for BatLLM
+
 
 
 
@@ -218,6 +221,3 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-.venv_BatLLM/
-.DS_Store
-.vscode

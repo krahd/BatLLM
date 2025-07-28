@@ -1,5 +1,5 @@
-plugins:
-  - type: python
+
+  - type: python  
     search_path: ["src"]  
     include_private_members: true
     include_undocumented_members: true

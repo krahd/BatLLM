@@ -1,0 +1,58 @@
+You are an expert python developer, specialising in creative coding, video-game development, graphic design, UX and generative AI.
+
+Your task is to build a complete video-game using Python, according to the following description and fulfilling all its requirements and generating everything the game needs, including source code, configuration files, documentation using markup, testing code, test reports, installation scripts, and instructions.
+
+Game description: You will build "BattLLM", a two-player battle game where each player controls a bot by giving prompts to an Ollama which then gives instructions to the player's bot. We refer to the human players as "player", to the LLM they control as "Ollama", and to the in-game battle bot as "bot". We will refer to the code that executes the game as "world". The world holds the game state, receives commands from the Ollamas, executes them and updates the game state. The world also receives input from the user (via an input module that you will also develop that interfaces to the keyboard and mouse or trackpad) and renders the world in real-time (via an UI module that you will create).
+
+The game logic (main loop) is as follows:
+- while both bots are alive:
+    - each player enters a prompt that is given to their Ollama.
+    - a starting player is chosen randomly
+    - repeat ROUND_LENGTH times stopping earlier if one of the bots dies:
+        - prompt each player's Ollama with the player's prompt. The Ollama's response will be the command that is given to the player's bot.
+
+Each bot has a state. The state of a bot consists of the following variableS:
+    x - the bot's x coordinate within the world.
+    y - the bot's y coordinate within the world.
+    a - the bot's rotation within the world.
+    s - the state of the bot's shield (either up (1) or down (0)).
+    h - the bot's health. Initially INITIAL_HEALTH. If h reaches 0 the bot dies.
+    
+Each turn the bots execute the command given to it entirely.
+
+The existing commands are:
+    Cd  - the bot rotates clockwise around its center for d degrees. Example: C20
+    Ad  - the bot rotates anticlockwise around its center for d degrees. Example: D180
+    M    - the bot moves forward a distance of STEP_LENGTH (it takes a stop forward). Example: M
+    S1  - the bot raises its shield. It will remain up until explicitly lowered. Example: S1
+    S0  - the bot lowers its shield. It will remain down until explicitly raised. Example: S0
+    S    - the bit lowers its shield if up or rises it if down. Example: S
+    B    - if the shield is low, the bot shoots a bullet forward. If the shield is up it does nothing. Example: B.
+
+Any other command is ignored (this means that bot does nothing in this turn).
+
+When a bot shoots a bullet, the world waits until it either hits the other bot or exits the screen before running the other bot's next command. This means that after one bot fires, the other bot cannot move until the bullet hits it or leaves the screen.
+
+When a bot is hit by a bullet its energy decreases by BULLET_DAMAGE. If a bullet hits the raised shield it does not cause any damage. The shield only protects the 'front' of the bot. It will only stop bullets that hit it in its front, plus minus SHIELD_SIZE degrees.
+
+From the users point of view, everything runs in the graphical interface. The UI must draw the bots, the bullets, the shields, and the bullets. It must also display all relevant game information (round number, total number of rounds, turn number, total number of turns, bot health).
+
+There are two main game modes: 1) There is only one Ollama instance that is prompted in turns by both players, and 2) there are 2 independent Ollama instances, one per player.
+
+There are also two types of prompting, 1) the game adds all the relevant information to the prompt (location, rotation, shield state, etc), and 2) only the exact prompt provided by the player is passed to the LLM without adding any information whatsoever.
+
+Before the game starts, the players can set the values for TOTAL_ROUNDS, TURNS_PER_ROUND, INITIAL_HEALTH, BULLET_DAMAGE, SHIELD_SIZE.
+
+Likewise, the players will enter their prompts in text fields floating over the game world. On top of the text fields there will be a scrollable history with all the previous prompts. Players can select a previous prompt to be copied into the text field for editing. Once both players have entered their prompts they can click a button labelled "FIGHT" to start the round.
+
+When a bot dies the round and the game finish. Before starting a new game, users will be asked if they want to save the game information. If they so choose, a timestamped JSON file will be generated with all the game information, prompts, commands, bots states, etc.
+
+While the round is being played, the interface should also display all the commands that each Ollama gives to its bot using two small scrollable windows.
+
+Make sure that you design a nice, sleek looking interface for the game that runs in fullscreen, at the native resolution of the computer (e.g. a MacBook Pro). From the bot's rendering it must be clear which direction the bot is pointing to and if the shield is up or down. Bullets and UI elements must be also be carefully designed and drawn. Choose the GUI element that best suits the data to be displayed and the best suited interaction mode (text fields, slide-bars, knobs, buttons, etc.).
+
+Please feel free to use any library, framework and tool, provided that it is accessible. 
+
+The game will be run locally in MacOS. It does not need to be able to run in Apple computers with Intel processors. It must run, however, in every M1, M2, M3, and M4 processors, maximising the use of the GPU bot in running the LLMs and in rendering the game. 
+
+Again, your task is to build a complete video-game using Python, according to the following description and fulfilling all its requirements and generating everything the game needs, including source code, configuration files, documentation using markup, testing code, test reports, installation scripts, and instructions. Please do it now, value the quality of the code you produce over creating it quickly.
