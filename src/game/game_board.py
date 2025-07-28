@@ -16,7 +16,7 @@ import os
 from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
-from util.dialogs import show_fading_alert, find_id_in_parents
+from util.utils import show_fading_alert, find_id_in_parents
 from kivy.event import EventDispatcher
 
 

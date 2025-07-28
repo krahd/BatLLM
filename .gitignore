@@ -6,7 +6,16 @@ __pycache__/
 # C extensions
 *.so
 
+
+# This folder is used to store things inside the project that should not be committed to version control.
 ignore/
+
+# BatLLM specific
+saved_sessions/  # the default folder for saving sessions
+
+
+
+
 
 # Distribution / packaging
 .Python
