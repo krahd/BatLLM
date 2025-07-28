@@ -75,11 +75,13 @@ As before, for a more detailed overview of *the game*, please refer to the [User
 
 ### **Brutal LLM Bot Battle Pit: BatLLM** 
 
-An execution of BatLLM's app is called a session. Sessions hold games between two players. Games are split in rounds of turns. A turn consits of a single interaction with the game by each player.
+An execution of BatLLM's app is called a session. By convention, *Sessions enjoy a 1:1:1 correspondence between Human Players, AI models, and Game Bots*. **Games** are **Rounds** of **Turns** (A *Turn* consits of two *Plays*; Plays are modelled implictly).
 
-Before each round, players submit the prompt that will guide their AI-controlled during this round. Winning requires thinking simultaneously in the terms of the game and in the terms of human AI interaction. The game supports four different modes, depending on wether the same model interacts with both players and bots and on wether the user-provided prompts are agumented (or decorated) with a preface that includes all the relevant and updated game data.
+Before each round, players prepare and submit the prompt that will be used for all of their Plays during thhis round. Gameplay is almost entirely devoted to creating, testing, and improving Prompts. 
 
-The GUI includes some tools for prompt management and provides real–time (although simple) graphic rendering of rounds. 
+The game supports four different playing modes via two user-controllable flags. One defines whether the players share the AI model instance or not. The other one controls whether the user-provided prompts are automatically agumented with a preface that shares up-to-date game data with the model.
 
-> [! NOTE] 
+The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds. 
+
+> [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
