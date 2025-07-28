@@ -8,7 +8,7 @@ from kivy.clock import Clock
 from game.game_board import GameBoard
 import sys
 from configs.app_config import config
-from util.util import show_confirmation_dialog, show_text_input_dialog
+from util.utils import show_confirmation_dialog, show_text_input_dialog
 from kivy.app import App
 
 class HomeScreen(Screen):    

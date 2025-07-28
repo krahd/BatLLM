@@ -7,7 +7,7 @@ from kivy.utils import get_color_from_hex
 from screens.home_screen import HomeScreen
 from screens.settings_screen import SettingsScreen
 from configs.app_config import config
-from util.util import show_confirmation_dialog
+from util.utils import show_confirmation_dialog
 import sys
 
 

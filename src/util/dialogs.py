@@ -59,9 +59,9 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
 
 
 
-def show_fading_alert(title, message, duration=1.0, fade_duration=1.0):
+def show_fading_alert(title, message, duration=1.5, fade_duration=2.0):
     """
-    Displays a modal alert with a title and message that fades out and closes itsel.
+    Displays a modal alert with a title and message that fades out and closes itself.
 
     Args:
         title (_type_): the title of the alert

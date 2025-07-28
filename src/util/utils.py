@@ -1,7 +1,4 @@
-|
 from colorsys import rgb_to_hls, hls_to_rgb
-
-
 
 
 def find_id_in_parents(searcher, target_id):

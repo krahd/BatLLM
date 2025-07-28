@@ -5,7 +5,7 @@
 # BatLLM
 *What we do not understand we do not posses* - Goethe.
 
->[! NOTE] 
+> [! NOTE] 
 >**[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Software](SOFTWARE.md) &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)**
 
 
@@ -21,7 +21,7 @@ By combining language, strategy, and AI-driven gameplay, **BatLLM** offers a saf
 
 This document provides a rather superficial overview of the project. To know more about **BatLLM**, its objectives and technical details, please refer to the [[#BatLLM|main documentation files]].
 
->[! NOTE!]
+> [! NOTE!]
 > **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
 
 
@@ -84,5 +84,5 @@ Each player has a text bot where they can add prompts to their collection. After
 
 In addition, you may use the buttons at the bottom right to change some of BatLLM's options, to start a new game, or to save the information of the current execution of BatLLM as a JSON file.
 
->[! NOTE]  
->**[Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)**
+> [! NOTE]  
+> **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**

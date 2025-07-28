@@ -16,7 +16,7 @@ import os
 from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
-from util.util import show_fading_alert, find_id_in_parents
+from util.dialogs import show_fading_alert, find_id_in_parents
 from kivy.event import EventDispatcher
 
 
@@ -401,7 +401,7 @@ class GameBoard(Widget, EventDispatcher):
 	
 				if self.current_turn is not None:
 					game_title_label.text += " > "
-					game_title_label.text += f"Turn {self.current_turn}"
+					game_title_label.text += f"Turn {self.current_turn}."
      
 			game_title_label.text += "[/size]"
 
