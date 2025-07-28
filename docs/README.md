@@ -1,6 +1,6 @@
-```
-![alt text](https://github.com/krahd/BatLLM/blob/e3d2fbbd7c3f2837a3fed7c0c8808172dc7eee82/docs/images/logo-small.png "BatLLM")
-```
+
+![Logo](https://github.com/krahd/BatLLM/blob/e3d2fbbd7c3f2837a3fed7c0c8808172dc7eee82/docs/images/logo-small.png)
+
 # BatLLM
 *What we do not understand we do not posses* - Goethe.
 
@@ -18,7 +18,7 @@ The project aims to support a broader social understanding of AI, leveraging int
 
 This README consistes of this introduction, a very brief introduction to the game, and a minimalistic guide to getting started with the project. To know more about **BatLLM**, its objectives and technical details, please refer to the (still incipient) project documentation.
 
-> [! NOTE!]
+> [!IMPORTANT] 
 > **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
 
 
