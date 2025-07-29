@@ -73,7 +73,7 @@ To **stop** the Ollama instances you may run:
 
 As before, for a more detailed overview of *the game*, please refer to the [User Guide](USER_GUIDE.md)
 
-### **Brutal LLM Bot Battle Pit: BatLLM** 
+### Brutal LLM Bot Battle Pit: BatLLM
 
 An execution of BatLLM's app is called a session. By convention, *Sessions enjoy a 1:1:1 correspondence between Human Players, AI models, and Game Bots*. **Games** are **Rounds** of **Turns** (A *Turn* consits of two *Plays*; Plays are modelled implictly).
 
@@ -83,5 +83,8 @@ The game supports four different playing modes via two user-controllable flags. 
 
 The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds. 
 
+<img width="1668" height="1080" alt="before_starting" src="https://github.com/user-attachments/assets/7e18eff8-2eb9-4f09-b36e-742f948ff96d" />
+
 > [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
+
