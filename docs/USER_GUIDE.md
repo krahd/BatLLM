@@ -14,7 +14,9 @@ BatLLM can be configured via a YAML file (`configs/config.yaml`) or by modifying
 > Avoid modifying this file while BatLLM is running. 
 > 
 
-**YAML configuration file:**
+**YAML configuration file:** *The current configuration file may have slightly different default values or keys; the code below is illustrative.*
+Please see the the repository’s [/src/configs/config.yaml](../src/configs/config.yaml) file for the exact format.
+
 ```yaml
 data:
   saved_sessions_folder: saved_sessions
@@ -60,9 +62,8 @@ Configuration Options include:
 	- **primary_color:** the colour for the GUIs text.
 	
 
-*The current configuration file may have slightly different default values or keys; the above is illustrative. See the repository’s* [/src/configs/config.yaml](../src/configs/config.yaml) *for the exact format.*
 
-Command-line Arguments are not currently implemented, but future versions may allow overriding these settings via command-line options for convenience (e.g., `--no-augment` to disable prompt augmentation quickly).
+**Command-line Arguments are not currently implemented**, but future versions may allow overriding these settings via command-line options for convenience (e.g., `--no-augment` to disable prompt augmentation quickly).
 
 Avoid modifying this file while BatLLM is running.
 
