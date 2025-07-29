@@ -34,7 +34,7 @@ This README consistes of this introduction, a very brief introduction to the gam
 
 ### LLM Models
 
-As of now, **BatLLM** prompts two LLMs using POST. Everything, especially the GUI, assumes that players and LLMs share a single machine.
+As of now, **BatLLM** prompts two LLMs via HTTP requests. Everything, especially the GUI, assumes that players and LLMs share a single machine.
 
 **BatLLM** does not care about the local architecture. All it needs are two local endpoints to post queries to. The easiest way to set up a running environment fom sctatch is using **[Ollama](https://ollama.com/)** to download and run [llama3.2:latest](https://ollama.com/library/llama3.2) on a mac with a mac computer with Apple silicon.
 
