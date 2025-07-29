@@ -1,14 +1,22 @@
 
-# ![Logo](https://github.com/krahd/BatLLM/blob/e3d2fbbd7c3f2837a3fed7c0c8808172dc7eee82/docs/images/logo-small.png)
 [logo]: (./images/logo-small.png) "BatLLM's logo"
+
 ![BatLLM's logo][logo]
+
 ![BatLLM's logo](./images/logo-small.png) "the logo"
+
 !(./images/logo-small.png) "the logo"
+
 !(./images/logo-small.png) 
+
 ![](./images/logo-small.png) 
+
 !["alt between quotation marks"](./images/logo-small.png) "alt 2"
-![alt no quotation marks](./images/logo-small.png) "alt 22"
+
+[alt no quotation marks](./images/logo-small.png) "alt 22"
+
 !["alt ' apostroph quotation marks"](./images/logo-small.png) "alt 3"
+
 ![alt ' apostroph no quotation marks](./images/logo-small.png) "alt 33"
 
 
@@ -100,4 +108,3 @@ The GUI includes some tools for prompt management, game configuration, gameplay 
 > [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
 
-!(./images/logo-small.png) "BatLLM's logo"
