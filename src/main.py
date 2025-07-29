@@ -32,14 +32,14 @@ class BatLLM(App):
         sm = ScreenManager()
 
         home = HomeScreen(name="home")
-        #sm.add_widget(HomeScreen(name = "home"))  # starting screen        
+        
         sm.add_widget(home)
-        sm.add_widget(SettingsScreen(name = "settings"))                
+        sm.add_widget(SettingsScreen(name = "settings"))     # starting screen                    
         
         self.icon = "assets/images/logo_small.png" # TODO create an icon
         self.title = config.get("ui", "title") 
 
-        #Window.bind(on_request_close=self.on_request_close)
+        
         Window.bind(on_request_close=home.on_request_close)
 
         return sm

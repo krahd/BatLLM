@@ -11,6 +11,8 @@ from configs.app_config import config
 from util.utils import show_confirmation_dialog, show_text_input_dialog
 from kivy.app import App
 
+
+
 class HomeScreen(Screen):    
     """
     A HomeScreen instance implements BotLLM's main screen. 
@@ -29,9 +31,10 @@ class HomeScreen(Screen):
         """        
 
         super().__init__(**kwargs)
+
         self.history = HistoryManager()
         
-        self.adjust_lightness(0.5)
+        
         
     
     def save_session (self):
@@ -252,7 +255,38 @@ class HomeScreen(Screen):
             # tell the board to submit the prompt for this bot_id
             gbw = self.ids.game_board
             gbw.submit_prompt (bot_id, new_prompt)
+ 
         
+
+
+    def load_prompt(self, bot_id):
+        """
+        Allows the user to select a file and loads its content into the bot's prompt edition field.
+
+        Args:
+            bot_id (_type_): the bot id
+        """        
+
+        def on_file_selected(file_path):
+            """
+            Callback for when a file is selected. 
+            Loads the file and stores it in the bot's prompt edition field.
+            """
+            
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    text = f.read()
+                    self.set_prompt_input_text(bot_id, text)
+
+            except Exception as e:
+                print(f"Error reading file: {e}")
+
+
+
+
+# --- events -----------------------
+
+       
         
 
     def on_request_close(self, *args, **kwargs):
@@ -317,35 +351,16 @@ class HomeScreen(Screen):
                                  on_cancel=_on_exit_cancelled)
         return True
 
-        
 
-
-    def load_prompt(self, bot_id):
+    def on_enter(self):
         """
-        Allows the user to select a file and loads its content into the bot's prompt edition field.
-
-        Args:
-            bot_id (_type_): the bot id
-        """        
-
-        def on_file_selected(file_path):
-            """
-            Callback for when a file is selected. 
-            Loads the file and stores it in the bot's prompt edition field.
-            """
-            
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    text = f.read()
-                    self.set_prompt_input_text(bot_id, text)
-
-            except Exception as e:
-                print(f"Error reading file: {e}")
-
+        Called when the screen is entered.
+        It initializes the GameBoard and Bot instances.
+        """
         
-
-       
-
+        self.ids.overlay.darken = 0.2   # Set the initial overlay alpha value
+        self.ids.overlay.desaturation = 0.1    #  Set the initial desaturation value
+    
 
 
 
