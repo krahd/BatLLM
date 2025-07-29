@@ -1,8 +1,8 @@
 
 # ![Logo](https://github.com/krahd/BatLLM/blob/e3d2fbbd7c3f2837a3fed7c0c8808172dc7eee82/docs/images/logo-small.png)
-[logo]:(docs/screenshots/logo-small.png)
+[logo]: docs/screenshots/logo-small.png "BatLLM's logo"
 
-![BatLLM's logo][logo]
+![alt text][logo]
 
 # BatLLM
 *What we do not understand we do not posses* - Goethe.
@@ -86,9 +86,9 @@ The game supports four different playing modes via two user-controllable flags. 
 
 The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds. 
 
-![Screenshot of the Main Screen](docs/screenshots/logo-small.png)
+![alt textx](docs/screenshots/logo-small.png) "Screenshot of the Main Screen"
 
 > [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
 
-![BatLLM's logo][logo]
+![alt text][logo]
