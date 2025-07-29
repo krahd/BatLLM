@@ -22,6 +22,8 @@ This README consistes of this introduction, a very brief introduction to the gam
 > **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
 
 
+![Screenshot of Main Screen](./screenshots/before_starting.png)
+
 
 ## Getting Started
 
@@ -82,8 +84,6 @@ Before each round, players prepare and submit the prompt that will be used for a
 The game supports four different playing modes via two user-controllable flags. One defines whether the players share the AI model instance or not. The other one controls whether the user-provided prompts are automatically agumented with a preface that shares up-to-date game data with the model.
 
 The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds. 
-
-![Screenshot of Main Screen](./screenshots/before_starting.png)
 
 > [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
