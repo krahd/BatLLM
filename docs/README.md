@@ -1,23 +1,23 @@
 
-[logo]: (./images/logo-small.png) "BatLLM's logo"
+[logo]: (./images/logo-small.png) "BatLLM's logo"   # renders "BatLLM's logo" as a text link, no image
+ 
+![BatLLM's logo][logo]  
 
-![BatLLM's logo][logo]
-
-![BatLLM's logo](./images/logo-small.png) "the logo"
+![BatLLM's logo](./images/logo-small.png) "the logo"    # image without alt followed by "the logo" (the text with the quotation marks)
 
 !(./images/logo-small.png) "the logo"
 
-!(./images/logo-small.png) 
+!(./images/logo-small.png)  # everything is text 
 
-![](./images/logo-small.png) 
+![](./images/logo-small.png)  # does nothing
 
-!["alt between quotation marks"](./images/logo-small.png) "alt 2"
+!["alt between quotation marks"](./images/logo-small.png) "img but no alt
 
-[alt no quotation marks](./images/logo-small.png) "alt 22"
+[alt no quotation marks](./images/logo-small.png) "alt 22" # link then "alt 22" (the text with the quotation marks)
 
-!["alt ' apostroph quotation marks"](./images/logo-small.png) "alt 3"
+!["alt ' apostroph quotation marks"](./images/logo-small.png) # image without alt followed by "alt 3" (the text with the quotation marks)  # does nothing
 
-![alt ' apostroph no quotation marks](./images/logo-small.png) "alt 33"
+![alt ' apostroph no quotation marks](./images/logo-small.png) # image without alt followed by "alt 33" (the text with the quotation marks)  # does nothing
 
 
 
@@ -105,6 +105,10 @@ The GUI includes some tools for prompt management, game configuration, gameplay 
 
 ![Screenshot of Main Screen](./screenshots/before_starting.png)
 
+![the logo](./images/logo-small.png) 
+
 > [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
 
+
+![BatLLM's logo][logo]  
