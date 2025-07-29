@@ -2,7 +2,7 @@
 *What we do not understand we do not posses* - Goethe.
 
 >
->  ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)** 
+>  ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [/FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
 >
 >
 
