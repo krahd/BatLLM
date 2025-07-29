@@ -60,7 +60,7 @@ Configuration Options include:
 	- **primary_color:** the colour for the GUIs text.
 	
 
-*The current configuration file may have slightly different default values or keys; the above is illustrative. See the repository’s* ![/src/configs/config.yaml](/src/config/config.yaml) *for the exact format.*
+*The current configuration file may have slightly different default values or keys; the above is illustrative. See the repository’s* ![/src/configs/config.yaml](../src/config/config.yaml) *for the exact format.*
 
 Command-line Arguments are not currently implemented, but future versions may allow overriding these settings via command-line options for convenience (e.g., `--no-augment` to disable prompt augmentation quickly).
 
