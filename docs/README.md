@@ -1,5 +1,8 @@
 
-![Logo](https://github.com/krahd/BatLLM/blob/e3d2fbbd7c3f2837a3fed7c0c8808172dc7eee82/docs/images/logo-small.png)
+# ![Logo](https://github.com/krahd/BatLLM/blob/e3d2fbbd7c3f2837a3fed7c0c8808172dc7eee82/docs/images/logo-small.png)
+[logo]:(docs/screenshots/logo-small.png)
+
+![BatLLM's logo][logo]
 
 # BatLLM
 *What we do not understand we do not posses* - Goethe.
@@ -73,7 +76,7 @@ To **stop** the Ollama instances you may run:
 
 As before, for a more detailed overview of *the game*, please refer to the [User Guide](USER_GUIDE.md)
 
-### Brutal LLM Bot Battle Pit: BatLLM
+**Brutal LLM Bot Battle Pit: BatLLM**
 
 An execution of BatLLM's app is called a session. By convention, *Sessions enjoy a 1:1:1 correspondence between Human Players, AI models, and Game Bots*. **Games** are **Rounds** of **Turns** (A *Turn* consits of two *Plays*; Plays are modelled implictly).
 
@@ -83,8 +86,9 @@ The game supports four different playing modes via two user-controllable flags. 
 
 The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds. 
 
-![Screenshot](/docs/images/logo-small.png)
+![Screenshot of the Main Screen](docs/screenshots/logo-small.png)
 
 > [!NOTE]
 > **[Readme](README.md) &mdash; [Documentation](docs/DOCUMENTATION.md)  &mdash; [User Guide](docs/USER_GUIDE.md)  &mdash; [Contributing](docs/CONTRIBUTIN%20c1.md)  &mdash; [docs/FAQ](FAQ.md)  &mdash; [docs/Credits](CREDITS.md)**
 
+![BatLLM's logo][logo]
