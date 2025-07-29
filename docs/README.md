@@ -2,7 +2,16 @@
 *What we do not understand we do not posses* - Goethe.
 
 > [!NOTE] 
-> **[Readme](README.md)  &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Software](SOFTWARE.md) &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** ![BatLLM's logo](./images/logo-small.png)
+> **[Readme](README.md)  &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Software](SOFTWARE.md) &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** ![BatLLM's logo](./images/logo-small.png) "alt"
+
+> [!NOTE] 
+> ![BatLLM's logo](./images/logo-small.png) "alt" **[Readme](README.md)  &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Software](SOFTWARE.md) &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** ![BatLLM's logo](./images/logo-small.png) "alt"
+
+> [!NOTE] 
+> ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md)  &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Software](SOFTWARE.md) &mdash; [Contributing](CONTRIBUTIN%20c1.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** ![BatLLM's logo](./images/logo-small.png) "alt"
+
+
+![BatLLM's logo](./images/logo-small.png) "alt"
 
 
 
