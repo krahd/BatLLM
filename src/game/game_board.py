@@ -223,7 +223,7 @@ class GameBoard(Widget, EventDispatcher):
                 Color(1, 0, 0, self.bullet_alpha)  # Red color for bullet trace
                 Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
                 if self.bullet_alpha > 0:
-                    self.bullet_alpha -= 0.01  # Decrease alpha for fading effect
+                    self.bullet_alpha -= 0.0015  # Decrease alpha for fading effect
                 else:
                     self.bulletTrace.clear()
                     
@@ -280,9 +280,13 @@ class GameBoard(Widget, EventDispatcher):
 
         if box is not None:
             box.text += text
+
+            scroll = find_id_in_parents(self, f"scroll_output_history_player_{bot_id}")
+            Clock.schedule_once(lambda dt: setattr(scroll, "scroll_y", 0), 0)   # TODO fix this, it runs glitchy
         else:
             print(f"Could not find output history box for bot_id: {bot_id}")
             
+
 
 
 
@@ -293,7 +297,7 @@ class GameBoard(Widget, EventDispatcher):
                 bot_id (_type_): bot id
                 command (_type_): the command to add
         """
-        text = f"   {self.current_turn}. {command}\n"
+        text = f"[color=#000000]{self.current_turn} - {command}[/color]\n"
         self.add_text_to_llm_response_history(bot_id, text)
         
 
@@ -327,7 +331,7 @@ class GameBoard(Widget, EventDispatcher):
 
         for b in self.bots:
             self.add_text_to_llm_response_history(
-                b.id, f"[b]Round {self.current_round}:[/b]\n"
+                b.id, f"[color=#000000][b]Round {self.current_round}[/b][/color]\n"
             )
             b.ready_for_next_round = False  # need a new prompt for a new round
 

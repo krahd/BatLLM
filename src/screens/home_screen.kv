@@ -1,5 +1,7 @@
 
 #:kivy 2.3.1
+#:import dp kivy.metrics.dp
+
 <Overlay@Widget>:
 
     darken: 0.0
@@ -357,11 +359,12 @@
                         
                     BoxLayout: # Player 1's commands and output history
                         orientation: "vertical"
-                        padding: 1, 0, 1, 5
-                        spacing: 1
+                        padding: 0 #1, 0, 1, 5
+                        spacing: 0
                         canvas.before:
                             Color:                           
-                                rgba: 0, 0, 0, 1     
+                                rgba: .75, .83, .95, 1 
+                                #rgba: 0, 0, 0, 1     
                             Rectangle:
                                 pos: self.pos
                                 size: self.size
@@ -369,19 +372,27 @@
                         Label: # Title "Commands" 1
                             size_hint_x: 1
                             size_hint_y: None                        
-                            text: "[b]Commands[/b]"
+                            text: "[b]Commands[/b]"                           
                             markup: True
                             halign: "left"                                                        
                             color: 0, 0, 0, 1    
-                            height: "48dp"
+                            height: dp(48)
                             canvas.before:
-                                Color:                                                            
-                                                                
+                                Color: 
                                     rgba: .68, .76, .88, 1   # command one         
                                 Rectangle:
                                     pos: self.pos
-                                    size: self.size      
-                                                            
+                                    size: self.size                                  
+
+                        Widget:
+                            size_hint_y: None
+                            height: dp(.5)     # exactly 1px high
+                            canvas.before:
+                                Color:
+                                    rgba: 0, 0, 0, 1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size                             
                         
                         ScrollView: # LLM output parsed by Bot 1
                             size_hint: (1, 1)
@@ -389,25 +400,37 @@
                             do_scroll_x: False
                             do_scroll_y: True                    
                             scroll_type: ['bars', 'content']             
-                            id: scroll_output_history_player_1                                
+                            id: scroll_output_history_player_1
+                                                         
                             
-                            TextInput:
-                                padding: 20, 20
-                                id: output_history_player_1                               
+                            Label:
+                                id: output_history_player_1
                                 text: ""
-                                spacing: 10
-                                multiline: True
-                                readonly: True
-                                height: max(self.minimum_height, scroll_output_history_player_1.height)
+                                markup: True
+                                valign: 'top'
+                                halign: 'left'
+                                text_size: self.width - dp(40), None
                                 size_hint_y: None
-                                size_hint_x: 1
-                                scroll_y: 1
-                                cursor_blink: True
-                                background_color: .75, .83, .95, 1 # Output 1
-                                foreground_color: 0, 0, 0, 1 
-                                background_normal: ""
-                                background_down: ""  
-                                                                                        
+                                height: self.texture_size[1] + dp(40)
+                                padding: dp(20), dp(10)
+
+                                canvas.before:
+                                    Color:
+                                        rgba: .75, .83, .95, 1
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+
+
+                        Widget:
+                            size_hint_y: None
+                            height: dp(2.5) 
+                            canvas.before:
+                                Color:
+                                    rgba: 0, 0, 0, 1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size                                  
 
 
                     BoxLayout: # Player 2's commands and output history                    
@@ -417,7 +440,7 @@
 
                         canvas.before:
                             Color:                        
-                                rgba: 0, 0, 0, 1   
+                                rgba: 0.9, 0.85, 0.95, 1   
                             Rectangle:
                                 pos: self.pos
                                 size: self.size
@@ -429,14 +452,24 @@
                             markup: True
                             halign: "left"                            
                             color: 0, 0, 0, 1    
-                            height: "48dp"
+                            height: dp(48)
                             canvas.before:
                                 Color:                                
                                     rgba: 0.86, 0.73, 0.91, 1
                                 Rectangle:
                                     pos: self.pos
-                                    size: self.size                                               
+                                    size: self.size                                        
                                 
+                        Widget:
+                            size_hint_y: None
+                            height: dp(.5)     # exactly 1px high
+                            canvas.before:
+                                Color:
+                                    rgba: 0, 0, 0, 1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size        
+
 
                         ScrollView: # LLM output parsed by Bot 2                       
                             bar_width: 20
@@ -445,22 +478,24 @@
                             scroll_type: ['bars', 'content']  
                             id: scroll_output_history_player_2                                               
                             
-                            TextInput:
-                                padding: 20, 20
+                            Label:
                                 id: output_history_player_2
                                 text: ""
-                                spacing: 10
-                                multiline: True
-                                readonly: True
-                                height: max(self.minimum_height, scroll_output_history_player_2.height)
+                                markup: True
+                                valign: 'top'
+                                halign: 'left'
+                                text_size: self.width - dp(40), None
                                 size_hint_y: None
-                                size_hint_x: 1
-                                scroll_y: 1
-                                cursor_blink: True
-                                background_color: 0.9, 0.85, 0.95, 1  # Output 2
-                                foreground_color: 0, 0, 0, 1 
-                                background_normal: ""
-                                background_down: ""                        
+                                height: self.texture_size[1] + dp(40)
+                                padding: dp(20), dp(20)
+                                canvas.before:
+                                    Color:
+                                        rgba:  0.9, 0.85, 0.95, 1
+                                    Rectangle:
+                                        pos: self.pos
+                                        size: self.size
+                                
+
                                                                                                                     
                     
             

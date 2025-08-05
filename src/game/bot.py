@@ -167,10 +167,7 @@ class Bot (Widget):
         """The bot rotates by a given angle. Corresponds to the commands 'C' and 'A'
         """    
         self.rot += angle
-        if self.rot > 2 * math.pi:
-            self.rot -= 2 * math.pi
-        elif self.rot < 0:
-            self.rot += 2 * math.pi
+        self.rot = math.fmod(self.rot, 2 * math.pi)
         
 
 
