@@ -5,7 +5,7 @@ game:
   bullet_damage: 8
   independent_models: true
   initial_health: 33
-  prompt_augmentation: true
+  prompt_augmentation: false
   shield_initial_state: true
   shield_size: 35
   step_length: 0.02

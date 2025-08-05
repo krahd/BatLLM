@@ -1,4 +1,4 @@
-from kivy.app import App
+from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
@@ -18,7 +18,7 @@ Builder.load_file("screens/home_screen.kv")
 Builder.load_file("screens/history_screen.kv")
 
 
-class BatLLM(App):
+class BatLLM(MDApp):
     """This is the main application class for BattLLM.
     Using Kivy, it initializes the screen manager and sets up the application's windows
     

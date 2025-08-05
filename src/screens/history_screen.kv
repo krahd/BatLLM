@@ -1,6 +1,6 @@
 #:kivy 2.3.1
 #:import dp kivy.metrics.dp
-
+#:import MDLabel kivymd.uix.label.MDLabel
 <HistoryScreen>:
     canvas.before:
         Color:
@@ -35,11 +35,19 @@
                 do_scroll_y: True
                 scroll_type: ['bars', 'content']
 
-                Label:
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                MDLabel:
                     id: string_panel
                     color: 0, 0, 0, 1  
                     text: ""
                     markup: True
+                    selectable: True
                     valign: 'top'
                     halign: 'left'
                     font_size: '16sp'
@@ -47,12 +55,7 @@
                     size_hint_y: None
                     height: self.texture_size[1] + dp(20)
                     padding: dp(10), dp(10)
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
+                    
 
             # — Scrollable Markdown Label for History Panel —
             ScrollView:
@@ -64,11 +67,19 @@
                 do_scroll_y: True
                 scroll_type: ['bars', 'content']
 
-                Label:
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                MDLabel:
                     id: history_panel
                     color: 0, 0, 0, 1  
                     text: ""
                     markup: True
+                    selectable: True
                     valign: 'top'
                     halign: 'left'
                     font_size: '16sp'
@@ -76,12 +87,7 @@
                     size_hint_y: None
                     height: self.texture_size[1] + dp(20)
                     padding: dp(10), dp(10)
-                    canvas.before:
-                        Color:
-                            rgba: 1, 1, 1, 1
-                        Rectangle:
-                            pos: self.pos
-                            size: self.size
+                    
 
         Button:
             text: "Back"
