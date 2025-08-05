@@ -118,10 +118,13 @@ class HomeScreen(Screen):
         Handler for the history buttons.
         Switches the current screen to the settings screen.
         """        
+
         self.manager.current = "history"
-       
+        history_screen = self.manager.get_screen("history")
+        history_screen.update(bot_id, "string 1", self.history.to_text())  # TODO: replace with real data
+        
 
-
+        
 
     def save_prompt(self, id):
         """

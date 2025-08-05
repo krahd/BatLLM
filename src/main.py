@@ -41,7 +41,6 @@ class BatLLM(App):
         
         self.icon = "assets/images/logo_small.png" # TODO create an icon
         self.title = config.get("ui", "title") 
-
         
         Window.bind(on_request_close=home.on_request_close)
 
