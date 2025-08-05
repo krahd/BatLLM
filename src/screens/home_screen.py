@@ -241,8 +241,6 @@ class HomeScreen(Screen):
         Stores the text in the prompt edition field in the bot's prompt history and selects it.
         Flags the bot as ready to submit the prompt to its LLM.
 
-        
-
         Args:
             bot_id (_type_): tTe bot id
         """        
@@ -279,7 +277,6 @@ class HomeScreen(Screen):
                 input_id = f"prompt_player_{id}"
                 text_input = self.ids.get(input_id)
                 text_input.text = text  
-
 
 
         start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")

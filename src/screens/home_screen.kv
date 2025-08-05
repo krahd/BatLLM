@@ -77,7 +77,8 @@
                         bar_width: 20
                         do_scroll_x: False
                         do_scroll_y: True
-                        scroll_type: ['bars', 'content']                     
+                        scroll_type: ['bars', 'content']   
+                        id: scroll_prompt_history_player_1                  
                         
                         TextInput:
                             padding: 20, 20
@@ -87,7 +88,8 @@
                             multiline: True
                             readonly: True                        
                             height: self.minimum_height
-                            size_hint_y: 1
+                            size_hint_y: None
+                            height: max(self.minimum_height, scroll_prompt_history_player_1.height)
                             size_hint_x: 1
                             scroll_y: 1
                             cursor_blink: True                        
@@ -139,6 +141,7 @@
                         do_scroll_x: False
                         do_scroll_y: True                    
                         scroll_type: ['bars', 'content'] 
+                        id: scroll_prompt_player_1
 
                         TextInput:
                             padding: 20, 20
@@ -147,9 +150,9 @@
                             markup: True                                                      
                             multiline: True
                             readonly: False
-                            size_hint_y: 1
-                            scroll_y: 1
-                            height: self.minimum_height                        
+                            size_hint_y: None
+                            scroll_y: 1                            
+                            height: max(self.minimum_height, scroll_prompt_player_1.height)                            
                             cursor_blink: True                                      
                             background_color: .79, .87, .99, 1 # input 1
                             foreground_color: 0, 0, 0, 1 
@@ -220,16 +223,18 @@
                         do_scroll_x: False
                         do_scroll_y: True
                         scroll_type: ['bars', 'content'] 
+                        id: scroll_prompt_history_player_2
 
                         TextInput:
                             padding: 20, 20
-                            id: prompt_history_player_2                        
+                            id: prompt_player_2                        
                             text:""                             
                             markup: True                                                      
                             multiline: True
                             readonly: True                        
                             height: self.minimum_height
-                            size_hint_y: 1
+                            size_hint_y: None
+                            height: max(self.minimum_height, scroll_prompt_history_player_2.height)
                             scroll_y: 1
                             cursor_blink: True                        
                             background_color: 0.99, 0.87, 1, 1 # History 2                        
@@ -279,6 +284,7 @@
                         do_scroll_x: False
                         do_scroll_y: True
                         scroll_type: ['bars', 'content'] 
+                        id: scroll_prompt_player_2
 
                         TextInput:
                             padding: 20, 20
@@ -287,9 +293,9 @@
                             markup: True                                                      
                             multiline: True
                             readonly: False
-                            size_hint_y: 1
-                            scroll_y: 1
-                            height: self.minimum_height                        
+                            size_hint_y: None
+                            scroll_y: 1  
+                            height: max(self.minimum_height, scroll_prompt_player_2.height)                    
                             cursor_blink: True                          
                             background_color: 0.98, 0.86, .99, 1 # input 2  
                             foreground_color: 0, 0, 0, 1     
@@ -382,7 +388,8 @@
                             bar_width: 20                        
                             do_scroll_x: False
                             do_scroll_y: True                    
-                            scroll_type: ['bars', 'content']                                             
+                            scroll_type: ['bars', 'content']             
+                            id: scroll_output_history_player_1                                
                             
                             TextInput:
                                 padding: 20, 20
@@ -391,8 +398,8 @@
                                 spacing: 10
                                 multiline: True
                                 readonly: True
-                                height: self.minimum_height
-                                size_hint_y: 1
+                                height: max(self.minimum_height, scroll_output_history_player_1.height)
+                                size_hint_y: None
                                 size_hint_x: 1
                                 scroll_y: 1
                                 cursor_blink: True
@@ -435,7 +442,8 @@
                             bar_width: 20
                             do_scroll_x: False
                             do_scroll_y: True                    
-                            scroll_type: ['bars', 'content']                                                 
+                            scroll_type: ['bars', 'content']  
+                            id: scroll_output_history_player_2                                               
                             
                             TextInput:
                                 padding: 20, 20
@@ -444,8 +452,8 @@
                                 spacing: 10
                                 multiline: True
                                 readonly: True
-                                height: self.minimum_height
-                                size_hint_y: 1
+                                height: max(self.minimum_height, scroll_output_history_player_2.height)
+                                size_hint_y: None
                                 size_hint_x: 1
                                 scroll_y: 1
                                 cursor_blink: True
