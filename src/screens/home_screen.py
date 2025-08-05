@@ -9,6 +9,7 @@ from kivy.clock import Clock
 from game.game_board import GameBoard
 import sys
 from configs.app_config import config
+from util.save_dialog import SaveDialog
 from util.utils import show_confirmation_dialog, show_text_input_dialog
 from kivy.app import App
 from util.load_text_dialog import LoadTextDialog
@@ -111,7 +112,28 @@ class HomeScreen(Screen):
        
 
 
-    
+
+
+    def save_prompt(self, id):
+        """
+        Allows the user to save the content of the bot's prompt edition field to a file.
+
+        Args:
+            id (_type_): The bot id.
+        """        
+        
+        start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")
+        ti = self.ids.get(f"prompt_player_{id}")
+        if not ti:
+            return
+        dlg = SaveDialog(
+            content_to_save=ti.text,
+            start_folder=start_folder
+        )
+        dlg.open()
+
+
+
 
 
     def set_prompt_input_text(self, id, text):
