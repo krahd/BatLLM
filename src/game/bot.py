@@ -277,7 +277,8 @@ class Bot (Widget):
             file = open(config.get("llm", "augmentation_header_file"),'r')
             hdr = file.read()
             file.close()
-            data["prompt"] = hdr           
+            data["prompt"] = hdr
+            data["prompt"] += "GAME_STATE:\n"         
             data["prompt"] += f"Self.x: {self.x}, Self.y: {self.y}\n"
             data["prompt"] += f"Self.rot: {math.degrees(self.rot)}\n"
             data["prompt"] += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
@@ -286,7 +287,7 @@ class Bot (Widget):
             data["prompt"] += f"Opponent.rot: {math.degrees(self.board_widget.get_bot_by_id(3 - self.id).rot)}\n"
             data["prompt"] += f"Opponent.shield: {'ON' if self.board_widget.get_bot_by_id(3 - self.id).shield else 'OFF'}\n"
             data["prompt"] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
-            data["prompt"] += "User prompt:"
+            data["prompt"] += "PLAYER_INPUT:\n"
             
         data["prompt"] += self.get_current_prompt() + "\n"
         
