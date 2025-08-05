@@ -20,15 +20,18 @@ class HistoryScreen(Screen):
             raw_prompt      -- the raw prompt text, newline‐separated
             parsed_history  -- the processed history, newline‐separated
         """
-        self.current_bot_id = bot_id
 
-        # split each on newlines and feed to rv.data
-        raw_lines = raw_prompt.splitlines() or [""]
-        parsed_lines = parsed_history.splitlines() or [""]
+        # Split on each newline, preserving empty items
+        raw_lines = raw_prompt.split("\n")
+        parsed_lines = parsed_history.split("\n")
 
-        # each item must be a dict matching the viewclass properties:
+        # build data lists
         self.ids.rv_string_panel.data = [{"text": line} for line in raw_lines]
         self.ids.rv_history_panel.data = [{"text": line} for line in parsed_lines]
 
+
+
+
+        
     def go_back_home(self):
         self.manager.current = "home"

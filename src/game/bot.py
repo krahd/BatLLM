@@ -47,6 +47,7 @@ class Bot (Widget):
     simple_log = ""
         
 
+
     def __init__(self, id, board_widget, **kwargs):
         """Constructor
         
@@ -105,8 +106,11 @@ class Bot (Widget):
         Args:
             message (_type_): the message to log
         """
-        self.simple_log += f"{message}"
+        #self.simple_log += f"{message.strip()}\n"
+        self.simple_log += message.rstrip("\n") + "\n"
         # TODO if getconfig verbose = true then print(f"{[self.id]} {message})
+
+
 
     def getLog(self):
         """Returns the bot's log.
@@ -115,7 +119,9 @@ class Bot (Widget):
             _type_: the bot's log
         """
         return self.simple_log.strip() 
-    
+
+
+
 
     def render(self):
         """Draws itself. It assumes a NormalizedCanvas.
@@ -317,8 +323,8 @@ class Bot (Widget):
         # print(f"[{self.id}] Sending prompt to LLM: {data['prompt']}")
         # TODO format these prints better and output them into to a log window that can be opened and closed by the user instead of the console
         #self.log(f"Sending the prompt to LLM {self.llm_endpoint}")
-        self.log(f"\n\n\n[b]Prompt:[/b] {self.get_current_prompt()}\n")
-
+        self.log(f"\n\n\n[b]Prompt:[/b] {self.get_current_prompt()}\n\n")
+        print(f"****{self.get_current_prompt()}****")
         
         UrlRequest(
             url = self.llm_endpoint,
@@ -370,7 +376,7 @@ class Bot (Widget):
         
         
         self.last_llm_response = result.get("response", "").strip()  
-        self.log(f"[b]LLM says:[/b] {self.last_llm_response}")
+        self.log(f"\n[b]LLM says:[/b] {self.last_llm_response}")
         cmd = self.last_llm_response
         # print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
             
@@ -421,10 +427,10 @@ class Bot (Widget):
             print (f"exception: {e}") 
         
         if not command_ok:            
-            self.log(f"  - Invalid command: {command}")
+            self.log(f"  - Invalid command: {command}\n\n")
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
         else:
-            self.log(f"  - Executing command: {command}")
+            self.log(f"  - Executing command: {command}\n\n")
             self.board_widget.add_llm_response_to_history(self.id, command)        
 
         # ********* Updating the bot's state and notifying the board widget *********

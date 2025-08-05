@@ -76,7 +76,7 @@
                     orientation: "vertical"
                     size_hint_y: None
                     height: self.minimum_height
-                    spacing: dp(4)
+                    spacing: 0
 
         Button:
             text: "Back"
@@ -90,10 +90,10 @@
     # extends KivyMD's MDLabel to enable bbcode and selection
     markup: True
     selectable: True
-    padding: dp(10), dp(10)
-    text_size: self.width - dp(20), None
+    padding: 0, 0 # dp(2), dp(2)
+    text_size: self.width, None
     size_hint_y: None
-    height: self.texture_size[1] + dp(20)
+    height: max(self.texture_size[1], self.font_size)
     valign: 'top'
     halign: 'left'
     font_style: 'Body1'
