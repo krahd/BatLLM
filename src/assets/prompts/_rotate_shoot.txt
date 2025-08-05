@@ -1,3 +1,0 @@
-If you are not pointing to your opponent, rotate to point to it.
-If you are pointing to your opponent and your shield is up, lower your shield.
-Otherwise, shoot. 
