@@ -70,8 +70,9 @@ class Bot (Widget):
             self.color = (0, 1, 0, 1)
 
         port_base = config.get("llm", "port_base")
-        if not config.get("game", "independet_models"):
-            port = f"{port_base + 1}"  # sh ared model for both bots in 5000. It could be a third one. 
+
+        if not config.get("game", "independent_models"):
+            port = f"{port_base + 1}"  # shared model for both bots in 5001. It could be a third one. 
             
         else:            
             port = f"{port_base + id}"  # ports 5001, 5002, etc. for each bot
@@ -87,8 +88,7 @@ class Bot (Widget):
         # Randomly initialize position and rotation of each bot
         self.x = random.uniform(0, 1) 
         self.y = random.uniform(0, 1)
-        self.rot = random.uniform(0, 2 * math.pi)   
-        
+        self.rot = random.uniform(0, 2 * math.pi)           
                 
 
     
@@ -295,7 +295,7 @@ class Bot (Widget):
         
         # print(f"[{self.id}] Sending prompt to LLM: {data['prompt']}")
         # TODO format these prints better and output them into to a log window that can be opened and closed by the user instead of the console
-        print(f"[{self.id}] Sending the prompt to the LLM")
+        print(f"[{self.id}] Sending the prompt to LLM {self.llm_endpoint}")
         
         UrlRequest(
             url = self.llm_endpoint,
@@ -375,10 +375,8 @@ class Bot (Widget):
                         angle = float(command[1:])
                         self.rotate(-angle)
 
-                    case "B":                    
-                        self.shoot() 
-                        # set shooting = true
-                        # self.bullet = self.shoot()
+                    case "B":                                            
+                        self.board_widget.shoot(self.id)  
                         
                     case "S":
                         if len(command) == 1:                        
@@ -427,32 +425,15 @@ class Bot (Widget):
         self.shield = not self.shield
 
 
-    def shoot(self):
+    def create_bullet(self):
         """Tries to shoot a bullet. It will only succeed if the shield is down.
 
         Returns:
             _type_: the bullet shot or None
         """        
         if not self.shield:            
-            self.bullet = Bullet(self.id, self.x, self.y, self.rot)            
+            return Bullet(self.id, self.x, self.y, self.rot)            
             
         else:            
             return None
 
-
-
-    def shooting_update(self):
-        self.bullet.render()
-        
-        (bullet_alive, damaged_bot_id) = self.bullet.update(self.board_widget.bots)
-
-
-        if bullet_alive:
-            Clock.schedule_once (self.shooting_update)
-
-        else:
-            self.shooting = False
-            self.bullet = None
-            if damaged_bot_id is not None:
-                self.board_widget.get_bot_by_id(damaged_bot_id).damage()
-        

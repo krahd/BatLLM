@@ -442,17 +442,10 @@ class GameBoard(Widget, EventDispatcher):
         """Callback method executed after a prompt-response cycle has been completed by a bot
 
         Args:
-                bot (_type_): the bot id
+                bot (_type_): the bot 
         """
-        # bot.ready_for_next_turn = True
-        
-		# if bot.shooting
-        #     clock.schedule_once (bot.shooting_update()
-        # else lo de abajo
-        
-		
-        
 
+    
         if all(b.ready_for_next_turn for b in self.bots):
             self.current_turn += 1
             self.history_manager.end_turn(self)
@@ -526,7 +519,7 @@ class GameBoard(Widget, EventDispatcher):
                 bot_id (_type_): "The id of the bot that shoots."
         """
         bot = self.get_bot_by_id(bot_id)
-        bullet = bot.shoot()
+        bullet = bot.create_bullet()
         self.bullet_alpha = 1
         bullet_is_alive = True
         damaged_bot_id = None
