@@ -1,0 +1,101 @@
+#:kivy 2.3.1
+#:import dp kivy.metrics.dp
+#:import MDLabel kivymd.uix.label.MDLabel
+
+<HistoryScreen>:
+    # paint the whole background white
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(10)
+        spacing: dp(10)
+
+        # Title
+        Label:
+            text: ""
+            id: title_label
+            font_size: "24sp"
+            size_hint_y: None
+            height: self.texture_size[1] + dp(10)
+            color: 0, 0, 0, 1
+
+        BoxLayout:
+            orientation: "horizontal"
+            spacing: dp(10)
+
+            # — Raw Prompt / String Panel —
+            RecycleView:
+                id: rv_string_panel
+                viewclass: "MarkupLabel"
+                size_hint_x: .5
+                bar_width: dp(10)
+                scroll_type: ["bars", "content"]
+                do_scroll_x: False
+                do_scroll_y: True
+
+                # white background behind all items
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                RecycleBoxLayout:
+                    default_size_hint: 1, None
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(4)
+
+            # — Parsed History Panel —
+            RecycleView:
+                id: rv_history_panel
+                viewclass: "MarkupLabel"
+                size_hint_x: .5
+                bar_width: dp(10)
+                scroll_type: ["bars", "content"]
+                do_scroll_x: False
+                do_scroll_y: True
+
+                canvas.before:
+                    Color:
+                        rgba: 1, 1, 1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                RecycleBoxLayout:
+                    default_size_hint: 1, None
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 0
+
+        Button:
+            text: "Back"
+            font_size: "16sp"
+            size_hint_y: None
+            height: dp(40)
+            on_press: root.go_back_home()
+
+
+<MarkupLabel@MDLabel>:
+    # extends KivyMD's MDLabel to enable bbcode and selection
+    markup: True
+    selectable: True
+    padding: 0, 0 # dp(2), dp(2)
+    text_size: self.width, None
+    size_hint_y: None
+    height: max(self.texture_size[1], self.font_size)
+    valign: 'top'
+    halign: 'left'
+    font_style: 'Body1'
+    theme_text_color: "Custom"
+    text_color: 0, 0, 0, 1
