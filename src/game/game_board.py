@@ -342,7 +342,7 @@ class GameBoard(Widget, EventDispatcher):
         self.shuffled_bots = random.sample(self.bots, 2)
 
         for b in self.bots:
-            b.log(f"Round {self.current_round} started")
+            b.log(f"\n\n[b][size=20sp]Round {self.current_round} started \n\n[/size][/b]")
 
         self.history_manager.start_round(self)
 

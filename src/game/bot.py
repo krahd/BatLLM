@@ -105,7 +105,7 @@ class Bot (Widget):
         Args:
             message (_type_): the message to log
         """
-        self.simple_log += f"{message}\n"
+        self.simple_log += f"{message}"
         # TODO if getconfig verbose = true then print(f"{[self.id]} {message})
 
     def getLog(self):

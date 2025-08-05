@@ -1,36 +1,34 @@
+from kivy.properties import StringProperty, NumericProperty
 from kivy.uix.screenmanager import Screen
-from configs.app_config import config
 
 
 class HistoryScreen(Screen):
     """
-    History screen to display the history of commands and responses.
-    """   
+    Displays two scrolling histories via RecycleView:
+      - rv_string_panel: the raw prompt log
+      - rv_history_panel: the parsed/processed history
+    """
 
+  
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        
-
-
-
-    def update(self, bot_id, log_s, hist_s):
+    def update(self, bot_id: int, raw_prompt: str, parsed_history: str):
         """
-        Updates the history screen with the given bot id and log.
+        Populate both RecycleViews from the two input strings.
 
         Args:
-            bot_id (int): The id of the bot.
-            log_s (str): The log string to display.
-            histhist_sory (str): The history of comands and responses.
+            bot_id          -- the current bot's numeric id
+            raw_prompt      -- the raw prompt text, newline‐separated
+            parsed_history  -- the processed history, newline‐separated
         """
-       
-        self.ids.title_label.text = f"History for Bot {bot_id}"
-        self.ids.string_panel.text = f"{log_s}\n\n"
-        self.ids.history_panel.text = f"{hist_s}\n\n"
+        self.current_bot_id = bot_id
 
+        # split each on newlines and feed to rv.data
+        raw_lines = raw_prompt.splitlines() or [""]
+        parsed_lines = parsed_history.splitlines() or [""]
 
+        # each item must be a dict matching the viewclass properties:
+        self.ids.rv_string_panel.data = [{"text": line} for line in raw_lines]
+        self.ids.rv_history_panel.data = [{"text": line} for line in parsed_lines]
 
     def go_back_home(self):
-        """Switches the current screen to the home screen.
-        """
-        self.manager.current = "home"   
+        self.manager.current = "home"
