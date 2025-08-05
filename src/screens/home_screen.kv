@@ -347,8 +347,8 @@
                     orientation: "vertical"
                     size_hint_x: 0.10 
                     size_hint_y: 1          
-                    padding: 0, 1, 0, 1   
-                    spacing: 1
+                    padding: 0 #, 1, 0, 1   
+                    spacing: 0
                     
                     canvas.before:
                         Color:
@@ -424,6 +424,25 @@
 
                         Widget:
                             size_hint_y: None
+                            height: dp(.5) 
+                            canvas.before:
+                                Color:
+                                    rgba: 0, 0, 0, 1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size       
+                        Button:
+                            text: "[color=#000000][b]History[/b][/color]"
+                            font_size: "16sp"
+                            size_hint_y: ".026dp"
+                            on_press: root.go_to_history_screen(1)  
+                            background_color: 1, 1, 1, 1
+                            background_normal: "" # necessary for colours to work
+                            background_down: ""                              
+                            markup: True                                                   
+
+                        Widget:
+                            size_hint_y: None
                             height: dp(2.5) 
                             canvas.before:
                                 Color:
@@ -496,7 +515,24 @@
                                         size: self.size
                                 
 
-                                                                                                                    
+                        Widget:
+                            size_hint_y: None
+                            height: dp(.5) 
+                            canvas.before:
+                                Color:
+                                    rgba: 0, 0, 0, 1
+                                Rectangle:
+                                    pos: self.pos
+                                    size: self.size       
+                        Button:
+                            text: "[color=#000000][b]History[/b][/color]"
+                            font_size: "16sp"
+                            size_hint_y: ".026dp"
+                            on_press: root.go_to_history_screen(1)  
+                            background_color: 1, 1, 1, 1
+                            background_normal: "" # necessary for colours to work
+                            background_down: ""                              
+                            markup: True                                                                                             
                     
             
                 BoxLayout:  # Third Column (game area) is also divided in three.

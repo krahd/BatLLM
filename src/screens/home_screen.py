@@ -113,6 +113,15 @@ class HomeScreen(Screen):
 
 
 
+    def go_to_history_screen(self, bot_id):        
+        """
+        Handler for the history buttons.
+        Switches the current screen to the settings screen.
+        """        
+        self.manager.current = "history"
+       
+
+
 
     def save_prompt(self, id):
         """

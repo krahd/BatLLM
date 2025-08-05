@@ -6,6 +6,7 @@ from kivy.properties import DictProperty
 from kivy.utils import get_color_from_hex
 from screens.home_screen import HomeScreen
 from screens.settings_screen import SettingsScreen
+from screens.history_screen import HistoryScreen
 from configs.app_config import config
 from util.utils import show_confirmation_dialog
 import sys
@@ -14,6 +15,7 @@ import sys
 
 Builder.load_file("screens/settings_screen.kv")
 Builder.load_file("screens/home_screen.kv")
+Builder.load_file("screens/history_screen.kv")
 
 
 class BatLLM(App):
@@ -34,7 +36,8 @@ class BatLLM(App):
         home = HomeScreen(name="home")
         
         sm.add_widget(home)
-        sm.add_widget(SettingsScreen(name = "settings"))     # starting screen                    
+        sm.add_widget(SettingsScreen(name = "settings"))    
+        sm.add_widget(HistoryScreen(name = "history"))               
         
         self.icon = "assets/images/logo_small.png" # TODO create an icon
         self.title = config.get("ui", "title") 
