@@ -1,4 +1,6 @@
 #:kivy 2.3.1
+#:import dp kivy.metrics.dp
+
 <HistoryScreen>:
     canvas.before:
         Color:
@@ -23,37 +25,63 @@
         BoxLayout:
             orientation: "horizontal"
 
-            TextInput:
-                id: string_panel
-                text: ""
-                readonly: False
-                font_size: "16sp"
-                foreground_color: 0, 0, 0, 1
-                background_color: 1, 1, 1, 1
-                size_hint_y: 1
+            # — Scrollable Markdown Label for Raw String Panel —
+            ScrollView:
+                id: scroll_string_panel
                 size_hint_x: .5
-                padding: dp(10), dp(10)
-                cursor_blink: True
-                cursor_color: 0, 0, 0, 1
-                multiline: True
-                scroll_y: 1
-                scroll_x: 1
+                size_hint_y: 1
+                bar_width: dp(10)
+                do_scroll_x: False
+                do_scroll_y: True
+                scroll_type: ['bars', 'content']
 
-            TextInput:
-                id: history_panel
-                text: ""
-                readonly: False
-                font_size: "16sp"
-                foreground_color: 0, 0, 0, 1
-                background_color: 1, 1, 1, 1
-                size_hint_y: 1
+                Label:
+                    id: string_panel
+                    color: 0, 0, 0, 1  
+                    text: ""
+                    markup: True
+                    valign: 'top'
+                    halign: 'left'
+                    font_size: '16sp'
+                    text_size: self.width - dp(20), None
+                    size_hint_y: None
+                    height: self.texture_size[1] + dp(20)
+                    padding: dp(10), dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+            # — Scrollable Markdown Label for History Panel —
+            ScrollView:
+                id: scroll_history_panel
                 size_hint_x: .5
-                padding: dp(10), dp(10)
-                cursor_blink: True
-                cursor_color: 0, 0, 0, 1
-                multiline: True
-                scroll_y: 1
-                scroll_x: 1
+                size_hint_y: 1
+                bar_width: dp(10)
+                do_scroll_x: False
+                do_scroll_y: True
+                scroll_type: ['bars', 'content']
+
+                Label:
+                    id: history_panel
+                    color: 0, 0, 0, 1  
+                    text: ""
+                    markup: True
+                    valign: 'top'
+                    halign: 'left'
+                    font_size: '16sp'
+                    text_size: self.width - dp(20), None
+                    size_hint_y: None
+                    height: self.texture_size[1] + dp(20)
+                    padding: dp(10), dp(10)
+                    canvas.before:
+                        Color:
+                            rgba: 1, 1, 1, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
 
         Button:
             text: "Back"
@@ -61,4 +89,3 @@
             size_hint_y: None
             height: dp(40)
             on_press: root.go_back_home()
-

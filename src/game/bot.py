@@ -43,6 +43,8 @@ class Bot (Widget):
     color = None
 
     last_llm_response = None  
+
+    simple_log = ""
         
 
     def __init__(self, id, board_widget, **kwargs):
@@ -90,7 +92,29 @@ class Bot (Widget):
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 2 * math.pi)           
                 
+        self.simple_log = ""
+        #self.log(
+        #    f"Bot {self.id} pos: ({self.x:.2f}, {self.y:.2f}); rot: {math.degrees(self.rot):.2f}°"
+        #)
 
+
+
+    def log (self, message):
+        """Adds a message to the bot's log.
+        
+        Args:
+            message (_type_): the message to log
+        """
+        self.simple_log += f"{message}\n"
+        # TODO if getconfig verbose = true then print(f"{[self.id]} {message})
+
+    def getLog(self):
+        """Returns the bot's log.
+        
+        Returns:
+            _type_: the bot's log
+        """
+        return self.simple_log.strip() 
     
 
     def render(self):
@@ -292,7 +316,9 @@ class Bot (Widget):
         
         # print(f"[{self.id}] Sending prompt to LLM: {data['prompt']}")
         # TODO format these prints better and output them into to a log window that can be opened and closed by the user instead of the console
-        print(f"[{self.id}] Sending the prompt to LLM {self.llm_endpoint}")
+        #self.log(f"Sending the prompt to LLM {self.llm_endpoint}")
+        self.log(f"\n\n\n[b]Prompt:[/b] {self.get_current_prompt()}\n")
+
         
         UrlRequest(
             url = self.llm_endpoint,
@@ -315,7 +341,7 @@ class Bot (Widget):
             error (_type_): the error obtained
         """        
         
-        print(f"[{self.id}] LLM request failed: {error}")                
+        self.log(f"LLM request failed: {error}")                
         self.board_widget.on_bot_llm_interaction_complete(self) 
 
 
@@ -328,7 +354,7 @@ class Bot (Widget):
             error (_type_): the error obtained
         """        
          
-        print(f"[{self.id}] Error during LLM request: {error}")                 
+        self.log(f"Error during LLM request: {error}")                 
         self.board_widget.on_bot_llm_interaction_complete(self)  
                 
                  
@@ -341,9 +367,10 @@ class Bot (Widget):
 
         """
 
-        # Replace these printouts for appropriate logging.        
-        print (f"[{self.id}] LLM response received: {result.get('response', '')}")  
+        
+        
         self.last_llm_response = result.get("response", "").strip()  
+        self.log(f"[b]LLM says:[/b] {self.last_llm_response}")
         cmd = self.last_llm_response
         # print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
             
@@ -356,10 +383,9 @@ class Bot (Widget):
                 command = cmd[0]
             else:
                 command_ok = False
-                print(f"[{self.id}] Command NOT OK: {command}")
+               
                 
-            if command_ok:
-                print(f"[{self.id}] Command OK: {command}")
+            if command_ok:                
                 match command[0]:                    
                     case "M":                    
                         self.move()
@@ -388,16 +414,17 @@ class Bot (Widget):
                                 command_ok = False
                     case _:
                         command_ok = False
+                        
      
         except Exception as e:
             command_ok = False
             print (f"exception: {e}") 
         
         if not command_ok:            
-            print(f"[{self.id}] Invalid command: {command}")
+            self.log(f"  - Invalid command: {command}")
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
         else:
-            print(f"[{self.id}] Command Received: {command}")
+            self.log(f"  - Executing command: {command}")
             self.board_widget.add_llm_response_to_history(self.id, command)        
 
         # ********* Updating the bot's state and notifying the board widget *********

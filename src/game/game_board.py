@@ -282,7 +282,10 @@ class GameBoard(Widget, EventDispatcher):
             box.text += text
 
             scroll = find_id_in_parents(self, f"scroll_output_history_player_{bot_id}")
-            Clock.schedule_once(lambda dt: setattr(scroll, "scroll_y", 0), 0)   # TODO fix this, it runs glitchy
+            lbl = find_id_in_parents(self, f"output_history_player_{bot_id}")
+            n_lines = lbl.text.count("\n")
+            if n_lines > 20:            
+                Clock.schedule_once(lambda dt: setattr(scroll, "scroll_y", 0), 0)   # TODO fix this, it runs glitchy
         else:
             print(f"Could not find output history box for bot_id: {bot_id}")
             
@@ -338,11 +341,14 @@ class GameBoard(Widget, EventDispatcher):
         # shuffle bots for this coming round
         self.shuffled_bots = random.sample(self.bots, 2)
 
+        for b in self.bots:
+            b.log(f"Round {self.current_round} started")
+
         self.history_manager.start_round(self)
 
         self.play_turn(0)
         self.history_manager.end_turn(self)
-
+        
 
 
 
@@ -376,6 +382,7 @@ class GameBoard(Widget, EventDispatcher):
             self.history_manager.end_round(self)
             for b in self.bots:
                 self.add_text_to_llm_response_history(b.id, "\n\n")
+                b.log(f"Round {self.current_round} ended")
 
             round_res = "\n"
 
@@ -515,6 +522,9 @@ class GameBoard(Widget, EventDispatcher):
                 case "q":
                     sys.exit(0)
 
+                case "l":
+                    pass
+
             return True
 
     def shoot(self, bot_id):
@@ -550,6 +560,10 @@ class GameBoard(Widget, EventDispatcher):
                 self.end_game()
                 self.start_new_game()
 
+
+
+
+
     def _grab_keyboard(self):
         """Request the keyboard and bind our handler."""
         if self._keyboard is None:
@@ -560,6 +574,10 @@ class GameBoard(Widget, EventDispatcher):
             )
             if self._keyboard:
                 self._keyboard.bind(on_key_down=self._on_keyboard_down)
+
+
+
+
 
     def _on_keyboard_closed(self):
         """Unbind and drop reference when keyboard is released."""

@@ -119,12 +119,18 @@ class HomeScreen(Screen):
         Switches the current screen to the settings screen.
         """        
 
-        self.manager.current = "history"
-        history_screen = self.manager.get_screen("history")
-        history_screen.update(bot_id, "string 1", self.history.to_text())  # TODO: replace with real data
         
+        gbw = self.ids.game_board
 
-        
+
+        history_screen = self.manager.get_screen("history")
+        history_screen.update(
+            bot_id, gbw.get_bot_by_id(bot_id).getLog(), "TODO"
+        )  # TODOself.history.to_text()
+
+
+        self.manager.current = "history"
+
 
     def save_prompt(self, id):
         """
@@ -306,9 +312,10 @@ class HomeScreen(Screen):
 
         def file_dialog_callback(text):
             if text is None:
-                print("User cancelled")
+                # print("User cancelled")
+                pass
             else:
-                print("Loaded text:\n", text[:200])  # first 200 chars
+                # print("Loaded text:\n", text[:200])  # first 200 chars
                 input_id = f"prompt_player_{id}"
                 text_input = self.ids.get(input_id)
                 text_input.text = text  
