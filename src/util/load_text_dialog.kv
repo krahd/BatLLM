@@ -1,0 +1,50 @@
+<LoadTextDialog>:
+    # Make the popup float at 80% of the window size
+    size_hint: .8, .8
+    auto_dismiss: False
+    title: "Load Text File"
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(10)
+        spacing: dp(10)
+
+        # Two‐pane area: chooser on left, preview on right
+        BoxLayout:
+            orientation: "horizontal"
+            spacing: dp(10)
+
+            FileChooserListView:
+                id: filechooser
+                size_hint_x: .5
+                filters: ["*.txt"]
+                on_selection: root._on_file_select(self.selection)
+                on_submit: root._load_selected()
+                # double‐click in list → on_submit
+
+            TextInput:
+                id: preview
+                size_hint_x: .5
+                readonly: True
+                background_color: 1,1,1,1
+                foreground_color: 0,0,0,1
+                font_name: "Roboto"
+                font_size: sp(14)
+                # allow scrolling inside:
+                scroll_y: 1
+                scroll_x: 0
+                cursor_blink: False
+
+        # Buttons row
+        BoxLayout:
+            size_hint_y: None
+            height: dp(40)
+            spacing: dp(10)
+
+            Button:
+                text: "Load"
+                on_release: root._load_selected()
+                disabled: preview.text == ""
+            Button:
+                text: "Cancel"
+                on_release: root._cancel()

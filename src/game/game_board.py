@@ -393,7 +393,7 @@ class GameBoard(Widget, EventDispatcher):
 		"""		
 		game_title_label = find_id_in_parents(self, "game_title_label")
 		if game_title_label is not None:	
-			game_title_label.text = f"[size=30]Game {self.games_started}"
+			game_title_label.text = f"[size=30]          Game {self.games_started}"
    
 			if self.current_round is not None:
 				game_title_label.text += " > "       

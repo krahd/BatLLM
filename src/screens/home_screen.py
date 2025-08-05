@@ -1,4 +1,5 @@
 
+import os
 from pathlib import Path
 import datetime
 from kivy.uix.screenmanager import Screen
@@ -10,6 +11,7 @@ import sys
 from configs.app_config import config
 from util.utils import show_confirmation_dialog, show_text_input_dialog
 from kivy.app import App
+from util.load_text_dialog import LoadTextDialog
 
 
 
@@ -259,7 +261,7 @@ class HomeScreen(Screen):
         
 
 
-    def load_prompt(self, bot_id):
+    def load_prompt(self, id):
         """
         Allows the user to select a file and loads its content into the bot's prompt edition field.
 
@@ -267,22 +269,27 @@ class HomeScreen(Screen):
             bot_id (_type_): the bot id
         """        
 
-        def on_file_selected(file_path):
-            """
-            Callback for when a file is selected. 
-            Loads the file and stores it in the bot's prompt edition field.
-            """
-            
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    text = f.read()
-                    self.set_prompt_input_text(bot_id, text)
+        
 
-            except Exception as e:
-                print(f"Error reading file: {e}")
+        def file_dialog_callback(text):
+            if text is None:
+                print("User cancelled")
+            else:
+                print("Loaded text:\n", text[:200])  # first 200 chars
+                input_id = f"prompt_player_{id}"
+                text_input = self.ids.get(input_id)
+                text_input.text = text  
 
 
 
+        start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")
+        dialog = LoadTextDialog(on_choice=file_dialog_callback, start_dir=start_folder)
+
+        dialog.open()
+
+
+        
+        
 
 # --- events -----------------------
 
