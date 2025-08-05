@@ -264,14 +264,15 @@ class HomeScreen(Screen):
         Flags the bot as ready to submit the prompt to its LLM.
 
         Args:
-            bot_id (_type_): tTe bot id
+            bot_id (_type_): the bot id
         """        
         
         new_prompt = self.get_prompt_input_text(bot_id)
         
         if len(new_prompt) > 0:  # ignore empty prompts
         
-            self.prompt_history_add_text(bot_id, new_prompt)
+            # update the ui
+            self.prompt_history_add_text(bot_id, new_prompt) # copy the text to the prompt history
             self.set_prompt_input_text(bot_id, "") # Clear the input field 
 
             # tell the board to submit the prompt for this bot_id
@@ -299,7 +300,6 @@ class HomeScreen(Screen):
                 input_id = f"prompt_player_{id}"
                 text_input = self.ids.get(input_id)
                 text_input.text = text  
-
 
         start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")
         dialog = LoadTextDialog(on_choice=file_dialog_callback, start_dir=start_folder)

@@ -184,7 +184,7 @@ class Bot (Widget):
         """        
         self.prompt_history.append(new_prompt)
         self.prompt_history_index = len(self.prompt_history) - 1        
-        self.ready_for_next_round = True
+        
 
         
     def rewind_prompt_history(self):
@@ -256,6 +256,7 @@ class Bot (Widget):
             new_prompt (_type_): the prompt to use
         """
         self.append_prompt_to_history(new_prompt)        
+        self.ready_for_next_round = True
                 
 
 
@@ -358,8 +359,10 @@ class Bot (Widget):
                 command = cmd[0]
             else:
                 command_ok = False
+                print(f"[{self.id}] Command NOT OK: {command}")
                 
             if command_ok:
+                print(f"[{self.id}] Command OK: {command}")
                 match command[0]:                    
                     case "M":                    
                         self.move()
@@ -373,7 +376,9 @@ class Bot (Widget):
                         self.rotate(-angle)
 
                     case "B":                    
-                        return self.shoot() 
+                        self.shoot() 
+                        # set shooting = true
+                        # self.bullet = self.shoot()
                         
                     case "S":
                         if len(command) == 1:                        
@@ -397,7 +402,7 @@ class Bot (Widget):
             print(f"[{self.id}] Invalid command: {command}")
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
         else:
-            print(f"[{self.id}] Command OK: {command}")
+            print(f"[{self.id}] Command Received: {command}")
             self.board_widget.add_llm_response_to_history(self.id, command)        
 
         # ********* Updating the bot's state and notifying the board widget *********
@@ -429,8 +434,25 @@ class Bot (Widget):
             _type_: the bullet shot or None
         """        
         if not self.shield:            
-            bullet = Bullet(self.id, self.x, self.y, self.rot)            
-            return bullet
+            self.bullet = Bullet(self.id, self.x, self.y, self.rot)            
+            
         else:            
             return None
+
+
+
+    def shooting_update(self):
+        self.bullet.render()
+        
+        (bullet_alive, damaged_bot_id) = self.bullet.update(self.board_widget.bots)
+
+
+        if bullet_alive:
+            Clock.schedule_once (self.shooting_update)
+
+        else:
+            self.shooting = False
+            self.bullet = None
+            if damaged_bot_id is not None:
+                self.board_widget.get_bot_by_id(damaged_bot_id).damage()
         
