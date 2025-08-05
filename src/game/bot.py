@@ -275,7 +275,8 @@ class Bot (Widget):
 
             # we reload the prompt_augmentation_header in case it has changed
             file = open(config.get("llm", "augmentation_header_file"),'r')
-            hdr = file.read()
+            hdr = file.read()        
+
             file.close()
             data["prompt"] = hdr
             data["prompt"] += "GAME_STATE:\n"         
