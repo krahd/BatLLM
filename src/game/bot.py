@@ -318,10 +318,8 @@ class Bot (Widget):
             data["prompt"] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
             data["prompt"] += "PLAYER_INPUT:\n"
             
-        data["prompt"] += self.get_current_prompt() + "\n"
-                
-        # TODO format these prints better and output them into to a log window that can be opened and closed by the user instead of the console        
-        self.log(f"\n[b]Prompt:[/b] {self.get_current_prompt()}\n\n")        
+        data["prompt"] += self.get_current_prompt() + "\n"                        
+        self.log(f"\n\n[b]Prompt:[/b] {self.get_current_prompt()}\n\n")        
         
         UrlRequest(
             url = self.llm_endpoint,

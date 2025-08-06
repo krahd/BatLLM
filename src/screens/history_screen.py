@@ -34,7 +34,7 @@ class HistoryScreen(Screen):
         self.ids.rv_string_panel.data = [{"text": line} for line in raw_lines]
         self.ids.rv_history_panel.data = [{"text": line} for line in history_lines]
 
-        self.ids.title_label.text = f"[b]History for Bot {bot_id}[/b]"
+        self.ids.title_label.text = f"History for Bot {bot_id}"
 
 
         

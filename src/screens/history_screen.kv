@@ -20,10 +20,17 @@
         Label:
             text: ""
             id: title_label
+            bold: True
             font_size: "34sp"
             size_hint_y: None
             height: self.texture_size[1] + dp(40)
             color: 0, 0, 0, 1
+            canvas.after:
+                Color:
+                    rgba: 0, 0, 0, 1
+                Line:
+                    points: self.x, self.y, self.right, self.y
+                    width: dp(1)
 
         BoxLayout:
             orientation: "horizontal"
