@@ -9,13 +9,13 @@ __pycache__/
 
 
 # BatLLM Specific
-saved_sessions/     # Default folder for saving sessions
-ignore/             # Folder for ignored files (super handy)
-.obsidian/          # Obsidian vault for BatLLM
-.ollama/            # Ollama models and data
-.venv_BatLLM/       # Virtual environment for BatLLM
-.DS_Store             # Universally loathed MacOS's Finder's garbage
-.vscode               # Visual Studio Code settings for BatLLM
+saved_sessions/    
+ignore/            
+.obsidian/         
+.ollama/           
+.venv_BatLLM/       
+.DS_Store           
+.vscode/            
 
 
 
