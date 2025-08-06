@@ -1,0 +1,262 @@
+\doxysection{home\+\_\+screen.\+Home\+Screen Class Reference}
+\hypertarget{classhome__screen_1_1_home_screen}{}\label{classhome__screen_1_1_home_screen}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+Inheritance diagram for home\+\_\+screen.\+Home\+Screen\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classhome__screen_1_1_home_screen}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a3dd05b19da94d35cdd7031978d228caa}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_aa98bf3a0cf96ea4cccd439c0864a7d1b}{save\+\_\+session}} (self)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a7f1d8babcc6c8b9c0d3432e46d53d49d}{start\+\_\+new\+\_\+game}} (self)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a6e73d393bc35b428e053555c5526ad52}{go\+\_\+to\+\_\+settings\+\_\+screen}} (self)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a22736b774db0b127860e92313731a942}{go\+\_\+to\+\_\+history\+\_\+screen}} (self, bot\+\_\+id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a49a6bed706a69356a4b6cb0d7cbedbb8}{save\+\_\+prompt}} (self, id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a9fa0102c202c057712b89ff610ead6f9}{set\+\_\+prompt\+\_\+input\+\_\+text}} (self, id, text)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a1961aab0d0347d5c43b9aacdc4b702e2}{get\+\_\+prompt\+\_\+input\+\_\+text}} (self, id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_ab730b178cf168433bc675ffae45e2957}{get\+\_\+prompt\+\_\+history\+\_\+selected\+\_\+text}} (self, id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a82a5de9df25cb40d9ed15e045d35b8b5}{prompt\+\_\+history\+\_\+add\+\_\+text}} (self, id, text)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a424d6376acf54f2aa9d213ccd1c35e99}{rewind\+\_\+prompt\+\_\+history}} (self, bot\+\_\+id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a8f918c1a0ee39296576fedeaece0a163}{forward\+\_\+prompt\+\_\+history}} (self, bot\+\_\+id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_adeb772cc4ccc1806e379a479cdef0496}{copy\+\_\+prompt\+\_\+history\+\_\+selected\+\_\+text}} (self, bot\+\_\+id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a41e83ad2497f44f7b3d7cf4940d958e4}{submit\+\_\+prompt}} (self, bot\+\_\+id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a9894696de7f7f5c8ac01f7f7159f9a63}{load\+\_\+prompt}} (self, id)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a20653a926f40260be3210af5bb2f2e54}{on\+\_\+request\+\_\+close}} (self, \texorpdfstring{$\ast$}{*}args, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
+\mbox{\hyperlink{classhome__screen_1_1_home_screen_a7cb8b10c803380fe2fc783243abe472a}{on\+\_\+enter}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classhome__screen_1_1_home_screen_a35d5ae489a449d8b5a146a35a5903e77}\label{classhome__screen_1_1_home_screen_a35d5ae489a449d8b5a146a35a5903e77} 
+{\bfseries history} = None
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}A HomeScreen instance implements BotLLM's main screen. 
+It contains the UX components for game control, prompting, and holds the GameBoard and a HistoryManager instance.
+
+Args:
+    Screen (_type_): Kivy's base screen class.            
+\end{DoxyVerb}
+ 
+
+\label{doc-constructors}
+\Hypertarget{classhome__screen_1_1_home_screen_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classhome__screen_1_1_home_screen_a3dd05b19da94d35cdd7031978d228caa}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a3dd05b19da94d35cdd7031978d228caa} 
+home\+\_\+screen.\+Home\+Screen.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor for the HomeScreen class.
+Initializes the screen and sets up the history manager.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classhome__screen_1_1_home_screen_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classhome__screen_1_1_home_screen_adeb772cc4ccc1806e379a479cdef0496}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!copy\_prompt\_history\_selected\_text@{copy\_prompt\_history\_selected\_text}}
+\index{copy\_prompt\_history\_selected\_text@{copy\_prompt\_history\_selected\_text}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{copy\_prompt\_history\_selected\_text()}{copy\_prompt\_history\_selected\_text()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_adeb772cc4ccc1806e379a479cdef0496} 
+home\+\_\+screen.\+Home\+Screen.\+copy\+\_\+prompt\+\_\+history\+\_\+selected\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Copies the selected prompt from the bot's prompt history to the editing area.
+
+Args:
+    bot_id (_type_): The bot id.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a8f918c1a0ee39296576fedeaece0a163}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!forward\_prompt\_history@{forward\_prompt\_history}}
+\index{forward\_prompt\_history@{forward\_prompt\_history}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{forward\_prompt\_history()}{forward\_prompt\_history()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a8f918c1a0ee39296576fedeaece0a163} 
+home\+\_\+screen.\+Home\+Screen.\+forward\+\_\+prompt\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Selects the prenext  prompt in the bot's prompt history and sets it as the current prompt.
+
+Args:
+    bot_id (_type_): The bot id
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_ab730b178cf168433bc675ffae45e2957}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!get\_prompt\_history\_selected\_text@{get\_prompt\_history\_selected\_text}}
+\index{get\_prompt\_history\_selected\_text@{get\_prompt\_history\_selected\_text}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{get\_prompt\_history\_selected\_text()}{get\_prompt\_history\_selected\_text()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_ab730b178cf168433bc675ffae45e2957} 
+home\+\_\+screen.\+Home\+Screen.\+get\+\_\+prompt\+\_\+history\+\_\+selected\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the text being edited by the prompt.
+
+Args:
+    id (_type_): the bot id
+
+Returns:
+    _type_: the text in the corresponding prompt text input 
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a1961aab0d0347d5c43b9aacdc4b702e2}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!get\_prompt\_input\_text@{get\_prompt\_input\_text}}
+\index{get\_prompt\_input\_text@{get\_prompt\_input\_text}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{get\_prompt\_input\_text()}{get\_prompt\_input\_text()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a1961aab0d0347d5c43b9aacdc4b702e2} 
+home\+\_\+screen.\+Home\+Screen.\+get\+\_\+prompt\+\_\+input\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}It returns the current state of the prompt edition field for the specified bot id.
+
+Args:
+    id (_type_): The id.
+
+Returns:
+    _type_: The text or an empty string if there's no bot with that id..
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a22736b774db0b127860e92313731a942}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!go\_to\_history\_screen@{go\_to\_history\_screen}}
+\index{go\_to\_history\_screen@{go\_to\_history\_screen}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{go\_to\_history\_screen()}{go\_to\_history\_screen()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a22736b774db0b127860e92313731a942} 
+home\+\_\+screen.\+Home\+Screen.\+go\+\_\+to\+\_\+history\+\_\+screen (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Handler for the history buttons.
+Switches the current screen to the settings screen.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a6e73d393bc35b428e053555c5526ad52}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!go\_to\_settings\_screen@{go\_to\_settings\_screen}}
+\index{go\_to\_settings\_screen@{go\_to\_settings\_screen}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{go\_to\_settings\_screen()}{go\_to\_settings\_screen()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a6e73d393bc35b428e053555c5526ad52} 
+home\+\_\+screen.\+Home\+Screen.\+go\+\_\+to\+\_\+settings\+\_\+screen (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Handler for the settings button.
+Switches the current screen to the settings screen.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a9894696de7f7f5c8ac01f7f7159f9a63}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!load\_prompt@{load\_prompt}}
+\index{load\_prompt@{load\_prompt}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{load\_prompt()}{load\_prompt()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a9894696de7f7f5c8ac01f7f7159f9a63} 
+home\+\_\+screen.\+Home\+Screen.\+load\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Allows the user to select a file and loads its content into the bot's prompt edition field.
+
+Args:
+    bot_id (_type_): the bot id
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a7cb8b10c803380fe2fc783243abe472a}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!on\_enter@{on\_enter}}
+\index{on\_enter@{on\_enter}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{on\_enter()}{on\_enter()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a7cb8b10c803380fe2fc783243abe472a} 
+home\+\_\+screen.\+Home\+Screen.\+on\+\_\+enter (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Called when the screen is entered.
+It initializes the GameBoard and Bot instances.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a20653a926f40260be3210af5bb2f2e54}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!on\_request\_close@{on\_request\_close}}
+\index{on\_request\_close@{on\_request\_close}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{on\_request\_close()}{on\_request\_close()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a20653a926f40260be3210af5bb2f2e54} 
+home\+\_\+screen.\+Home\+Screen.\+on\+\_\+request\+\_\+close (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Handles the request to close the application.
+Shows a confirmation dialog before closing.
+If the user confirms it offers to save the session to a file   
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a82a5de9df25cb40d9ed15e045d35b8b5}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!prompt\_history\_add\_text@{prompt\_history\_add\_text}}
+\index{prompt\_history\_add\_text@{prompt\_history\_add\_text}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{prompt\_history\_add\_text()}{prompt\_history\_add\_text()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a82a5de9df25cb40d9ed15e045d35b8b5} 
+home\+\_\+screen.\+Home\+Screen.\+prompt\+\_\+history\+\_\+add\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{, }\item[{}]{text}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Stores the current state of the prompt being edited in the prompt history for the specified bot id.
+
+
+Args:
+    id (_type_): bot id
+    text (_type_): text to add to the prompts entered in the UI since the app started
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a424d6376acf54f2aa9d213ccd1c35e99}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!rewind\_prompt\_history@{rewind\_prompt\_history}}
+\index{rewind\_prompt\_history@{rewind\_prompt\_history}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{rewind\_prompt\_history()}{rewind\_prompt\_history()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a424d6376acf54f2aa9d213ccd1c35e99} 
+home\+\_\+screen.\+Home\+Screen.\+rewind\+\_\+prompt\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Selects the previous prompt in the bot's prompt history and sets it as the current prompt.
+
+Args:
+    bot_id (_type_): the bot id
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a49a6bed706a69356a4b6cb0d7cbedbb8}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!save\_prompt@{save\_prompt}}
+\index{save\_prompt@{save\_prompt}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{save\_prompt()}{save\_prompt()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a49a6bed706a69356a4b6cb0d7cbedbb8} 
+home\+\_\+screen.\+Home\+Screen.\+save\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Allows the user to save the content of the bot's prompt edition field to a file.
+
+Args:
+    id (_type_): The bot id.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_aa98bf3a0cf96ea4cccd439c0864a7d1b}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!save\_session@{save\_session}}
+\index{save\_session@{save\_session}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{save\_session()}{save\_session()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_aa98bf3a0cf96ea4cccd439c0864a7d1b} 
+home\+\_\+screen.\+Home\+Screen.\+save\+\_\+session (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Presents a confirmation dialog to the user to save the current game session.
+If the user confirms, it saves the session to a file.
+If the user cancels, it does nothing.        
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a9fa0102c202c057712b89ff610ead6f9}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!set\_prompt\_input\_text@{set\_prompt\_input\_text}}
+\index{set\_prompt\_input\_text@{set\_prompt\_input\_text}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{set\_prompt\_input\_text()}{set\_prompt\_input\_text()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a9fa0102c202c057712b89ff610ead6f9} 
+home\+\_\+screen.\+Home\+Screen.\+set\+\_\+prompt\+\_\+input\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{, }\item[{}]{text}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Copies the text to the bot's prompt edition field.
+If the bot is not found, it does nothing.
+
+Args:
+    id (_type_): The bot  id
+    text (_type_): The prompt.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a7f1d8babcc6c8b9c0d3432e46d53d49d}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!start\_new\_game@{start\_new\_game}}
+\index{start\_new\_game@{start\_new\_game}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{start\_new\_game()}{start\_new\_game()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a7f1d8babcc6c8b9c0d3432e46d53d49d} 
+home\+\_\+screen.\+Home\+Screen.\+start\+\_\+new\+\_\+game (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Presents a confirmation dialog to the user to start a new game.
+If the user confirms, it asks the GameBoard to start a new game.
+If the user cancels, it does nothing.
+\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a41e83ad2497f44f7b3d7cf4940d958e4}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!submit\_prompt@{submit\_prompt}}
+\index{submit\_prompt@{submit\_prompt}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{submit\_prompt()}{submit\_prompt()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a41e83ad2497f44f7b3d7cf4940d958e4} 
+home\+\_\+screen.\+Home\+Screen.\+submit\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Stores the text in the prompt edition field in the bot's prompt history and selects it.
+Flags the bot as ready to submit the prompt to its LLM.
+
+Args:
+    bot_id (_type_): the bot id
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/screens/home\+\_\+screen.\+py\end{DoxyCompactItemize}

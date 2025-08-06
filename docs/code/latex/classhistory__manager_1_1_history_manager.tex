@@ -1,0 +1,180 @@
+\doxysection{history\+\_\+manager.\+History\+Manager Class Reference}
+\hypertarget{classhistory__manager_1_1_history_manager}{}\label{classhistory__manager_1_1_history_manager}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a48320b99270d84c2ab07dc03618fa5d2}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_abdc8dd17011d473212a835a7e6a3f1b6}{start\+\_\+game}} (self, game\+\_\+board)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a98034af0831f5202d719bf80ab442ec8}{end\+\_\+game}} (self, game, force=False)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_ae40d97816a81571357c27f2a84ef73bd}{start\+\_\+round}} (self, game)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a0e41f5ef68aa53be2f59771acc4a0c67}{end\+\_\+round}} (self, game)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a2b51546288d5c667f5a9cc2e8b8f90ca}{start\+\_\+turn}} (self, game)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_acf1ddd58922640dcb08d389ea6c14987}{end\+\_\+turn}} (self, game, action\+\_\+description=None)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_aacc071fca8b56e8531b089f671bd204a}{save\+\_\+session}} (self, filepath)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_aa76eb6e0fdc44092dd0a358db776da0b}{to\+\_\+json}} (self)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a6dea034ba3b4e42ecc04ca5f632634b4}{to\+\_\+text}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classhistory__manager_1_1_history_manager_a4682b10f92f20d2058bfb54f688853f7}\label{classhistory__manager_1_1_history_manager_a4682b10f92f20d2058bfb54f688853f7} 
+list {\bfseries games} = \mbox{[}$\,$\mbox{]}
+\item 
+\Hypertarget{classhistory__manager_1_1_history_manager_af84aa204e75f9b0264781f3dc44c576b}\label{classhistory__manager_1_1_history_manager_af84aa204e75f9b0264781f3dc44c576b} 
+dict {\bfseries current\+\_\+game} = None
+\item 
+\Hypertarget{classhistory__manager_1_1_history_manager_afd120855b70c91a3878858b50035bbb4}\label{classhistory__manager_1_1_history_manager_afd120855b70c91a3878858b50035bbb4} 
+dict {\bfseries current\+\_\+round} = None
+\item 
+\Hypertarget{classhistory__manager_1_1_history_manager_a3ab3e01a62e233c7a59650ca9e675351}\label{classhistory__manager_1_1_history_manager_a3ab3e01a62e233c7a59650ca9e675351} 
+dict {\bfseries current\+\_\+turn} = None
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a1c4a6bcf1989bf682d5a41c82f3f0527}{\+\_\+now\+\_\+iso}} (self)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_a6d8f10baaeb03f45c51aa8f1614de477}{\+\_\+get\+\_\+bots\+\_\+state}} (self, game)
+\item 
+\mbox{\hyperlink{classhistory__manager_1_1_history_manager_af90e102f24860bcb5b1d4042f93c08c2}{\+\_\+determine\+\_\+winner}} (self, game)
+\end{DoxyCompactItemize}
+
+
+\label{doc-constructors}
+\Hypertarget{classhistory__manager_1_1_history_manager_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classhistory__manager_1_1_history_manager_a48320b99270d84c2ab07dc03618fa5d2}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a48320b99270d84c2ab07dc03618fa5d2} 
+history\+\_\+manager.\+History\+Manager.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initialize a new HistoryManager with no active game.\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classhistory__manager_1_1_history_manager_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classhistory__manager_1_1_history_manager_af90e102f24860bcb5b1d4042f93c08c2}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!\_determine\_winner@{\_determine\_winner}}
+\index{\_determine\_winner@{\_determine\_winner}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{\_determine\_winner()}{\_determine\_winner()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_af90e102f24860bcb5b1d4042f93c08c2} 
+history\+\_\+manager.\+History\+Manager.\+\_\+determine\+\_\+winner (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Determine which bot is the winner given the current game state.
+This checks the bots' alive status or health to see if one is defeated.
+Returns the winner's name, or None if no clear winner.
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a6d8f10baaeb03f45c51aa8f1614de477}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!\_get\_bots\_state@{\_get\_bots\_state}}
+\index{\_get\_bots\_state@{\_get\_bots\_state}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{\_get\_bots\_state()}{\_get\_bots\_state()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a6d8f10baaeb03f45c51aa8f1614de477} 
+history\+\_\+manager.\+History\+Manager.\+\_\+get\+\_\+bots\+\_\+state (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Helper method to get a snapshot of all relevant bot data from the game.
+Returns a dictionary of bot states (keyed by bot name or id).
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a1c4a6bcf1989bf682d5a41c82f3f0527}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!\_now\_iso@{\_now\_iso}}
+\index{\_now\_iso@{\_now\_iso}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{\_now\_iso()}{\_now\_iso()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a1c4a6bcf1989bf682d5a41c82f3f0527} 
+history\+\_\+manager.\+History\+Manager.\+\_\+now\+\_\+iso (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Get current timestamp string in ISO 8601 format.\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a98034af0831f5202d719bf80ab442ec8}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!end\_game@{end\_game}}
+\index{end\_game@{end\_game}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{end\_game()}{end\_game()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a98034af0831f5202d719bf80ab442ec8} 
+history\+\_\+manager.\+History\+Manager.\+end\+\_\+game (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{, }\item[{}]{force}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}End the current game. This can be called at any time (e.g., normal game end or aborted mid-round).
+It finalizes any ongoing round/turn and records the end time and final outcome.
+The parameter `force` is used internally to finalize a game without double-calling end_game recursively.
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a0e41f5ef68aa53be2f59771acc4a0c67}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!end\_round@{end\_round}}
+\index{end\_round@{end\_round}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{end\_round()}{end\_round()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a0e41f5ef68aa53be2f59771acc4a0c67} 
+history\+\_\+manager.\+History\+Manager.\+end\+\_\+round (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}End the current round. Records the end time and round winner.
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_acf1ddd58922640dcb08d389ea6c14987}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!end\_turn@{end\_turn}}
+\index{end\_turn@{end\_turn}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{end\_turn()}{end\_turn()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_acf1ddd58922640dcb08d389ea6c14987} 
+history\+\_\+manager.\+History\+Manager.\+end\+\_\+turn (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{, }\item[{}]{action\+\_\+description}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}End the current turn. Called after the turn's action is resolved.
+Records the post-turn state and (optionally) the action description.
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_aacc071fca8b56e8531b089f671bd204a}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!save\_session@{save\_session}}
+\index{save\_session@{save\_session}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{save\_session()}{save\_session()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_aacc071fca8b56e8531b089f671bd204a} 
+history\+\_\+manager.\+History\+Manager.\+save\+\_\+session (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{filepath}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Save the entire session history to a JSON file.
+This will include all games played in this session.
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_abdc8dd17011d473212a835a7e6a3f1b6}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!start\_game@{start\_game}}
+\index{start\_game@{start\_game}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{start\_game()}{start\_game()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_abdc8dd17011d473212a835a7e6a3f1b6} 
+history\+\_\+manager.\+History\+Manager.\+start\+\_\+game (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game\+\_\+board}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Start a new game. Initialize the game log with start time and initial bot states.
+`game_board` is the BoardGameWidget
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_ae40d97816a81571357c27f2a84ef73bd}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!start\_round@{start\_round}}
+\index{start\_round@{start\_round}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{start\_round()}{start\_round()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_ae40d97816a81571357c27f2a84ef73bd} 
+history\+\_\+manager.\+History\+Manager.\+start\+\_\+round (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Start a new round within the current session. Should be called at the beginning of each round.
+Records the round start and the initial state at this point.
+
+Args:
+    game (_type_): _description_
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a2b51546288d5c667f5a9cc2e8b8f90ca}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!start\_turn@{start\_turn}}
+\index{start\_turn@{start\_turn}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{start\_turn()}{start\_turn()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a2b51546288d5c667f5a9cc2e8b8f90ca} 
+history\+\_\+manager.\+History\+Manager.\+start\+\_\+turn (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Start a new turn within the current round. Called at the beginning of a turn.
+Records the pre-turn state and which bot is acting (if available).
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_aa76eb6e0fdc44092dd0a358db776da0b}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!to\_json@{to\_json}}
+\index{to\_json@{to\_json}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{to\_json()}{to\_json()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_aa76eb6e0fdc44092dd0a358db776da0b} 
+history\+\_\+manager.\+History\+Manager.\+to\+\_\+json (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Get the full history as a JSON string.        
+\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a6dea034ba3b4e42ecc04ca5f632634b4}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!to\_text@{to\_text}}
+\index{to\_text@{to\_text}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{to\_text()}{to\_text()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a6dea034ba3b4e42ecc04ca5f632634b4} 
+history\+\_\+manager.\+History\+Manager.\+to\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Get the full history in a human-readable indented text format (key: value style).
+Returns a multi-line string.        
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/game/history\+\_\+manager.\+py\end{DoxyCompactItemize}

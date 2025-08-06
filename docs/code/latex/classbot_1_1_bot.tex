@@ -1,0 +1,350 @@
+\doxysection{bot.\+Bot Class Reference}
+\hypertarget{classbot_1_1_bot}{}\label{classbot_1_1_bot}\index{bot.Bot@{bot.Bot}}
+Inheritance diagram for bot.\+Bot\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classbot_1_1_bot}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a10a252e7e9ef4436b0e0d06f76eae5de}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, id, board\+\_\+widget, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a266c3ac57a5d76a9eb47a5172ff7dd0a}{log}} (self, message)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a09c7467a6521c11c6fe78635b0e30b69}{get\+Log}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a57942fda65929bf805cef2aadde1e3aa}{render}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a36e49c05c7aa75b4b72e31feeaf59293}{move}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a4391c7011a8cbd4e3d5ad2a989f35b05}{rotate}} (self, angle)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a527e132b9ca8e5b8f5e46bdab5fa720a}{append\+\_\+prompt\+\_\+to\+\_\+history}} (self, new\+\_\+prompt)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a8510cb4cd54a109d95ad8cc2741f961d}{rewind\+\_\+prompt\+\_\+history}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a7b768a0522007c1e60326e2bda411045}{forward\+\_\+prompt\+\_\+history}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a20a2946cec5f2ee452751d881735f601}{get\+\_\+current\+\_\+prompt\+\_\+from\+\_\+history}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_ab4337822ae12c23b3e571c2e8269b964}{get\+\_\+current\+\_\+prompt}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_abc25cb5d2fafc75487fb525155764afa}{get\+\_\+prompt}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_aedc35186616e2ad72463bce0dcd00f28}{augmenting\+\_\+prompt}} (self, augmenting)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a5a6f4580d538833f7449e2b83707c87e}{prepare\+\_\+prompt\+\_\+submission}} (self, new\+\_\+prompt)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_abf066120a179dd15d7ce9be1b9c55cd4}{submit\+\_\+prompt\+\_\+to\+\_\+llm}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8}{damage}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a6c074341425cb967b736b3dca28f99f7}{toggle\+\_\+shield}} (self)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a0456e9a9953cf4c78f4687adf51dfa92}{create\+\_\+bullet}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classbot_1_1_bot_aaf6cd6c903b32263619da0130916b16f}\label{classbot_1_1_bot_aaf6cd6c903b32263619da0130916b16f} 
+{\bfseries id} = Numeric\+Property(0)
+\item 
+\Hypertarget{classbot_1_1_bot_a353ef2b29050814570ce8d01994abb33}\label{classbot_1_1_bot_a353ef2b29050814570ce8d01994abb33} 
+{\bfseries x} = Numeric\+Property(0)
+\item 
+\Hypertarget{classbot_1_1_bot_a77dc73f278659be73e54fc41acc66fe4}\label{classbot_1_1_bot_a77dc73f278659be73e54fc41acc66fe4} 
+{\bfseries y} = Numeric\+Property(0)
+\item 
+\Hypertarget{classbot_1_1_bot_a5ce357c691fd64889603556cd7fe3721}\label{classbot_1_1_bot_a5ce357c691fd64889603556cd7fe3721} 
+{\bfseries rot} = Numeric\+Property(0)
+\item 
+\Hypertarget{classbot_1_1_bot_a749da41d1715af087667f0d290045f80}\label{classbot_1_1_bot_a749da41d1715af087667f0d290045f80} 
+bool {\bfseries shield} = Object\+Property(None)
+\item 
+\Hypertarget{classbot_1_1_bot_a96c3e55741ee08e38edda6f3fd0bd668}\label{classbot_1_1_bot_a96c3e55741ee08e38edda6f3fd0bd668} 
+int {\bfseries health} = Numeric\+Property(0)
+\item 
+\Hypertarget{classbot_1_1_bot_af82dc902b408e51d2545131f7c88614a}\label{classbot_1_1_bot_af82dc902b408e51d2545131f7c88614a} 
+{\bfseries board\+\_\+widget} = Object\+Property(None)
+\item 
+\Hypertarget{classbot_1_1_bot_ad1ec053da05a86cab7f50d3fe2302ecb}\label{classbot_1_1_bot_ad1ec053da05a86cab7f50d3fe2302ecb} 
+list {\bfseries prompt\+\_\+history} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a79cda7c63b2393ba4bfe7a5314094f96}\label{classbot_1_1_bot_a79cda7c63b2393ba4bfe7a5314094f96} 
+int {\bfseries prompt\+\_\+history\+\_\+index} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a21ebf3f8595c6633ba8fb39288abe781}\label{classbot_1_1_bot_a21ebf3f8595c6633ba8fb39288abe781} 
+bool {\bfseries ready\+\_\+for\+\_\+next\+\_\+round} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a1a78f06f8e49fdafc981fda532a76fe4}\label{classbot_1_1_bot_a1a78f06f8e49fdafc981fda532a76fe4} 
+bool {\bfseries ready\+\_\+for\+\_\+next\+\_\+turn} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a34391f90b93c20ea815c6ad2a4f8eb32}\label{classbot_1_1_bot_a34391f90b93c20ea815c6ad2a4f8eb32} 
+{\bfseries agmenting\+\_\+prompt} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a86e9592711ffd6a7778d419ac196f045}\label{classbot_1_1_bot_a86e9592711ffd6a7778d419ac196f045} 
+str {\bfseries llm\+\_\+endpoint} = None
+\item 
+\Hypertarget{classbot_1_1_bot_ae4e9db7b24d6dcaebc1a66661da7684c}\label{classbot_1_1_bot_ae4e9db7b24d6dcaebc1a66661da7684c} 
+{\bfseries shield\+\_\+range} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a8282b49bdc88faf4eddd4862767e2e4a}\label{classbot_1_1_bot_a8282b49bdc88faf4eddd4862767e2e4a} 
+{\bfseries step} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a386edbae7624f488ebafbabbd9b62307}\label{classbot_1_1_bot_a386edbae7624f488ebafbabbd9b62307} 
+{\bfseries diameter} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a8933a8ef8c77392682c82f783ebd0638}\label{classbot_1_1_bot_a8933a8ef8c77392682c82f783ebd0638} 
+tuple {\bfseries color} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a745ffdad5a4dcbc0e38abaf195b0c433}\label{classbot_1_1_bot_a745ffdad5a4dcbc0e38abaf195b0c433} 
+{\bfseries last\+\_\+llm\+\_\+response} = None
+\item 
+\Hypertarget{classbot_1_1_bot_a77758bf90d5cae4ede8259418ad398d1}\label{classbot_1_1_bot_a77758bf90d5cae4ede8259418ad398d1} 
+str {\bfseries simple\+\_\+log} = "{}"{}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a0a69355e3508b41d0ac2f6ee56cf08e8}{\+\_\+on\+\_\+llm\+\_\+failure}} (self, request, error)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_a74c26fb0ca3f6a369e842ee7de7e5345}{\+\_\+on\+\_\+llm\+\_\+error}} (self, request, error)
+\item 
+\mbox{\hyperlink{classbot_1_1_bot_acb227cec93b84f0ca97e76d497144568}{\+\_\+on\+\_\+llm\+\_\+response}} (self, req, result)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}This class models a game bot.
+
+Args:
+    Widget (_type_): Kivy's base Widget class
+\end{DoxyVerb}
+ 
+
+\label{doc-constructors}
+\Hypertarget{classbot_1_1_bot_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classbot_1_1_bot_a10a252e7e9ef4436b0e0d06f76eae5de}\index{bot.Bot@{bot.Bot}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a10a252e7e9ef4436b0e0d06f76eae5de} 
+bot.\+Bot.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{id}{, }\item[{}]{board\+\_\+widget}{, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor
+
+Args:
+    id (_type_): the bot id
+    board_widget (_type_): its parent, that is the game board where the bot lives.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classbot_1_1_bot_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classbot_1_1_bot_a74c26fb0ca3f6a369e842ee7de7e5345}\index{bot.Bot@{bot.Bot}!\_on\_llm\_error@{\_on\_llm\_error}}
+\index{\_on\_llm\_error@{\_on\_llm\_error}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{\_on\_llm\_error()}{\_on\_llm\_error()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a74c26fb0ca3f6a369e842ee7de7e5345} 
+bot.\+Bot.\+\_\+on\+\_\+llm\+\_\+error (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{request}{, }\item[{}]{error}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Error handler for errors outside the web protocol (no connection, etc)
+
+Args:
+    request (_type_): the request object
+    error (_type_): the error obtained
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a0a69355e3508b41d0ac2f6ee56cf08e8}\index{bot.Bot@{bot.Bot}!\_on\_llm\_failure@{\_on\_llm\_failure}}
+\index{\_on\_llm\_failure@{\_on\_llm\_failure}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{\_on\_llm\_failure()}{\_on\_llm\_failure()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a0a69355e3508b41d0ac2f6ee56cf08e8} 
+bot.\+Bot.\+\_\+on\+\_\+llm\+\_\+failure (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{request}{, }\item[{}]{error}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Error handler for HTTP errors 4xx, 5xx
+
+Args:
+    request (_type_): the request objevt
+    error (_type_): the error obtained
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_acb227cec93b84f0ca97e76d497144568}\index{bot.Bot@{bot.Bot}!\_on\_llm\_response@{\_on\_llm\_response}}
+\index{\_on\_llm\_response@{\_on\_llm\_response}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{\_on\_llm\_response()}{\_on\_llm\_response()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_acb227cec93b84f0ca97e76d497144568} 
+bot.\+Bot.\+\_\+on\+\_\+llm\+\_\+response (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{req}{, }\item[{}]{result}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Event handler of a successul interaction with the LLM
+
+Args:
+    req (_type_): the request object
+    result (_type_): the interaction result
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a527e132b9ca8e5b8f5e46bdab5fa720a}\index{bot.Bot@{bot.Bot}!append\_prompt\_to\_history@{append\_prompt\_to\_history}}
+\index{append\_prompt\_to\_history@{append\_prompt\_to\_history}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{append\_prompt\_to\_history()}{append\_prompt\_to\_history()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a527e132b9ca8e5b8f5e46bdab5fa720a} 
+bot.\+Bot.\+append\+\_\+prompt\+\_\+to\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{new\+\_\+prompt}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Adds the new prompt to the prompt.history object.
+It is now ready to run it.
+
+Args:
+    new_prompt (_type_): the new prompt
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_aedc35186616e2ad72463bce0dcd00f28}\index{bot.Bot@{bot.Bot}!augmenting\_prompt@{augmenting\_prompt}}
+\index{augmenting\_prompt@{augmenting\_prompt}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{augmenting\_prompt()}{augmenting\_prompt()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_aedc35186616e2ad72463bce0dcd00f28} 
+bot.\+Bot.\+augmenting\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{augmenting}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Toggles the flag indicating if the player prompts are augmented with game info.
+
+Args:
+    augmenting (_type_): the new flag value
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a0456e9a9953cf4c78f4687adf51dfa92}\index{bot.Bot@{bot.Bot}!create\_bullet@{create\_bullet}}
+\index{create\_bullet@{create\_bullet}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{create\_bullet()}{create\_bullet()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a0456e9a9953cf4c78f4687adf51dfa92} 
+bot.\+Bot.\+create\+\_\+bullet (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Tries to shoot a bullet. It will only succeed if the shield is down.
+
+Returns:
+    _type_: the bullet shot or None
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8}\index{bot.Bot@{bot.Bot}!damage@{damage}}
+\index{damage@{damage}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{damage()}{damage()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8} 
+bot.\+Bot.\+damage (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}The bot's been hitl        
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a7b768a0522007c1e60326e2bda411045}\index{bot.Bot@{bot.Bot}!forward\_prompt\_history@{forward\_prompt\_history}}
+\index{forward\_prompt\_history@{forward\_prompt\_history}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{forward\_prompt\_history()}{forward\_prompt\_history()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a7b768a0522007c1e60326e2bda411045} 
+bot.\+Bot.\+forward\+\_\+prompt\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Forwards
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_ab4337822ae12c23b3e571c2e8269b964}\index{bot.Bot@{bot.Bot}!get\_current\_prompt@{get\_current\_prompt}}
+\index{get\_current\_prompt@{get\_current\_prompt}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{get\_current\_prompt()}{get\_current\_prompt()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_ab4337822ae12c23b3e571c2e8269b964} 
+bot.\+Bot.\+get\+\_\+current\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the current prompt. It is equivalent to get_prompt.
+
+Returns:
+    _type_: a string with the prompt
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a20a2946cec5f2ee452751d881735f601}\index{bot.Bot@{bot.Bot}!get\_current\_prompt\_from\_history@{get\_current\_prompt\_from\_history}}
+\index{get\_current\_prompt\_from\_history@{get\_current\_prompt\_from\_history}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{get\_current\_prompt\_from\_history()}{get\_current\_prompt\_from\_history()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a20a2946cec5f2ee452751d881735f601} 
+bot.\+Bot.\+get\+\_\+current\+\_\+prompt\+\_\+from\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns a prompt from the history using a cursor. Rewind and Forward move the cursor.
+
+Returns:
+    _type_: a string with the prompt
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_abc25cb5d2fafc75487fb525155764afa}\index{bot.Bot@{bot.Bot}!get\_prompt@{get\_prompt}}
+\index{get\_prompt@{get\_prompt}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{get\_prompt()}{get\_prompt()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_abc25cb5d2fafc75487fb525155764afa} 
+bot.\+Bot.\+get\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the current prompt. It is equivalent to get_current_prompt_from_history.
+Returns:
+    _type_: a string with the prompt
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a09c7467a6521c11c6fe78635b0e30b69}\index{bot.Bot@{bot.Bot}!getLog@{getLog}}
+\index{getLog@{getLog}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{getLog()}{getLog()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a09c7467a6521c11c6fe78635b0e30b69} 
+bot.\+Bot.\+get\+Log (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the bot's log.
+
+Returns:
+    _type_: the bot's log
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a266c3ac57a5d76a9eb47a5172ff7dd0a}\index{bot.Bot@{bot.Bot}!log@{log}}
+\index{log@{log}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{log()}{log()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a266c3ac57a5d76a9eb47a5172ff7dd0a} 
+bot.\+Bot.\+log (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{message}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Adds a message to the bot's log.
+
+Args:
+    message (_type_): the message to log
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a36e49c05c7aa75b4b72e31feeaf59293}\index{bot.Bot@{bot.Bot}!move@{move}}
+\index{move@{move}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{move()}{move()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a36e49c05c7aa75b4b72e31feeaf59293} 
+bot.\+Bot.\+move (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}The bot takes a step. Corresponds to the command 'M'
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a5a6f4580d538833f7449e2b83707c87e}\index{bot.Bot@{bot.Bot}!prepare\_prompt\_submission@{prepare\_prompt\_submission}}
+\index{prepare\_prompt\_submission@{prepare\_prompt\_submission}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{prepare\_prompt\_submission()}{prepare\_prompt\_submission()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a5a6f4580d538833f7449e2b83707c87e} 
+bot.\+Bot.\+prepare\+\_\+prompt\+\_\+submission (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{new\+\_\+prompt}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Gets ready to execute
+
+Args:
+    new_prompt (_type_): the prompt to use
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a57942fda65929bf805cef2aadde1e3aa}\index{bot.Bot@{bot.Bot}!render@{render}}
+\index{render@{render}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{render()}{render()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a57942fda65929bf805cef2aadde1e3aa} 
+bot.\+Bot.\+render (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Draws itself. It assumes a NormalizedCanvas.
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a8510cb4cd54a109d95ad8cc2741f961d}\index{bot.Bot@{bot.Bot}!rewind\_prompt\_history@{rewind\_prompt\_history}}
+\index{rewind\_prompt\_history@{rewind\_prompt\_history}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{rewind\_prompt\_history()}{rewind\_prompt\_history()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a8510cb4cd54a109d95ad8cc2741f961d} 
+bot.\+Bot.\+rewind\+\_\+prompt\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Rewinds 
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a4391c7011a8cbd4e3d5ad2a989f35b05}\index{bot.Bot@{bot.Bot}!rotate@{rotate}}
+\index{rotate@{rotate}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{rotate()}{rotate()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a4391c7011a8cbd4e3d5ad2a989f35b05} 
+bot.\+Bot.\+rotate (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{angle}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}The bot rotates by a given angle. Corresponds to the commands 'C' and 'A'
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_abf066120a179dd15d7ce9be1b9c55cd4}\index{bot.Bot@{bot.Bot}!submit\_prompt\_to\_llm@{submit\_prompt\_to\_llm}}
+\index{submit\_prompt\_to\_llm@{submit\_prompt\_to\_llm}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{submit\_prompt\_to\_llm()}{submit\_prompt\_to\_llm()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_abf066120a179dd15d7ce9be1b9c55cd4} 
+bot.\+Bot.\+submit\+\_\+prompt\+\_\+to\+\_\+llm (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Takes care of the interaction with the LLM
+\end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a6c074341425cb967b736b3dca28f99f7}\index{bot.Bot@{bot.Bot}!toggle\_shield@{toggle\_shield}}
+\index{toggle\_shield@{toggle\_shield}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{toggle\_shield()}{toggle\_shield()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a6c074341425cb967b736b3dca28f99f7} 
+bot.\+Bot.\+toggle\+\_\+shield (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Toggles the shield state.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/game/bot.\+py\end{DoxyCompactItemize}

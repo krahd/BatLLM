@@ -1,0 +1,117 @@
+\doxysection{normalized\+\_\+canvas.\+Normalized\+Canvas Class Reference}
+\hypertarget{classnormalized__canvas_1_1_normalized_canvas}{}\label{classnormalized__canvas_1_1_normalized_canvas}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classnormalized__canvas_1_1_normalized_canvas_a97b602079e22f04401d134f9249ec1a3}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, widget)
+\item 
+\mbox{\hyperlink{classnormalized__canvas_1_1_normalized_canvas_a83c650d7031d8e04191db9809c841c16}{\+\_\+\+\_\+enter\+\_\+\+\_\+}} (self)
+\item 
+\mbox{\hyperlink{classnormalized__canvas_1_1_normalized_canvas_af4acb0d3da069fc07a28f2cbfb06d413}{\+\_\+\+\_\+exit\+\_\+\+\_\+}} (self, exc\+\_\+type, exc\+\_\+val, exc\+\_\+tb)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classnormalized__canvas_1_1_normalized_canvas_ad2d2b7095e6a9556e293caf8c35e92ec}{to}} (widget, x, y)
+\item 
+\mbox{\hyperlink{classnormalized__canvas_1_1_normalized_canvas_a46ae6fcbf41ef89ca0d14731b980b604}{touch\+\_\+to}} (widget, touch)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_a8dc5f024dc14bb141c53b7e77ac2e798}\label{classnormalized__canvas_1_1_normalized_canvas_a8dc5f024dc14bb141c53b7e77ac2e798} 
+{\bfseries widget} = widget
+\item 
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_a03b93b1dd5fb7340f1148ce50b62f47d}\label{classnormalized__canvas_1_1_normalized_canvas_a03b93b1dd5fb7340f1148ce50b62f47d} 
+{\bfseries canvas} = widget.\+canvas
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_add5a3084f4edb9bb07eacabe5e69e688}\label{classnormalized__canvas_1_1_normalized_canvas_add5a3084f4edb9bb07eacabe5e69e688} 
+{\bfseries \+\_\+canvas\+\_\+context} = self.\+canvas.\+\_\+\+\_\+enter\+\_\+\+\_\+()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}A context manager that unifies coordinate systems for Kivy widgets. 
+It normalizes the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
+It is used to draw on the canvas of a widget, allowing for consistent rendering across different screen sizes and resolutions.
+It also handles padding and scaling to ensure that the drawing area is consistent regardless of the widget's size.
+Top-left corner of the widget is (0, 0) and bottom-right corner is (1, 1).
+It can be used in a `with` statement to automatically handle the canvas transformations.
+\end{DoxyVerb}
+ 
+
+\label{doc-constructors}
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_a97b602079e22f04401d134f9249ec1a3}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_a97b602079e22f04401d134f9249ec1a3} 
+normalized\+\_\+canvas.\+Normalized\+Canvas.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{widget}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Initializes the NormalizedCanvas with a widget.
+Args:
+    widget (_type_): The Kivy widget whose canvas will be normalized.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classnormalized__canvas_1_1_normalized_canvas_a83c650d7031d8e04191db9809c841c16}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}!\_\_enter\_\_@{\_\_enter\_\_}}
+\index{\_\_enter\_\_@{\_\_enter\_\_}!normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
+\doxysubsubsection{\texorpdfstring{\_\_enter\_\_()}{\_\_enter\_\_()}}
+{\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_a83c650d7031d8e04191db9809c841c16} 
+normalized\+\_\+canvas.\+Normalized\+Canvas.\+\_\+\+\_\+enter\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Enters the context manager, setting up the canvas transformations.
+This is called when the `with` block is entered, ensuring that the canvas is prepared for drawing.
+It applies translations and scaling to normalize the coordinates to the widget's dimensions.
+Returns:
+    _type_: The canvas context, allowing for drawing operations within the `with` block.
+\end{DoxyVerb}
+ \Hypertarget{classnormalized__canvas_1_1_normalized_canvas_af4acb0d3da069fc07a28f2cbfb06d413}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}!\_\_exit\_\_@{\_\_exit\_\_}}
+\index{\_\_exit\_\_@{\_\_exit\_\_}!normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
+\doxysubsubsection{\texorpdfstring{\_\_exit\_\_()}{\_\_exit\_\_()}}
+{\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_af4acb0d3da069fc07a28f2cbfb06d413} 
+normalized\+\_\+canvas.\+Normalized\+Canvas.\+\_\+\+\_\+exit\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{exc\+\_\+type}{, }\item[{}]{exc\+\_\+val}{, }\item[{}]{exc\+\_\+tb}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Exits the context manager, restoring the canvas state.
+This is called when the `with` block is exited, ensuring that the canvas transformations are cleaned up.
+\end{DoxyVerb}
+ \Hypertarget{classnormalized__canvas_1_1_normalized_canvas_ad2d2b7095e6a9556e293caf8c35e92ec}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}!to@{to}}
+\index{to@{to}!normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
+\doxysubsubsection{\texorpdfstring{to()}{to()}}
+{\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_ad2d2b7095e6a9556e293caf8c35e92ec} 
+normalized\+\_\+canvas.\+Normalized\+Canvas.\+to (\begin{DoxyParamCaption}\item[{}]{widget}{, }\item[{}]{x}{, }\item[{}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\begin{DoxyVerb}Converts absolute coordinates (x, y) to normalized coordinates within the widget.
+The coordinates are normalized to the range [0, 1] based on the widget's size.
+Args:
+    widget (_type_): The Kivy widget to which the coordinates are relative.
+    x (float): The x-coordinate to normalize.       
+    y (float): The y-coordinate to normalize.
+Returns:
+    tuple: A tuple containing the normalized x and y coordinates.   
+\end{DoxyVerb}
+ \Hypertarget{classnormalized__canvas_1_1_normalized_canvas_a46ae6fcbf41ef89ca0d14731b980b604}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}!touch\_to@{touch\_to}}
+\index{touch\_to@{touch\_to}!normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
+\doxysubsubsection{\texorpdfstring{touch\_to()}{touch\_to()}}
+{\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_a46ae6fcbf41ef89ca0d14731b980b604} 
+normalized\+\_\+canvas.\+Normalized\+Canvas.\+touch\+\_\+to (\begin{DoxyParamCaption}\item[{}]{widget}{, }\item[{}]{touch}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\begin{DoxyVerb}Converts a touch event's coordinates to normalized coordinates within the widget.
+Args:
+    widget (_type_): The Kivy widget to which the touch coordinates are relative.
+    touch (_type_): The touch event containing x and y coordinates. 
+Returns:
+    tuple: A tuple containing the normalized x and y coordinates of the touch event.    
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/util/normalized\+\_\+canvas.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,46 @@
+\doxysection{history\+\_\+screen.\+History\+Screen Class Reference}
+\hypertarget{classhistory__screen_1_1_history_screen}{}\label{classhistory__screen_1_1_history_screen}\index{history\_screen.HistoryScreen@{history\_screen.HistoryScreen}}
+Inheritance diagram for history\+\_\+screen.\+History\+Screen\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classhistory__screen_1_1_history_screen}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classhistory__screen_1_1_history_screen_a361a451b238cc5d2381858cbcf4205c9}{update}} (self, int bot\+\_\+id, str raw\+\_\+prompt, str parsed\+\_\+history)
+\item 
+\Hypertarget{classhistory__screen_1_1_history_screen_acd4029a3f2148c0c78861e9eafea98e4}\label{classhistory__screen_1_1_history_screen_acd4029a3f2148c0c78861e9eafea98e4} 
+{\bfseries go\+\_\+back\+\_\+home} (self)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Displays two scrolling histories via RecycleView:
+  - rv_string_panel: the raw prompt log
+  - rv_history_panel: the parsed/processed history
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classhistory__screen_1_1_history_screen_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classhistory__screen_1_1_history_screen_a361a451b238cc5d2381858cbcf4205c9}\index{history\_screen.HistoryScreen@{history\_screen.HistoryScreen}!update@{update}}
+\index{update@{update}!history\_screen.HistoryScreen@{history\_screen.HistoryScreen}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily \label{classhistory__screen_1_1_history_screen_a361a451b238cc5d2381858cbcf4205c9} 
+history\+\_\+screen.\+History\+Screen.\+update (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{bot\+\_\+id}{, }\item[{str}]{raw\+\_\+prompt}{, }\item[{str}]{parsed\+\_\+history}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Populate both RecycleViews from the two input strings.
+
+Args:
+    bot_id          -- the current bot's numeric id
+    raw_prompt      -- the raw prompt text, newline‐separated
+    parsed_history  -- the processed history, newline‐separated
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/screens/history\+\_\+screen.\+py\end{DoxyCompactItemize}

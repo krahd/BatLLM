@@ -24,6 +24,9 @@ Please open an issue if you find a bug or have a feature request. Even if you’
 
 When contributing, ensure that any new dependencies are necessary and cross-platform. Also, test on multiple platforms if possible, or at least alert us if a change might affect Windows/Mac/Linux differently.
 
+## Source Documentation
+
+- **Doxygen-generated documentation:** [./code/html/index.html](code/html/index.html)
 
 ## Technical Notes
   

@@ -1,0 +1,90 @@
+\doxysection{bullet.\+Bullet Class Reference}
+\hypertarget{classbullet_1_1_bullet}{}\label{classbullet_1_1_bullet}\index{bullet.Bullet@{bullet.Bullet}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classbullet_1_1_bullet_a954ef38411a9dcfb04edfa54723b8c3e}\label{classbullet_1_1_bullet_a954ef38411a9dcfb04edfa54723b8c3e} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, parent\+\_\+id, x, y, rot)
+\item 
+\mbox{\hyperlink{classbullet_1_1_bullet_afb1e383c0ef61c64c7ff0e1dd5e41c12}{render}} (self)
+\item 
+\mbox{\hyperlink{classbullet_1_1_bullet_a71b35dbbeed092706f1824d0c29b53a5}{update}} (self, bots)
+\item 
+\mbox{\hyperlink{classbullet_1_1_bullet_a8d2bee4b44bbffa45a6f52c95cdd8372}{segment\+\_\+hits\+\_\+bot}} (self, bot, p1, p2)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classbullet_1_1_bullet_a936b8a3ec207d64a4d22ae611fecf0fd}\label{classbullet_1_1_bullet_a936b8a3ec207d64a4d22ae611fecf0fd} 
+{\bfseries parent\+\_\+id} = parent\+\_\+id
+\item 
+\Hypertarget{classbullet_1_1_bullet_ab44e0b863fc8cea9a829364f5a85b078}\label{classbullet_1_1_bullet_ab44e0b863fc8cea9a829364f5a85b078} 
+{\bfseries x} = x
+\item 
+\Hypertarget{classbullet_1_1_bullet_a0bfa4d3fef82304cf9e9636327c89c1e}\label{classbullet_1_1_bullet_a0bfa4d3fef82304cf9e9636327c89c1e} 
+{\bfseries y} = y
+\item 
+\Hypertarget{classbullet_1_1_bullet_afc9eee6d1602894fdfcc831eeb1e9dc3}\label{classbullet_1_1_bullet_afc9eee6d1602894fdfcc831eeb1e9dc3} 
+{\bfseries rot} = rot
+\item 
+\Hypertarget{classbullet_1_1_bullet_aedc384feb1e1c9552818ddbd580d883b}\label{classbullet_1_1_bullet_aedc384feb1e1c9552818ddbd580d883b} 
+float {\bfseries step} = 0.\+01
+\item 
+\Hypertarget{classbullet_1_1_bullet_a175136364c6b91c821420bf91dd21de9}\label{classbullet_1_1_bullet_a175136364c6b91c821420bf91dd21de9} 
+float {\bfseries diameter} = 0.\+02
+\item 
+\Hypertarget{classbullet_1_1_bullet_a3dedef7458b02d355cc777cb2dbf7566}\label{classbullet_1_1_bullet_a3dedef7458b02d355cc777cb2dbf7566} 
+tuple {\bfseries colour} = (1, 0, 0, 1) \#
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}This class models the bullets shot by the bots. It takes care of its own rendering and the detection of collission against the opponent and the arena's limits.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classbullet_1_1_bullet_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classbullet_1_1_bullet_afb1e383c0ef61c64c7ff0e1dd5e41c12}\index{bullet.Bullet@{bullet.Bullet}!render@{render}}
+\index{render@{render}!bullet.Bullet@{bullet.Bullet}}
+\doxysubsubsection{\texorpdfstring{render()}{render()}}
+{\footnotesize\ttfamily \label{classbullet_1_1_bullet_afb1e383c0ef61c64c7ff0e1dd5e41c12} 
+bullet.\+Bullet.\+render (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Renders the bullet as a circle at its current position with the specified color.\end{DoxyVerb}
+ \Hypertarget{classbullet_1_1_bullet_a8d2bee4b44bbffa45a6f52c95cdd8372}\index{bullet.Bullet@{bullet.Bullet}!segment\_hits\_bot@{segment\_hits\_bot}}
+\index{segment\_hits\_bot@{segment\_hits\_bot}!bullet.Bullet@{bullet.Bullet}}
+\doxysubsubsection{\texorpdfstring{segment\_hits\_bot()}{segment\_hits\_bot()}}
+{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a8d2bee4b44bbffa45a6f52c95cdd8372} 
+bullet.\+Bullet.\+segment\+\_\+hits\+\_\+bot (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot}{, }\item[{}]{p1}{, }\item[{}]{p2}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
+
+Args:
+    bot (_type_): the bot
+    p1 (_type_): segment start
+    p2 (_type_): segment end
+
+Returns:
+    _type_: True if the bot is hit (taking damage), or False if no hit or the hit is blocked by the shield
+\end{DoxyVerb}
+ \Hypertarget{classbullet_1_1_bullet_a71b35dbbeed092706f1824d0c29b53a5}\index{bullet.Bullet@{bullet.Bullet}!update@{update}}
+\index{update@{update}!bullet.Bullet@{bullet.Bullet}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a71b35dbbeed092706f1824d0c29b53a5} 
+bullet.\+Bullet.\+update (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bots}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Check for out of bounds and collisions with bots.
+
+Args:
+    bots (_type_): all the game bots 
+
+Returns:
+    _type_: (alive, damaged_bot_id).
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/game/bullet.\+py\end{DoxyCompactItemize}

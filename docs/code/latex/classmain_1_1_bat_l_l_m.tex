@@ -1,0 +1,65 @@
+\doxysection{main.\+Bat\+LLM Class Reference}
+\hypertarget{classmain_1_1_bat_l_l_m}{}\label{classmain_1_1_bat_l_l_m}\index{main.BatLLM@{main.BatLLM}}
+Inheritance diagram for main.\+Bat\+LLM\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classmain_1_1_bat_l_l_m}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a071c022e20ea3ddc332c7fda7df794c9}\label{classmain_1_1_bat_l_l_m_a071c022e20ea3ddc332c7fda7df794c9} 
+{\bfseries build} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_ae5b55dbf2589791e40a6a6a4ac686f8d}\label{classmain_1_1_bat_l_l_m_ae5b55dbf2589791e40a6a6a4ac686f8d} 
+{\bfseries load\+\_\+theme\+\_\+colors} (self)
+\item 
+\mbox{\hyperlink{classmain_1_1_bat_l_l_m_a927e3b2385df5086a862aed991fb9c3b}{on\+\_\+request\+\_\+close}} (self, \texorpdfstring{$\ast$}{*}args, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_ab2d83d8dc6c3c2c48d69ec70826cabaf}\label{classmain_1_1_bat_l_l_m_ab2d83d8dc6c3c2c48d69ec70826cabaf} 
+str {\bfseries icon} = "{}assets/images/logo\+\_\+small.\+png"{}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_ab3e8a20befe01e916d58d509900a4f65}\label{classmain_1_1_bat_l_l_m_ab3e8a20befe01e916d58d509900a4f65} 
+{\bfseries title} = config.\+get("{}ui"{}, "{}title"{})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a7759b3b0b1a3c67d634f81d66b331c4e}\label{classmain_1_1_bat_l_l_m_a7759b3b0b1a3c67d634f81d66b331c4e} 
+dict {\bfseries theme\+\_\+colors} = Dict\+Property(\{\})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}This is the main application class for BattLLM.
+Using Kivy, it initializes the screen manager and sets up the application's windows
+
+Args:
+    App (_type_): Kivy's base application class.
+
+Attributes:
+    theme_colors (DictProperty): A dictionary to hold theme colors loaded from a properties file.   
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classmain_1_1_bat_l_l_m_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classmain_1_1_bat_l_l_m_a927e3b2385df5086a862aed991fb9c3b}\index{main.BatLLM@{main.BatLLM}!on\_request\_close@{on\_request\_close}}
+\index{on\_request\_close@{on\_request\_close}!main.BatLLM@{main.BatLLM}}
+\doxysubsubsection{\texorpdfstring{on\_request\_close()}{on\_request\_close()}}
+{\footnotesize\ttfamily \label{classmain_1_1_bat_l_l_m_a927e3b2385df5086a862aed991fb9c3b} 
+main.\+Bat\+LLM.\+on\+\_\+request\+\_\+close (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Handles the request to close the application.
+Prompts the user to confirm if they want to exit.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/main.\+py\end{DoxyCompactItemize}

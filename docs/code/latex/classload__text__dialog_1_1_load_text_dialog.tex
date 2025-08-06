@@ -1,0 +1,112 @@
+\doxysection{load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog Class Reference}
+\hypertarget{classload__text__dialog_1_1_load_text_dialog}{}\label{classload__text__dialog_1_1_load_text_dialog}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+Inheritance diagram for load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classload__text__dialog_1_1_load_text_dialog}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_a5c2305ac3826b0dbb3631da5727a1489}\label{classload__text__dialog_1_1_load_text_dialog_a5c2305ac3826b0dbb3631da5727a1489} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, on\+\_\+choice, str start\+\_\+dir=None, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
+\mbox{\hyperlink{classload__text__dialog_1_1_load_text_dialog_a57b9f5ca7a65e712def725e8e2628639}{on\+\_\+touch\+\_\+down}} (self, touch)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_ad757fa9433850e92dda0bfaeef4fa80e}\label{classload__text__dialog_1_1_load_text_dialog_ad757fa9433850e92dda0bfaeef4fa80e} 
+{\bfseries on\+\_\+choice} = Object\+Property(lambda choice\+: None)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classload__text__dialog_1_1_load_text_dialog_ae29ccb0b68308757bc9da7ceda6ce72c}{\+\_\+attach\+\_\+keyboard}} (self, \texorpdfstring{$\ast$}{*}args)
+\item 
+\mbox{\hyperlink{classload__text__dialog_1_1_load_text_dialog_a924d91717792a50c28bdd52f985a6cf4}{\+\_\+detach\+\_\+keyboard}} (self, \texorpdfstring{$\ast$}{*}args)
+\item 
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_adf6aa531425680d80125c06fa22c2a62}\label{classload__text__dialog_1_1_load_text_dialog_adf6aa531425680d80125c06fa22c2a62} 
+{\bfseries \+\_\+on\+\_\+keyboard\+\_\+closed} (self)
+\item 
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_a320d8f59b59c0082f2a9f4e31f2baa89}\label{classload__text__dialog_1_1_load_text_dialog_a320d8f59b59c0082f2a9f4e31f2baa89} 
+{\bfseries \+\_\+on\+\_\+key\+\_\+down} (self, keyboard, keycode, text, modifiers)
+\item 
+\mbox{\hyperlink{classload__text__dialog_1_1_load_text_dialog_a236f8813ec9eac061d5360bb66e0d9d9}{\+\_\+on\+\_\+file\+\_\+select}} (self, selection)
+\item 
+\mbox{\hyperlink{classload__text__dialog_1_1_load_text_dialog_aba88b8a492c2bff8e8ba2b825aa5f213}{\+\_\+load\+\_\+selected}} (self)
+\item 
+\mbox{\hyperlink{classload__text__dialog_1_1_load_text_dialog_a32389f1c076494df69a7d10f8c868e88}{\+\_\+cancel}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_aa8be00076698c746ca1c425df2c4267b}\label{classload__text__dialog_1_1_load_text_dialog_aa8be00076698c746ca1c425df2c4267b} 
+{\bfseries \+\_\+keyboard} = None
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}A modal, two-pane dialog to choose and preview .txt files.
+When the user loads or cancels, `on_choice` is called with the file's
+text (str) or None.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classload__text__dialog_1_1_load_text_dialog_ae29ccb0b68308757bc9da7ceda6ce72c}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_attach\_keyboard@{\_attach\_keyboard}}
+\index{\_attach\_keyboard@{\_attach\_keyboard}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+\doxysubsubsection{\texorpdfstring{\_attach\_keyboard()}{\_attach\_keyboard()}}
+{\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_ae29ccb0b68308757bc9da7ceda6ce72c} 
+load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+attach\+\_\+keyboard (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Request keyboard to capture Enter/Esc when dialog is open.\end{DoxyVerb}
+ \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a32389f1c076494df69a7d10f8c868e88}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_cancel@{\_cancel}}
+\index{\_cancel@{\_cancel}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+\doxysubsubsection{\texorpdfstring{\_cancel()}{\_cancel()}}
+{\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_a32389f1c076494df69a7d10f8c868e88} 
+load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+cancel (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}User cancelled. Calls callback with None and closes.
+\end{DoxyVerb}
+ \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a924d91717792a50c28bdd52f985a6cf4}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_detach\_keyboard@{\_detach\_keyboard}}
+\index{\_detach\_keyboard@{\_detach\_keyboard}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+\doxysubsubsection{\texorpdfstring{\_detach\_keyboard()}{\_detach\_keyboard()}}
+{\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_a924d91717792a50c28bdd52f985a6cf4} 
+load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+detach\+\_\+keyboard (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Release keyboard when dialog closes.\end{DoxyVerb}
+ \Hypertarget{classload__text__dialog_1_1_load_text_dialog_aba88b8a492c2bff8e8ba2b825aa5f213}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_load\_selected@{\_load\_selected}}
+\index{\_load\_selected@{\_load\_selected}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+\doxysubsubsection{\texorpdfstring{\_load\_selected()}{\_load\_selected()}}
+{\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_aba88b8a492c2bff8e8ba2b825aa5f213} 
+load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+load\+\_\+selected (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}User confirmed loading the selected file.
+Reads the file, calls the callback, and closes the dialog.
+\end{DoxyVerb}
+ \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a236f8813ec9eac061d5360bb66e0d9d9}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_on\_file\_select@{\_on\_file\_select}}
+\index{\_on\_file\_select@{\_on\_file\_select}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+\doxysubsubsection{\texorpdfstring{\_on\_file\_select()}{\_on\_file\_select()}}
+{\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_a236f8813ec9eac061d5360bb66e0d9d9} 
+load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+on\+\_\+file\+\_\+select (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{selection}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Called when the FileChooser selection changes.
+Loads and shows the text of a `.txt` file in the preview pane.
+\end{DoxyVerb}
+ \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a57b9f5ca7a65e712def725e8e2628639}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!on\_touch\_down@{on\_touch\_down}}
+\index{on\_touch\_down@{on\_touch\_down}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
+\doxysubsubsection{\texorpdfstring{on\_touch\_down()}{on\_touch\_down()}}
+{\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_a57b9f5ca7a65e712def725e8e2628639} 
+load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+on\+\_\+touch\+\_\+down (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{touch}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Detect a double‐tap on the preview pane as a quick 'load'.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/util/load\+\_\+text\+\_\+dialog.\+py\end{DoxyCompactItemize}
