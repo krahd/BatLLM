@@ -1,4 +1,3 @@
-from kivy.properties import StringProperty, NumericProperty
 from kivy.uix.screenmanager import Screen
 
 

@@ -11,8 +11,8 @@ import sys
 from configs.app_config import config
 from util.save_dialog import SaveDialog
 from util.utils import show_confirmation_dialog, show_text_input_dialog
-from kivy.app import App
 from util.load_text_dialog import LoadTextDialog
+from kivy.app import App
 
 
 
