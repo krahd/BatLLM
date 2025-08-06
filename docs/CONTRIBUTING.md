@@ -26,7 +26,7 @@ When contributing, ensure that any new dependencies are necessary and cross-plat
 
 ## Source Documentation
 
-- **Doxygen-generated documentation:** [./code/html/index.html](code/html/index.html)
+- **Doxygen-generated documentation:** [https://krahd.github.io/BatLLM/code/html](https://krahd.github.io/BatLLM/code/html)
 
 ## Technical Notes
   
