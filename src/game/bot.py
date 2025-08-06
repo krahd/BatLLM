@@ -107,7 +107,7 @@ class Bot (Widget):
             message (_type_): the message to log
         """
         #self.simple_log += f"{message.strip()}\n"
-        self.simple_log += message.rstrip("\n") + "\n"
+        self.simple_log += message.rstrip("\n")
         # TODO if getconfig verbose = true then print(f"{[self.id]} {message})
 
 
@@ -321,7 +321,7 @@ class Bot (Widget):
         data["prompt"] += self.get_current_prompt() + "\n"
                 
         # TODO format these prints better and output them into to a log window that can be opened and closed by the user instead of the console        
-        self.log(f"\n\n\n[b]Prompt:[/b] {self.get_current_prompt()}\n\n")        
+        self.log(f"\n[b]Prompt:[/b] {self.get_current_prompt()}\n\n")        
         
         UrlRequest(
             url = self.llm_endpoint,
@@ -375,7 +375,7 @@ class Bot (Widget):
         self.last_llm_response = result.get("response", "").strip()  
         self.log(f"\n[b]        LLM says:[/b] {self.last_llm_response}")
         cmd = self.last_llm_response
-        # print ("Bot ", self.id, " response: ", cmd)  # Debugging output 
+      
             
         # ********* Processing the response *********
         command_ok = True
@@ -388,55 +388,47 @@ class Bot (Widget):
                 command_ok = False
                
                 
-            if command_ok:                
+            if command_ok:     
+                self.log("\n        [color=#FF0000]Executing command [b]")           
                 match command[0]:                    
                     case "M":         
-                        self.log(f"\n         [color=#FF0000]Executing command [b]M[/b][/color]\n\n")       
+                        self.log("M")
                         self.move()
                                                         
                     case "C":
                         angle = float(command[1:])
-                        self.log(
-                            f"\n         [color=#FF0000]Executing command [b]C[/b] with angle [b]{angle}[/b]\n\n"
-                        )
+                        self.log(f"C[/b] with angle [b]{angle}")                    
                         self.rotate(angle)
 
                     case "A":
                         angle = float(command[1:])
-                        self.log(
-                            f"\n         [color=#FF0000]Executing command [b]A[/b] with angle [b]{angle}[/b][/color]\n\n"
-                        )
+                        self.log(f"A[/b] with angle [b]{angle}")
                         self.rotate(-angle)
 
                     case "B":                                            
-                        self.log(
-                            f"\n         [color=#FF0000]Executing command [b]B[/b][/color]\n\n"
-                        )
+                        self.log("B")                            
                         self.board_widget.shoot(self.id)  
 
                         
                     case "S":
                         if len(command) == 1:                        
-                            self.log(
-                                f"\n         [color=#FF0000]Executing command [b]S[/b][/color]\n\n"
-                            )
+                            self.log("S")
                             self.toggle_shield()
                             
                         else:
+
                             if command[1] == "1":
-                                self.log(
-                                    f"\n         [color=#FF0000]Executing command [b]S1[/b][/color]\n\n"
-                                )
+                                self.log("S1")
                                 self.shield = True
+
                             elif command[1] == "0":
-                                self.log(
-                                    f"\n         [color=#FF0000]Executing command [b]S0[/b][/color]\n\n"
-                                )
+                                self.log("S0")
                                 self.shield = False
                             else:
                                 command_ok = False
                     case _:
                         command_ok = False
+                self.log("[/b][/color]\n")
                         
      
         except Exception as e:
@@ -445,7 +437,7 @@ class Bot (Widget):
         
         if not command_ok:            
             self.log(
-                f"\n         [color=#FF0000][b]Invalid command, turn lost![/b][/color]\n\n"
+                f"\n [b]Invalid command, turn lost![/b][/color]\n\n"
             )
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
         else:
@@ -459,7 +451,7 @@ class Bot (Widget):
 
 
     def damage(self):
-        """The bot's been hitl        
+        """The bot's been hit
         """
         self.health -= config.get("game", "bullet_damage")
         

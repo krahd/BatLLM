@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+# This script starts two instances of Ollama on different ports.
+
 # Set ports
 PORT1=5001
 PORT2=5002

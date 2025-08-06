@@ -25,7 +25,7 @@ class HomeScreen(Screen):
         Screen (_type_): Kivy's base screen class.            
     """    
 
-    history = None
+
     
     def __init__(self, **kwargs):     
         """
@@ -35,7 +35,7 @@ class HomeScreen(Screen):
 
         super().__init__(**kwargs)
 
-        self.history = HistoryManager()
+        
         
         
         
@@ -124,9 +124,10 @@ class HomeScreen(Screen):
 
 
         history_screen = self.manager.get_screen("history")
+
         history_screen.update(
-            bot_id, gbw.get_bot_by_id(bot_id).getLog(), "TODO"
-        )  # TODOself.history.to_text()
+            bot_id, gbw.get_bot_by_id(bot_id).getLog(), gbw.history_manager.to_text()
+        )  
 
 
         self.manager.current = "history"
