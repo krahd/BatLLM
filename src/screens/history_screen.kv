@@ -13,8 +13,8 @@
 
     BoxLayout:
         orientation: "vertical"
-        padding: dp(10)
-        spacing: dp(10)
+        padding: dp(0)
+        spacing: dp(0)
 
         # Title
         Label:
@@ -24,7 +24,13 @@
             font_size: "34sp"
             size_hint_y: None
             height: self.texture_size[1] + dp(40)
-            color: 0, 0, 0, 1
+            color: 1, 1, 1, 1
+            canvas.before:
+                Color:
+                    rgba: .61, .61, .66, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
             canvas.after:
                 Color:
                     rgba: 0, 0, 0, 1
@@ -34,7 +40,7 @@
 
         BoxLayout:
             orientation: "horizontal"
-            spacing: dp(10)
+            spacing: dp(30)
 
             # — Raw Prompt / String Panel —
             RecycleView:
@@ -49,7 +55,7 @@
                 # white background behind all items
                 canvas.before:
                     Color:
-                        rgba: 1, 1, 1, 1
+                        rgba: 1, .95, .95, 1
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -60,6 +66,7 @@
                     size_hint_y: None
                     height: self.minimum_height
                     spacing: dp(4)
+                    padding: dp(14)
 
             # — Parsed History Panel —
             RecycleView:
@@ -73,7 +80,7 @@
 
                 canvas.before:
                     Color:
-                        rgba: 1, 1, 1, 1
+                        rgba: .95, .95, 1, 1
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -83,7 +90,8 @@
                     orientation: "vertical"
                     size_hint_y: None
                     height: self.minimum_height
-                    spacing: 0
+                    padding: dp(14)
+                    spacing: dp(4)
 
         Button:
             text: "Back"

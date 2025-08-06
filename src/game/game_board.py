@@ -342,7 +342,7 @@ class GameBoard(Widget, EventDispatcher):
         self.shuffled_bots = random.sample(self.bots, 2)
 
         for b in self.bots:
-            b.log(f"\n[b][size=30sp]Round {self.current_round} started[/size][/b]")
+            b.log(f"\n[b][size=20sp]Round {self.current_round}[/size][/b]")
 
         self.history_manager.start_round(self)
 
@@ -434,7 +434,7 @@ class GameBoard(Widget, EventDispatcher):
         """Updates the label above the game board with the current game, round and turn information."""
         game_title_label = find_id_in_parents(self, "game_title_label")
         if game_title_label is not None:
-            game_title_label.text = f"[size=30]          Game {self.games_started}"
+            game_title_label.text = f"[size=30]   Game {self.games_started}"
 
             if self.current_round is not None:
                 game_title_label.text += " > "
