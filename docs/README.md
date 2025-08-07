@@ -15,13 +15,14 @@ Like every other area where AI is used, having the best strategy for the problem
 
 The project aims to support a broader social understanding of AI, leveraging intuitive understandings with experiential learning. We hope to contribute to the process of bulding AI prompting skills while highlighting the need for critical engagements with the social, political and economic dynamics that are deeply entrenched in generative AI systems.
 
-This README consistes of this introduction, a very brief introduction to the game, and a minimalistic guide to getting started with the project. To know more about **BatLLM**, its objectives and technical details, please refer to the (still incipient) project documentation.
+This README consistes of this introduction, a very brief introduction to the game, and a minimalistic guide to getting started with the project. To know more about **BatLLM**, its objectives and technical details, please refer to the [project documentation](DOCUMENTATION.md).
 
 > [!IMPORTANT] 
 > **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
 
 
-![Screenshot of Main Screen](./screenshots/before_starting.png)
+<!-- ![Screenshot of Main Screen](./screenshots/before_starting.png) -->
+![Demo Gif](./screenshots/quick_demo.gif)
 
 
 ## Getting Started
@@ -74,7 +75,7 @@ To **stop** the Ollama instances you may run:
 
 As before, for a more detailed overview of *the game*, please refer to the [User Guide](USER_GUIDE.md)
 
-![Demo Gif](./screenshots/quick_demo.gif)
+
 
 **Brutal LLM Bot Battle Pit: BatLLM**
 
