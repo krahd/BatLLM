@@ -1,0 +1,8 @@
+If you are not pointing to your opponent, 
+    rotate to point to it.
+else if you are more than .3 away from your opponent, 
+        move.
+      else if your shield is up, 
+                lower it
+            else 
+                shoot.

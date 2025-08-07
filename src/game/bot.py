@@ -391,36 +391,42 @@ class Bot (Widget):
                 match command[0]:                    
                     case "M":         
                         self.log("M")
+                        self.board_widget.add_llm_response_to_history(self.id, "M")        
                         self.move()
                                                         
                     case "C":
                         angle = float(command[1:])
-                        self.log(f"C[/b] with angle [b]{angle}")                    
+                        self.log(f"C[/b] with angle [b]{angle}")    
+                        self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")                        
                         self.rotate(angle)
 
                     case "A":
                         angle = float(command[1:])
                         self.log(f"A[/b] with angle [b]{angle}")
+                        self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")                        
                         self.rotate(-angle)
 
                     case "B":                                            
                         self.log("B")                            
                         self.board_widget.shoot(self.id)  
+                        self.board_widget.add_llm_response_to_history(self.id, "B")
 
                         
                     case "S":
                         if len(command) == 1:                        
                             self.log("S")
+                            self.board_widget.add_llm_response_to_history(self.id, "S")
                             self.toggle_shield()
                             
                         else:
-
                             if command[1] == "1":
                                 self.log("S1")
+                                self.board_widget.add_llm_response_to_history(self.id, "S1")
                                 self.shield = True
 
                             elif command[1] == "0":
                                 self.log("S0")
+                                self.board_widget.add_llm_response_to_history(self.id, "S0")
                                 self.shield = False
                             else:
                                 command_ok = False
@@ -438,9 +444,8 @@ class Bot (Widget):
                 f"\n [b]Invalid command, turn lost![/b][/color]\n\n"
             )
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
-        else:
+                    
             
-            self.board_widget.add_llm_response_to_history(self.id, command)        
 
         # ********* Updating the bot's state and notifying the board widget *********
         self.ready_for_next_turn = True
