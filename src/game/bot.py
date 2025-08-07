@@ -317,7 +317,46 @@ class Bot (Widget):
             data["prompt"] += "PLAYER_INPUT:\n"
             
         data["prompt"] += self.get_current_prompt() + "\n"                        
-        self.log(f"\n\n[b]Prompt:[/b] {self.get_current_prompt()}\n\n")        
+        self.log(f"\n\n................................................................................\n\n[b]Prompt:[/b]\n>>\n{self.get_current_prompt()}\n<<\n\n")  
+        #TODO check if it's not better to print the prompt once and then the responses and commands, with turn number. Something like:
+        '''
+        Prompt:
+        >>>
+        Do this and that, then the other.
+        If you can, do this.
+        If you can't, do that.
+        <<<
+
+        Turn 1:
+        LLM:
+        >>>
+        M
+        <<<
+        Command: M
+
+        Turn 2:
+        LLM:
+        >>>
+        Whatever
+        <<<
+        Command: ERR
+
+        Turn 3:
+        LLM:
+        >>>
+        C45
+        <<<
+        Command: C 45
+
+
+        Think
+        
+
+
+
+        
+        
+        '''      
         
         UrlRequest(
             url = self.llm_endpoint,
@@ -369,7 +408,7 @@ class Bot (Widget):
         
         
         self.last_llm_response = result.get("response", "").strip()  
-        self.log(f"\n\n[b]LLM Response:[/b]\n---\n{self.last_llm_response}\n---\n")
+        self.log(f"\n\n[b]LLM Response:[/b]\n>>\n{self.last_llm_response}\n<<\n")
         cmd = self.last_llm_response
       
             
@@ -385,32 +424,37 @@ class Bot (Widget):
                
                 
             if command_ok:     
-                self.log("\n[color=#D03030]Executing [b]")           
+                           
                 match command[0]:                    
                     case "M":         
+                        self.log("\n\n[color=#308030][b]Executing ")
                         self.log("M")
                         self.board_widget.add_llm_response_to_history(self.id, "M")        
                         self.move()
                                                         
                     case "C":
+                        self.log("\n\n[color=#308030][b]Executing ")
                         angle = float(command[1:])
                         self.log(f"C[/b] with angle [b]{angle}")    
                         self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")                        
                         self.rotate(angle)
 
                     case "A":
+                        self.log("\n\n[color=#308030][b]Executing ")
                         angle = float(command[1:])
                         self.log(f"A[/b] with angle [b]{angle}")
                         self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")                        
                         self.rotate(-angle)
 
-                    case "B":                                            
+                    case "B":
+                        self.log("\n\n[color=#308030][b]Executing ")                                           
                         self.log("B")                            
                         self.board_widget.shoot(self.id)  
                         self.board_widget.add_llm_response_to_history(self.id, "B")
 
                         
                     case "S":
+                        self.log("\n\n[color=#308030][b]Executing ")
                         if len(command) == 1:                        
                             self.log("S")
                             self.board_widget.add_llm_response_to_history(self.id, "S")
@@ -439,7 +483,7 @@ class Bot (Widget):
         
         if not command_ok:            
             self.log(
-                f"\n [b]Invalid command, turn lost![/b][/color]\n\n"
+                f"\n\n[color=#FF0000][b]Invalid Command.[/b][/color]\n\n"
             )
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
                     

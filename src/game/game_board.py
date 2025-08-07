@@ -382,7 +382,7 @@ class GameBoard(Widget, EventDispatcher):
             self.history_manager.end_round(self)
             for b in self.bots:
                 self.add_text_to_llm_response_history(b.id, "\n\n")
-                b.log(f"Round {self.current_round} ended")
+                b.log(f"\n\n[b]Round {self.current_round} ended.[/b]\n\n")
 
             round_res = "\n"
 
