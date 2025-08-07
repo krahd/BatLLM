@@ -369,7 +369,7 @@ class Bot (Widget):
         
         
         self.last_llm_response = result.get("response", "").strip()  
-        self.log(f"\n\n[b]LLM Response:[/b]\n---n{self.last_llm_response}\n---\n")
+        self.log(f"\n\n[b]LLM Response:[/b]\n---\n{self.last_llm_response}\n---\n")
         cmd = self.last_llm_response
       
             
@@ -385,7 +385,7 @@ class Bot (Widget):
                
                 
             if command_ok:     
-                self.log("\n[color=#800000]Executing [b]")           
+                self.log("\n[color=#D03030]Executing [b]")           
                 match command[0]:                    
                     case "M":         
                         self.log("M")
