@@ -13,8 +13,6 @@ from kivy.properties import NumericProperty, ObjectProperty
 from configs.app_config import config
 
 
-
-
 class Bot (Widget):
     """This class models a game bot.
 
@@ -371,7 +369,7 @@ class Bot (Widget):
         
         
         self.last_llm_response = result.get("response", "").strip()  
-        self.log(f"\n[b]        LLM says:[/b] {self.last_llm_response}")
+        self.log(f"\n[b]LLM Response:[/b]\n----------------------\n{self.last_llm_response}\n----------------------\n")
         cmd = self.last_llm_response
       
             

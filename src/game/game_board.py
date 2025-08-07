@@ -398,8 +398,8 @@ class GameBoard(Widget, EventDispatcher):
                 show_fading_alert(
                     f"Round {self.current_round} is over",
                     round_res,
-                    duration=0.6,
-                    fade_duration=0.5,
+                    duration=1,
+                    fade_duration=.8,
                 )
 
             return 
@@ -418,7 +418,7 @@ class GameBoard(Widget, EventDispatcher):
         """Ends the game and displays the final results."""
         round_res = "Final Results:\n\n"
         for b in self.bots:
-            round_res += f"        Bot {b.id}'s health: {b.health}\n"
+            round_res += f"Bot {b.id}'s health: {b.health}\n"
 
         popup = Popup(
             title="Game Over",

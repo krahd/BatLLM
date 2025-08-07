@@ -6,6 +6,16 @@
 
 # User Guide
 
+## Mini Demo
+
+The screen recording below shows the basic interaction flow: players input a prompt and submit it to their bot. When both players have done so a new round begins.
+
+Prompts can be loaded and saved to the filesystem (they are jsut text files), or can be fetched from the bot's history of submitted prompts. 
+
+To see actual I/O with the LLM you can open the History Screen, and to change the game's parameter you can use the Settings Screen.
+
+![Demo Gif](./screenshots/quick_demo.gif)
+
 ## Game Flow and Rules
 
 A match consists of one or more rounds; each round consists of several turns. The game flow is as follows:
