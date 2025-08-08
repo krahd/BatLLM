@@ -51,7 +51,7 @@ When contributing, ensure that any new dependencies are necessary and cross-plat
 
 * **Arena Rendering:** The game uses a custom `NormalizedCanvas` context, meaning all coordinates for drawing are in the range 0.0–1.0 (where (0,0) corresponds to the top-left of the arena and (1,1) the bottom-right). This makes it easy to think about positions without worrying about pixels or aspect ratio. The arena is drawn as a square within the window with some padding. Bot coordinates (`x`, `y`) are floats in \[0,1], and a bot’s size (`diameter`) is also a fraction of the arena size.
 
-* **Bot Representation:** Bots are drawn as circles with a line indicating facing direction. Each bot also has a small on-screen text box attached that shows its current `x`, `y`, `rot` (rotation angle in degrees), shield status, and health. This updates in real time so players and observers can see the state without parsing logs.
+* **Bot Representation:** Bots are drawn as circles with a line indicating facing direction. Each bot also has a small on-screen text box attached that shows its current `x`, `y`, `rot` (rotation angle in radians), shield status, and health. This updates in real time so players and observers can see the state without parsing logs.
 
 * **LLM Communication:** Communication with the LLMs is done via HTTP requests. The `Bot` class uses `kivy.network.urlrequest.UrlRequest` to send a POST to the configured endpoint with a JSON payload. For Ollama, the payload looks like:
 

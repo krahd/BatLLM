@@ -1,0 +1,1 @@
+Return a random but valid command, that is, either "M", "R.4", "S0", "B". Only one of those 4, withoutthe ". Exatly that, verbatim, it'll be parsed by a strict parser.

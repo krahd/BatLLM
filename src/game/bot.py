@@ -142,7 +142,7 @@ class Bot (Widget):
         Line (points=(0, 0, r, 0), width=0.002)
 
         # shield
-        if self.shield:
+        if self.shield:  # TODO make sure the shield_range is in radians and not degrees
             Color(.7, .5, 1, 1)            
             Color(.3,.3,.6,1)
             Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) 
@@ -375,7 +375,7 @@ class Bot (Widget):
         """Error handler for HTTP errors 4xx, 5xx
 
         Args:
-            request (_type_): the request objevt
+            request (_type_): the request object
             error (_type_): the error obtained
         """        
         
