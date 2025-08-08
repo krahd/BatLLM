@@ -42,8 +42,8 @@ Between rounds, players have the opportunity to adjust their strategy by writing
 
 | Code   | Action                                                                    | Example | Notes                               |
 |--------|---------------------------------------------------------------------------|---------|-------------------------------------|
-| `Cd`   | Rotate **clockwise** by `d` degrees.                                      | `C20`   | e.g. `C180` for 180° clockwise      |
-| `Ad`   | Rotate **anticlockwise** by `d` degrees.                                 | `A40`   | e.g. `A90` for 90° left             |
+| `Cnnn`   | Rotate **clockwise** by `nnn` radians.                                      | `C20`   | e.g. `C3.14` for 3.14 radians (~180°)clockwise      |
+| `Annn`   | Rotate **anticlockwise** by `nnn` radians.                                 | `A40`   | e.g. `A2` for 2 radians left             |
 | `M`    | Move ahead by one step (`STEP_LENGTH`).                                   | `M`     | One forward move per command        |
 | `S1`   | **Raise shield**. Remains up until changed.                               | `S1`    |                                     |
 | `S0`   | **Lower shield**. Remains down until changed.                             | `S0`    |                                     |
@@ -85,7 +85,7 @@ game:
   initial_health: 42
   prompt_augmentation: false
   shield_initial_state: true
-  shield_size: 35
+  shield_size: 35 
   step_length: 0.02
   total_rounds: 3
   turns_per_round: 20
