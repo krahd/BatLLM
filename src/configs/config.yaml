@@ -10,7 +10,7 @@ game:
   shield_size: 64
   step_length: 0.02
   total_rounds: 3
-  turns_per_round: 31
+  turns_per_round: 13
 llm:
   augmentation_header_file: src/assets/prompts/augmentation_header.txt
   path: /api/generate
