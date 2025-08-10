@@ -35,7 +35,7 @@ class Bot (Widget):
     agmenting_prompt = None
     
     llm_endpoint = None
-    shield_range = None
+    shield_range_deg = None
     step = None
     diameter = None
     color = None
@@ -82,7 +82,7 @@ class Bot (Widget):
         
         self.diameter = config.get("game", "bot_diameter")  
         self.shield = config.get("game", "shield_initial_state") 
-        self.shield_range = config.get("game", "shield_size") 
+        self.shield_range_deg = config.get("game", "shield_size") 
         self.health = config.get("game", "initial_health")
         self.step = config.get("game", "step_length") 
 
@@ -142,10 +142,10 @@ class Bot (Widget):
         Line (points=(0, 0, r, 0), width=0.002)
 
         # shield
-        if self.shield:  # TODO make sure the shield_range is in radians and not degrees
+        if self.shield:  
             Color(.7, .5, 1, 1)            
             Color(.3,.3,.6,1)
-            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) 
+            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range_deg, 90 + self.shield_range_deg), width=0.007)  # shield_rance is in degrees
         
         PopMatrix()
 
@@ -165,8 +165,9 @@ class Bot (Widget):
         Color (1, 1, 1, .6)
         Rectangle(pos=(sx, sy), size=(.107, .116))
 
-        t = "x: {:.2f}\ny: {:.2f}\nrot: {:.2f}°\nshield: {}\nhealth: {}".format(
-            self.x, self.y, math.degrees(self.rot), "ON" if self.shield else "OFF", self.health)
+        t = "x: {:.3f}\ny: {:.3f}\nrot: {:1.2f}r / {:3f}d\nshield: {}\nhealth: {}".format(
+            self.x, self.y, self.rot, math.degrees(self.rot), "ON" if self.shield else "OFF", self.health)
+        
         
         Color (0, 0, 0, .7)
         mylabel = Label(text=t, font_size=24, color=(0, 0, 0, .7))
@@ -187,7 +188,6 @@ class Bot (Widget):
         self.x += self.step * cos(self.rot)
         self.y += self.step * sin(self.rot)
         # print(f"Bot moved to position: ({self.x}, {self.y})")   
-
 
 
     
