@@ -91,7 +91,8 @@ class HistoryManager:
 	def start_round(self, game):
 		"""
 		Start a new round within the current session. Should be called at the beginning of each round.
-		Records the round start and the initial state at this point.
+		Starts a new round, storing the round number, the prompts,
+		Records the round start and the initial state at this point, including the round prompts, 
 
 		Args:
 			game (_type_): _description_
@@ -113,7 +114,7 @@ class HistoryManager:
 		self.current_round = {
 			"round": round_number,
 			"start_time": self._now_iso(),
-			"initial_state": {},  # TODO ponder if we want this            
+			"initial_state": {}, 
 			"turns": []
 		}
 		

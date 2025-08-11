@@ -110,6 +110,7 @@ Configuration Options include:
 	- **shield_size:** how long the shield extends *from the bot's front **in each direction**.*
 	- **step_length:** how long a single M command moves the bot.
 	- **total_rounds:** in a game
+    # TODO add bullet damage.
   **llm:**
 	- **augmentation_header_file:** is a text file that is inserted at the top of *every  prompt* when playing with augmentation on.
 	- **path:** of the LLM endpoint 

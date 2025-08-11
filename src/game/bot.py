@@ -40,11 +40,8 @@ class Bot (Widget):
     diameter = None
     color = None
 
-    last_llm_response = None  
-
-    simple_log = ""
+    last_llm_response = None      
         
-
 
     def __init__(self, id, board_widget, **kwargs):
         """Constructor
@@ -91,32 +88,8 @@ class Bot (Widget):
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 2 * math.pi)           
                 
-        self.simple_log = ""
-        #self.log(
-        #    f"Bot {self.id} pos: ({self.x:.2f}, {self.y:.2f}); rot: {math.degrees(self.rot):.2f}°"
-        #)
+      
 
-
-
-    def log (self, message):
-        """Adds a message to the bot's log.
-        
-        Args:
-            message (_type_): the message to log
-        """
-        #self.simple_log += f"{message.strip()}\n"
-        self.simple_log += message.rstrip("\n")
-        # TODO if getconfig verbose = true then print(f"{[self.id]} {message})
-
-
-
-    def getLog(self):
-        """Returns the bot's log.
-        
-        Returns:
-            _type_: the bot's log
-        """
-        return self.simple_log.strip() 
 
 
 
@@ -130,7 +103,7 @@ class Bot (Widget):
         PushMatrix()
         Translate(self.x, self.y)
         
-        Rotate(math.degrees(self.rot), 0, 0, 1)
+        Rotate(math.degrees(self.rot), 0, 0, 1) # change all rot to degrees
 
         Color(*self.color) # fill
         Ellipse(pos=(-r, -r), size=(d, d))
@@ -145,7 +118,7 @@ class Bot (Widget):
         if self.shield:  
             Color(.7, .5, 1, 1)            
             Color(.3,.3,.6,1)
-            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range_deg, 90 + self.shield_range_deg), width=0.007)  # shield_rance is in degrees
+            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range_deg, 90 + self.shield_range_deg), width=0.007)  # shield_range is in degrees
         
         PopMatrix()
 
@@ -165,7 +138,7 @@ class Bot (Widget):
         Color (1, 1, 1, .6)
         Rectangle(pos=(sx, sy), size=(.107, .116))
 
-        t = "x: {:.3f}\ny: {:.3f}\nrot: {:1.2f}r / {:3f}d\nshield: {}\nhealth: {}".format(
+        t = "x: {:.3f}\ny: {:.3f}\nrot: {:1.2f}r / {:3.0f}d\nshield: {}\nhealth: {}".format(
             self.x, self.y, self.rot, math.degrees(self.rot), "ON" if self.shield else "OFF", self.health)
         
         
@@ -187,7 +160,7 @@ class Bot (Widget):
         """        
         self.x += self.step * cos(self.rot)
         self.y += self.step * sin(self.rot)
-        # print(f"Bot moved to position: ({self.x}, {self.y})")   
+        
 
 
     
@@ -246,6 +219,7 @@ class Bot (Widget):
         return res
 
 
+
     def get_current_prompt(self):
         """Returns the current prompt. It is equivalent to get_prompt.
 
@@ -253,6 +227,7 @@ class Bot (Widget):
             _type_: a string with the prompt
         """        
         return self.get_current_prompt_from_history()    
+
 
 
     def get_prompt(self):         
@@ -269,10 +244,10 @@ class Bot (Widget):
 
         Args:
             augmenting (_type_): the new flag value
-        """        
-        
+        """                
         self.agmenting_prompt = augmenting
                 
+
 
     def prepare_prompt_submission(self, new_prompt):
         """Gets ready to execute
@@ -291,7 +266,7 @@ class Bot (Widget):
         headers = {"Content-Type": "application/json"}
         
         data = {
-            "model": "llama3.2:latest",  # TODO get this from config
+            "model": "llama3.2:latest",  # TODO get this from config or from game board
             "prompt": "",
             "stream": False # TODO get this from config
         }
@@ -317,46 +292,7 @@ class Bot (Widget):
             data["prompt"] += "PLAYER_INPUT:\n"
             
         data["prompt"] += self.get_current_prompt() + "\n"                        
-        self.log(f"\n\n................................................................................\n\n[b]Prompt:[/b]\n>>\n{self.get_current_prompt()}\n<<\n\n")  
-        #TODO check if it's not better to print the prompt once and then the responses and commands, with turn number. Something like:
-        '''
-        Prompt:
-        >>>
-        Do this and that, then the other.
-        If you can, do this.
-        If you can't, do that.
-        <<<
-
-        Turn 1:
-        LLM:
-        >>>
-        M
-        <<<
-        Command: M
-
-        Turn 2:
-        LLM:
-        >>>
-        Whatever
-        <<<
-        Command: ERR
-
-        Turn 3:
-        LLM:
-        >>>
-        C45
-        <<<
-        Command: C 45
-
-
-        Think
-        
-
-
-
-        
-        
-        '''      
+       
         
         UrlRequest(
             url = self.llm_endpoint,
@@ -379,7 +315,7 @@ class Bot (Widget):
             error (_type_): the error obtained
         """        
         
-        self.log(f"LLM request failed: {error}")                
+        // self.log(f"LLM request failed: {error}")                
         self.board_widget.on_bot_llm_interaction_complete(self) 
 
 
@@ -392,7 +328,7 @@ class Bot (Widget):
             error (_type_): the error obtained
         """        
          
-        self.log(f"Error during LLM request: {error}")                 
+        //self.log(f"Error during LLM request: {error}")                 
         self.board_widget.on_bot_llm_interaction_complete(self)  
                 
                  
@@ -408,7 +344,7 @@ class Bot (Widget):
         
         
         self.last_llm_response = result.get("response", "").strip()  
-        self.log(f"\n\n[b]LLM Response:[/b]\n>>\n{self.last_llm_response}\n<<\n")
+       
         cmd = self.last_llm_response
       
             
@@ -426,55 +362,42 @@ class Bot (Widget):
             if command_ok:     
                            
                 match command[0]:                    
-                    case "M":         
-                        self.log("\n\n[color=#308030][b]Executing ")
-                        self.log("M")
+                    case "M":                                 
                         self.board_widget.add_llm_response_to_history(self.id, "M")        
                         self.move()
                                                         
                     case "C":
-                        self.log("\n\n[color=#308030][b]Executing ")
                         angle = float(command[1:])
-                        self.log(f"C[/b] with angle [b]{angle}")    
                         self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")                        
                         self.rotate(angle)
 
                     case "A":
-                        self.log("\n\n[color=#308030][b]Executing ")
                         angle = float(command[1:])
-                        self.log(f"A[/b] with angle [b]{angle}")
                         self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")                        
                         self.rotate(-angle)
 
                     case "B":
-                        self.log("\n\n[color=#308030][b]Executing ")                                           
-                        self.log("B")                            
                         self.board_widget.shoot(self.id)  
                         self.board_widget.add_llm_response_to_history(self.id, "B")
 
                         
                     case "S":
-                        self.log("\n\n[color=#308030][b]Executing ")
                         if len(command) == 1:                        
-                            self.log("S")
                             self.board_widget.add_llm_response_to_history(self.id, "S")
                             self.toggle_shield()
                             
                         else:
                             if command[1] == "1":
-                                self.log("S1")
                                 self.board_widget.add_llm_response_to_history(self.id, "S1")
                                 self.shield = True
 
                             elif command[1] == "0":
-                                self.log("S0")
                                 self.board_widget.add_llm_response_to_history(self.id, "S0")
                                 self.shield = False
                             else:
                                 command_ok = False
                     case _:
                         command_ok = False
-                self.log("[/b][/color]\n")
                         
      
         except Exception as e:
