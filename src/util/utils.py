@@ -18,17 +18,14 @@ def find_id_in_parents(searcher, target_id):
 
     Returns:
         _type_: the found object or None
-    """    
+    """
 
-    
     parent = searcher.parent
     while parent:
-        if hasattr(parent, 'ids') and target_id in parent.ids:
+        if hasattr(parent, "ids") and target_id in parent.ids:
             return parent.ids[target_id]
         parent = parent.parent
     return None
-
-
 
 
 def tame_color(color, desaturation=0.0, lighten=0.0):
@@ -53,16 +50,10 @@ def tame_color(color, desaturation=0.0, lighten=0.0):
     return (r_out, g_out, b_out)
 
 
-
-
-
-
-
-
 # ------ Dialogs ------------------------------------------
 
 
-def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
+def show_confirmation_dialog(title, message, on_confirm, on_cancel=None):
     """
     Displays a modal confirmation dialog with a title and message.
 
@@ -70,18 +61,18 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
         title (_type_): the title of the dialog
         message (_type_): the message to display in the dialog
         on_confirm (_type_): function to call when the user confirms
-        on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.    
-    """    
+        on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
+    """
 
-    content = BoxLayout(orientation='vertical', spacing=10, padding=10)
+    content = BoxLayout(orientation="vertical", spacing=10, padding=10)
 
-    label = Label(text=message, halign='center')
+    label = Label(text=message, halign="center")
     content.add_widget(label)
 
     button_box = BoxLayout(size_hint_y=0.5, spacing=10)
 
-    yes_button = Button(text='Yes')
-    no_button = Button(text='No')
+    yes_button = Button(text="Yes")
+    no_button = Button(text="No")
 
     button_box.add_widget(yes_button)
     button_box.add_widget(no_button)
@@ -92,9 +83,9 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
     h = 400 + 20 * len(message.splitlines())
 
     def confirm(*args):
-        print ("dos ")
+        print("dos ")
         if on_confirm:
-            print ("tres")  
+            print("tres")
             on_confirm()
         popup.dismiss()
 
@@ -103,15 +94,18 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel = None):
             on_cancel()
         popup.dismiss()
 
-    popup = Popup(title=title, content=content,
-                size_hint=(None, None), size=(w, h),
-                auto_dismiss=False)
+    popup = Popup(
+        title=title,
+        content=content,
+        size_hint=(None, None),
+        size=(w, h),
+        auto_dismiss=False,
+    )
 
     yes_button.bind(on_release=confirm)
     no_button.bind(on_release=cancel)
-    
-    popup.open()
 
+    popup.open()
 
 
 def show_fading_alert(title, message, duration=1.5, fade_duration=2.0):
@@ -123,18 +117,18 @@ def show_fading_alert(title, message, duration=1.5, fade_duration=2.0):
         message (_type_): the message to display in the alert
         duration (float, optional): How long does it take for the alert to start fading out. Defaults to 1.0.
         fade_duration (float, optional): How long does the fade out process take. Defaults to 1.0.
-    """    
-    content = BoxLayout(orientation='vertical', spacing=10, padding=10)
-    
-    label = Label(text=message, halign='center')
+    """
+    content = BoxLayout(orientation="vertical", spacing=10, padding=10)
+
+    label = Label(text=message, halign="center")
     content.add_widget(label)
 
     w = 400 + 20 * max(len(line) for line in message.splitlines())
     h = 400 + 20 * len(message.splitlines())
-    
-    popup = Popup(title=title, content=content,
-                size_hint=(None, None), size=(w, h),
-                opacity=1)
+
+    popup = Popup(
+        title=title, content=content, size_hint=(None, None), size=(w, h), opacity=1
+    )
 
     def fade_and_close(*args):
         anim = Animation(opacity=0, duration=fade_duration)
@@ -145,28 +139,39 @@ def show_fading_alert(title, message, duration=1.5, fade_duration=2.0):
     Clock.schedule_once(fade_and_close, duration)
 
 
-
-
-
-def show_text_input_dialog(on_confirm, on_cancel=None, title="", message="", default_text="", input_hint="Enter a text"):
+def show_text_input_dialog(
+    on_confirm,
+    on_cancel=None,
+    title="",
+    message="",
+    default_text="",
+    input_hint="Enter a text",
+):
     """
     A modal dialog for the user to enter a text input.
-    
+
     Args:
         on_confirm (_type_): function to call when the user confirms the filename
         on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
         title (str, optional): title of the dialog. Defaults to "".
         default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
         input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". It is only visible if the default value is empty
-    """    
-    
-    layout = BoxLayout(orientation='vertical', spacing=25, padding=10)
+    """
 
-    input_field = TextInput(hint_text=input_hint, multiline = False, height=50)
+    layout = BoxLayout(orientation="vertical", spacing=25, padding=10)
+
+    input_field = TextInput(hint_text=input_hint, multiline=False, height=50)
     input_field.font_size = 40
     input_field.text = default_text
-    
-    message_label = Label(text=message, size_hint_y=None, height=120, font_size=40, halign='center', valign='middle')
+
+    message_label = Label(
+        text=message,
+        size_hint_y=None,
+        height=120,
+        font_size=40,
+        halign="center",
+        valign="middle",
+    )
 
     layout.add_widget(message_label)
     layout.add_widget(input_field)
@@ -175,10 +180,16 @@ def show_text_input_dialog(on_confirm, on_cancel=None, title="", message="", def
     btn_ok = Button(text="Save")
     btn_cancel = Button(text="Cancel")
 
-    popup = Popup(title=title, content=layout, size_hint=(None, None), size=(800, 600), auto_dismiss=False)
+    popup = Popup(
+        title=title,
+        content=layout,
+        size_hint=(None, None),
+        size=(800, 600),
+        auto_dismiss=False,
+    )
 
     def confirm_action(*args):
-        value = input_field.text.strip()       
+        value = input_field.text.strip()
         if value:
             popup.dismiss()
             on_confirm(value)

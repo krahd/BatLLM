@@ -1,25 +1,22 @@
+import os
 import random
+import sys
 
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
+from kivy.event import EventDispatcher
 from kivy.graphics import Color, Ellipse, Line, Rectangle
 from kivy.properties import NumericProperty
-from kivy.uix.widget import Widget
-
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-
-from util.normalized_canvas import NormalizedCanvas
-import os
+from kivy.uix.widget import Widget
 
 from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
-from util.utils import show_fading_alert, find_id_in_parents
-from kivy.event import EventDispatcher
-import sys
-
+from util.normalized_canvas import NormalizedCanvas
+from util.utils import find_id_in_parents, show_fading_alert
 
 
 class GameBoard(Widget, EventDispatcher):
@@ -42,9 +39,6 @@ class GameBoard(Widget, EventDispatcher):
     games_started = NumericProperty(0)  # Count of games started in this session
     shuffled_bots = None
     history_manager = None
-
-
-
 
     def __init__(self, **kwargs):
         """Constructor"""
@@ -71,9 +65,6 @@ class GameBoard(Widget, EventDispatcher):
         # Render loop
         Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate"))
 
-
-
-
     def on_current_turn(self, instance, value):
         """Callback for current_turn property change.
         It updates the title label with the new turn information.
@@ -83,9 +74,6 @@ class GameBoard(Widget, EventDispatcher):
                 value (_type_): The new value of the current_turn property.
         """
         self.update_title_label()
-
-
-
 
     def on_current_round(self, instance, value):
         """Callback for current_round property change.
@@ -97,9 +85,6 @@ class GameBoard(Widget, EventDispatcher):
         """
         self.update_title_label()
 
-
-
-
     def on_games_started(self, instance, value):
         """Callback for games_started property change.
         It updates the title label with the new game count.
@@ -110,9 +95,6 @@ class GameBoard(Widget, EventDispatcher):
         """
         self.update_title_label()
 
-
-
-
     def start_new_game(self):
         """Starts a new game. It resets all the information pertaining to the previous game."""
         # reset values
@@ -121,7 +103,7 @@ class GameBoard(Widget, EventDispatcher):
         self.shuffled_bots = None
 
         # Create two bot instances with reference to this GameBoard
-        self.bots = [Bot(id=i, board_widget=self) for i in range(1, 3)]
+        self.bots = [Bot(bot_id=i, board_widget=self) for i in range(1, 3)]
 
         if self.games_started > 0:
             for b in self.bots:
@@ -132,9 +114,6 @@ class GameBoard(Widget, EventDispatcher):
 
         self.games_started += 1
         self.history_manager.start_game(self)
-
-
-
 
     def save_session(self, filename):
         """Upon user confirmation it asks the HistoryManager to save all the session information recorded until this moment.
@@ -153,9 +132,6 @@ class GameBoard(Widget, EventDispatcher):
         print(
             self.history_manager.to_text()
         )  # TODO After designing a new a screen to display the history. The screen's data will be updated here. Meanwhile the history as string is printed directly on the terminal.
-        
-
-
 
     def on_kv_post(self, base_widget):
         """This method is called after the KV rules have been applied
@@ -168,9 +144,6 @@ class GameBoard(Widget, EventDispatcher):
         Clock.schedule_once(
             lambda dt: self.start_new_game(), 0
         )  # Start a new game after the KV rules have been applied
-        
-
-
 
     def _keyboard_closed(self):
         """virtual keyboard closed handler. It has no use in a desktop app."""
@@ -178,14 +151,9 @@ class GameBoard(Widget, EventDispatcher):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
-
-
     def _redraw(self, *args):
         """Refreshes the screen by calling render()"""
         self.render()
-        
-
-
 
     def render(self, *args):
         """Draws the game world in its current state.
@@ -226,9 +194,6 @@ class GameBoard(Widget, EventDispatcher):
                     self.bullet_alpha -= 0.0015  # Decrease alpha for fading effect
                 else:
                     self.bulletTrace.clear()
-                    
-
-
 
     def on_touch_down(self, touch):
         """Mouse click and touch event handler - it does nothing as of now.
@@ -242,13 +207,10 @@ class GameBoard(Widget, EventDispatcher):
 
         if self.collide_point(touch.x, touch.y):
             nx, ny = NormalizedCanvas.to(self, touch.x, touch.y)
-            self._grab_keyboard() # get the keyboard back 
+            self._grab_keyboard()  # get the keyboard back
             return True
 
         return super().on_touch_down(touch)
-    
-
-
 
     def on_touch_move(self, touch):
         """Mouse drag and finger drag event handler - it does nothing as of now.
@@ -264,9 +226,6 @@ class GameBoard(Widget, EventDispatcher):
             return True
 
         return super().on_touch_move(touch)
-    
-
-
 
     def add_text_to_llm_response_history(self, bot_id, text):
         """Adds the text to the output history box next to the bot's prompt input.
@@ -284,14 +243,12 @@ class GameBoard(Widget, EventDispatcher):
             scroll = find_id_in_parents(self, f"scroll_output_history_player_{bot_id}")
             lbl = find_id_in_parents(self, f"output_history_player_{bot_id}")
             n_lines = lbl.text.count("\n")
-            if n_lines > 20:            
-                Clock.schedule_once(lambda dt: setattr(scroll, "scroll_y", 0), 0)   # TODO fix this, it runs glitchy
+            if n_lines > 20:
+                Clock.schedule_once(
+                    lambda dt: setattr(scroll, "scroll_y", 0), 0
+                )  # TODO fix this, it runs glitchy
         else:
             print(f"Could not find output history box for bot_id: {bot_id}")
-            
-
-
-
 
     def add_llm_response_to_history(self, bot_id, command):
         """Adds the command parsed from the llm response to the output history next to the history widget.
@@ -302,9 +259,6 @@ class GameBoard(Widget, EventDispatcher):
         """
         text = f"[color=#000000]{self.current_turn} - {command}[/color]\n"
         self.add_text_to_llm_response_history(bot_id, text)
-        
-
-
 
     def submit_prompt(self, bot_id, new_prompt):
         """Tells the bot with bot_id to start working on submitting the new_prompt to the llm
@@ -320,8 +274,6 @@ class GameBoard(Widget, EventDispatcher):
 
         if all(b.ready_for_next_round for b in self.bots):
             self.play_round()
-
-
 
     def play_round(self):
         """It runs recursively taking care of a complete game round"""
@@ -348,9 +300,6 @@ class GameBoard(Widget, EventDispatcher):
 
         self.play_turn(0)
         self.history_manager.end_turn(self)
-        
-
-
 
     def game_is_over(self):
         """Checks if the game is over.
@@ -375,10 +324,8 @@ class GameBoard(Widget, EventDispatcher):
             dt (_type_): it is not used yet can't be deleted.
         """
 
-        if not self.current_turn < config.get(
-            "game", "turns_per_round"
-        ):              
-			# round's over            
+        if not self.current_turn < config.get("game", "turns_per_round"):
+            # round's over
             self.history_manager.end_round(self)
             for b in self.bots:
                 self.add_text_to_llm_response_history(b.id, "\n\n")
@@ -399,20 +346,17 @@ class GameBoard(Widget, EventDispatcher):
                     f"Round {self.current_round} is over",
                     round_res,
                     duration=1,
-                    fade_duration=.8,
+                    fade_duration=0.8,
                 )
 
-            return 
-        
+            return
 
-		# round's not over, so we continue with the next turn
+        # round's not over, so we continue with the next turn
         self.update_title_label()
         self.history_manager.start_turn(self)
         for b in self.shuffled_bots:
             b.ready_for_next_turn = False
             b.submit_prompt_to_llm()
-            
-
 
     def end_game(self):
         """Ends the game and displays the final results."""
@@ -446,24 +390,17 @@ class GameBoard(Widget, EventDispatcher):
 
             game_title_label.text += "[/size]"
 
-
-
-
     def on_bot_llm_interaction_complete(self, bot):
         """Callback method executed after a prompt-response cycle has been completed by a bot
 
         Args:
-                bot (_type_): the bot 
+                bot (_type_): the bot
         """
 
-    
         if all(b.ready_for_next_turn for b in self.bots):
             self.current_turn += 1
             self.history_manager.end_turn(self)
             Clock.schedule_once(self.play_turn, 0)
-
-
-
 
     def get_bot_by_id(self, id):
         """Returns the bot instance with the specified ID.
@@ -475,9 +412,6 @@ class GameBoard(Widget, EventDispatcher):
             if bot_instance.id == id:
                 return bot_instance
         return None
-
-
-
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """Keyboard handler for the game board. It is used for debug and testing purposes alone.
@@ -560,10 +494,6 @@ class GameBoard(Widget, EventDispatcher):
                 self.end_game()
                 self.start_new_game()
 
-
-
-
-
     def _grab_keyboard(self):
         """Request the keyboard and bind our handler."""
         if self._keyboard is None:
@@ -574,10 +504,6 @@ class GameBoard(Widget, EventDispatcher):
             )
             if self._keyboard:
                 self._keyboard.bind(on_key_down=self._on_keyboard_down)
-
-
-
-
 
     def _on_keyboard_closed(self):
         """Unbind and drop reference when keyboard is released."""
