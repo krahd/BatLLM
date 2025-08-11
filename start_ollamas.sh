@@ -1,9 +1,8 @@
 #!/bin/bash
-
-
-# This script starts two instances of Ollama on different ports.
+# Starts three instances of Ollama on different ports.
 
 # Set ports
+PORT0=5000
 PORT1=5001
 PORT2=5002
 
@@ -16,7 +15,11 @@ start_ollama_instance() {
 }
 
 # Start both instances
+start_ollama_instance $PORT0    
 start_ollama_instance $PORT1
 start_ollama_instance $PORT2
 
-echo "Both Ollama instances launched."
+
+# Abusive
+echo "Three Ollama instances launched! "
+echo "Ports: $PORT0, $PORT1, $PORT2"

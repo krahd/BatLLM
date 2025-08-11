@@ -129,10 +129,6 @@ class GameBoard(Widget, EventDispatcher):
         self.history_manager.save_session(filepath)
         print("done")
 
-        print(
-            self.history_manager.to_text()
-        )  # TODO After designing a new a screen to display the history. The screen's data will be updated here. Meanwhile the history as string is printed directly on the terminal.
-
     def on_kv_post(self, base_widget):
         """This method is called after the KV rules have been applied
 
@@ -146,8 +142,8 @@ class GameBoard(Widget, EventDispatcher):
         )  # Start a new game after the KV rules have been applied
 
     def _keyboard_closed(self):
-        """virtual keyboard closed handler. It has no use in a desktop app."""
-        print("keyboard have been closed!")
+        """virtual keyboard closed handler. Unbinds the listener."""
+
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
@@ -157,9 +153,11 @@ class GameBoard(Widget, EventDispatcher):
 
     def render(self, *args):
         """Draws the game world in its current state.
-        It uses NormalizedCanvas instead of Kivy's standard canvas to simplfy drawing.
-        # TODO improve the game graphics
+        It uses a NormalizedCanvas for drawing.
         """
+        # TODO improve the game graphics
+
+        # Clear the canvas before drawing
         self.canvas.clear()
 
         # keep bots inside bounds
@@ -196,7 +194,8 @@ class GameBoard(Widget, EventDispatcher):
                     self.bulletTrace.clear()
 
     def on_touch_down(self, touch):
-        """Mouse click and touch event handler - it does nothing as of now.
+        """
+        If the gameboard is clicked on, it grabs the keyboard focus.
 
         Args:
                 touch (_type_): touch event
@@ -213,7 +212,7 @@ class GameBoard(Widget, EventDispatcher):
         return super().on_touch_down(touch)
 
     def on_touch_move(self, touch):
-        """Mouse drag and finger drag event handler - it does nothing as of now.
+        """Mouse drag event handler. Not used.
         Args:
                 touch (_type_): touch event
 
@@ -228,7 +227,8 @@ class GameBoard(Widget, EventDispatcher):
         return super().on_touch_move(touch)
 
     def add_text_to_llm_response_history(self, bot_id, text):
-        """Adds the text to the output history box next to the bot's prompt input.
+        """
+        Adds the text to the output history box next to the bot's prompt input.
 
         Args:
                 bot_id (_type_): bot id
@@ -243,26 +243,29 @@ class GameBoard(Widget, EventDispatcher):
             scroll = find_id_in_parents(self, f"scroll_output_history_player_{bot_id}")
             lbl = find_id_in_parents(self, f"output_history_player_{bot_id}")
             n_lines = lbl.text.count("\n")
-            if n_lines > 20:
-                Clock.schedule_once(
-                    lambda dt: setattr(scroll, "scroll_y", 0), 0
-                )  # TODO fix this, it runs glitchy
+
+            if (
+                n_lines > 20
+            ):  # After the first 20 liines, we scroll to the bottom every time we add a new line
+                Clock.schedule_once(lambda dt: setattr(scroll, "scroll_y", 0), 0)
         else:
-            print(f"Could not find output history box for bot_id: {bot_id}")
+            print(f"ERROR: Could not find output history box for bot_id: {bot_id}")
 
     def add_llm_response_to_history(self, bot_id, command):
-        """Adds the command parsed from the llm response to the output history next to the history widget.
+        """
+        Appends the result of parsing the llm's response to the
+        scrollable label in the home_screen that each player has
 
         Args:
                 bot_id (_type_): bot id
-                command (_type_): the command to add
+                command (_type_): correct llm responses parse into commands
         """
         text = f"[color=#000000]{self.current_turn} - {command}[/color]\n"
         self.add_text_to_llm_response_history(bot_id, text)
 
     def submit_prompt(self, bot_id, new_prompt):
-        """Tells the bot with bot_id to start working on submitting the new_prompt to the llm
-        If all the bots have submitted a new prompt, it starts the next round.
+        """Tells the bot with bot_id to submit its promt for the coming round.
+        If both bots have submitted, it starts the next turn.
 
         Args:
                 bot_id (_type_): the bot id
@@ -275,13 +278,13 @@ class GameBoard(Widget, EventDispatcher):
         if all(b.ready_for_next_round for b in self.bots):
             self.play_round()
 
-    def play_round(self):
-        """It runs recursively taking care of a complete game round"""
+        # If we are here then we are the first one.
         self.current_turn = 0
 
         if self.current_round is None:
             self.current_round = 0
 
+        # We count the round
         self.current_round += 1
 
         for b in self.bots:
@@ -290,14 +293,17 @@ class GameBoard(Widget, EventDispatcher):
             )
             b.ready_for_next_round = False  # need a new prompt for a new round
 
-        # shuffle bots for this coming round
+        # Randomise the order of playinng turns.
         self.shuffled_bots = random.sample(self.bots, 2)
 
         for b in self.bots:
             b.log(f"\n[b][size=20sp]Round {self.current_round}[/size][/b]")
 
+        # if we made it here, then we are done with the round. Let's start the next one
+
         self.history_manager.start_round(self)
 
+        # Like with turns, we play turns recursively.
         self.play_turn(0)
         self.history_manager.end_turn(self)
 
@@ -305,7 +311,7 @@ class GameBoard(Widget, EventDispatcher):
         """Checks if the game is over.
 
         Returns:
-                _type_: true iff the game is over (either only one bot is alive, no bot is or the max number if rounds has been met)
+                _type_: true iff the game is over
         """
 
         for b in self.bots:
@@ -318,10 +324,11 @@ class GameBoard(Widget, EventDispatcher):
         return False
 
     def play_turn(self, dt):
-        """Executes one turn
+        """Executes one turn.
+        The game logic is implemented recursively,
 
         Args:
-            dt (_type_): it is not used yet can't be deleted.
+            dt (_type_): Time since last call. Kivy passes dt automatically to any callback scheduled with CLock.
         """
 
         if not self.current_turn < config.get("game", "turns_per_round"):
@@ -359,7 +366,9 @@ class GameBoard(Widget, EventDispatcher):
             b.submit_prompt_to_llm()
 
     def end_game(self):
-        """Ends the game and displays the final results."""
+        """
+        Ends the game and displays the final results.
+        """
         round_res = "Final Results:\n\n"
         for b in self.bots:
             round_res += f"Bot {b.id}'s health: {b.health}\n"
@@ -424,7 +433,7 @@ class GameBoard(Widget, EventDispatcher):
                 modifiers (_type_): the modifiers being pressed (shift, command, etc).
 
         Returns:
-                _type_: True # TODO check this.
+                _type_: True
         """
 
         if modifiers and "shift" in modifiers:

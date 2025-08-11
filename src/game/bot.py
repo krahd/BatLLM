@@ -36,7 +36,7 @@ class Bot(Widget):
     id = NumericProperty(0)
     x = NumericProperty(0)
     y = NumericProperty(0)
-    rot = NumericProperty(0)  # in radians
+    rot = NumericProperty(0)  # in degrees
     shield = ObjectProperty(None)
     health = NumericProperty(0)
     board_widget = ObjectProperty(None)
@@ -102,7 +102,7 @@ class Bot(Widget):
         # Randomly initialize position and rotation of each bot
         self.x = random.uniform(0, 1)
         self.y = random.uniform(0, 1)
-        self.rot = random.uniform(0, 2 * math.pi)
+        self.rot = random.uniform(0, 359)
 
     def render(self):
         """Draws itself. It assumes a NormalizedCanvas."""
@@ -266,11 +266,13 @@ class Bot(Widget):
             "stream": False,  # TODO get this from config
         }
 
-        # if so chosen we augment the prompt, kind of a RAG
+        # We augment the prompt if the flag is set
         if config.get("game", "prompt_augmentation"):
 
-            # we reload the prompt_augmentation_header in case it has changed
-            file = open(config.get("llm", "augmentation_header_file"), "r")
+            # To facilitate exploration and testing, we allow the header file to be changed on the fly, so we reload prompt_augmentation_header just in case
+            file = open(
+                config.get("llm", "augmentation_header_file"), "r", encoding="utf-8"
+            )
             hdr = file.read()
 
             file.close()

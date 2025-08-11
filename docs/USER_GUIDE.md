@@ -40,18 +40,20 @@ Between rounds, players have the opportunity to adjust their strategy by writing
 
 ## Bot Commands Reference
 
-| Code   | Action                                                                    | Example | Notes                               |
-|--------|---------------------------------------------------------------------------|---------|-------------------------------------|
-| `Cnnn`   | Rotate **clockwise** by `nnn` radians.                                      | `C20`   | e.g. `C3.14` for 3.14 radians (~180°)clockwise      |
-| `Annn`   | Rotate **anticlockwise** by `nnn` radians.                                 | `A40`   | e.g. `A2` for 2 radians left             |
-| `M`    | Move ahead by one step (`STEP_LENGTH`).                                   | `M`     | One forward move per command        |
-| `S1`   | **Raise shield**. Remains up until changed.                               | `S1`    |                                     |
-| `S0`   | **Lower shield**. Remains down until changed.                             | `S0`    |                                     |
-| `S`    | **Toggle shield**: raises if down, lowers if up.                          | `S`     |                                     |
-| `B`    | **Fire bullet** (if shield down). Does nothing if shield up.             | `B`     | Bullet direction: bot's facing      |
+| Code   | Action                                                                    | Example  |
+|--------|---------------------------------------------------------------------------|----------|
+| `C{angle}`   | **Rotate clockwise** by `angle` degrees.                                      | `C90`   | 
+| `Aangle`   | **Rotate anticlockwise** by `angle` degrees.                                 | `A45`   | 
+| `M`    | **Move forward** by one step (`STEP_LENGTH`).                                   | `M`     | 
+| `S1`   | **Raise shield**. Remains up until changed.                               | `S1`    |
+| `S0`   | **Lower shield**. Remains down until changed.                             | `S0`    |
+| `S`    | **Toggle shield**: raises if down, lowers if up.                          | `S`     |
+| `B`    | **Shoot**: If its shield is lowered, fires fires one bullet.             | `B`     |
 *Any other output from the LLM is interpreted as 'do nothing' this turn.*
 
 ## Modes and Variations
+
+<!--#TODO rewrite --> 
 
 * **Standard Mode:** Each player writes a prompt at the beginning of a round; both prompts are sent to their respective LLMs each turn of that round.
 * **Prompt Augmentation:** Optionally, the game augments the player's prompt with structured game state info (see [Prompt Augmentation](#prompt-augmentation)).
@@ -61,7 +63,6 @@ Between rounds, players have the opportunity to adjust their strategy by writing
   * *Single LLM:* Both prompts are handled by a single LLM (the same model) in each turn, which can be useful for lower resource usage or interesting interactions but may risk cross-talk between the two bots’ instructions.
 
 **Note:** There are **no** fully autonomous or AI-vs-AI modes. BatLLM is strictly human-vs-human; all gameplay decisions are made by human-written prompts, then carried out by LLMs. (However, a human player could conceivably write a prompt like *"Play both sides of the battle for me"* and observe what happens, for experimental purposes.)
-
 
 
 ## Configuration

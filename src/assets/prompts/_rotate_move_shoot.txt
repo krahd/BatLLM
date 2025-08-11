@@ -1,4 +1,30 @@
-If you are not pointing to your opponent, 
+Using your coordinates and rotation and your opponent's coordinates and rotation calculate if it would make sense to shoot.
+There are only two places where the oponent can be, p1: its current position or p2, at a distance of STEP_LENGTH in the directon of its rotation.
+Check whether a line from your position in the ditection of your rotation would intersect with a circle of radius bot.radius centered in p1 or in p2, and store the result in a boolean variable named "X1". Do the same but checking whether they would hit us, and store it in a boolean named X2.
+
+Now follow this decision table:
+
+X1 & H1 & !S1-> B
+X1 & H1 & !S1 & X1 -> S
+X1 & H1 & !S1 & X1 -> S1
+H1 & !S1 & X2 -> M
+H1 & !S1 & !X2 -> R
+H1 & S1
+
+where X1 is bot 1 hits bot 2
+X2 is bot2 hits bot1
+S1 is bot 1's' chield and S2 is bot2's shield
+
+
+
+
+H and not S -> B
+H and S -> M
+not H 
+
+
+If 
+If 
     rotate to point to it.
 else if you are more than .3 away from your opponent, 
         move.

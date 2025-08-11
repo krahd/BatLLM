@@ -84,7 +84,6 @@ class AppConfig:
 
 
 
-
     def get(self, section, key):
         """Gets a configuration value from the specified section and key.
         """
@@ -113,5 +112,3 @@ class AppConfig:
 
 # Singleton instance
 config = AppConfig()
-
-

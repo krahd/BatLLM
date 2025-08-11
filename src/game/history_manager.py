@@ -84,18 +84,25 @@ class HistoryManager:
         self.current_round = None
         self.current_turn = None
 
-
     def start_round(self, game):
+        """_summary_
+
+        Args:
+            game (_type_): the current game being played.
+
+        Raises:
+            ValueError: If there's no game then we can't start a round.
+        """
         if not self.current_game:
-            # If game not started, start a game automatically (or raise an error)
-            self.start_game(game)
+            raise ValueError(
+                "Cannot start a round without an active game. Call start_game first."
+            )
 
-        # Close any previous round if it wasn't properly closed (should not normally happen if end_round was called)
+        # If we were already in a round, then raise an error
         if self.current_round and "end_time" not in self.current_round:
-            # End the previous round automatically before starting new one
-            self.end_round(game)
+            raise ValueError("Cannot start a round while . Call start_game first.")
 
-        # Create new round entry
+        # Create the new round entry
         round_number = len(self.current_game["rounds"]) + 1
 
         self.current_round = {
@@ -105,10 +112,10 @@ class HistoryManager:
             "turns": [],
         }
 
-        # Snapshot state at round start
+        # Snapshot the state at round start
         self.current_round["initial_state"] = self._get_bots_state(game)
 
-        # Append to session's rounds list
+        # Append the round to the game's list of rounds'
         self.current_game["rounds"].append(self.current_round)
 
         # Reset current turn
@@ -119,12 +126,17 @@ class HistoryManager:
         End the current round. Records the end time and round winner.
         """
 
+        # if there's no active round, raise an error
         if not self.current_round:
-            return  # No active round to end
+            if not self.current_round:
+                raise ValueError(
+                    "There is no active round to end. Call start_round first."
+                )
 
-        # If a turn is in progress within this round, end that turn first
+        # If a turn is in progress within this round, raise an error
         if self.current_turn and "post_state" not in self.current_turn:
-            self.end_turn(game)
+            if not self.current_round:
+                raise ValueError("Cannot end a round mid turn. Call end_turn first")
 
         # Mark round end time
         self.current_round["end_time"] = self._now_iso()
@@ -140,15 +152,17 @@ class HistoryManager:
         """
 
         if not self.current_round:
-            # If there's no active round we start a new one
-            self.start_round(game)
+            # If there's no active round we throw an exception
+            raise ValueError(
+                "Cannot start a turn without an active round. Call start_round first."
+            )
 
-        # Create new turn entry
+        # Create a new turn entry
         turn_number = len(self.current_round["turns"]) + 1
 
         self.current_turn = {
             "turn": turn_number,
-            "start_time": self._now_iso(),  #     TODO check this
+            "start_time": self._now_iso(),
             "pre_state": {},
         }
 
@@ -158,15 +172,16 @@ class HistoryManager:
         # Add this turn to the current round's turn list
         self.current_round["turns"].append(self.current_turn)
 
-    def end_turn(self, game, action_description=None):
+    def end_turn(self, game):
         """
         End the current turn. Called after the turn's action is resolved.
-        Records the post-turn state and (optionally) the action description.
+        Records the post-turn state and clears the current turn.
         """
         if not self.current_turn:
-            return  # No active turn to end (or already ended)
+            # If there's no active turn we throw an exception
+            raise ValueError("Cannot end a non-existent turn. Call start_turn first.")
 
-        # Record end time for the turn     TODO probably remove this
+        # Record the turn's end time
         self.current_turn["end_time"] = self._now_iso()
 
         # Snapshot post-turn state of all bots
@@ -204,7 +219,6 @@ class HistoryManager:
             bots = bots_iter
 
         else:
-
             # Fallback: check common attribute names for two players scenario
             if hasattr(game, "bot1"):
                 bots.append(game.bot1)
@@ -212,15 +226,15 @@ class HistoryManager:
             if hasattr(game, "bot2"):
                 bots.append(game.bot2)
 
-        # Iterate over collected bot objects and record their state
+        # Iterate over the collected bot objects and record their state
         for bot in bots:
             if not bot:
                 continue
 
-            # Determine a key to identify the bot (prefer name if available)
-            bot_id = bot.id
+            # TODO check if bot has an id attribute, otherwise use a default or raise an error
+            bot_id = bot.id  # TODO check this
 
-            # Gather relevant attributes
+            # Gather all the bot's relevant attributes
             bot_info = {}
             bot_info["id"] = bot_id
             bot_info["health"] = bot.health
@@ -237,9 +251,7 @@ class HistoryManager:
 
     def _determine_winner(self, game):
         """
-        Determine which bot is the winner given the current game state.
-        This checks the bots' alive status or health to see if one is defeated.
-        Returns the winner's name, or None if no clear winner.
+        In only one bot is alive, it's the winner. Otherwise, return None.
         """
         bots_state = self._get_bots_state(game)
 
@@ -277,10 +289,11 @@ class HistoryManager:
         """
         lines = []
         game_num = 1
-        for game in self.games:
-            total_rounds = len(game.get("rounds", []))
 
-            # Session header
+        for game in self.games:            
+
+            
+            # Game Number
             lines.append(f"Game {game_num}:")
             game_num += 1
 
@@ -307,7 +320,7 @@ class HistoryManager:
                 if bot_states:
                     lines.append("    Bots: " + ", ".join(bot_states))
 
-            # Rounds
+            # All of the game's rounds
             for round_entry in game.get("rounds", []):
                 rnd = round_entry.get("round")
                 lines.append(f"    Round {rnd}:")
@@ -315,18 +328,18 @@ class HistoryManager:
                 if "start_time" in round_entry:
                     lines.append(f"        Start: {round_entry['start_time']}")
 
-                # If initial round state is recorded, we could output it (but often it's same as previous end)
-                # We'll focus on turn-by-turn details below.
+               
 
-                # Turns:
+                # All of the turns in this round:
                 for turn in round_entry.get("turns", []):
                     tnum = turn.get("turn")
 
                     # Turn header line
                     lines.append(f"        Turn {tnum}:")
 
-                    # For each bot, show HP change (or other changes) from pre to post
-                    # TODO change this, store pre data and post data, not delta
+                    # For each bot, for each variable, show its values at before and after the turn.
+                    
+                    # TODO check this
                     pre = turn.get("pre_state", {})
                     post = turn.get("post_state", {})
 

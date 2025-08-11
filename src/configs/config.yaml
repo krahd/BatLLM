@@ -12,7 +12,8 @@ game:
   total_rounds: 3
   turns_per_round: 13
 llm:
-  augmentation_header_file: src/assets/prompts/augmentation_header.txt
+  augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
+  augmentation_header_dependent: src/assets/prompts/augmentation_header_dependent_1.txt  
   path: /api/generate
   port_base: 5000
   url: http://localhost

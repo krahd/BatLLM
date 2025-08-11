@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script stops the Ollama instances running on ports 5001 and 5002.
-
+# This script stops the Ollama instances running on ports 5000, 5001 and 5002.
+pkill -f "OLLAMA_HOST=localhost:5000"
 pkill -f "OLLAMA_HOST=localhost:5001"
 pkill -f "OLLAMA_HOST=localhost:5002"

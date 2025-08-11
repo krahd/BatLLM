@@ -22,19 +22,19 @@ Each bot has a state. The state of a bot consists of the following variableS:
 Each turn the bots execute the command given to it entirely.
 
 The commands that the bots understand are:
-    Cr  - the bot rotates clockwise around its center for r radians. Example: C20
-    Ar  - the bot rotates anticlockwise around its center for r radians. Example: D180
-    M    - the bot moves forward a distance of STEP_LENGTH (it takes a stop forward). Example: M
-    S1  - the bot raises its shield. It will remain up until explicitly lowered. Example: S1
-    S0  - the bot lowers its shield. It will remain down until explicitly raised. Example: S0
-    S    - the bit lowers its shield if up or rises it if down. Example: S
-    B    - if the shield is low, the bot shoots a bullet forward. If the shield is up it does nothing. Example: B.
+    C{deg}  - the bot rotates clockwise around its center an angle of deg degreess.
+    A{deg}  - the bot rotates anticlockwise around its center an angle of deg degreess.
+    M    - the bot moves forward a distance of STEP_LENGTH. 
+    S1  - if the bot's shield is down, the bot raises it. 
+    S0  - if the bot's shield is up|, the bot lowers it. 
+    S    - the bit lowers its shield if up or rises it if down. 
+    B    - if its shield is down, the bot shoots a bullet forward. 
 
 Everything else is ignored (this means that the bot does not do do anything in this turn).
 
 When a bot shoots a bullet (B) the world runs the bullet behavior until the bullet either hits the other bot or goes out of bounds. This means that the other bot cannot move until the bullet hits it or leaves the screen.
 
-When a bot is hit by a bullet in a place not covered by a raised shield, its energy decreases by BULLET_DAMAGE. If a bullet hits the raised shield it does not cause any damage. The shield only protects the 'front' of the bot. It will only stop bullets that hit it in its front, plus minus SHIELD_SIZE radians.
+When a bot is hit by a bullet in a place not covered by a raised shield, its energy decreases by BULLET_DAMAGE. If a bullet hits the raised shield it does not cause any damage. The shield only protects the 'front' of the bot. It will only stop bullets that hit it in its front, plus minus SHIELD_SIZE degrees.
 
 Before each round starts, the players enter their prompts. 
 

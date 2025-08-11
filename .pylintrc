@@ -331,6 +331,11 @@ overgeneral-exceptions=builtins.BaseException,builtins.Exception
 
 [FORMAT]
 
+# Number of blank lines required after function or class definitions.
+# (default: 2)
+blank-lines-after-function-or-class = 4
+
+
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
 expected-line-ending-format=
 
