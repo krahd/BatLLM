@@ -120,6 +120,7 @@ class HistoryManager:
             "round": round_number,
             "start_time": self._now_iso(),
             "initial_state": {},
+            "prompts": [],
             "turns": [],
         }
 

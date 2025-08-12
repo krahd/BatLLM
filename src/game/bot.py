@@ -48,7 +48,7 @@ class Bot(Widget):
     prompt_history_index = None
     ready_for_next_round = None
     ready_for_next_turn = None
-    agmenting_prompt = None
+    augmenting_prompt = None
 
     llm_endpoint = None
     llm_port = None
@@ -74,7 +74,7 @@ class Bot(Widget):
         self.board_widget = board_widget
         self.ready_for_next_round = False
         self.ready_for_next_turn = False
-        self.agmenting_prompt = config.get("game", "prompt_augmentation")
+        self.augmenting_prompt = config.get("game", "prompt_augmentation")
 
         if bot_id == 1:
             self.color = (0.8, 0.88, 1, 0.85)
@@ -242,7 +242,7 @@ class Bot(Widget):
         Args:
             augmenting (_type_): the new flag value
         """
-        self.agmenting_prompt = augmenting
+        self.augmenting_prompt = augmenting
 
     def prepare_prompt_submission(self, new_prompt):
         """Gets ready to execute
@@ -295,6 +295,10 @@ class Bot(Widget):
             data["prompt"] += "PLAYER_INPUT:\n"
 
         data["prompt"] += self.get_current_prompt() + "\n"
+
+        # ************* Seding the request to the LLM *************
+        # TODO review the logic of calling the gameboad to start a new round
+        self.board_widget.history_manager.start_round(self)
 
         UrlRequest(
             url=self.llm_endpoint,
