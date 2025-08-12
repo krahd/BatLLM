@@ -35,13 +35,13 @@ This README consistes of this introduction, a very brief introduction to the gam
 
 ### LLM Models
 
-As of now, **BatLLM** prompts two LLMs via HTTP requests. Everything, especially the GUI, assumes that players and LLMs share a single machine.
+As of now, **BatLLM** prompts the LLMs via HTTP requests. Everything, especially the GUI, assumes that players and LLMs share a single machine.
 
-**BatLLM** does not care about the local architecture. All it needs are two local endpoints to post queries to. The easiest way to set up a running environment fom sctatch is using **[Ollama](https://ollama.com/)** to download and run [llama3.2:latest](https://ollama.com/library/llama3.2) on a mac with a mac computer with Apple silicon.
+**BatLLM** does not care about the local architecture. All it needs is a local endpoint to post queries to. The easiest way to set up a running environment fom cratch is using **[Ollama](https://ollama.com/)** to download and run [llama3.2:latest](https://ollama.com/library/llama3.2) on mac computer with an "Apple Silicon" (post Intel) GPU.
 
-With **[Homebrew](https://formulae.brew.sh/formula/ollama)**, installing Ollama on a mac means executing `brew install ollama`. After installing Ollama, you can download the model with `ollama pull llama3.2:latest` (it takes a little bit to download but you only do it once).
+With **[Homebrew](https://formulae.brew.sh/formula/ollama)**, installing Ollama only requires running `brew install ollama`. After installing Ollama, you can download the model with `ollama pull llama3.2:latest` (it takes a little bit to download but you only do it once).
 
-To control the models you may run the scripts `start_ollamas.sh` and `stop_ollamas.sh` in the project's root. 
+You can start and stop the model with `start_ollama.sh` and `stop_ollama.sh` in the project's root. 
 
 ### Installation
 
@@ -56,9 +56,9 @@ source .venv_BatLLM/bin/activate
 pip install -o requirements.txt
 ```
  
-**Start two Ollama instances**, each one running one LLM:**
+**Start a Llama3.2 instance**
 ```bash
-./start_ollamas.sh
+./start_ollama.sh
 ```
 
 **Run BatLLM** using python:

@@ -104,7 +104,7 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel=None):
 
     yes_button.bind(on_release=confirm)
     no_button.bind(on_release=cancel)
-    
+
     popup.open()
 
 
@@ -199,7 +199,7 @@ def show_text_input_dialog(
         if on_cancel:
             on_cancel()
 
-    btn_ok.bind(on_release=confirm_action) 
+    btn_ok.bind(on_release=confirm_action)
     btn_cancel.bind(on_release=cancel_action)
     btn_layout.add_widget(btn_ok)
     btn_layout.add_widget(btn_cancel)

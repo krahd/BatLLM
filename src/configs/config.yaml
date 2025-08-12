@@ -1,24 +1,34 @@
 data:
-  saved_sessions_folder: saved_sessions
+    saved_sessions_folder: saved_sessions
 game:
-  bot_diameter: 0.1
-  bullet_damage: 5
-  independent_models: true
-  initial_health: 22
-  prompt_augmentation: true
-  shield_initial_state: true
-  shield_size: 64
-  step_length: 0.02
-  total_rounds: 3
-  turns_per_round: 13
+    independent_models: true
+    prompt_augmentation: true
+
+    total_rounds: 3
+    turns_per_round: 20
+
+    initial_health: 30
+    bot_diameter: 0.1
+
+    bullet_damage: 5
+    bullet_step_length: 0.1
+    bullet_diameter: 0.2
+
+    shield_initial_state: true
+    shield_size: 64
+    step_length: 0.02
+
 llm:
-  augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
-  augmentation_header_dependent: src/assets/prompts/augmentation_header_dependent_1.txt  
-  path: /api/generate
-  port_base: 5000
-  url: http://localhost
+    augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
+    augmentation_header_dependent: src/assets/prompts/augmentation_header_dependent_1.txt
+
+    model: llama3.2:latest
+    path: /api/generate
+    url: http://localhost
+    port: 5000
+
 ui:
-  font_size: 16
-  frame_rate: 60
-  primary_color: '#0b0b0b'
-  title: BatLLM
+    font_size: 16
+    frame_rate: 60
+    primary_color: "#0b0b0b"
+    title: BatLLM

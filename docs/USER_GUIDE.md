@@ -24,10 +24,9 @@ A match consists of one or more rounds; each round consists of several turns. Th
    Both players are prompted to enter a new prompt for their bots. Once both players have submitted their prompts, the round begins. 
 
 2. **During Each Turn:**
-
    * At the start of each turn, the game randomly selects which player’s bot will act first for that turn (this random order is determined once per round).
-   * The first bot’s prompt (augmented or raw, depending on settings) is sent to its LLM **in a non-blocking manner**. The LLM returns a command, which is immediately executed by the bot in the game world. The game state is updated and rendered on the screen.
-   * If the command was to shoot a bullet, the bullet is resolved right away: it travels until it either hits the other bot or goes out of bounds. If it hits, damage is applied to the target bot and the turn may end early (since the target might be destroyed). If it misses, the turn continues. The opponent bot cannot act or move while this bullet is being resolved.
+   * The first bot’s prompt (augmented or raw, depending on settings) is sent to its LLM using Kivy's Clock to run it non blockingly with respect to the game renderiing loop. The LLM returns a command which is immediately executed by the bot in the game world. The game state is updated and rendered on the screen.
+   * If the command was to fire, the entire lifespan of the bullet is part of the turn execution. That is, the bot only finishes its turn when the bullet resolves into a hit or not. The bullet travels until it either hits the other bot or goes out of bounds. A bullet that hits a bot outside its shield reduces the target bot's health by BULLET_DAMAGE. The damage is also part of the turn, which means that the may finish abruptly. If it misses, the turn continues. The opponent bot cannot act or move until the other bot has finished.
    * Next, the second bot’s prompt is sent to its LLM, and that bot then executes its command for the turn, updating the state and UI accordingly (unless the round already ended due to the first bot destroying the opponent).
    * This completes one turn (both bots have acted once).
 
@@ -59,15 +58,14 @@ Between rounds, players have the opportunity to adjust their strategy by writing
 * **Prompt Augmentation:** Optionally, the game augments the player's prompt with structured game state info (see [Prompt Augmentation](#prompt-augmentation)).
 * **LLM Assignment:**
 
-  * *Separate LLMs:* Each player’s prompt goes to a different LLM instance (e.g., two Ollama servers on different ports, one per bot).
-  * *Single LLM:* Both prompts are handled by a single LLM (the same model) in each turn, which can be useful for lower resource usage or interesting interactions but may risk cross-talk between the two bots’ instructions.
+  * *Separate LLMs:* The context of each player only their prompt/response cycles and the gamedata.
+  * *Single LLM:* The context is the same for both bots and includes all the prompt/responses of both bots. This introduces pontential malicious prompting where players try to disrupt each others prompts with their own.
 
-**Note:** There are **no** fully autonomous or AI-vs-AI modes. BatLLM is strictly human-vs-human; all gameplay decisions are made by human-written prompts, then carried out by LLMs. (However, a human player could conceivably write a prompt like *"Play both sides of the battle for me"* and observe what happens, for experimental purposes.)
+**Note:** There are **no** NPC Bots. BatLLM is strictly AI mediated human-vs-human gaming. all gameplay decisions are made by human-written prompts, then carried out by LLMs. 
 
 
 ## Configuration
-
-BatLLM can be configured via a YAML file (`configs/config.yaml`) or by modifying constants in the code. 
+BatLLM can be configured via a YAML file (`configs/config.yaml`). Command line parameters will be introduced at some point.
 
 > [!IMPORTANT]
 > Avoid modifying this file while BatLLM is running. 
@@ -93,7 +91,7 @@ game:
 llm:
   augmentation_header_file: assets/prompts/augmentation_header_1.txt
   path: /api/generate
-  port_base: 5000
+  port: 5000
   url: http://localhost
 ui:
   font_size: 16
@@ -111,11 +109,11 @@ Configuration Options include:
 	- **shield_size:** how long the shield extends *from the bot's front **in each direction**.*
 	- **step_length:** how long a single M command moves the bot.
 	- **total_rounds:** in a game
-    # TODO add bullet damage.
+    - **ullet_damage:** 
   **llm:**
 	- **augmentation_header_file:** is a text file that is inserted at the top of *every  prompt* when playing with augmentation on.
 	- **path:** of the LLM endpoint 
-	- **port_base:** The port of the LLM endpoints (url/path:port). Player 1's endpoint is `port + 1`, while Player 2's is `port_base + 2`
+	- **port:** of the LLM endpoint 
 	- **url** of the LLM endpoint (url/path:port)
 - **ui:**
 	- **font_size:** 16 
@@ -123,7 +121,7 @@ Configuration Options include:
 	
 
 
-**Command-line Arguments are not currently implemented**, but future versions may allow overriding these settings via command-line options for convenience (e.g., `--no-augment` to disable prompt augmentation quickly).
+**Command-line Arguments are not currently implemented**, but future versions may allow overriding these settings via command-line options for convenience and experimentation.
 
 Avoid modifying this file while BatLLM is running.
 

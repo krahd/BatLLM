@@ -2,6 +2,18 @@ import json  # noqa: E402
 from datetime import datetime
 from configs.app_config import config
 
+"""
+Events
+    start_game       
+    start_round      
+    start_turn       
+    end_turn
+    end_round
+    end_game gb
+    
+
+"""
+
 
 class HistoryManager:
     def __init__(self):
@@ -56,17 +68,16 @@ class HistoryManager:
         """
 
         if not self.current_game:
-            return  # No active session to end
+            raise ValueError(
+                "Cannot end a game that was never started. Call start_game first."
+            )
 
         # If a turn is in progress (start_turn called without end_turn), handle it
         if self.current_turn and "post_state" not in self.current_turn:
 
             # Take a final snapshot for the turn (likely nothing changed if aborted mid-turn)
             self.current_turn["end_time"] = self._now_iso()
-
             self.current_turn["post_state"] = self._get_bots_state(game)
-
-            # (We could mark this turn as aborted or incomplete if needed)
             self.current_turn = None
 
         # If a round is in progress and not yet ended, end it now
@@ -290,9 +301,8 @@ class HistoryManager:
         lines = []
         game_num = 1
 
-        for game in self.games:            
+        for game in self.games:
 
-            
             # Game Number
             lines.append(f"Game {game_num}:")
             game_num += 1
@@ -328,8 +338,6 @@ class HistoryManager:
                 if "start_time" in round_entry:
                     lines.append(f"        Start: {round_entry['start_time']}")
 
-               
-
                 # All of the turns in this round:
                 for turn in round_entry.get("turns", []):
                     tnum = turn.get("turn")
@@ -338,8 +346,8 @@ class HistoryManager:
                     lines.append(f"        Turn {tnum}:")
 
                     # For each bot, for each variable, show its values at before and after the turn.
-                    
-                    # TODO check this
+
+                    # TODO check this
                     pre = turn.get("pre_state", {})
                     post = turn.get("post_state", {})
 

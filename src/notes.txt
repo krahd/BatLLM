@@ -1,1 +1,2 @@
-
+Ollama is stateless, the client needs to keep the context and pass it as memory.
+Each interaction is absolutely new and doesn't update the weights, one 

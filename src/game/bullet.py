@@ -1,6 +1,7 @@
 import math
 
 from kivy.graphics import Color, Ellipse, PopMatrix, PushMatrix, Translate
+from configs.app_config import config
 
 
 class Bullet:
@@ -10,19 +11,19 @@ class Bullet:
         self.parent_id = parent_id  # ID of the parent bot
         self.x = x
         self.y = y
-        
-        self.rot = rot # in degrees
-        
-        self.step = 0.01  # Step size for movement #TODO get from the game config
-        
+
+        self.rot = rot  # in degrees
+
+        self.step = float(config.get("game", "bullet_step_length"))
+
         self.diameter = 0.02  # Diameter of the drawn bullet, internally bullets have no diameter, they are just a point
-        
+
         self.colour = (1, 0, 0, 1)  #
 
     def render(self):
         """Renders the bullet as a circle at its current position with the specified color."""
         # TODO improve the rendering, at least a little bit.
-        
+
         PushMatrix()
         Translate(self.x, self.y)
         Color(*self.colour)
@@ -54,7 +55,7 @@ class Bullet:
         # Collision check with bots
         dx = nx - x
         dy = ny - y
-        
+
         for bot in bots:
             if bot.id == self.parent_id:
                 continue  # skip the bot that fired this bullet
@@ -160,6 +161,9 @@ class Bullet:
 
             print("The shield blocked the hit.")
             return False  # hit was on the shielded portion
-        
+
         # Otherwise, the hit lands on an unshielded portion of the bot
         return True
+
+
+# todo check and recheck the math, i wen from def to rad to deg and it shouldn't work

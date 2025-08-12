@@ -16,6 +16,7 @@ from kivy.graphics import (
     Scale,
     Translate,
 )
+
 from kivy.network.urlrequest import UrlRequest
 from kivy.properties import NumericProperty, ObjectProperty  # type: ignore[import]
 from kivy.uix.widget import Widget
@@ -23,10 +24,12 @@ from kivy.uix.widget import Widget
 from configs.app_config import config
 from game.bullet import Bullet
 from util.normalized_canvas import NormalizedCanvas
+import sys
 
 
 class Bot(Widget):
-    """This class models a game bot.
+    """
+     This class models a game bot.
 
     Args:
         Widget (_type_): Kivy's base Widget class
@@ -48,6 +51,7 @@ class Bot(Widget):
     agmenting_prompt = None
 
     llm_endpoint = None
+    llm_port = None
     shield_range_deg = None
     step = None
     diameter = None
@@ -79,18 +83,11 @@ class Bot(Widget):
         else:
             self.color = (0, 1, 0, 1)
 
-        port_base = config.get("llm", "port_base")
-
-        if not config.get("game", "independent_models"):
-            port = f"{port_base + 1}"
-            # shared model for both bots in 5001.
-            # TODO change it to a third LLM listening in port_base
-
-        else:
-            port = f"{port_base + bot_id}"  # ports 5001, 5002, etc. for each bot
-
         self.llm_endpoint = (
-            config.get("llm", "url") + ":" + port + config.get("llm", "path")
+            config.get("llm", "url")
+            + ":"
+            + f"{config.get("llm", "port")}"
+            + config.get("llm", "path")
         )
 
         self.diameter = config.get("game", "bot_diameter")
@@ -99,7 +96,7 @@ class Bot(Widget):
         self.health = config.get("game", "initial_health")
         self.step = config.get("game", "step_length")
 
-        # Randomly initialize position and rotation of each bot
+        # Set initial random position and rotation
         self.x = random.uniform(0, 1)
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 359)
@@ -261,9 +258,10 @@ class Bot(Widget):
         headers = {"Content-Type": "application/json"}
 
         data = {
-            "model": "llama3.2:latest",  # TODO get this from config or from game board
+            "model": config.get("llm", "model"),
             "prompt": "",
-            "stream": False,  # TODO get this from config
+            "stream": False,
+            # TODO move all communication stuff to a separate module
         }
 
         # We augment the prompt if the flag is set

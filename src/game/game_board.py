@@ -341,7 +341,6 @@ class GameBoard(Widget, EventDispatcher):
             round_res = "\n"
 
             if self.game_is_over():
-                self.history_manager.end_game(self)
                 self.end_game()
                 self.start_new_game()
 
@@ -369,6 +368,9 @@ class GameBoard(Widget, EventDispatcher):
         """
         Ends the game and displays the final results.
         """
+
+        self.history_manager.end_game(self)
+
         round_res = "Final Results:\n\n"
         for b in self.bots:
             round_res += f"Bot {b.id}'s health: {b.health}\n"
@@ -380,8 +382,6 @@ class GameBoard(Widget, EventDispatcher):
             size=(470, 460),
         )
         popup.open()
-
-        # TODO Check if there is any manintenance to do after the game is over and before starting a new one.
 
     def update_title_label(self):
         """Updates the label above the game board with the current game, round and turn information."""

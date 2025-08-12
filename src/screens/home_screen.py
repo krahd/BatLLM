@@ -19,12 +19,10 @@ from util.utils import show_confirmation_dialog, show_text_input_dialog
 class HomeScreen(Screen):
     """
     A HomeScreen instance implements BotLLM's main screen.
-    
-    It contains the UX components for game control, prompting, 
+
+    It contains the UX components for game control, prompting,
     and holds the GameBoard and a HistoryManager instance.
- 
-    Args:
-        Screen (_type_): Kivy's base screen class.
+
     """
 
     def __init__(self, **kwargs):
@@ -32,7 +30,6 @@ class HomeScreen(Screen):
         Constructor for the HomeScreen class.
         Initializes the screen and sets up the history manager.
         """
-
         super().__init__(**kwargs)
 
     def save_session(self):
@@ -50,7 +47,7 @@ class HomeScreen(Screen):
                 _type_: _description_
             """
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-          
+
             show_text_input_dialog(
                 on_confirm=_on_filename_confirmed,
                 title="Save as",
@@ -196,9 +193,9 @@ class HomeScreen(Screen):
 
     def prompt_history_add_text(self, bot_id, text):
         """
-        Stores the current state of the prompt being edited in the prompt 
+        Stores the current state of the prompt being edited in the prompt
         history for the specified bot id.
-        
+
         Args:
             id (_type_): bot id
             text (_type_): text to add to the prompts entered in the UI since the app started
