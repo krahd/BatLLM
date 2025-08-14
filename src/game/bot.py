@@ -1,525 +1,446 @@
-from math import cos, sin
-from kivy.graphics import Color, Rectangle, Ellipse, Line, Translate, Rotate, PushMatrix, PopMatrix, Scale
 import math
-import random
-from kivy.core.text import Label 
-from kivy.uix.widget import Widget
-from game.bullet import Bullet
-from util.normalized_canvas import NormalizedCanvas
-from kivy.network.urlrequest import UrlRequest
 import json
-from kivy.clock import Clock
-from kivy.properties import NumericProperty, ObjectProperty
+import os
+import random
+from math import cos, sin
+from typing import Any
+
+from kivy.core.text import Label
+from kivy.graphics import (
+    Color,
+    Ellipse,
+    Line,
+    PopMatrix,
+    PushMatrix,
+    Rectangle,
+    Rotate,
+    Translate,
+)
+from kivy.properties import NumericProperty, ObjectProperty  # type: ignore[import]
+from kivy.uix.widget import Widget
+
 from configs.app_config import config
+from game.bullet import Bullet
 
 
-class Bot (Widget):
-    """This class models a game bot.
-
-    Args:
-        Widget (_type_): Kivy's base Widget class
-
+class Bot(Widget):
     """
+    Represents a game bot. Responsible for rendering, handling actions,
+    building/sending LLM requests, and parsing responses.
+    """
+
     id = NumericProperty(0)
-    x = NumericProperty(0)
-    y = NumericProperty(0)
-    rot = NumericProperty(0) # in radians
+    x = NumericProperty(0.0)
+    y = NumericProperty(0.0)
+    rot = NumericProperty(0.0)  # degrees
     shield = ObjectProperty(None)
     health = NumericProperty(0)
     board_widget = ObjectProperty(None)
 
-    prompt_history = None
-    prompt_history_index = None
-    ready_for_next_round = None
-    ready_for_next_turn = None
-    agmenting_prompt = None
-    
-    llm_endpoint = None
-    shield_range = None
-    step = None
-    diameter = None
-    color = None
+    # Runtime state
+    current_prompt: str | None = None
+    prompt_history_index: int | None = None
+    ready_for_next_round: bool | None = None
+    ready_for_next_turn: bool | None = None
+    augmenting_prompt: bool | None = None
+    independent_models: bool | None = None
 
-    last_llm_response = None  
+    # Config-derived values
+    shield_range_deg: float | None = None
+    step: float | None = None
+    diameter: float | None = None
+    color: tuple[float, float, float, float] | None = None
 
-    simple_log = ""
-        
+    last_llm_response: str | None = None
 
-
-    def __init__(self, id, board_widget, **kwargs):
-        """Constructor
-        
-        Args:
-            id (_type_): the bot id
-            board_widget (_type_): its parent, that is the game board where the bot lives.
-        """        
+    def __init__(self, bot_id: int, board_widget, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-        
-        self.id = id
-        self.prompt_history = [] 
-        self.prompt_history_index = 0
+        self.id = bot_id
         self.board_widget = board_widget
         self.ready_for_next_round = False
         self.ready_for_next_turn = False
-        self.agmenting_prompt = config.get("game", "prompt_augmentation")        
-        
-        if id == 1:
-            self.color = (.8, .88, 1, .85)                        
-        elif id:
-            self.color = (.8, .65, .9, .85) 
+        self.augmenting_prompt = bool(config.get("game", "prompt_augmentation"))
+        self.independent_models = bool(config.get("game", "independent_models"))
+
+        if bot_id == 1:
+            self.color = (0.8, 0.88, 1, 0.85)
+        elif bot_id:
+            self.color = (0.8, 0.65, 0.9, 0.85)
         else:
             self.color = (0, 1, 0, 1)
 
-        port_base = config.get("llm", "port_base")
+        self.diameter = float(config.get("game", "bot_diameter"))
+        self.shield = bool(config.get("game", "shield_initial_state"))
+        self.shield_range_deg = float(config.get("game", "shield_size"))
+        self.health = int(config.get("game", "initial_health"))
+        self.step = float(config.get("game", "step_length"))
 
-        if not config.get("game", "independent_models"):
-            port = f"{port_base + 1}"  # shared model for both bots in 5001. It could be a third one. 
-            
-        else:            
-            port = f"{port_base + id}"  # ports 5001, 5002, etc. for each bot
-            
-        self.llm_endpoint = config.get("llm", "url") + ":" + port + config.get("llm", "path")
-        
-        self.diameter = config.get("game", "bot_diameter")  
-        self.shield = config.get("game", "shield_initial_state") 
-        self.shield_range = config.get("game", "shield_size") 
-        self.health = config.get("game", "initial_health")
-        self.step = config.get("game", "step_length") 
-
-        # Randomly initialize position and rotation of each bot
-        self.x = random.uniform(0, 1) 
+        # Random initial pose
+        self.x = random.uniform(0, 1)
         self.y = random.uniform(0, 1)
-        self.rot = random.uniform(0, 2 * math.pi)           
-                
-        self.simple_log = ""
-        #self.log(
-        #    f"Bot {self.id} pos: ({self.x:.2f}, {self.y:.2f}); rot: {math.degrees(self.rot):.2f}°"
-        #)
+        self.rot = random.uniform(0, 359)  # degrees
 
-
-
-    def log (self, message):
-        """Adds a message to the bot's log.
-        
-        Args:
-            message (_type_): the message to log
-        """
-        #self.simple_log += f"{message.strip()}\n"
-        self.simple_log += message.rstrip("\n")
-        # TODO if getconfig verbose = true then print(f"{[self.id]} {message})
-
-
-
-    def getLog(self):
-        """Returns the bot's log.
-        
-        Returns:
-            _type_: the bot's log
-        """
-        return self.simple_log.strip() 
-
-
-
-
+    # ------------------------- Rendering -------------------------
     def render(self):
-        """Draws itself. It assumes a NormalizedCanvas.
-        """        
-        r = self.diameter / 2
-        d = self.diameter
+        """Draw this bot."""
+        r = (self.diameter or 0.1) / 2
+        d = self.diameter or 0.1
 
         PushMatrix()
         Translate(self.x, self.y)
-        
-        Rotate(math.degrees(self.rot), 0, 0, 1)
+        Rotate(self.rot, 0, 0, 1)  # rot stored in degrees
 
-        Color(*self.color) # fill
+        Color(*(self.color or (1, 1, 1, 1)))
         Ellipse(pos=(-r, -r), size=(d, d))
 
-        Color(0, 0, 0, .7) # outline
-        Line (ellipse = (-r, -r, d, d), width=0.002)
+        Color(0, 0, 0, 0.7)
+        Line(ellipse=(-r, -r, d, d), width=0.002)
 
         # pointing direction
-        Line (points=(0, 0, r, 0), width=0.002)
+        Line(points=(0, 0, r, 0), width=0.002)
 
         # shield
-        if self.shield:  # TODO make sure the shield_range is in radians and not degrees
-            Color(.7, .5, 1, 1)            
-            Color(.3,.3,.6,1)
-            Line (ellipse = (-r, -r, d, d, 90 - self.shield_range, 90 + self.shield_range), width=0.007) 
-        
+        if self.shield:
+            Color(0.7, 0.5, 1, 1)
+            Color(0.3, 0.3, 0.6, 1)
+            Line(
+                ellipse=(
+                    -r,
+                    -r,
+                    d,
+                    d,
+                    90 - (self.shield_range_deg or 0),
+                    90 + (self.shield_range_deg or 0),
+                ),
+                width=0.007,
+            )
+
         PopMatrix()
 
         # info box
         PushMatrix()
-
-        x = min (.95 - .116, self.x + 0.01)
-        y = min (.97 - .101, self.y)
-
+        x = min(0.95 - 0.116, self.x + 0.01)
+        y = min(0.97 - 0.101, self.y)
         sx = r
-        sy = .005
-        
+        sy = 0.005
         Translate(x, y)
-        Color (0, 0, 0, .2)
-        Line(rectangle=(sx, sy, .107, .116), width=0.001)
-        
-        Color (1, 1, 1, .6)
-        Rectangle(pos=(sx, sy), size=(.107, .116))
+        Color(0, 0, 0, 0.2)
+        Line(rectangle=(sx, sy, 0.107, 0.116), width=0.001)
+        Color(1, 1, 1, 0.6)
+        Rectangle(pos=(sx, sy), size=(0.107, 0.116))
 
-        t = "x: {:.2f}\ny: {:.2f}\nrot: {:.2f}°\nshield: {}\nhealth: {}".format(
-            self.x, self.y, math.degrees(self.rot), "ON" if self.shield else "OFF", self.health)
-        
-        Color (0, 0, 0, .7)
-        mylabel = Label(text=t, font_size=24, color=(0, 0, 0, .7))
+        t = (
+            f"x: {self.x:.3f}\n"
+            f"y: {self.y:.3f}\n"
+            f"rot: {self.rot:3.0f}d\n"
+            f"shield: {'ON' if self.shield else 'OFF'}\n"
+            f"health: {self.health}"
+        )
+        Color(0, 0, 0, 0.7)
+        mylabel = Label(text=t, font_size=24, color=(0, 0, 0, 0.7))
         mylabel.refresh()
-        texture = mylabel.texture        
-        Rectangle(pos=(0.064, 0.109), texture=texture, size=(.081, -.101))
-        # /info box
-
+        texture = mylabel.texture
+        Rectangle(pos=(0.064, 0.109), texture=texture, size=(0.081, -0.101))
         PopMatrix()
 
+    # ------------------------- Actions -------------------------
+    def move(self):
+        rad = math.radians(self.rot)
+        self.x += (self.step or 0.02) * cos(rad)
+        self.y += (self.step or 0.02) * sin(rad)
 
+    def rotate(self, angle: float):
+        self.rot = (self.rot + angle) % 360
 
+    def damage(self):
+        self.health -= int(config.get("game", "bullet_damage"))
+        self.health = max(self.health, 0)
 
-    
-    def move(self):        
-        """The bot takes a step. Corresponds to the command 'M'
-        """        
-        self.x += self.step * cos(self.rot)
-        self.y += self.step * sin(self.rot)
-        # print(f"Bot moved to position: ({self.x}, {self.y})")   
+    def toggle_shield(self):
+        self.shield = not self.shield
 
+    def create_bullet(self):
+        if not self.shield:
+            return Bullet(self.id, self.x, self.y, self.rot)
+        return None
 
+    # Bullet helper compatibility
+    def rot_rad(self):
+        return math.radians(self.rot)
 
-    
-    def rotate(self, angle):
-        """The bot rotates by a given angle. Corresponds to the commands 'C' and 'A'
-        """    
-        self.rot += angle
-        self.rot = math.fmod(self.rot, 2 * math.pi)
-        
+    @property
+    def shield_range(self):
+        return float(self.shield_range_deg or 0)
 
-
-    
-    def append_prompt_to_history(self, new_prompt):
-        """Adds the new prompt to the prompt.history object.
-        It is now ready to run it.
-
-        Args:
-            new_prompt (_type_): the new prompt
-        """        
-        self.prompt_history.append(new_prompt)
-        self.prompt_history_index = len(self.prompt_history) - 1        
-        
-
-        
+    # ------------------------- Prompt history (UI helpers) -------------------------
     def rewind_prompt_history(self):
-        """Rewinds 
-        """        
-        if self.prompt_history_index is not None and self.prompt_history_index > 0:
-            self.prompt_history_index -= 1            
-            # print(f"Rewound to prompt: {self.prompt_history_index}")
-
-
+        prompts = []
+        hm = self.board_widget.history_manager
+        if hm.current_round and "prompts" in hm.current_round:
+            prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
+        if self.prompt_history_index is None:
+            if prompts:
+                self.prompt_history_index = len(prompts) - 1
+        else:
+            if self.prompt_history_index > 0:
+                self.prompt_history_index -= 1
+        if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
+            self.current_prompt = prompts[self.prompt_history_index]
 
     def forward_prompt_history(self):
-        """Forwards
-        """        
-        if self.prompt_history_index is not None and self.prompt_history_index < len(self.prompt_history) - 1:
-            self.prompt_history_index += 1                        
-            # print(f"Forwarded to prompt: {self.prompt_history_index}")
-
-
-
+        prompts = []
+        hm = self.board_widget.history_manager
+        if hm.current_round and "prompts" in hm.current_round:
+            prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
+        if self.prompt_history_index is None:
+            if prompts:
+                self.prompt_history_index = 0
+        else:
+            if self.prompt_history_index < len(prompts) - 1:
+                self.prompt_history_index += 1
+        if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
+            self.current_prompt = prompts[self.prompt_history_index]
 
     def get_current_prompt_from_history(self):
-        """Returns a prompt from the history using a cursor. Rewind and Forward move the cursor.
-
-        Returns:
-            _type_: a string with the prompt
-        """        
-        res = ""
-        try:
-            res = self.prompt_history[self.prompt_history_index]
-        except (IndexError, TypeError):
-            res = ""
-        
-        return res
-
+        return self.current_prompt or ""
 
     def get_current_prompt(self):
-        """Returns the current prompt. It is equivalent to get_prompt.
-
-        Returns:
-            _type_: a string with the prompt
-        """        
-        return self.get_current_prompt_from_history()    
-
-
-    def get_prompt(self):         
-        """Returns the current prompt. It is equivalent to get_current_prompt_from_history.
-        Returns:
-            _type_: a string with the prompt
-        """        
         return self.get_current_prompt_from_history()
-    
-    
 
-    def augmenting_prompt(self, augmenting):
-        """Toggles the flag indicating if the player prompts are augmented with game info.
+    def get_prompt(self):
+        return self.get_current_prompt_from_history()
 
-        Args:
-            augmenting (_type_): the new flag value
-        """        
-        
-        self.agmenting_prompt = augmenting
-                
+    def set_augmenting_prompt(self, augmenting: bool):
+        self.augmenting_prompt = augmenting
 
-    def prepare_prompt_submission(self, new_prompt):
-        """Gets ready to execute
+    def get_augmenting_prompt(self):
+        return bool(self.augmenting_prompt)
 
-        Args:
-            new_prompt (_type_): the prompt to use
-        """
-        self.append_prompt_to_history(new_prompt)        
+    def prepare_prompt_submission(self, new_prompt: str):
+        self.current_prompt = new_prompt
+        self.prompt_history_index = None
         self.ready_for_next_round = True
-                
 
-
-    def submit_prompt_to_llm(self):  
-        """Takes care of the interaction with the LLM
-        """        
-        headers = {"Content-Type": "application/json"}
+    # ------------------------- LLM communication -------------------------
+    def submit_prompt_to_llm(self):
+        """Build and send a chat request with: header, prompt(+state), and history."""
         
+        # Refresh flags
+        self.augmenting_prompt = bool(config.get("game", "prompt_augmentation"))
+        self.independent_models = bool(config.get("game", "independent_models"))
+
+        messages, user_content = self._build_chat_messages()
+        # Record the user message for this turn
+        self.board_widget.history_manager.record_message(self.id, "user", user_content)
+
         data = {
-            "model": "llama3.2:latest",  # TODO get this from config
-            "prompt": "",
-            "stream": False # TODO get this from config
+            "model": config.get("llm", "model"),
+            "messages": messages,
+            "stream": False,
         }
 
-        # if so chosen we augment the prompt, kind of a RAG
-        if config.get("game", "prompt_augmentation"): 
+        base_url = config.get("llm", "url")
+        port = config.get("llm", "port")
+        path = config.get("llm", "path") or "/api/chat"
+        chat_url = f"{base_url}:{port}{path}"
 
-            # we reload the prompt_augmentation_header in case it has changed
-            file = open(config.get("llm", "augmentation_header_file"),'r')
-            hdr = file.read()        
-
-            file.close()
-            data["prompt"] = hdr
-            data["prompt"] += "GAME_STATE:\n"         
-            data["prompt"] += f"Self.x: {self.x}, Self.y: {self.y}\n"
-            data["prompt"] += f"Self.rot: {math.degrees(self.rot)}\n"
-            data["prompt"] += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
-            data["prompt"] += f"Self.health: {self.health}\n"
-            data["prompt"] += f"Opponent.x: {self.board_widget.get_bot_by_id(3 - self.id).x}, Opponent.y: {self.board_widget.get_bot_by_id(3 - self.id).y}\n"
-            data["prompt"] += f"Opponent.rot: {math.degrees(self.board_widget.get_bot_by_id(3 - self.id).rot)}\n"
-            data["prompt"] += f"Opponent.shield: {'ON' if self.board_widget.get_bot_by_id(3 - self.id).shield else 'OFF'}\n"
-            data["prompt"] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
-            data["prompt"] += "PLAYER_INPUT:\n"
-            
-        data["prompt"] += self.get_current_prompt() + "\n"                        
-        self.log(f"\n\n................................................................................\n\n[b]Prompt:[/b]\n>>\n{self.get_current_prompt()}\n<<\n\n")  
-        #TODO check if it's not better to print the prompt once and then the responses and commands, with turn number. Something like:
-        '''
-        Prompt:
-        >>>
-        Do this and that, then the other.
-        If you can, do this.
-        If you can't, do that.
-        <<<
-
-        Turn 1:
-        LLM:
-        >>>
-        M
-        <<<
-        Command: M
-
-        Turn 2:
-        LLM:
-        >>>
-        Whatever
-        <<<
-        Command: ERR
-
-        Turn 3:
-        LLM:
-        >>>
-        C45
-        <<<
-        Command: C 45
-
-
-        Think
-        
-
-
-
-        
-        
-        '''      
-        
-        UrlRequest(
-            url = self.llm_endpoint,
-            req_body = json.dumps(data), 
-            req_headers = headers,
-            on_success = self._on_llm_response,
-            on_failure = self._on_llm_failure,   # HTTP errors 4xx, 5xx
-            on_error = self._on_llm_error,     # other errors (no connection, etc.)
-            timeout = 30,
-            method = 'POST'
-        )
-        
-
-
-    def _on_llm_failure(self, request, error):
-        """Error handler for HTTP errors 4xx, 5xx
-
-        Args:
-            request (_type_): the request object
-            error (_type_): the error obtained
-        """        
-        
-        self.log(f"LLM request failed: {error}")                
-        self.board_widget.on_bot_llm_interaction_complete(self) 
-
-
-        
-    def _on_llm_error(self, request, error):
-        """Error handler for errors outside the web protocol (no connection, etc)
-
-        Args:
-            request (_type_): the request object
-            error (_type_): the error obtained
-        """        
-         
-        self.log(f"Error during LLM request: {error}")                 
-        self.board_widget.on_bot_llm_interaction_complete(self)  
+        # Optional debug: log outgoing payload
+        if bool(config.get("llm", "debug_requests")):
+            try:
+                preview = json.dumps(data, indent=2)
                 
-                 
-    def _on_llm_response(self, req, result):
-        """Event handler of a successul interaction with the LLM
+            except (TypeError, ValueError, OverflowError):
+                preview = str(data)
+                
+            print(f"[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}")
 
-        Args:
-            req (_type_): the request object
-            result (_type_): the interaction result
+        self.board_widget.ollama_connector.send_request(
+            chat_url,
+            data,
+            self._on_llm_response,
+            self._on_llm_failure,
+            self._on_llm_error,
+        )
 
-        """
-
+    def _get_mode_header_text(self) -> str:
+        if not self.augmenting_prompt:
+            return ""
         
+        # Get the augmentation header text for the LLM request based on the mode.
         
-        self.last_llm_response = result.get("response", "").strip()  
-        self.log(f"\n\n[b]LLM Response:[/b]\n>>\n{self.last_llm_response}\n<<\n")
-        cmd = self.last_llm_response
-      
+        key = (
+            "augmentation_header_independent"
+            if self.independent_models
+            else "augmentation_header_dependent"
+        )
+        path = config.get("llm", key)
+        
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return f.read()
             
-        # ********* Processing the response *********
+        except FileNotFoundError:
+            shared_fallback = os.path.join(os.path.dirname(path), "augmentation_header_shared_1.txt")
+            
+            try:
+                with open(shared_fallback, "r", encoding="utf-8") as f:
+                    return f.read()
+            except OSError:
+                return ""
+
+
+    def _build_user_message_content(self) -> str:
+        
+        if not self.augmenting_prompt:
+            content = (self.current_prompt or "") + "\n"
+
+        else:
+            content = "PLAYER_INPUT:\n"
+            content += (self.current_prompt or "") + "\n"
+            content += "GAME_STATE:\n"
+            content += f"Self.x: {self.x}, Self.y: {self.y}\n"
+            content += f"Self.rot: {self.rot}\n"  # degrees
+            content += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
+            content += f"Self.health: {self.health}\n"
+            
+            opp = self.board_widget.get_bot_by_id(3 - self.id)
+            
+            if opp is not None:
+                content += (
+                    f"Opponent.x: {opp.x}, Opponent.y: {opp.y}\n"
+                    f"Opponent.rot: {opp.rot}\n"
+                    f"Opponent.shield: {'ON' if opp.shield else 'OFF'}\n"
+                    f"Opponent.health: {opp.health}\n"
+                )
+                
+        return content
+
+
+    def _build_chat_messages(self) -> tuple[list[dict[str, str]], str]:
+        system_message = {"role": "system", "content": self._get_mode_header_text()}
+        
+        if self.independent_models:
+            history = self.board_widget.history_manager.get_chat_history(self.id, shared=False)
+        else:
+            history = self.board_widget.history_manager.get_chat_history(None, shared=True)
+            
+        user_content = self._build_user_message_content()
+        user_message = {"role": "user", "content": user_content}
+        
+        messages: list[dict[str, str]] = [system_message]
+        messages.extend(history)
+        messages.append(user_message)
+        
+        return messages, user_content
+
+    def _on_llm_failure(self, _request, _error):
+        self.board_widget.on_bot_llm_interaction_complete(self)
+
+    def _on_llm_error(self, _request, _error):
+        self.board_widget.on_bot_llm_interaction_complete(self)
+
+    def _on_llm_response(self, _req, result):
+        """Parse the LLM reply, execute it, record history, and finish the turn."""
+        # 1) Extract assistant content from common chat API shapes
+        assistant_content = ""
+        try:
+            if isinstance(result, dict):
+                if isinstance(result.get("response"), str):
+                    assistant_content = result["response"]
+                    
+                elif isinstance(result.get("message"), dict) and isinstance(result["message"].get("content"), str):
+                    assistant_content = result["message"]["content"]
+                    
+                elif isinstance(result.get("choices"), list) and result["choices"] and isinstance(result["choices"][0], dict):
+                    choice = result["choices"][0]
+                    msg = choice.get("message") if isinstance(choice, dict) else None
+                    
+                    if isinstance(msg, dict) and isinstance(msg.get("content"), str):
+                        assistant_content = msg["content"]
+                        
+                elif isinstance(result.get("content"), str):
+                    assistant_content = result["content"]
+                    
+        except (TypeError, KeyError, ValueError):
+            assistant_content = ""
+
+        assistant_content = assistant_content.strip() if isinstance(assistant_content, str) else ""
+        self.last_llm_response = assistant_content
+
+        # 2) Interpret command
+        cmd = assistant_content
         command_ok = True
-        try: 
+        command: str | None = None
+        try:
             if isinstance(cmd, str):
                 command = cmd
             elif isinstance(cmd, list) and len(cmd) > 0:
                 command = cmd[0]
             else:
                 command_ok = False
-               
-                
-            if command_ok:     
-                           
-                match command[0]:                    
-                    case "M":         
-                        self.log("\n\n[color=#308030][b]Executing ")
-                        self.log("M")
-                        self.board_widget.add_llm_response_to_history(self.id, "M")        
+
+            if command_ok and isinstance(command, str) and command:
+                match command[0]:
+                    case "M":
+                        self.board_widget.add_llm_response_to_history(self.id, "M")
                         self.move()
-                                                        
+
                     case "C":
-                        self.log("\n\n[color=#308030][b]Executing ")
                         angle = float(command[1:])
-                        self.log(f"C[/b] with angle [b]{angle}")    
-                        self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")                        
+                        self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")
                         self.rotate(angle)
 
                     case "A":
-                        self.log("\n\n[color=#308030][b]Executing ")
                         angle = float(command[1:])
-                        self.log(f"A[/b] with angle [b]{angle}")
-                        self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")                        
+                        self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")
                         self.rotate(-angle)
 
                     case "B":
-                        self.log("\n\n[color=#308030][b]Executing ")                                           
-                        self.log("B")                            
-                        self.board_widget.shoot(self.id)  
+                        self.board_widget.shoot(self.id)
                         self.board_widget.add_llm_response_to_history(self.id, "B")
 
-                        
                     case "S":
-                        self.log("\n\n[color=#308030][b]Executing ")
-                        if len(command) == 1:                        
-                            self.log("S")
+                        if len(command) == 1:
                             self.board_widget.add_llm_response_to_history(self.id, "S")
                             self.toggle_shield()
-                            
                         else:
                             if command[1] == "1":
-                                self.log("S1")
                                 self.board_widget.add_llm_response_to_history(self.id, "S1")
                                 self.shield = True
-
                             elif command[1] == "0":
-                                self.log("S0")
                                 self.board_widget.add_llm_response_to_history(self.id, "S0")
                                 self.shield = False
                             else:
                                 command_ok = False
+
                     case _:
                         command_ok = False
-                self.log("[/b][/color]\n")
-                        
-     
-        except Exception as e:
+
+        except (ValueError, IndexError, TypeError) as e:
             command_ok = False
-            print (f"exception: {e}") 
-        
-        if not command_ok:            
-            self.log(
-                f"\n\n[color=#FF0000][b]Invalid Command.[/b][/color]\n\n"
+            print(f"exception: {e}")
+
+        # 3) Fallback UI note on invalid command
+        if not command_ok:
+            self.board_widget.add_llm_response_to_history(
+                self.id, "[color=#FF0000][b]ERR[/b][/color]"
             )
-            self.board_widget.add_llm_response_to_history(self.id, "ERR")
-                    
-            
 
-        # ********* Updating the bot's state and notifying the board widget *********
+        # 3b) Record parsed command and per-bot post-action state for compact history
+        try:
+            self.board_widget.history_manager.record_parsed_command(
+                self.id, command if command_ok else ""
+            )
+            self.board_widget.history_manager.record_post_action_state(
+                self.id, self.board_widget
+            )
+        except Exception:
+            # Non-fatal: compact history will omit if not available
+            pass
+
+        # 4) Record assistant message in history
+        self.board_widget.history_manager.record_message(self.id, "assistant", assistant_content)
+
+        # 5) Finish turn
         self.ready_for_next_turn = True
-        self.board_widget.on_bot_llm_interaction_complete(self)  
-
-
-
-    def damage(self):
-        """The bot's been hit
-        """
-        self.health -= config.get("game", "bullet_damage")
-        
-        if self.health < 0:
-            self.health = 0
-            
-
-
-    def toggle_shield(self):
-        """Toggles the shield state.
-        """        
-        self.shield = not self.shield
-
-
-    def create_bullet(self):
-        """Tries to shoot a bullet. It will only succeed if the shield is down.
-
-        Returns:
-            _type_: the bullet shot or None
-        """        
-        if not self.shield:            
-            return Bullet(self.id, self.x, self.y, self.rot)            
-            
-        else:            
-            return None
-
+        self.board_widget.on_bot_llm_interaction_complete(self)
