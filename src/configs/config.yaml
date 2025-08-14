@@ -11,7 +11,7 @@ game:
     bot_diameter: 0.1
 
     bullet_damage: 5
-    bullet_step_length: 0.1
+    bullet_step_length: 0.01
     bullet_diameter: 0.2
 
     shield_initial_state: true

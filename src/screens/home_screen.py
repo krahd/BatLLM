@@ -119,14 +119,11 @@ class HomeScreen(Screen):
         """
         gbw = self.ids.game_board
         history_screen = self.manager.get_screen("history")
-        
-        # Left pane: compact, human-friendly summary
-        compact = gbw.history_manager.to_compact_text()
-        
-        # Right pane: full detailed text
+        # Left pane: compact, per-bot summary
+        compact = gbw.history_manager.to_compact_text_for_bot(int(bot_id))
+        # Right pane: full detailed text for the whole game
         full_text = gbw.history_manager.to_text()
         history_screen.update(bot_id, compact, full_text)
-        
         self.manager.current = "history"
 
     def save_prompt(self, bot_id):

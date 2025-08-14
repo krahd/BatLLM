@@ -259,6 +259,36 @@ class HistoryManager:
         msgs = self.current_turn.setdefault("messages", [])
         msgs.append({"bot_id": bot_id, "role": role, "content": content})
 
+    def record_parsed_command(self, bot_id: int, command: str | None) -> None:
+        """Record the command string parsed/executed for this bot in the current turn.
+
+        Stores commands under ``current_turn['parsed_commands']`` keyed by ``bot_id``.
+        Safe to call multiple times; last value wins.
+        """
+        if not self.current_turn:
+            return
+        cmds = self.current_turn.setdefault("parsed_commands", {})
+        cmds[int(bot_id)] = command or ""
+
+    def record_post_action_state(self, bot_id: int, game) -> None:
+        """Snapshot and store this bot's state immediately after its action for the current turn.
+
+        Saves under ``current_turn['post_action_states'][bot_id]`` using the same shape
+        as ``_get_bots_state`` for a single bot.
+        """
+        if not self.current_turn:
+            return
+        states = self.current_turn.setdefault("post_action_states", {})
+        # capture just this bot's info
+        try:
+            all_states = self._get_bots_state(game)
+            info = all_states.get(bot_id)
+            if info is not None:
+                states[int(bot_id)] = info
+        except Exception:
+            # Non-fatal: if we cannot snapshot state, skip silently
+            pass
+
     def get_chat_history(self, bot_id: int | None = None, shared: bool = True) -> list[dict[str, str]]:
         """Reconstruct the chat history for the current game.
 
@@ -549,7 +579,7 @@ class HistoryManager:
         return content.strip().splitlines()[0] if content else ""
 
     def to_compact_text(self) -> str:
-        """Produce a readable, compact summary of the history for the UI left pane.
+        """Produce a readable, Markup-decotrated, compact summary of the history for the UI left pane.
 
         Structure:
         - Game header and start time
@@ -561,13 +591,13 @@ class HistoryManager:
 
         out: list[str] = []
         for g_idx, game in enumerate(self.games, 1):
-            out.append(f"Game {g_idx}")
+            out.append(f"[size=20sp][color=#FF0000]Game {g_idx}[/color][/size]")
             if game.get("start_time"):
                 out.append(f"  Start: {game['start_time']}")
 
             for round_entry in game.get("rounds", []):
                 rnum = round_entry.get("round")
-                out.append(f"  Round {rnum}")
+                out.append(f"  [b]Round {rnum}[/b]")
 
                 prompts = round_entry.get("prompts", [])
                 if prompts:
@@ -585,9 +615,11 @@ class HistoryManager:
                         b = msg.get("bot_id")
                         if b is None:
                             continue
+                        
                         entry = per_bot.setdefault(int(b), {})
                         role = msg.get("role")
                         content = msg.get("content", "")
+                        
                         if role == "user":
                             entry["user"] = self._extract_player_input_summary(content)
                         elif role == "assistant":
@@ -622,3 +654,95 @@ class HistoryManager:
             out.append("")
 
         return "\n".join(out).rstrip()
+
+    def to_compact_text_for_bot(self, bot_id: int) -> str:
+        """Produce a compact, per-bot history summary for the UI left pane.
+
+        Format example:
+        Game 1
+          Round 1.
+          Prompt: <bot's prompt at round start>
+            state: <initial state summary>
+            Turn 1:
+                LLM: <assistant response>
+                cmd: <parsed command>
+                state: <post-action state summary>
+
+        Notes:
+        - Only includes entries for the specified bot.
+        - Does not include timestamps or the bot id in lines (it's implied).
+        """
+        if not self.games:
+            return "No history yet."
+
+        def fmt_state(info: dict | None) -> str:
+            if not isinstance(info, dict):
+                return ""
+            x = info.get("x")
+            y = info.get("y")
+            rot = info.get("rot")
+            hp = info.get("health")
+            shield = info.get("shield")
+            if isinstance(x, (int, float)) and isinstance(y, (int, float)) and isinstance(rot, (int, float)):
+                return f"x={x:.3f} y={y:.3f} rot={rot:.1f}d health={hp} shield={'ON' if shield else 'OFF'}"
+            return f"health={hp} shield={'ON' if shield else 'OFF'}"
+
+        lines: list[str] = []
+        for gi, game in enumerate(self.games, start=1):
+            lines.append(f"[b][color=#ff0000]Game {gi}[/color][/b]")
+            
+            for round_entry in game.get("rounds", []):
+                lines.append("")
+                rnum = round_entry.get("round")
+                lines.append(f"[b]Round {rnum}.[/b]")
+
+                # Prompt at round start (for this bot only)
+                prompt_text = ""
+                for p in round_entry.get("prompts", []):
+                    if int(p.get("bot_id", -1)) == int(bot_id):
+                        prompt_text = p.get("prompt", "")
+                        break
+                if prompt_text:
+                    lines.append(f"[b]Prompt:[/b] {prompt_text}")
+
+                # Initial state at round start (this bot only)
+                init_state = None
+                try:
+                    init_state = round_entry.get("initial_state", {}).get(bot_id)
+                except Exception:
+                    init_state = None
+                if init_state is not None:
+                    lines.append(f"[b]State:[/b]  {fmt_state(init_state)}")
+
+                # Turns
+                for turn in round_entry.get("turns", []):
+                    tnum = turn.get("turn")
+                    lines.append(f"[b]Turn {tnum}:[/b]")
+
+                    # LLM assistant message for this bot
+                    llm_text = ""
+                    for msg in turn.get("messages", []) or []:
+                        if int(msg.get("bot_id", -1)) == int(bot_id) and msg.get("role") == "assistant":
+                            llm_text = (msg.get("content") or "").strip()
+                            break
+                    if llm_text:
+                        lines.append(f"    [b]llm:[/b] {llm_text}")
+
+                    # Parsed command (if recorded)
+                    cmd = (turn.get("parsed_commands", {}) or {}).get(int(bot_id))
+                    if cmd is not None and cmd != "":
+                        lines.append(f"    [b]cmd:[/b] {cmd}")
+
+                    # Post-action state (if recorded for this bot); otherwise fall back to turn post_state
+                    post_action = (turn.get("post_action_states", {}) or {}).get(int(bot_id))
+                    if post_action is None:
+                        post_action = (turn.get("post_state", {}) or {}).get(bot_id)
+                    if post_action is not None:
+                        lines.append(f"    [b]state:[/b] {fmt_state(post_action)}")
+
+                    lines.append("")
+                    
+            # Blank line between games            
+            lines.append("")
+
+        return "\n".join(lines).rstrip()

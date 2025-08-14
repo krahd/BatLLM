@@ -154,7 +154,7 @@ class GameBoard(Widget, EventDispatcher):
         if self.games_started > 0:
             for b in self.bots:
                 self.add_text_to_llm_response_history(
-                    b.id, "[b][color=#ffa0a0]\n\nNew Game\n\n[/color][/b]"
+                    b.id, "[b][color=#f00000]\n\nNew Game\n\n[/color][/b]"
                 )
                 b.ready_for_next_round = False  # need a new prompt for a new round
 
@@ -306,7 +306,7 @@ class GameBoard(Widget, EventDispatcher):
                 bot_id (_type_): bot id
                 command (_type_): correct llm responses parse into commands
         """
-        text = f"[color=#000000]{self.current_turn} - {command}[/color]\n"
+        text = f"[color=#000000]{self.current_turn}: {command}[/color]\n"
         self.add_text_to_llm_response_history(bot_id, text)
 
     def submit_prompt(self, bot_id, new_prompt):

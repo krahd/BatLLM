@@ -29,4 +29,7 @@ class HistoryScreen(Screen):
 
 
     def go_back_home(self):
+        """
+        Navigates back to the home screen by setting the current screen of the manager to "home".
+        """
         self.manager.current = "home"
