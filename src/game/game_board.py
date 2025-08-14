@@ -393,6 +393,7 @@ class GameBoard(Widget, EventDispatcher):
         if not self.current_turn < config.get("game", "turns_per_round"):
             # round's over
             self.history_manager.end_round(self)
+            
             for b in self.bots:
                 # Insert blank line to separate rounds in the UI.
                 self.add_text_to_llm_response_history(b.id, "\n\n")

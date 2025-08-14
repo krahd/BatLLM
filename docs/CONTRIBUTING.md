@@ -13,10 +13,10 @@ This document is for developers who want to understand BatLLM’s code structure
 ## Protocol
 
 If you would like to contribute a new feature, a bugfix or other improvement, please do so using a pull request. However, please take care that:
-
-    - **There is one pull request per topic**. I.e.: if you would like to contribute a new feature and two bugfixes, open three pull requests.
-    - **All commit messages are in English.** 
-    - **Every non-obvious features or changes must be shortly explained.** This might not only include what you committed, but also why you did it (motivation, usage scenario, testsings, etc.s).
+    
+- **There is one pull request per topic**. I.e.: if you would like to contribute a new feature and two bugfixes, open three pull requests.
+- **All commit messages are in English.** 
+- **Every non-obvious features or changes must be shortly explained.** This might not only include what you committed, but also why you did it (motivation, usage scenario, testsings, etc.s).
 
 ## Getting Started
 
