@@ -23,9 +23,9 @@ llm:
     augmentation_header_dependent: src/assets/prompts/shared_1.txt
 
     model: llama3.2:latest
-    path: /api/generate
+    path: /api/chat
     url: http://localhost
-    port: 5000
+    port: 11434
 
 ui:
     font_size: 16
