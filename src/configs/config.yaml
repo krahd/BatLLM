@@ -1,5 +1,6 @@
 data:
     saved_sessions_folder: saved_sessions
+
 game:
     independent_models: true
     prompt_augmentation: true
