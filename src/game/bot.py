@@ -1,45 +1,9 @@
-"""
-bot.py
-=======
-
-This module defines the :class:`~game.bot.Bot` class which represents a
-player-controlled agent in the BatLLM game. A bot is responsible for
-submitting prompts to an LLM via the :class:`~game.ollama_connector.OllamaConnector`,
-interpreting the resulting command, and updating its state accordingly.
-
-Key responsibilities of a bot include:
-
-* Storing and managing the current prompt entered by the player. Past
-  prompts are recorded by the :class:`~game.history_manager.HistoryManager` on
-  the :class:`~game.game_board.GameBoard` and are no longer stored directly
-  on the bot.
-* Building the payload of chat messages for the LLM, including optional
-  augmentation with game state and session history.
-* Recording user and assistant messages into the HistoryManager via
-  ``record_message`` so that chat history is centralised and can be
-  reconstructed without duplicating state.
-* Executing the command returned by the LLM (move, rotate, shield, shoot)
-  and communicating results back to the GameBoard for UI updates.
-
-The module also contains helper methods for navigating prompt history and
-for toggling configuration options at runtime.
-
-Note
-----
-``Bot`` instances no longer maintain their own ``chat_history`` list. All
-conversation data is recorded and retrieved through the HistoryManager on
-the GameBoard. Calls to a non-existent ``log`` method have been removed;
-UI text should be appended via the GameBoard's ``add_text_to_llm_response_history``
-method.
-"""
-
-import json
 import math
-import random
 import os
+import random
 from math import cos, sin
+from typing import Any
 
-from kivy.clock import Clock
 from kivy.core.text import Label
 from kivy.graphics import (
     Color,
@@ -49,83 +13,53 @@ from kivy.graphics import (
     PushMatrix,
     Rectangle,
     Rotate,
-    Scale,
     Translate,
 )
-
-# UrlRequest is now used within the OllamaConnector; it is no longer imported here
 from kivy.properties import NumericProperty, ObjectProperty  # type: ignore[import]
 from kivy.uix.widget import Widget
 
 from configs.app_config import config
 from game.bullet import Bullet
-from util.normalized_canvas import NormalizedCanvas
-import sys
 
 
 class Bot(Widget):
     """
-     This class models a game bot.
-
-    Args:
-        Widget (_type_): Kivy's base Widget class
-
+    Represents a game bot. Responsible for rendering, handling actions,
+    building/sending LLM requests, and parsing responses.
     """
 
     id = NumericProperty(0)
-    x = NumericProperty(0)
-    y = NumericProperty(0)
-    rot = NumericProperty(0)  # in degrees
+    x = NumericProperty(0.0)
+    y = NumericProperty(0.0)
+    rot = NumericProperty(0.0)  # degrees
     shield = ObjectProperty(None)
     health = NumericProperty(0)
     board_widget = ObjectProperty(None)
 
-    # Note: prompt_history and prompt_history_index have been superseded by
-    # the HistoryManager. We keep them here only for backward compatibility
-    # with the HomeScreen UI, but they are unused. All prompts are now
-    # recorded via the HistoryManager and accessed through `current_prompt`.
-    prompt_history = None
-    prompt_history_index = None
-    ready_for_next_round = None
-    ready_for_next_turn = None
-    augmenting_prompt = None
-    independent_models = None
+    # Runtime state
+    current_prompt: str | None = None
+    prompt_history_index: int | None = None
+    ready_for_next_round: bool | None = None
+    ready_for_next_turn: bool | None = None
+    augmenting_prompt: bool | None = None
+    independent_models: bool | None = None
 
-    llm_endpoint = None
-    llm_port = None
-    shield_range_deg = None
-    step = None
-    diameter = None
-    color = None
+    # Config-derived values
+    shield_range_deg: float | None = None
+    step: float | None = None
+    diameter: float | None = None
+    color: tuple[float, float, float, float] | None = None
 
-    last_llm_response = None
+    last_llm_response: str | None = None
 
-    def __init__(self, bot_id, board_widget, **kwargs):
-        """Constructor
-
-        Args:
-            bot_id (_type_): the bot id
-            board_widget (_type_): its parent, that is the game board where the bot lives.
-        """
+    def __init__(self, bot_id: int, board_widget, **kwargs: Any) -> None:
         super().__init__(**kwargs)
-
         self.id = bot_id
-        # Current prompt entered by the player. Maintains the text for the
-        # most recently submitted prompt. Used for constructing chat
-        # messages and for UI history navigation.
-        self.current_prompt: str | None = None
-
-        # Index into this bot's prompt history when navigating through past
-        # prompts. The actual history is stored by the HistoryManager on
-        # the game board. This index refers to the position of the prompt
-        # within the filtered list of prompts for this bot id.
-        self.history_prompt_index: int | None = None
         self.board_widget = board_widget
         self.ready_for_next_round = False
         self.ready_for_next_turn = False
-
-        self.augmenting_prompt = config.get("game", "prompt_augmentation")
-        self.independent_models = config.get("game", "independent_models")
+        self.augmenting_prompt = bool(config.get("game", "prompt_augmentation"))
+        self.independent_models = bool(config.get("game", "independent_models"))
 
         if bot_id == 1:
             self.color = (0.8, 0.88, 1, 0.85)
@@ -134,42 +68,31 @@ class Bot(Widget):
         else:
             self.color = (0, 1, 0, 1)
 
-        # Build the LLM endpoint from the configured URL, port and path.
-        # Note: use single quotes inside the f-string to avoid conflicting with the outer quotes.
-        self.llm_endpoint = (
-            f"{config.get('llm', 'url')}:{config.get('llm', 'port')}{config.get('llm', 'path')}"
-        )
+        self.diameter = float(config.get("game", "bot_diameter"))
+        self.shield = bool(config.get("game", "shield_initial_state"))
+        self.shield_range_deg = float(config.get("game", "shield_size"))
+        self.health = int(config.get("game", "initial_health"))
+        self.step = float(config.get("game", "step_length"))
 
-        self.diameter = config.get("game", "bot_diameter")
-        self.shield = config.get("game", "shield_initial_state")
-        self.shield_range_deg = config.get("game", "shield_size")
-        self.health = config.get("game", "initial_health")
-        self.step = config.get("game", "step_length")
-
-        # Set initial random position and rotation
+        # Random initial pose
         self.x = random.uniform(0, 1)
         self.y = random.uniform(0, 1)
-        self.rot = random.uniform(0, 359)
+        self.rot = random.uniform(0, 359)  # degrees
 
-        # NOTE: chat_history is no longer stored here. Conversation
-        # transcripts are centrally recorded by the HistoryManager on the
-        # GameBoard. See HistoryManager.record_message and
-        # HistoryManager.get_chat_history for details.
-
+    # ------------------------- Rendering -------------------------
     def render(self):
-        """Draws itself. It assumes a NormalizedCanvas."""
-        r = self.diameter / 2
-        d = self.diameter
+        """Draw this bot."""
+        r = (self.diameter or 0.1) / 2
+        d = self.diameter or 0.1
 
         PushMatrix()
         Translate(self.x, self.y)
+        Rotate(self.rot, 0, 0, 1)  # rot stored in degrees
 
-        Rotate(math.degrees(self.rot), 0, 0, 1)  # change all rot to degrees
-
-        Color(*self.color)  # fill
+        Color(*(self.color or (1, 1, 1, 1)))
         Ellipse(pos=(-r, -r), size=(d, d))
 
-        Color(0, 0, 0, 0.7)  # outline
+        Color(0, 0, 0, 0.7)
         Line(ellipse=(-r, -r, d, d), width=0.002)
 
         # pointing direction
@@ -185,315 +108,140 @@ class Bot(Widget):
                     -r,
                     d,
                     d,
-                    90 - self.shield_range_deg,
-                    90 + self.shield_range_deg,
+                    90 - (self.shield_range_deg or 0),
+                    90 + (self.shield_range_deg or 0),
                 ),
                 width=0.007,
-            )  # shield_range is in degrees
+            )
 
         PopMatrix()
 
         # info box
         PushMatrix()
-
         x = min(0.95 - 0.116, self.x + 0.01)
         y = min(0.97 - 0.101, self.y)
-
         sx = r
         sy = 0.005
-
         Translate(x, y)
         Color(0, 0, 0, 0.2)
         Line(rectangle=(sx, sy, 0.107, 0.116), width=0.001)
-
         Color(1, 1, 1, 0.6)
         Rectangle(pos=(sx, sy), size=(0.107, 0.116))
 
         t = (
             f"x: {self.x:.3f}\n"
             f"y: {self.y:.3f}\n"
-            f"rot: {self.rot:1.2f}r / {math.degrees(self.rot):3.0f}d\n"
+            f"rot: {self.rot:3.0f}d\n"
             f"shield: {'ON' if self.shield else 'OFF'}\n"
             f"health: {self.health}"
         )
-
         Color(0, 0, 0, 0.7)
         mylabel = Label(text=t, font_size=24, color=(0, 0, 0, 0.7))
         mylabel.refresh()
         texture = mylabel.texture
         Rectangle(pos=(0.064, 0.109), texture=texture, size=(0.081, -0.101))
-        # /info box
-
         PopMatrix()
 
+    # ------------------------- Actions -------------------------
     def move(self):
-        """The bot takes a step. Corresponds to the command 'M'"""
-        self.x += self.step * cos(self.rot)
-        self.y += self.step * sin(self.rot)
+        rad = math.radians(self.rot)
+        self.x += (self.step or 0.02) * cos(rad)
+        self.y += (self.step or 0.02) * sin(rad)
 
-    def rotate(self, angle):
-        """The bot rotates by a given angle. Corresponds to the commands 'C' and 'A'"""
-        self.rot += angle
-        self.rot = math.fmod(self.rot, 2 * math.pi)
+    def rotate(self, angle: float):
+        self.rot = (self.rot + angle) % 360
 
-    def append_prompt_to_history(self, new_prompt):
-        # Deprecated: prompts are now recorded through the HistoryManager.
-        # This method is retained for backward compatibility but does nothing.
-        pass
+    def damage(self):
+        self.health -= int(config.get("game", "bullet_damage"))
+        self.health = max(self.health, 0)
 
+    def toggle_shield(self):
+        self.shield = not self.shield
+
+    def create_bullet(self):
+        if not self.shield:
+            return Bullet(self.id, self.x, self.y, self.rot)
+        return None
+
+    # Bullet helper compatibility
+    def rot_rad(self):
+        return math.radians(self.rot)
+
+    @property
+    def shield_range(self):
+        return float(self.shield_range_deg or 0)
+
+    # ------------------------- Prompt history (UI helpers) -------------------------
     def rewind_prompt_history(self):
-        """Selects the previous prompt for this bot from the history manager.
-
-        This method navigates through the list of prompts stored by the
-        HistoryManager for this bot. When called, it moves the cursor
-        backwards if possible and updates `current_prompt` accordingly.
-        """
-
-        # Fetch prompts for this bot from the HistoryManager
         prompts = []
-        if (
-            self.board_widget.history_manager.current_round
-            and "prompts" in self.board_widget.history_manager.current_round
-        ):
-            prompts = [
-                p["prompt"]
-                for p in self.board_widget.history_manager.current_round["prompts"]
-                if p.get("bot_id") == self.id
-            ]
-
-        # Determine the new index
-        if self.history_prompt_index is None:
-            # Start from the end
+        hm = self.board_widget.history_manager
+        if hm.current_round and "prompts" in hm.current_round:
+            prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
+        if self.prompt_history_index is None:
             if prompts:
-                self.history_prompt_index = len(prompts) - 1
+                self.prompt_history_index = len(prompts) - 1
         else:
-            if self.history_prompt_index > 0:
-                self.history_prompt_index -= 1
-
-        # Update current_prompt based on the new index
-        if (
-            self.history_prompt_index is not None
-            and 0 <= self.history_prompt_index < len(prompts)
-        ):
-            self.current_prompt = prompts[self.history_prompt_index]
+            if self.prompt_history_index > 0:
+                self.prompt_history_index -= 1
+        if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
+            self.current_prompt = prompts[self.prompt_history_index]
 
     def forward_prompt_history(self):
-        """Selects the next prompt for this bot from the history manager.
-
-        Navigates forwards through this bot's prompt history maintained
-        by the HistoryManager and updates `current_prompt`.
-        """
-
         prompts = []
-        if (
-            self.board_widget.history_manager.current_round
-            and "prompts" in self.board_widget.history_manager.current_round
-        ):
-            prompts = [
-                p["prompt"]
-                for p in self.board_widget.history_manager.current_round["prompts"]
-                if p.get("bot_id") == self.id
-            ]
-
-        if self.history_prompt_index is None:
-            # If no index set, start at first prompt if any
+        hm = self.board_widget.history_manager
+        if hm.current_round and "prompts" in hm.current_round:
+            prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
+        if self.prompt_history_index is None:
             if prompts:
-                self.history_prompt_index = 0
+                self.prompt_history_index = 0
         else:
-            if self.history_prompt_index < len(prompts) - 1:
-                self.history_prompt_index += 1
-
-        if (
-            self.history_prompt_index is not None
-            and 0 <= self.history_prompt_index < len(prompts)
-        ):
-            self.current_prompt = prompts[self.history_prompt_index]
+            if self.prompt_history_index < len(prompts) - 1:
+                self.prompt_history_index += 1
+        if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
+            self.current_prompt = prompts[self.prompt_history_index]
 
     def get_current_prompt_from_history(self):
-        """Retrieve the currently selected prompt for this bot.
-
-        The HistoryManager holds all prompts submitted by both bots. The
-        `history_prompt_index` points into the filtered list of prompts
-        belonging to this bot. If no prompt is selected, an empty
-        string is returned.
-
-        Returns:
-            str: The prompt text or an empty string.
-        """
         return self.current_prompt or ""
 
     def get_current_prompt(self):
-        """Returns the current prompt. It is equivalent to get_prompt.
-
-        Returns:
-            _type_: a string with the prompt
-        """
         return self.get_current_prompt_from_history()
 
     def get_prompt(self):
-        """Returns the current prompt. It is equivalent to get_current_prompt_from_history.
-        Returns:
-            _type_: a string with the prompt
-        """
         return self.get_current_prompt_from_history()
 
-    def set_augmenting_prompt(self, augmenting):
-        """Toggles the flag indicating if the player prompts are augmented with game info.
-
-        Args:
-            augmenting (_type_): the new flag value
-        """
+    def set_augmenting_prompt(self, augmenting: bool):
         self.augmenting_prompt = augmenting
 
-    def get_augmenting_prompt(self, augmenting):
-        """Toggles the flag indicating if the player prompts are augmented with game info.
+    def get_augmenting_prompt(self):
+        return bool(self.augmenting_prompt)
 
-        Args:
-            augmenting (_type_): the new flag value
-        """
-        return self.augmenting_prompt
-
-    def prepare_prompt_submission(self, new_prompt):
-        """Store a new prompt and mark the bot ready for the next round.
-
-        Args:
-            new_prompt (str): the player's prompt to use.
-        """
-        # Store the prompt for reference in UI and LLM interaction
+    def prepare_prompt_submission(self, new_prompt: str):
         self.current_prompt = new_prompt
-
-        # Reset history navigation index so that the new prompt becomes the
-        # default selected prompt when the round starts.
-        self.history_prompt_index = None
-
-        # Mark the bot as ready for a new round
+        self.prompt_history_index = None
         self.ready_for_next_round = True
 
+    # ------------------------- LLM communication -------------------------
     def submit_prompt_to_llm(self):
-        """Prepare and send a chat-style request to the LLM via the board's OllamaConnector.
+        """Build and send a chat request with: header, prompt(+state), and history."""
+        # Refresh flags
+        self.augmenting_prompt = bool(config.get("game", "prompt_augmentation"))
+        self.independent_models = bool(config.get("game", "independent_models"))
 
-        This method assembles a list of chat messages following the chat API
-        convention. A system message containing the appropriate header is
-        included at the start of the conversation. The player's input is
-        encoded as a user message along with optional game state and
-        history information when prompt augmentation is enabled. Previous
-        messages are retained either on a per-bot basis (independent
-        context) or shared for both bots (shared context). The assembled
-        messages are then sent to the `/api/chat` endpoint.
-        """
-        # Refresh config flags in case the user changed them via the UI
-        self.augmenting_prompt = config.get("game", "prompt_augmentation")
-        self.independent_models = config.get("game", "independent_models")
-
-        # Determine which header to use based on independent/shared context
-        header_key = (
-            "augmentation_header_independent"
-            if self.independent_models
-            else "augmentation_header_dependent"
-        )
-        header_path = config.get("llm", header_key)
-        # Fall back to shared header if dependent key not configured
-        try:
-            with open(header_path, "r", encoding="utf-8") as f:
-                header_text = f.read()
-        except FileNotFoundError:
-            # Attempt to load a sensible shared header file if the configured
-            # dependent path is missing. This falls back to
-            # `augmentation_header_shared_1.txt` located in the same directory.
-            shared_fallback = os.path.join(
-                os.path.dirname(header_path), "augmentation_header_shared_1.txt"
-            )
-            try:
-                with open(shared_fallback, "r", encoding="utf-8") as f:
-                    header_text = f.read()
-            except Exception:
-                header_text = ""
-
-        # Build the system message only at the beginning of a conversation. If the
-        # chat history is empty (meaning this is the first call), prepend a
-        # system message containing the instructions. Otherwise, the system
-        # message will already reside at index 0 in the chat history.
-        system_message = {"role": "system", "content": header_text}
-
-        # Retrieve the chat history from the HistoryManager. When
-        # independent_models is True, only messages for this bot are
-        # returned; otherwise messages from both bots are included.
-        if self.independent_models:
-            chat_history = self.board_widget.history_manager.get_chat_history(self.id, shared=False)
-        else:
-            chat_history = self.board_widget.history_manager.get_chat_history(None, shared=True)
-
-        messages: list[dict[str, str]] = []
-
-        if not chat_history:
-            # Start the conversation with the system message if no history exists
-            messages.append(system_message)
-        else:
-            # Copy existing chat history (includes system and previous exchanges)
-            messages.extend(chat_history)
-
-        # Build the user message including optional game state and the current
-        # prompt. The format of this content matches the previous
-        # non-chat prompt structure for continuity.
-        user_content = ""
-        if self.augmenting_prompt:
-            user_content += "GAME_STATE:\n"
-            user_content += f"Self.x: {self.x}, Self.y: {self.y}\n"
-            user_content += f"Self.rot: {math.degrees(self.rot)}\n"
-            user_content += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
-            user_content += f"Self.health: {self.health}\n"
-            # Opponent info
-            opp = self.board_widget.get_bot_by_id(3 - self.id)
-            user_content += (
-                f"Opponent.x: {opp.x}, Opponent.y: {opp.y}\n"
-                f"Opponent.rot: {math.degrees(opp.rot)}\n"
-                f"Opponent.shield: {'ON' if opp.shield else 'OFF'}\n"
-                f"Opponent.health: {opp.health}\n"
-            )
-            user_content += "PLAYER_INPUT:\n"
-            user_content += (self.current_prompt or "") + "\n"
-        else:
-            # Only include the player's input
-            user_content += "PLAYER_INPUT:\n"
-            user_content += (self.current_prompt or "") + "\n"
-
-        # Always append the game history
-        user_content += "GAME_HISTORY:\n"
-        try:
-            user_content += self.board_widget.history_manager.to_text()
-        except Exception:
-            # Fallback to empty history if conversion fails
-            user_content += ""
-
-        # Create the user message and append to the messages list
-        user_message = {"role": "user", "content": user_content}
-        messages.append(user_message)
-
-        # Record the user message in the HistoryManager. This stores the
-        # prompt as part of the current turn's chat history.
+        messages, user_content = self._build_chat_messages()
+        # Record the user message for this turn
         self.board_widget.history_manager.record_message(self.id, "user", user_content)
 
-        # Build the payload expected by the chat API
         data = {
             "model": config.get("llm", "model"),
             "messages": messages,
             "stream": False,
         }
 
-        # Construct the full URL for the chat endpoint (override the configured path)
         base_url = config.get("llm", "url")
         port = config.get("llm", "port")
-        # Always use the chat path regardless of `llm.path` in the config
-        chat_url = f"{base_url}:{port}/api/chat"
+        path = config.get("llm", "path") or "/api/chat"
+        chat_url = f"{base_url}:{port}{path}"
 
-        print ("******************** WERWER submit prompt to llm **********")
-        print("Payload to LLM (data):")
-        for key, value in data.items():
-            print(f"{key}: {value}")
-        print ("******************** WERWER **********")
-
-        # Send the request via the shared OllamaConnector. It will call the
-        # appropriate callback on completion.
         self.board_widget.ollama_connector.send_request(
             chat_url,
             data,
@@ -502,83 +250,89 @@ class Bot(Widget):
             self._on_llm_error,
         )
 
-    def _on_llm_failure(self, request, error):
-        """Error handler for HTTP errors 4xx, 5xx
+    def _get_mode_header_text(self) -> str:
+        key = (
+            "augmentation_header_independent"
+            if self.independent_models
+            else "augmentation_header_dependent"
+        )
+        path = config.get("llm", key)
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return f.read()
+        except FileNotFoundError:
+            shared_fallback = os.path.join(os.path.dirname(path), "augmentation_header_shared_1.txt")
+            try:
+                with open(shared_fallback, "r", encoding="utf-8") as f:
+                    return f.read()
+            except Exception:
+                return ""
 
-        Args:
-            request (_type_): the request object
-            error (_type_): the error obtained
-        """
+    def _build_user_message_content(self) -> str:
+        content = "PLAYER_INPUT:\n"
+        content += (self.current_prompt or "") + "\n"
+        if self.augmenting_prompt:
+            content += "GAME_STATE:\n"
+            content += f"Self.x: {self.x}, Self.y: {self.y}\n"
+            content += f"Self.rot: {self.rot}\n"  # degrees
+            content += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
+            content += f"Self.health: {self.health}\n"
+            opp = self.board_widget.get_bot_by_id(3 - self.id)
+            if opp is not None:
+                content += (
+                    f"Opponent.x: {opp.x}, Opponent.y: {opp.y}\n"
+                    f"Opponent.rot: {opp.rot}\n"
+                    f"Opponent.shield: {'ON' if opp.shield else 'OFF'}\n"
+                    f"Opponent.health: {opp.health}\n"
+                )
+        return content
 
+    def _build_chat_messages(self) -> tuple[list[dict[str, str]], str]:
+        system_message = {"role": "system", "content": self._get_mode_header_text()}
+        if self.independent_models:
+            history = self.board_widget.history_manager.get_chat_history(self.id, shared=False)
+        else:
+            history = self.board_widget.history_manager.get_chat_history(None, shared=True)
+        user_content = self._build_user_message_content()
+        user_message = {"role": "user", "content": user_content}
+        messages: list[dict[str, str]] = [system_message]
+        messages.extend(history)
+        messages.append(user_message)
+        return messages, user_content
+
+    def _on_llm_failure(self, _request, _error):
         self.board_widget.on_bot_llm_interaction_complete(self)
 
-    def _on_llm_error(self, request, error):
-        """Error handler for errors outside the web protocol (no connection, etc)
-
-        Args:
-            request (_type_): the request object
-            error (_type_): the error obtained
-        """
-
+    def _on_llm_error(self, _request, _error):
         self.board_widget.on_bot_llm_interaction_complete(self)
 
-    def _on_llm_response(self, req, result):
-        """Event handler of a successul interaction with the LLM
-
-        Args:
-            req (_type_): the request object
-            result (_type_): the interaction result
-
-        """
-
-        # Extract the assistant's content from the result. Different chat
-        # backends may return slightly different JSON structures, so we
-        # inspect several common fields. Ultimately we fall back to an
-        # empty string if none of the expected keys are present.
+    def _on_llm_response(self, _req, result):
+        """Parse the LLM reply, execute it, record history, and finish the turn."""
+        # 1) Extract assistant content from common chat API shapes
         assistant_content = ""
         try:
             if isinstance(result, dict):
                 if isinstance(result.get("response"), str):
                     assistant_content = result["response"]
-                elif (
-                    isinstance(result.get("message"), dict)
-                    and isinstance(result["message"].get("content"), str)
-                ):
+                elif isinstance(result.get("message"), dict) and isinstance(result["message"].get("content"), str):
                     assistant_content = result["message"]["content"]
-                elif (
-                    isinstance(result.get("choices"), list)
-                    and len(result["choices"]) > 0
-                    and isinstance(result["choices"][0], dict)
-                ):
+                elif isinstance(result.get("choices"), list) and result["choices"] and isinstance(result["choices"][0], dict):
                     choice = result["choices"][0]
-                    if (
-                        isinstance(choice.get("message"), dict)
-                        and isinstance(choice["message"].get("content"), str)
-                    ):
-                        assistant_content = choice["message"]["content"]
-                # Sometimes the API returns the content directly in `content` key
+                    msg = choice.get("message") if isinstance(choice, dict) else None
+                    if isinstance(msg, dict) and isinstance(msg.get("content"), str):
+                        assistant_content = msg["content"]
                 elif isinstance(result.get("content"), str):
                     assistant_content = result["content"]
-        except Exception:
+        except (TypeError, KeyError, ValueError):
             assistant_content = ""
 
-        # Clean up whitespace
         assistant_content = assistant_content.strip() if isinstance(assistant_content, str) else ""
-
-        # Store the last LLM response for logging
         self.last_llm_response = assistant_content
 
-        print ("******************** WERWER _on_llm_response  **********")
-        print("LLM response content:")        
-        print(assistant_content)
-        print ("******************** WERWER **********")    
-
+        # 2) Interpret command
         cmd = assistant_content
-
-        command = None
-
-        # ********* Processing the response *********
         command_ok = True
+        command: str | None = None
         try:
             if isinstance(cmd, str):
                 command = cmd
@@ -587,91 +341,51 @@ class Bot(Widget):
             else:
                 command_ok = False
 
-            if command_ok:
-
+            if command_ok and isinstance(command, str) and command:
                 match command[0]:
                     case "M":
                         self.board_widget.add_llm_response_to_history(self.id, "M")
                         self.move()
-
                     case "C":
                         angle = float(command[1:])
-                        self.board_widget.add_llm_response_to_history(
-                            self.id, f"C{angle}"
-                        )
+                        self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")
                         self.rotate(angle)
-
                     case "A":
                         angle = float(command[1:])
-                        self.board_widget.add_llm_response_to_history(
-                            self.id, f"A{angle}"
-                        )
+                        self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")
                         self.rotate(-angle)
-
                     case "B":
                         self.board_widget.shoot(self.id)
                         self.board_widget.add_llm_response_to_history(self.id, "B")
-
                     case "S":
                         if len(command) == 1:
                             self.board_widget.add_llm_response_to_history(self.id, "S")
                             self.toggle_shield()
-
                         else:
                             if command[1] == "1":
-                                self.board_widget.add_llm_response_to_history(
-                                    self.id, "S1"
-                                )
+                                self.board_widget.add_llm_response_to_history(self.id, "S1")
                                 self.shield = True
-
                             elif command[1] == "0":
-                                self.board_widget.add_llm_response_to_history(
-                                    self.id, "S0"
-                                )
+                                self.board_widget.add_llm_response_to_history(self.id, "S0")
                                 self.shield = False
                             else:
                                 command_ok = False
                     case _:
                         command_ok = False
-
-        except Exception as e:
+        except (ValueError, IndexError, TypeError) as e:
             command_ok = False
             print(f"exception: {e}")
 
+        # 3) Fallback UI note on invalid command
         if not command_ok:
-            # Log invalid commands directly to the UI via the GameBoard. Bot no longer
-            # implements a separate log method; all UI updates are funnelled
-            # through the GameBoard.
             self.board_widget.add_text_to_llm_response_history(
                 self.id, "\n\n[color=#FF0000][b]Invalid Command.[/b][/color]\n\n"
             )
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
 
-        # ********* Record the assistant message *********
-        # Persist the assistant's response as part of the current turn's chat history.
+        # 4) Record assistant message in history
         self.board_widget.history_manager.record_message(self.id, "assistant", assistant_content)
 
-        # ********* Updating the bot's state and notifying the board widget *********
+        # 5) Finish turn
         self.ready_for_next_turn = True
         self.board_widget.on_bot_llm_interaction_complete(self)
-
-    def damage(self):
-        """The bot's been hit"""
-        self.health -= config.get("game", "bullet_damage")
-        self.health = max(self.health, 0)
-
-    def toggle_shield(self):
-        """Toggles the shield state."""
-        self.shield = not self.shield
-
-    def create_bullet(self):
-        """Tries to shoot a bullet. It will only succeed if the shield is down.
-
-        Returns:
-            _type_: the bullet shot or None
-        """
-        if not self.shield:
-            return Bullet(self.id, self.x, self.y, self.rot)
-
-        else:
-            return None
