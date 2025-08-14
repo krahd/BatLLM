@@ -16,5 +16,5 @@ if [ "$1" == "-l" ]; then
     OLLAMA_HOST=$(localhost:$PORT ollama serve > "$LOG" 2>&1)
     echo "($LOG)"
 else
-    $OLLAMA_HOST=$(localhost:$PORT ollama serve 2>&1)
+    OLLAMA_HOST=$(localhost:$PORT ollama serve 2>&1)
 fi

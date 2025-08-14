@@ -20,7 +20,7 @@ game:
 
 llm:
     augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
-    augmentation_header_dependent: src/assets/prompts/augmentation_header_dependent_1.txt
+    augmentation_header_dependent: src/assets/prompts/shared_1.txt
 
     model: llama3.2:latest
     path: /api/generate

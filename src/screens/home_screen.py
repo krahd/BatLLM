@@ -32,6 +32,8 @@ class HomeScreen(Screen):
         """
         super().__init__(**kwargs)
 
+        self.start_new_game(force=True)  # Start a new game when the screen is created
+
     def save_session(self):
         """
         Presents a confirmation dialog to the user to save the current game session.
@@ -81,7 +83,7 @@ class HomeScreen(Screen):
             _on_saving_cancelled,
         )
 
-    def start_new_game(self):
+    def start_new_game(self, force=False):
         """
         Presents a confirmation dialog to the user to start a new game.
         If the user confirms, it asks the GameBoard to start a new game.
@@ -89,11 +91,20 @@ class HomeScreen(Screen):
         """
 
         def _start_new_game():
-            self.ids.game_board.start_new_game()
+            self.get_game_board().start_new_game()
 
-        show_confirmation_dialog(
-            "New Game", "Abandon current game and start a new one?", _start_new_game
-        )
+        if not force:
+            show_confirmation_dialog(
+                "New Game", "Abandon current game and start a new one?", _start_new_game
+            )
+        else:
+            _start_new_game()
+
+    def get_game_board(self) -> GameBoard:
+        """
+        Returns the GameBoard instance.
+        """
+        return self.ids.game_board
 
     def go_to_settings_screen(self):
         """

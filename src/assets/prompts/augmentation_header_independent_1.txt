@@ -10,11 +10,3 @@ Your output needs to strictly be a command. Your output will be parsed by the ga
     B    - if the shield is low, the bot shoots a bullet forward. If the shield is up it does nothing. Example: B.
 
 If you output anything else (for example, "My output is M") then your command will be ignored. Your output needs to be "M" without anything else, your output will be parsed as an input string by a strict parsing function.
-
-
-
-# Create better augmentation prompts
-# Create a tool for prompting the LLM independently and see what info it has. IDeally one would make a copy of the llama and work with it and then delete it.
-
-
-#TODO This is for independent models, needs a different one for shared llama

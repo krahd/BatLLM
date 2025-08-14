@@ -51,12 +51,15 @@ class HistoryManager:
         bots_state = self._get_bots_state(game_board)
         self.current_game["initial_state"] = bots_state
 
-        # We could store static info or config data here
-
         # Append this session to sessions list
         self.games.append(self.current_game)
 
         # Reset current round/turn since new game
+        # TODO create a new round at game start
+        # Can use a parameter to indicate it is the first one
+        # or it could be a different method, start_first_round
+        # or it could be part of the game_board.start_new_game
+        # self.start_round(self.current_game, first_round=True)
         self.current_round = None
         self.current_turn = None
 
@@ -95,23 +98,30 @@ class HistoryManager:
         self.current_round = None
         self.current_turn = None
 
-    def start_round(self, game):
-        """_summary_
+    def start_round(self, game, first_round=False):
+        """
+        Start a new round within the current game.
 
         Args:
-            game (_type_): the current game being played.
+            game: The current game object (e.g., BoardGameWidget).
 
         Raises:
-            ValueError: If there's no game then we can't start a round.
+            ValueError: If there is no active game or a round is already in progress.
         """
+
         if not self.current_game:
             raise ValueError(
                 "Cannot start a round without an active game. Call start_game first."
             )
 
-        # If we were already in a round, then raise an error
-        if self.current_round and "end_time" not in self.current_round:
-            raise ValueError("Cannot start a round while . Call start_game first.")
+        # TODO review this logic
+        # If not the first round, ensure no round is currently active
+        # if not first_round:
+        #    # If we were already in a round, then raise an error
+        #    if self.current_round and "end_time" not in self.current_round:
+        #             "Cannot start a round while in one. Call end_round first."
+        #         )
+        #        raise ValueError(
 
         # Create the new round entry
         round_number = len(self.current_game["rounds"]) + 1
@@ -127,7 +137,7 @@ class HistoryManager:
         # Snapshot the state at round start
         self.current_round["initial_state"] = self._get_bots_state(game)
 
-        # Append the round to the game's list of rounds'
+        # Append the round to the game's list of rounds
         self.current_game["rounds"].append(self.current_round)
 
         # Reset current turn

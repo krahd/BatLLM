@@ -49,6 +49,7 @@ class Bot(Widget):
     ready_for_next_round = None
     ready_for_next_turn = None
     augmenting_prompt = None
+    independent_models = None
 
     llm_endpoint = None
     llm_port = None
@@ -74,7 +75,9 @@ class Bot(Widget):
         self.board_widget = board_widget
         self.ready_for_next_round = False
         self.ready_for_next_turn = False
+
         self.augmenting_prompt = config.get("game", "prompt_augmentation")
+        self.independent_models = config.get("game", "independent_models")
 
         if bot_id == 1:
             self.color = (0.8, 0.88, 1, 0.85)
@@ -154,13 +157,12 @@ class Bot(Widget):
         Color(1, 1, 1, 0.6)
         Rectangle(pos=(sx, sy), size=(0.107, 0.116))
 
-        t = "x: {:.3f}\ny: {:.3f}\nrot: {:1.2f}r / {:3.0f}d\nshield: {}\nhealth: {}".format(
-            self.x,
-            self.y,
-            self.rot,
-            math.degrees(self.rot),
-            "ON" if self.shield else "OFF",
-            self.health,
+        t = (
+            f"x: {self.x:.3f}\n"
+            f"y: {self.y:.3f}\n"
+            f"rot: {self.rot:1.2f}r / {math.degrees(self.rot):3.0f}d\n"
+            f"shield: {'ON' if self.shield else 'OFF'}\n"
+            f"health: {self.health}"
         )
 
         Color(0, 0, 0, 0.7)
@@ -236,7 +238,7 @@ class Bot(Widget):
         """
         return self.get_current_prompt_from_history()
 
-    def augmenting_prompt(self, augmenting):
+    def set_augmenting_prompt(self, augmenting):
         """Toggles the flag indicating if the player prompts are augmented with game info.
 
         Args:
@@ -244,8 +246,16 @@ class Bot(Widget):
         """
         self.augmenting_prompt = augmenting
 
+    def get_augmenting_prompt(self, augmenting):
+        """Toggles the flag indicating if the player prompts are augmented with game info.
+
+        Args:
+            augmenting (_type_): the new flag value
+        """
+        return self.augmenting_prompt
+
     def prepare_prompt_submission(self, new_prompt):
-        """Gets ready to execute
+        """Gets read. to execute
 
         Args:
             new_prompt (_type_): the prompt to use
@@ -255,6 +265,7 @@ class Bot(Widget):
 
     def submit_prompt_to_llm(self):
         """Takes care of the interaction with the LLM"""
+
         headers = {"Content-Type": "application/json"}
 
         data = {
@@ -265,16 +276,22 @@ class Bot(Widget):
         }
 
         # We augment the prompt if the flag is set
-        if config.get("game", "prompt_augmentation"):
+        self.augmenting_prompt = config.get("game", "prompt_augmentation")
+        self.independent_models = config.get("game", "independent_models")
 
-            # To facilitate exploration and testing, we allow the header file to be changed on the fly, so we reload prompt_augmentation_header just in case
-            file = open(
-                config.get("llm", "augmentation_header_file"), "r", encoding="utf-8"
-            )
-            hdr = file.read()
+        if self.independent_models:
+            header_file = "augmentation_header_independent"
+        else:
+            header_file = "augmentation_header_dependent"
 
-            file.close()
-            data["prompt"] = hdr
+        file = open(config.get("llm", header_file), "r", encoding="utf-8")
+        hdr = file.read()
+        file.close()
+
+        data["prompt"] = hdr  # start with the corresponding header
+
+        if self.augmenting_prompt:
+            # add the current game state to the prompt when augmenting
             data["prompt"] += "GAME_STATE:\n"
             data["prompt"] += f"Self.x: {self.x}, Self.y: {self.y}\n"
             data["prompt"] += f"Self.rot: {math.degrees(self.rot)}\n"
@@ -293,12 +310,22 @@ class Bot(Widget):
                 "prompt"
             ] += f"Opponent.health: {self.board_widget.get_bot_by_id(3 - self.id).health}\n"
             data["prompt"] += "PLAYER_INPUT:\n"
+            data["prompt"] += self.get_current_prompt() + "\n"  # add the user's prompt
 
-        data["prompt"] += self.get_current_prompt() + "\n"
+            # TODO create different histories for when they are independent or dependent
+        else:
+            # if not augmenting, we just use the current prompt
+            data["prompt"] += self.get_current_prompt() + "\n"
+
+        # Add the game history to the prompt,
+        # TODO change it depending on the independent models flag
+        data["prompt"] += "GAME_HISTORY:\n"
+        data["prompt"] += self.board_widget.history_manager.to_text()
 
         # ************* Seding the request to the LLM *************
         # TODO review the logic of calling the gameboad to start a new round
-        self.board_widget.history_manager.start_round(self)
+
+        # self.board_widget.history_manager.start_round(self)
 
         UrlRequest(
             url=self.llm_endpoint,

@@ -30,7 +30,7 @@ class GameBoard(Widget, EventDispatcher):
     """
 
     bots = []
-    bulletTrace = []
+    bullet_trace = []
     bullet_alpha = 1
     sound_shoot = None
     sound_bot_hit = None
@@ -49,7 +49,7 @@ class GameBoard(Widget, EventDispatcher):
 
         self.bind(size=self._redraw, pos=self._redraw)
 
-        self.bulletTrace = []  # Initialize bullet trace list
+        self.bullet_trace = []  # Initialize bullet trace list
         self.bullet_alpha = 1  # Initialize bullet alpha value
 
         self.sound_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
@@ -185,13 +185,13 @@ class GameBoard(Widget, EventDispatcher):
             for bot in self.bots:
                 bot.render()
 
-            for x, y in self.bulletTrace:
+            for x, y in self.bullet_trace:
                 Color(1, 0, 0, self.bullet_alpha)  # Red color for bullet trace
                 Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
                 if self.bullet_alpha > 0:
                     self.bullet_alpha -= 0.0015  # Decrease alpha for fading effect
                 else:
-                    self.bulletTrace.clear()
+                    self.bullet_trace.clear()
 
     def on_touch_down(self, touch):
         """
@@ -296,8 +296,9 @@ class GameBoard(Widget, EventDispatcher):
         # Randomise the order of playinng turns.
         self.shuffled_bots = random.sample(self.bots, 2)
 
-        for b in self.bots:
-            b.log(f"\n[b][size=20sp]Round {self.current_round}[/size][/b]")
+        # TODO check this
+        # for b in self.bots:
+        #    b.log(f"\n[b][size=20sp]Round {self.current_round}[/size][/b]")
 
         # if we made it here, then we are done with the round. Let's start the next one
 
@@ -492,7 +493,7 @@ class GameBoard(Widget, EventDispatcher):
             # only draw the bullet when it is outside the bot that fires it
             dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
             if dist * 0.97 > bot.diameter / 2:
-                self.bulletTrace.append((bullet.x, bullet.y))
+                self.bullet_trace.append((bullet.x, bullet.y))
 
         if damaged_bot_id is not None:
             Clock.schedule_once(lambda dt: self.sound_bot_hit.play())

@@ -47,6 +47,18 @@ class BatLLM(MDApp):
         return sm
 
     def load_theme_colors(self):
+        """
+        Loads theme color definitions from a properties file and stores them in the `theme_colors` attribute.
+
+        Reads the "theme_colors.properties" file line by line, ignoring empty lines and comments.
+        For each valid line containing a key-value pair separated by '=', it parses the key and value,
+        converts the value from a hex color string to a color object using `get_color_from_hex`, and
+        stores the result in the `theme_colors` dictionary.
+
+        Raises:
+            FileNotFoundError: If the "theme_colors.properties" file does not exist.
+            ValueError: If a line contains an invalid hex color value.
+        """
         self.theme_colors = {}
         with open("theme_colors.properties", "r") as f:
             for line in f:
