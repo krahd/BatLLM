@@ -733,7 +733,7 @@ class HistoryManager:
                             break
                     if llm_text:
                         lines.append(set_newlines(f"[b]llm:[/b]", 1))
-                        lines.append(set_newlines(f"[color=#505050]{llm_text.strip("\n")}[/color]"))
+                        lines.append(set_newlines(f"[color=#808080]{llm_text.strip("\n")}[/color]"))
                         
 
                     # Parsed command (if recorded)

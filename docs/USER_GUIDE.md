@@ -22,7 +22,7 @@ A match consists of one or more rounds; each round consists of several turns. Th
 2. **During Each Turn:**
 
     - At the start of each turn, the game randomly selects which player’s bot will act first for that turn (this random order is determined once per round).
-    - The first bot’s prompt (augmented or raw, depending on settings) is sent to its LLM using Kivy's Clock to run it non blockingly with respect to the game renderiing loop. The LLM returns a command which is immediately executed by the bot in the game world. The game state is updated and rendered on the screen.
+    - The first bot’s prompt (augmented or raw, depending on settings) is sent to the LLM, which, in turn returns a command to be immediately executed by the bot in the game world. The game state is updated and rendered on the screen.
     - If the command was to fire, the entire lifespan of the bullet is part of the turn execution. That is, the bot only finishes its turn when the bullet resolves into a hit or not. The bullet travels until it either hits the other bot or goes out of bounds. A bullet that hits a bot outside its shield reduces the target bot's health by BULLET_DAMAGE. The damage is also part of the turn, which means that the may finish abruptly. If it misses, the turn continues. The opponent bot cannot act or move until the other bot has finished.
     - Next, the second bot’s prompt is sent to its LLM, and that bot then executes its command for the turn, updating the state and UI accordingly (unless the round already ended due to the first bot destroying the opponent).
     - This completes one turn (both bots have acted once).
@@ -52,12 +52,11 @@ _Any other output from the LLM is interpreted as 'do nothing' this turn._
 
 <!--#TODO rewrite -->
 
--   **Standard Mode:** Each player writes a prompt at the beginning of a round; both prompts are sent to their respective LLMs each turn of that round.
--   **Prompt Augmentation:** Optionally, the game augments the player's prompt with structured game state info (see [Prompt Augmentation](#prompt-augmentation)).
--   **LLM Assignment:**
-
-    -   _Separate LLMs:_ The context of each player only their prompt/response cycles and the gamedata.
-    -   _Single LLM:_ The context is the same for both bots and includes all the prompt/responses of both bots. This introduces pontential malicious prompting where players try to disrupt each others prompts with their own.
+-   **Standard Mode:** Each player writes a prompt at the beginning of a round; prompts are sent as-is to the llm.
+-   **Prompt Augmentation:** The game augments the player's prompt with a header describing the game rules and structured game state info (see [Prompt Augmentation](#prompt-augmentation)).
+-   **LLM Context:**
+    -   _Independent Context:_ The context of each player only their prompt/response cycles and the gamedata.
+    -   _Shared Context:_ The context is the same for both bots and includes all the prompt/responses of both bots. This introduces pontential malicious prompting where players try to disrupt each others prompts with their own.
 
 **Note:** There are **no** NPC Bots. BatLLM is strictly AI mediated human-vs-human gaming. all gameplay decisions are made by human-written prompts, then carried out by LLMs.
 

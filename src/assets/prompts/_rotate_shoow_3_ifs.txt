@@ -1,0 +1,3 @@
+If you are looking towards your opponent and your shield is up, return S
+If you are looking towards your opponent and your shield is down, return B
+If you are not looking towards your opponent return Cxxx with xxx the angle that will make you face your opponent.

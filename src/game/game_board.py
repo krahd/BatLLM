@@ -401,7 +401,7 @@ class GameBoard(Widget, EventDispatcher):
                 # attempted to call ``b.log``, but Bot has no ``log`` method.
                 # We instead use the GameBoard's helper to append text.
                 self.add_text_to_llm_response_history(
-                    b.id, f"[b]Round {self.current_round} ended.[/b]\n\n"
+                    b.id, f"[color=#a00000]Round {self.current_round} ended.[/color]\n\n"
                 )
 
             round_res = "\n"

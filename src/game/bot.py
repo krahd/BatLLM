@@ -145,78 +145,205 @@ class Bot(Widget):
 
     # ------------------------- Actions -------------------------
     def move(self):
+        """
+        Updates the bot's position based on its current rotation and step size.
+
+        The method calculates the new x and y coordinates by moving the bot forward in the direction
+        specified by its rotation angle (`self.rot`). The movement distance is determined by `self.step`,
+        defaulting to 0.02 if `self.step` is not set.
+
+        Returns:
+            None
+        """
         rad = math.radians(self.rot)
         self.x += (self.step or 0.02) * cos(rad)
         self.y += (self.step or 0.02) * sin(rad)
 
     def rotate(self, angle: float):
+        """
+        Rotates the object by a specified angle.
+
+        Args:
+            angle (float): The angle in degrees to rotate the object. Positive values rotate clockwise, negative values rotate counterclockwise.
+
+        The rotation is normalized to stay within the range [0, 360) degrees.
+        """
         self.rot = (self.rot + angle) % 360
 
     def damage(self):
+        """
+        Reduces the bot's health by the bullet damage value specified in the configuration.
+        Ensures that health does not drop below zero.
+        """
         self.health -= int(config.get("game", "bullet_damage"))
         self.health = max(self.health, 0)
 
     def toggle_shield(self):
+        """
+        Toggles the state of the shield.
+
+        If the shield is currently active, it will be deactivated, and vice versa.
+        """
         self.shield = not self.shield
 
     def create_bullet(self):
+        """
+        Creates and returns a Bullet object if the bot's shield is not active.
+
+        Returns:
+            Bullet: A new Bullet instance initialized with the bot's id, position (x, y), and rotation (rot) if the shield is inactive.
+            None: If the shield is active, no bullet is created and None is returned.
+        """
         if not self.shield:
             return Bullet(self.id, self.x, self.y, self.rot)
         return None
 
     # Bullet helper compatibility
     def rot_rad(self):
+        """
+        Converts the current rotation angle from degrees to radians.
+
+        Returns:
+            float: The rotation angle in radians.
+        """
         return math.radians(self.rot)
 
     @property
     def shield_range(self):
+        """
+        Returns the shield range as a float value.
+
+        If the attribute 'shield_range_deg' is set, its value is converted to a float and returned.
+        If 'shield_range_deg' is None or evaluates to False, 0.0 is returned.
+
+        Returns:
+            float: The shield range in degrees.
+        """
         return float(self.shield_range_deg or 0)
 
     # ------------------------- Prompt history (UI helpers) -------------------------
     def rewind_prompt_history(self):
+        """
+        Rewinds the bot's prompt history to the previous prompt, if available.
+
+        This method retrieves the list of prompts associated with the current round for this bot,
+        and updates the prompt history index to point to the previous prompt. If the index is not set,
+        it initializes it to the most recent prompt. If already set and not at the beginning, it decrements
+        the index. Finally, it updates the current prompt to reflect the new index.
+
+        Attributes used:
+            self.board_widget.history_manager: The history manager containing round and prompt data.
+            self.id: The bot's unique identifier.
+            self.prompt_history_index: The current index in the prompt history.
+            self.current_prompt: The prompt currently selected after rewinding.
+
+        Side Effects:
+            Modifies self.prompt_history_index and self.current_prompt.
+        """
+        
         prompts = []
+        
         hm = self.board_widget.history_manager
         if hm.current_round and "prompts" in hm.current_round:
             prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
+            
         if self.prompt_history_index is None:
             if prompts:
                 self.prompt_history_index = len(prompts) - 1
+                
         else:
             if self.prompt_history_index > 0:
                 self.prompt_history_index -= 1
+                
         if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
             self.current_prompt = prompts[self.prompt_history_index]
 
+
     def forward_prompt_history(self):
+        """
+        Advances the prompt history index to the next prompt for the current bot, if available.
+
+        This method retrieves the list of prompts associated with the current round and filters them
+        to include only those belonging to this bot (matching `self.id`). If the prompt history index
+        (`self.prompt_history_index`) is not set, it initializes it to the first prompt if any exist.
+        Otherwise, it increments the index if there are more prompts ahead. Finally, it updates
+        `self.current_prompt` to the prompt at the current index, if valid.
+
+        Side Effects:
+            - Updates `self.prompt_history_index` and `self.current_prompt` attributes.
+        """
         prompts = []
+        
         hm = self.board_widget.history_manager
+        
         if hm.current_round and "prompts" in hm.current_round:
             prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
+            
         if self.prompt_history_index is None:
             if prompts:
                 self.prompt_history_index = 0
         else:
             if self.prompt_history_index < len(prompts) - 1:
                 self.prompt_history_index += 1
+                
         if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
             self.current_prompt = prompts[self.prompt_history_index]
+
 
     def get_current_prompt_from_history(self):
         return self.current_prompt or ""
 
+
     def get_current_prompt(self):
+        """
+        Retrieves the current prompt for the bot.
+
+        Returns:
+            str: The current prompt obtained from the bot's history.
+        """
         return self.get_current_prompt_from_history()
+
 
     def get_prompt(self):
+        """
+        Retrieves the current prompt from the conversation history.
+
+        Returns:
+            str: The current prompt extracted from the history.
+        """
         return self.get_current_prompt_from_history()
 
+
     def set_augmenting_prompt(self, augmenting: bool):
+        """
+        Sets the augmenting prompt flag.
+
+        Args:
+            augmenting (bool): If True, enables the augmenting prompt; if False, disables it.
+        """
         self.augmenting_prompt = augmenting
 
+
     def get_augmenting_prompt(self):
+        """
+        Returns True if an augmenting prompt is set, otherwise False.
+
+        Returns:
+            bool: True if self.augmenting_prompt is truthy, False otherwise.
+        """
         return bool(self.augmenting_prompt)
 
+
     def prepare_prompt_submission(self, new_prompt: str):
+        """
+        Prepares the bot for submitting a new prompt.
+
+        This method sets the current prompt to the provided `new_prompt`, resets the prompt history index,
+        and marks the bot as ready for the next round.
+
+        Args:
+            new_prompt (str): The new prompt to be submitted.
+        """
         self.current_prompt = new_prompt
         self.prompt_history_index = None
         self.ready_for_next_round = True
@@ -230,7 +357,9 @@ class Bot(Widget):
         self.independent_models = bool(config.get("game", "independent_models"))
 
         messages, user_content = self._build_chat_messages()
+        
         # Record the user message for this turn
+        
         self.board_widget.history_manager.record_message(self.id, "user", user_content)
 
         data = {
@@ -251,8 +380,10 @@ class Bot(Widget):
                 
             except (TypeError, ValueError, OverflowError):
                 preview = str(data)
-                
-            print(f"[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}")
+
+            print ("---->>>----------------------------------------------------------------------")
+            print(f"(debug)[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}")
+            print ("----<<<----------------------------------------------------------------------\n\n")
 
         self.board_widget.ollama_connector.send_request(
             chat_url,
@@ -261,18 +392,20 @@ class Bot(Widget):
             self._on_llm_failure,
             self._on_llm_error,
         )
+        
 
     def _get_mode_header_text(self) -> str:
+        
         if not self.augmenting_prompt:
             return ""
         
-        # Get the augmentation header text for the LLM request based on the mode.
-        
+        # Get the augmentation header text for the LLM request based on the mode
         key = (
             "augmentation_header_independent"
             if self.independent_models
-            else "augmentation_header_dependent"
+            else "augmentation_header_shared"
         )
+        
         path = config.get("llm", key)
         
         try:
@@ -280,7 +413,7 @@ class Bot(Widget):
                 return f.read()
             
         except FileNotFoundError:
-            shared_fallback = os.path.join(os.path.dirname(path), "augmentation_header_shared_1.txt")
+            shared_fallback = os.path.join(os.path.dirname(path), "src/assets/prompts/augmentation_header_shared_1.txt")
             
             try:
                 with open(shared_fallback, "r", encoding="utf-8") as f:
@@ -318,6 +451,8 @@ class Bot(Widget):
 
     def _build_chat_messages(self) -> tuple[list[dict[str, str]], str]:
         system_message = {"role": "system", "content": self._get_mode_header_text()}
+
+        #print (f"******* [LLM][Bot {self.id}] System message content:\n{system_message['content']}")
         
         if self.independent_models:
             history = self.board_widget.history_manager.get_chat_history(self.id, shared=False)
@@ -325,11 +460,25 @@ class Bot(Widget):
             history = self.board_widget.history_manager.get_chat_history(None, shared=True)
             
         user_content = self._build_user_message_content()
-        user_message = {"role": "user", "content": user_content}
+        #print (f"***[LLM][Bot {self.id}] User message content:\n{user_content}")
         
+        user_message = {"role": "user", "content": user_content}
+        #print (f"***[LLM][Bot {self.id}] User message content:\n{user_message}")
+
         messages: list[dict[str, str]] = [system_message]
         messages.extend(history)
         messages.append(user_message)
+
+        #print ("---------")
+        #print("Messages to LLM:\n")
+        
+        #for i, msg in enumerate(messages):
+        #    print(f"Message {i}: role={msg.get('role')}, content={msg.get('content')!r}")
+            
+        #print("\nUser content:")
+        #print(user_content)
+        #print ("---------")
+        
         
         return messages, user_content
 
@@ -341,6 +490,7 @@ class Bot(Widget):
 
     def _on_llm_response(self, _req, result):
         """Parse the LLM reply, execute it, record history, and finish the turn."""
+        
         # 1) Extract assistant content from common chat API shapes
         assistant_content = ""
         try:
@@ -434,6 +584,7 @@ class Bot(Widget):
             self.board_widget.history_manager.record_post_action_state(
                 self.id, self.board_widget
             )
+            
         except Exception:
             # Non-fatal: compact history will omit if not available
             pass
