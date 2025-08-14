@@ -23,6 +23,13 @@ class HistoryManager:
         self.current_round = None  # Dictionary for the current round's history
         self.current_turn = None  # Dictionary for the current turn's history
 
+        # When recording chat-style interactions with the LLM we attach a list
+        # of messages to each turn. Each message is a dictionary with keys
+        # ``bot_id`` (int), ``role`` (str) and ``content`` (str). The HistoryManager
+        # is the single source of truth for all chat exchanges; the game code
+        # accesses this data to reconstruct the conversation for either shared
+        # context (both bots combined) or independent context (per bot).
+
     def _now_iso(self):
         """Get current timestamp string in ISO 8601 format."""
         return datetime.now().isoformat()  # e.g. "2025-07-25T21:05:30.123456"
@@ -186,6 +193,8 @@ class HistoryManager:
             "turn": turn_number,
             "start_time": self._now_iso(),
             "pre_state": {},
+            # ``messages`` will be lazily created when the first message is recorded.
+            # It will store chat-style interactions between the bot and the LLM for this turn.
         }
 
         # Snapshot pre-turn state of all bots
@@ -211,6 +220,97 @@ class HistoryManager:
 
         # Clear current_turn (it remains in the turns list of the round)
         self.current_turn = None
+
+    # -------------------------------------------------------------------------
+    # Chat history management
+    #
+    # The following helper methods allow the game code to record and retrieve
+    # chat messages without duplicating state across classes. Each bot calls
+    # ``record_message`` to persist user and assistant messages into the
+    # current turn. ``get_chat_history`` reconstructs the conversation up to
+    # the present, optionally filtering by bot when independent contexts are
+    # desired. This centralises all chat data within the HistoryManager.
+
+    def record_message(self, bot_id: int, role: str, content: str) -> None:
+        """Record a chat message for the current turn.
+
+        Parameters
+        ----------
+        bot_id: int
+            Identifier of the bot that originated the message. For assistant
+            messages this should still be the bot that requested the LLM
+            response.
+        role: str
+            The role of the message, typically ``"user"`` or ``"assistant"``.
+        content: str
+            The textual content of the message.
+
+        Notes
+        -----
+        If no turn is currently active, this method does nothing. The
+        ``messages`` list is created lazily on first use. Messages are
+        appended in the order they are recorded.
+        """
+        # Ensure we only record messages when a turn is active.
+        if not self.current_turn:
+            return
+
+        # Lazily create the messages list on the current turn.
+        msgs = self.current_turn.setdefault("messages", [])
+        msgs.append({"bot_id": bot_id, "role": role, "content": content})
+
+    def get_chat_history(self, bot_id: int | None = None, shared: bool = True) -> list[dict[str, str]]:
+        """Reconstruct the chat history for the current game.
+
+        Parameters
+        ----------
+        bot_id: int | None, optional
+            When ``shared`` is False, this specifies the bot whose messages
+            should be returned. When ``shared`` is True this argument is
+            ignored.
+        shared: bool
+            If True, messages from both bots are returned in chronological
+            order. If False, only messages whose ``bot_id`` matches ``bot_id``
+            are included. Defaults to True.
+
+        Returns
+        -------
+        list of dict
+            A list of message dictionaries with keys ``role`` and ``content``.
+
+        Notes
+        -----
+        The history traverses all rounds and turns of the current game. If
+        there is no current game or no rounds have been played, an empty list
+        is returned.
+        """
+        history: list[dict[str, str]] = []
+        # If there is no active game, return empty history.
+        if not self.current_game:
+            return history
+
+        # Iterate over all completed rounds and their turns.
+        rounds = self.current_game.get("rounds", [])
+        for rnd in rounds:
+            for turn in rnd.get("turns", []):
+                for msg in turn.get("messages", []):
+                    if shared or bot_id is None:
+                        history.append({"role": msg["role"], "content": msg["content"]})
+                    else:
+                        # Only include messages from the specified bot.
+                        if msg.get("bot_id") == bot_id:
+                            history.append({"role": msg["role"], "content": msg["content"]})
+
+        # Also include any messages recorded in the current turn (if it exists).
+        if self.current_turn and "messages" in self.current_turn:
+            for msg in self.current_turn["messages"]:
+                if shared or bot_id is None:
+                    history.append({"role": msg["role"], "content": msg["content"]})
+                else:
+                    if msg.get("bot_id") == bot_id:
+                        history.append({"role": msg["role"], "content": msg["content"]})
+
+        return history
 
     def _get_bots_state(self, game):
         """

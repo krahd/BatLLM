@@ -51,6 +51,12 @@ When contributing, ensure that any new dependencies are necessary and cross-plat
   - `game_board.py`: The main widget that manages the game loop, bots, bullets, and drawing.
   - `bot.py`: Defines the `Bot` class, which handles state, LLM interaction, and command execution.
   - `bullet.py`: Defines the `Bullet` class, managing its movement and collision detection logic.
+  - `history_manager.py`: Provides structured recording of games, rounds and turns. It also
+    stores all chat messages exchanged between the bots and the LLM. Bots no longer keep
+    local `chat_history` lists; instead they call `HistoryManager.record_message` to
+    record both user prompts and assistant responses. The full conversation can be
+    reconstructed via `HistoryManager.get_chat_history`, either in a shared context
+    (both bots combined) or per bot when independent models are used.
 
 - **State History:** The `HistoryManager` class (`history_manager.py`) uses dataclasses to create a structured record of every game, round, and turn, which can be serialized to JSON.
 

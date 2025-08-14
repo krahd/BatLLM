@@ -1,3 +1,38 @@
+"""
+bot.py
+=======
+
+This module defines the :class:`~game.bot.Bot` class which represents a
+player-controlled agent in the BatLLM game. A bot is responsible for
+submitting prompts to an LLM via the :class:`~game.ollama_connector.OllamaConnector`,
+interpreting the resulting command, and updating its state accordingly.
+
+Key responsibilities of a bot include:
+
+* Storing and managing the current prompt entered by the player. Past
+  prompts are recorded by the :class:`~game.history_manager.HistoryManager` on
+  the :class:`~game.game_board.GameBoard` and are no longer stored directly
+  on the bot.
+* Building the payload of chat messages for the LLM, including optional
+  augmentation with game state and session history.
+* Recording user and assistant messages into the HistoryManager via
+  ``record_message`` so that chat history is centralised and can be
+  reconstructed without duplicating state.
+* Executing the command returned by the LLM (move, rotate, shield, shoot)
+  and communicating results back to the GameBoard for UI updates.
+
+The module also contains helper methods for navigating prompt history and
+for toggling configuration options at runtime.
+
+Note
+----
+``Bot`` instances no longer maintain their own ``chat_history`` list. All
+conversation data is recorded and retrieved through the HistoryManager on
+the GameBoard. Calls to a non-existent ``log`` method have been removed;
+UI text should be appended via the GameBoard's ``add_text_to_llm_response_history``
+method.
+"""
+
 import json
 import math
 import random
@@ -101,7 +136,9 @@ class Bot(Widget):
 
         # Build the LLM endpoint from the configured URL, port and path.
         # Note: use single quotes inside the f-string to avoid conflicting with the outer quotes.
-        self.llm_endpoint = f"{config.get('llm', 'url')}:{config.get('llm', 'port')}{config.get('llm', 'path')}"
+        self.llm_endpoint = (
+            f"{config.get('llm', 'url')}:{config.get('llm', 'port')}{config.get('llm', 'path')}"
+        )
 
         self.diameter = config.get("game", "bot_diameter")
         self.shield = config.get("game", "shield_initial_state")
@@ -114,10 +151,10 @@ class Bot(Widget):
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 359)
 
-        # For independent-context mode we maintain a chat history per bot.
-        # In shared-context mode the GameBoard will maintain the chat
-        # history instead. Each entry is a dict with `role` and `content`.
-        self.chat_history: list[dict[str, str]] = []
+        # NOTE: chat_history is no longer stored here. Conversation
+        # transcripts are centrally recorded by the HistoryManager on the
+        # GameBoard. See HistoryManager.record_message and
+        # HistoryManager.get_chat_history for details.
 
     def render(self):
         """Draws itself. It assumes a NormalizedCanvas."""
@@ -378,11 +415,13 @@ class Bot(Widget):
         # message will already reside at index 0 in the chat history.
         system_message = {"role": "system", "content": header_text}
 
-        # Determine which chat history to use
+        # Retrieve the chat history from the HistoryManager. When
+        # independent_models is True, only messages for this bot are
+        # returned; otherwise messages from both bots are included.
         if self.independent_models:
-            chat_history = self.chat_history
+            chat_history = self.board_widget.history_manager.get_chat_history(self.id, shared=False)
         else:
-            chat_history = self.board_widget.chat_history_shared
+            chat_history = self.board_widget.history_manager.get_chat_history(None, shared=True)
 
         messages: list[dict[str, str]] = []
 
@@ -430,6 +469,10 @@ class Bot(Widget):
         user_message = {"role": "user", "content": user_content}
         messages.append(user_message)
 
+        # Record the user message in the HistoryManager. This stores the
+        # prompt as part of the current turn's chat history.
+        self.board_widget.history_manager.record_message(self.id, "user", user_content)
+
         # Build the payload expected by the chat API
         data = {
             "model": config.get("llm", "model"),
@@ -442,6 +485,12 @@ class Bot(Widget):
         port = config.get("llm", "port")
         # Always use the chat path regardless of `llm.path` in the config
         chat_url = f"{base_url}:{port}/api/chat"
+
+        print ("******************** WERWER submit prompt to llm **********")
+        print("Payload to LLM (data):")
+        for key, value in data.items():
+            print(f"{key}: {value}")
+        print ("******************** WERWER **********")
 
         # Send the request via the shared OllamaConnector. It will call the
         # appropriate callback on completion.
@@ -491,8 +540,9 @@ class Bot(Widget):
             if isinstance(result, dict):
                 if isinstance(result.get("response"), str):
                     assistant_content = result["response"]
-                elif isinstance(result.get("message"), dict) and isinstance(
-                    result["message"].get("content"), str
+                elif (
+                    isinstance(result.get("message"), dict)
+                    and isinstance(result["message"].get("content"), str)
                 ):
                     assistant_content = result["message"]["content"]
                 elif (
@@ -501,8 +551,9 @@ class Bot(Widget):
                     and isinstance(result["choices"][0], dict)
                 ):
                     choice = result["choices"][0]
-                    if isinstance(choice.get("message"), dict) and isinstance(
-                        choice["message"].get("content"), str
+                    if (
+                        isinstance(choice.get("message"), dict)
+                        and isinstance(choice["message"].get("content"), str)
                     ):
                         assistant_content = choice["message"]["content"]
                 # Sometimes the API returns the content directly in `content` key
@@ -512,12 +563,15 @@ class Bot(Widget):
             assistant_content = ""
 
         # Clean up whitespace
-        assistant_content = (
-            assistant_content.strip() if isinstance(assistant_content, str) else ""
-        )
+        assistant_content = assistant_content.strip() if isinstance(assistant_content, str) else ""
 
         # Store the last LLM response for logging
         self.last_llm_response = assistant_content
+
+        print ("******************** WERWER _on_llm_response  **********")
+        print("LLM response content:")        
+        print(assistant_content)
+        print ("******************** WERWER **********")    
 
         cmd = assistant_content
 
@@ -534,6 +588,7 @@ class Bot(Widget):
                 command_ok = False
 
             if command_ok:
+
                 match command[0]:
                     case "M":
                         self.board_widget.add_llm_response_to_history(self.id, "M")
@@ -584,73 +639,17 @@ class Bot(Widget):
             print(f"exception: {e}")
 
         if not command_ok:
-            self.log(f"\n\n[color=#FF0000][b]Invalid Command.[/b][/color]\n\n")
+            # Log invalid commands directly to the UI via the GameBoard. Bot no longer
+            # implements a separate log method; all UI updates are funnelled
+            # through the GameBoard.
+            self.board_widget.add_text_to_llm_response_history(
+                self.id, "\n\n[color=#FF0000][b]Invalid Command.[/b][/color]\n\n"
+            )
             self.board_widget.add_llm_response_to_history(self.id, "ERR")
 
-        # ********* Update the chat history with the user and assistant messages *********
-        # Determine which chat history to update based on independent/shared context
-        history_list = (
-            self.chat_history
-            if self.independent_models
-            else self.board_widget.chat_history_shared
-        )
-
-        # If the history is empty, add the system message first (same logic as in submit_prompt_to_llm)
-        if not history_list:
-            header_key = (
-                "augmentation_header_independent"
-                if self.independent_models
-                else "augmentation_header_dependent"
-            )
-            header_path = config.get("llm", header_key)
-            header_text = ""
-            try:
-                with open(header_path, "r", encoding="utf-8") as f:
-                    header_text = f.read()
-            except FileNotFoundError:
-                # Fall back to a shared header file in the same directory
-                shared_fallback = os.path.join(
-                    os.path.dirname(header_path), "augmentation_header_shared_1.txt"
-                )
-                try:
-                    with open(shared_fallback, "r", encoding="utf-8") as f:
-                        header_text = f.read()
-                except Exception:
-                    header_text = ""
-            except Exception:
-                header_text = ""
-
-            history_list.append({"role": "system", "content": header_text})
-
-        # Build the user message content just like in submit_prompt_to_llm
-        user_content = ""
-        if self.augmenting_prompt:
-            user_content += "GAME_STATE:\n"
-            user_content += f"Self.x: {self.x}, Self.y: {self.y}\n"
-            user_content += f"Self.rot: {math.degrees(self.rot)}\n"
-            user_content += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
-            user_content += f"Self.health: {self.health}\n"
-            opp = self.board_widget.get_bot_by_id(3 - self.id)
-            user_content += (
-                f"Opponent.x: {opp.x}, Opponent.y: {opp.y}\n"
-                f"Opponent.rot: {math.degrees(opp.rot)}\n"
-                f"Opponent.shield: {'ON' if opp.shield else 'OFF'}\n"
-                f"Opponent.health: {opp.health}\n"
-            )
-            user_content += "PLAYER_INPUT:\n"
-            user_content += (self.current_prompt or "") + "\n"
-        else:
-            user_content += "PLAYER_INPUT:\n"
-            user_content += (self.current_prompt or "") + "\n"
-        user_content += "GAME_HISTORY:\n"
-        try:
-            user_content += self.board_widget.history_manager.to_text()
-        except Exception:
-            user_content += ""
-
-        # Append the user message and the assistant's response to the history
-        history_list.append({"role": "user", "content": user_content})
-        history_list.append({"role": "assistant", "content": assistant_content})
+        # ********* Record the assistant message *********
+        # Persist the assistant's response as part of the current turn's chat history.
+        self.board_widget.history_manager.record_message(self.id, "assistant", assistant_content)
 
         # ********* Updating the bot's state and notifying the board widget *********
         self.ready_for_next_turn = True

@@ -1,3 +1,37 @@
+"""
+game_board.py
+===============
+
+The :mod:`game_board` module contains the :class:`~game.game_board.GameBoard`
+class which implements BatLLM's in-game logic and user interface. It acts
+as the "world" in which bots move, shoot and interact, and it mediates
+communication between bots, the LLM via :class:`~game.ollama_connector.OllamaConnector`,
+and the :class:`~game.history_manager.HistoryManager` which records all game
+state and chat history.
+
+Key features:
+
+* Maintains a list of :class:`~game.bot.Bot` instances representing the
+  players. Bots are created at the start of each game.
+* Coordinates the flow of games, rounds and turns, and updates
+  ``current_turn`` and ``current_round`` counters accordingly.
+* Renders the game graphics using Kivy and updates various UI labels.
+* Provides helper methods to append text to scrollable history boxes in
+  the HomeScreen (see ``add_text_to_llm_response_history``).
+* Uses the HistoryManager as the single source of truth for all chat
+  messages. The previous ``chat_history_shared`` and per-bot
+  ``chat_history`` lists have been removed to avoid duplication. Chat
+  messages are recorded via ``HistoryManager.record_message`` and
+  reconstructed with ``HistoryManager.get_chat_history``.
+* At the end of each round, the board logs status text directly through
+  ``add_text_to_llm_response_history``. Calls to ``b.log`` were removed
+  since :class:`~game.bot.Bot` no longer defines a ``log`` method.
+
+This design simplifies data flow: the GameBoard drives the game loop and
+delegates state recording to the HistoryManager. The UI updates are handled
+through a small set of clearly defined helper methods.
+"""
+
 import os
 import random
 import sys
@@ -66,11 +100,13 @@ class GameBoard(Widget, EventDispatcher):
         # Create the connector responsible for LLM communication
         self.ollama_connector = OllamaConnector()
 
-        # Shared chat history used when the game is in shared-context mode.
-        # Each element is a dict with keys `role` and `content`. When
-        # independent-context mode is enabled, this list remains unused and
-        # each bot maintains its own chat history instead.
-        self.chat_history_shared: list[dict[str, str]] = []
+        # NOTE: Chat history is now stored exclusively within the HistoryManager.
+        # Previously, GameBoard maintained a separate ``chat_history_shared`` list
+        # for shared-context mode while each Bot stored its own ``chat_history``
+        # for independent-context mode. To avoid duplicating state, all chat
+        # messages are recorded via ``HistoryManager.record_message`` and
+        # retrieved via ``HistoryManager.get_chat_history``. See the
+        # HistoryManager for details.
 
         # Render loop
         Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate"))
@@ -358,8 +394,14 @@ class GameBoard(Widget, EventDispatcher):
             # round's over
             self.history_manager.end_round(self)
             for b in self.bots:
+                # Insert blank line to separate rounds in the UI.
                 self.add_text_to_llm_response_history(b.id, "\n\n")
-                b.log(f"\n\n[b]Round {self.current_round} ended.[/b]\n\n")
+                # Directly log the end of the round to the UI. Previously this
+                # attempted to call ``b.log``, but Bot has no ``log`` method.
+                # We instead use the GameBoard's helper to append text.
+                self.add_text_to_llm_response_history(
+                    b.id, f"[b]Round {self.current_round} ended.[/b]\n\n"
+                )
 
             round_res = "\n"
 

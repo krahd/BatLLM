@@ -82,4 +82,20 @@ The game supports four different playing modes via two user-controllable flags. 
 
 The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds.
 
+### Chat history management
+
+Earlier revisions of BatLLM stored the conversation between each bot and the
+LLM in per-bot `chat_history` lists, and maintained an additional
+`chat_history_shared` list when both players shared a single context. This
+duplicated information and made it difficult to reconstruct a complete
+conversation. To simplify the design, **all chat messages are now
+recorded centrally by the `HistoryManager`**. Whenever a bot sends a prompt
+or receives a response, it calls `HistoryManager.record_message` to store
+the message along with its role (``"user"`` or ``"assistant"``) and bot
+identifier. At any point the full conversation can be reconstructed using
+`HistoryManager.get_chat_history(shared=True)` for the shared context or
+`HistoryManager.get_chat_history(bot_id, shared=False)` when each bot
+maintains a separate context. As a result, the `Bot` class no longer
+defines a `chat_history` attribute.
+
 > ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](DOCUMENTATION.md) &mdash; [User Guide](USER_GUIDE.md) &mdash; [Contributing](CONTRIBUTING.md) &mdash; [FAQ](FAQ.md) &mdash; [Credits](CREDITS.md)**
