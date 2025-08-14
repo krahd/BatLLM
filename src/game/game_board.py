@@ -17,6 +17,7 @@ from game.bot import Bot
 from game.history_manager import HistoryManager
 from util.normalized_canvas import NormalizedCanvas
 from util.utils import find_id_in_parents, show_fading_alert
+from game.ollama_connector import OllamaConnector
 
 
 class GameBoard(Widget, EventDispatcher):
@@ -61,6 +62,15 @@ class GameBoard(Widget, EventDispatcher):
         self.shuffled_bots = None
 
         self.history_manager = HistoryManager()  # Create the session history manager
+
+        # Create the connector responsible for LLM communication
+        self.ollama_connector = OllamaConnector()
+
+        # Shared chat history used when the game is in shared-context mode.
+        # Each element is a dict with keys `role` and `content`. When
+        # independent-context mode is enabled, this list remains unused and
+        # each bot maintains its own chat history instead.
+        self.chat_history_shared: list[dict[str, str]] = []
 
         # Render loop
         Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate"))
@@ -272,41 +282,53 @@ class GameBoard(Widget, EventDispatcher):
                 new_prompt (_type_): the player's prompt
         """
 
+        # Record the new prompt for the specified bot.
         bot = self.get_bot_by_id(bot_id)
         bot.prepare_prompt_submission(new_prompt)
 
-        if all(b.ready_for_next_round for b in self.bots):
-            self.play_round()
+        # Only start a new round when all bots have provided a prompt.
+        # If not everyone is ready yet, simply return and wait for the other bot.
+        if not all(b.ready_for_next_round for b in self.bots):
+            return
 
-        # If we are here then we are the first one.
+        # Both bots are ready, so start a new round.
+        # Reset the turn counter and increment the round counter.
         self.current_turn = 0
-
         if self.current_round is None:
             self.current_round = 0
-
-        # We count the round
         self.current_round += 1
 
+        # Notify players via the output history and reset the ready flags.
         for b in self.bots:
             self.add_text_to_llm_response_history(
                 b.id, f"[color=#000000][b]Round {self.current_round}[/b][/color]\n"
             )
-            b.ready_for_next_round = False  # need a new prompt for a new round
+            b.ready_for_next_round = False
 
-        # Randomise the order of playinng turns.
-        self.shuffled_bots = random.sample(self.bots, 2)
+        # Randomise the order of playing turns. Use the number of bots to sample all of them.
+        self.shuffled_bots = random.sample(self.bots, len(self.bots))
 
-        # TODO check this
-        # for b in self.bots:
-        #    b.log(f"\n[b][size=20sp]Round {self.current_round}[/size][/b]")
-
-        # if we made it here, then we are done with the round. Let's start the next one
-
+        # Tell the history manager that a new round is starting.
         self.history_manager.start_round(self)
 
-        # Like with turns, we play turns recursively.
+        # Once the round has been started, record each bot's prompt into the
+        # HistoryManager. Prompts are stored as a list of dictionaries with
+        # `bot_id` and `prompt` fields. This replaces the old prompt_history
+        # mechanism.
+        if self.history_manager.current_round is not None:
+            self.history_manager.current_round["prompts"] = []  # reset
+            for b in self.bots:
+                prompt_text = b.current_prompt or ""
+                self.history_manager.current_round["prompts"].append(
+                    {"bot_id": b.id, "prompt": prompt_text}
+                )
+
+                # For UI navigation, set each bot's history cursor to the last entry
+                b.history_prompt_index = None
+
+        # Begin the first turn of the round. `play_turn` will call start_turn
+        # internally and handle scheduling subsequent turns.
         self.play_turn(0)
-        self.history_manager.end_turn(self)
 
     def game_is_over(self):
         """Checks if the game is over.

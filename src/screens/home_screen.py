@@ -123,9 +123,9 @@ class HomeScreen(Screen):
 
         history_screen = self.manager.get_screen("history")
 
-        history_screen.update(
-            bot_id, gbw.get_bot_by_id(bot_id).getLog(), gbw.history_manager.to_text()
-        )
+        # history_screen.update(
+        # bot_id, gbw.get_bot_by_id(bot_id).getLog(), gbw.history_manager.to_text()
+        # )
 
         self.manager.current = "history"
 
@@ -265,7 +265,6 @@ class HomeScreen(Screen):
         new_prompt = self.get_prompt_input_text(bot_id)
 
         if len(new_prompt) > 0:  # ignore empty prompts
-
             # update the ui
             self.prompt_history_add_text(
                 bot_id, new_prompt

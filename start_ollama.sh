@@ -13,8 +13,8 @@ echo "Starting Ollama on port $PORT..."
 if [ "$1" == "-l" ]; then    
     TS=$(date +"%Y%m%d_%H%M%S")
     LOG=$(echo "b_"$TS".log")    
-    OLLAMA_HOST=$(localhost:$PORT ollama serve > "$LOG" 2>&1)
+    OLLAMA_HOST=localhost:$PORT ollama serve > "$LOG" & # 2>&1)
     echo "($LOG)"
 else
-    OLLAMA_HOST=$(localhost:$PORT ollama serve 2>&1)
+    OLLAMA_HOST=localhost:$PORT ollama serve & # 2>&1)
 fi
