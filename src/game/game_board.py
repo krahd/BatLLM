@@ -306,7 +306,7 @@ class GameBoard(Widget, EventDispatcher):
                 bot_id (_type_): bot id
                 command (_type_): correct llm responses parse into commands
         """
-        text = f"[color=#000000]{self.current_turn}: {command}[/color]\n"
+        text = f"[color=#000000]{command}[/color]\n"
         self.add_text_to_llm_response_history(bot_id, text)
 
     def submit_prompt(self, bot_id, new_prompt):

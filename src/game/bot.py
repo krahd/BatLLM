@@ -263,6 +263,11 @@ class Bot(Widget):
         )
 
     def _get_mode_header_text(self) -> str:
+        if not self.augmenting_prompt:
+            return ""
+        
+        # Get the augmentation header text for the LLM request based on the mode.
+        
         key = (
             "augmentation_header_independent"
             if self.independent_models
@@ -285,10 +290,13 @@ class Bot(Widget):
 
 
     def _build_user_message_content(self) -> str:
-        content = "PLAYER_INPUT:\n"
-        content += (self.current_prompt or "") + "\n"
         
-        if self.augmenting_prompt:
+        if not self.augmenting_prompt:
+            content = (self.current_prompt or "") + "\n"
+
+        else:
+            content = "PLAYER_INPUT:\n"
+            content += (self.current_prompt or "") + "\n"
             content += "GAME_STATE:\n"
             content += f"Self.x: {self.x}, Self.y: {self.y}\n"
             content += f"Self.rot: {self.rot}\n"  # degrees
@@ -414,8 +422,8 @@ class Bot(Widget):
 
         # 3) Fallback UI note on invalid command
         if not command_ok:
-            self.board_widget.add_text_to_llm_response_history(
-                self.id, "[color=#FF0000][b]ERR.[/b][/color]"
+            self.board_widget.add_llm_response_to_history(
+                self.id, "[color=#FF0000][b]ERR[/b][/color]"
             )
 
         # 3b) Record parsed command and per-bot post-action state for compact history

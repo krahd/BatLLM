@@ -1,36 +1,29 @@
 data:
-    saved_sessions_folder: saved_sessions
-
+  saved_sessions_folder: saved_sessions
 game:
-    independent_models: true
-    prompt_augmentation: true
-
-    total_rounds: 3
-    turns_per_round: 20
-
-    initial_health: 30
-    bot_diameter: 0.1
-
-    bullet_damage: 5
-    bullet_step_length: 0.01
-    bullet_diameter: 0.2
-
-    shield_initial_state: true
-    shield_size: 64
-    step_length: 0.02
-
+  bot_diameter: 0.1
+  bullet_damage: 5
+  bullet_diameter: 0.2
+  bullet_step_length: 0.01
+  independent_models: true
+  initial_health: 30
+  prompt_augmentation: false
+  shield_initial_state: true
+  shield_size: 64
+  step_length: 0.02
+  total_rounds: 1
+  turns_per_round: 8
 llm:
-    augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
-    augmentation_header_dependent: src/assets/prompts/shared_1.txt
-
-    model: llama3.2:latest
-    path: /api/chat
-    url: http://localhost
-    port: 11434
-    debug_requests: false
-
+  augmentation_header_dependent: src/assets/prompts/shared_1.txt
+  augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
+  debug_requests: false
+  model: llama3.2:latest
+  path: /api/chat
+  port: 11434
+  url: http://localhost
 ui:
-    font_size: 16
-    frame_rate: 60
-    primary_color: "#0b0b0b"
-    title: BatLLM
+  ' primary_color': '#ffffff'
+  font_size: 16
+  frame_rate: 60
+  primary_color: '#0b0b0b'
+  title: BatLLM
