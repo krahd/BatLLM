@@ -26,6 +26,7 @@ llm:
     path: /api/chat
     url: http://localhost
     port: 11434
+    debug_requests: false
 
 ui:
     font_size: 16

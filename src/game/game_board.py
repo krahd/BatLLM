@@ -359,8 +359,8 @@ class GameBoard(Widget, EventDispatcher):
                     {"bot_id": b.id, "prompt": prompt_text}
                 )
 
-                # For UI navigation, set each bot's history cursor to the last entry
-                b.history_prompt_index = None
+                # For UI navigation, reset each bot's prompt history cursor
+                b.prompt_history_index = None
 
         # Begin the first turn of the round. `play_turn` will call start_turn
         # internally and handle scheduling subsequent turns.
@@ -476,14 +476,14 @@ class GameBoard(Widget, EventDispatcher):
             self.history_manager.end_turn(self)
             Clock.schedule_once(self.play_turn, 0)
 
-    def get_bot_by_id(self, id):
+    def get_bot_by_id(self, bot_id):
         """Returns the bot instance with the specified ID.
 
         Args:
-                id (_type_): The bot with the id or None if not found.
+                bot_id (_type_): The bot with the id or None if not found.
         """
         for bot_instance in self.bots:
-            if bot_instance.id == id:
+            if bot_instance.id == bot_id:
                 return bot_instance
         return None
 

@@ -1,4 +1,5 @@
 import math
+import json
 import os
 import random
 from math import cos, sin
@@ -242,6 +243,14 @@ class Bot(Widget):
         path = config.get("llm", "path") or "/api/chat"
         chat_url = f"{base_url}:{port}{path}"
 
+        # Optional debug: log outgoing payload
+        if bool(config.get("llm", "debug_requests")):
+            try:
+                preview = json.dumps(data, indent=2)
+            except (TypeError, ValueError, OverflowError):
+                preview = str(data)
+            print(f"[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}")
+
         self.board_widget.ollama_connector.send_request(
             chat_url,
             data,
@@ -265,7 +274,7 @@ class Bot(Widget):
             try:
                 with open(shared_fallback, "r", encoding="utf-8") as f:
                     return f.read()
-            except Exception:
+            except OSError:
                 return ""
 
     def _build_user_message_content(self) -> str:

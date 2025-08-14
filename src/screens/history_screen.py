@@ -8,8 +8,6 @@ class HistoryScreen(Screen):
       - rv_history_panel: the parsed/processed history
     """
 
-  
-
     def update(self, bot_id: int, raw_prompt: str, history: str):
         """
         Populate both RecycleViews in HistoryScreen using the strings passed as parameters.
@@ -24,19 +22,11 @@ class HistoryScreen(Screen):
         raw_lines = raw_prompt.split("\n")
         history_lines = history.split("\n")
 
-        print ("****")
-        print (f"history_lines: {history_lines}")
-        print ("****")
-        print ("****")
-
-
         # build data lists
         self.ids.rv_string_panel.data = [{"text": line} for line in raw_lines]
         self.ids.rv_history_panel.data = [{"text": line} for line in history_lines]
+        self.ids.title_label.text = f"History (Bot {bot_id})"
 
-        self.ids.title_label.text = f"id = {bot_id}"
 
-
-        
     def go_back_home(self):
         self.manager.current = "home"

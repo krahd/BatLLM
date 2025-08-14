@@ -525,3 +525,100 @@ class HistoryManager:
             lines.append("")
 
         return "\n".join(lines)
+
+    # ------------------------------------------------------------------
+    # Compact, reader-friendly summary for the History screen (left pane)
+    def _extract_player_input_summary(self, content: str) -> str:
+        """Extract a single-line summary of the player's input from a user message content.
+
+        Looks for the section after "PLAYER_INPUT:" and returns the first non-empty
+        line. Falls back to trimming the whole content if the marker is absent.
+        """
+        if not isinstance(content, str):
+            return ""
+        marker = "PLAYER_INPUT:"
+        try:
+            idx = content.find(marker)
+            snippet = content[idx + len(marker) :] if idx >= 0 else content
+            for line in snippet.splitlines():
+                s = line.strip()
+                if s:
+                    return s
+        except (AttributeError, TypeError, ValueError):
+            pass
+        return content.strip().splitlines()[0] if content else ""
+
+    def to_compact_text(self) -> str:
+        """Produce a readable, compact summary of the history for the UI left pane.
+
+        Structure:
+        - Game header and start time
+        - For each round: header, prompts per bot
+        - For each turn: commands per bot and post-turn state snapshot
+        """
+        if not self.games:
+            return "No history yet. Play a round to see events here."
+
+        out: list[str] = []
+        for g_idx, game in enumerate(self.games, 1):
+            out.append(f"Game {g_idx}")
+            if game.get("start_time"):
+                out.append(f"  Start: {game['start_time']}")
+
+            for round_entry in game.get("rounds", []):
+                rnum = round_entry.get("round")
+                out.append(f"  Round {rnum}")
+
+                prompts = round_entry.get("prompts", [])
+                if prompts:
+                    out.append("    Prompts:")
+                    for p in prompts:
+                        out.append(f"      Bot {p.get('bot_id')}: {p.get('prompt','')}")
+
+                for turn in round_entry.get("turns", []):
+                    tnum = turn.get("turn")
+                    out.append(f"    Turn {tnum}")
+
+                    # Aggregate per-bot messages for this turn
+                    per_bot: dict[int, dict[str, str]] = {}
+                    for msg in turn.get("messages", []):
+                        b = msg.get("bot_id")
+                        if b is None:
+                            continue
+                        entry = per_bot.setdefault(int(b), {})
+                        role = msg.get("role")
+                        content = msg.get("content", "")
+                        if role == "user":
+                            entry["user"] = self._extract_player_input_summary(content)
+                        elif role == "assistant":
+                            entry["assistant"] = (content or "").strip()
+
+                    if per_bot:
+                        out.append("      Responses:")
+                        for b_id in sorted(per_bot.keys()):
+                            e = per_bot[b_id]
+                            u = e.get("user", "")
+                            a = e.get("assistant", "")
+                            out.append(f"        Bot {b_id}: prompt='{u}' -> cmd='{a}'")
+
+                    # Post-turn state
+                    post = turn.get("post_state", {})
+                    if post:
+                        out.append("      State:")
+                        for b_id, info in post.items():
+                            x = info.get("x")
+                            y = info.get("y")
+                            rot = info.get("rot")
+                            hp = info.get("health")
+                            shield = info.get("shield")
+                            out.append(
+                                f"        Bot {b_id}: x={x:.3f} y={y:.3f} rot={rot:.1f}d health={hp} shield={'ON' if shield else 'OFF'}"
+                                if isinstance(x, (int, float)) and isinstance(y, (int, float)) and isinstance(rot, (int, float))
+                                else f"        Bot {b_id}: health={hp} shield={'ON' if shield else 'OFF'}"
+                            )
+
+            if game.get("winner") is not None:
+                out.append(f"  Winner: {game['winner']}")
+            out.append("")
+
+        return "\n".join(out).rstrip()

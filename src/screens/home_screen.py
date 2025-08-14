@@ -32,7 +32,6 @@ class HomeScreen(Screen):
         """
         super().__init__(**kwargs)
 
-        self.start_new_game(force=True)  # Start a new game when the screen is created
 
     def save_session(self):
         """
@@ -116,17 +115,18 @@ class HomeScreen(Screen):
     def go_to_history_screen(self, bot_id):
         """
         Handler for the history buttons.
-        Switches the current screen to the settings screen.
+        Switches the current screen to the history screen and populates it.
         """
-
         gbw = self.ids.game_board
-
         history_screen = self.manager.get_screen("history")
-
-        # history_screen.update(
-        # bot_id, gbw.get_bot_by_id(bot_id).getLog(), gbw.history_manager.to_text()
-        # )
-
+        
+        # Left pane: compact, human-friendly summary
+        compact = gbw.history_manager.to_compact_text()
+        
+        # Right pane: full detailed text
+        full_text = gbw.history_manager.to_text()
+        history_screen.update(bot_id, compact, full_text)
+        
         self.manager.current = "history"
 
     def save_prompt(self, bot_id):
