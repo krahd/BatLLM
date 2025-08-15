@@ -17,7 +17,6 @@ from kivy.graphics import (
     Translate,
 )
 
-# type: ignore[import]
 from kivy.properties import NumericProperty, ObjectProperty
 from kivy.uix.widget import Widget
 
@@ -374,22 +373,23 @@ class Bot(Widget):
         # Local import to avoid module init order issues
         from game.prompt_builder import PromptBuilder
 
-        shared_context = config.get("game", "independent_contexts") != "1"
-        augmented = config.get("game", "prompt_augmentation") == "1"
+        # Read booleans correctly from config
+        shared_context = not bool(config.get("game", "independent_contexts"))
+        augmented = bool(config.get("game", "prompt_augmentation"))
 
         # Build the payload (may raise if augmented header file is missing)
         pb = PromptBuilder(
             history_manager=self.board_widget.history_manager,
             game_board=self.board_widget,
             self_bot=self,
-            cfg=getattr(self, "app_config", None),
+            cfg=config,
         )
 
         payload = pb.build_chat_payload(
-            shared_context=shared_context, augmented=augmented)
+            shared_context=shared_context, augmented=augmented
+        )
 
         # Compose chat URL from app_config (works with configparser-like or dict-of-dicts)
-
         base_url = (config.get("llm", "url")).rstrip("/")
         port = config.get("llm", "port")
         path = config.get("llm", "path")
@@ -400,16 +400,10 @@ class Bot(Widget):
             try:
                 preview = json.dumps(payload, indent=2)
             except (TypeError, ValueError, OverflowError):
-                preview = str(data)
+                preview = str(payload)
 
             print(
-                "---->>>----------------------------------------------------------------------"
-            )
-            print(
                 f"(debug)[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}"
-            )
-            print(
-                "----<<<----------------------------------------------------------------------\n\n"
             )
 
         # Fire the async request through your existing connector
@@ -422,7 +416,7 @@ class Bot(Widget):
             on_error=self._on_llm_error,
         )
 
-    
+
 
     def _get_mode_header_text(self) -> str:
 
@@ -467,20 +461,20 @@ class Bot(Widget):
     def _on_llm_response(self, _req, result):
         """Parse the LLM reply, execute it, record history, and finish the turn."""
 
-        
-        #print(json.dumps(result, indent=2))
-        print (">> result length:", len(str(result)) if result else 0)
-        
+
+        # print(json.dumps(result, indent=2))
+        print(">> result length:", len(str(result)) if result else 0)
+
 
         # 1) Extract assistant content from common chat API shapes
         assistant_content = ""
         try:
             if isinstance(result, dict):
                 if isinstance(result.get("response"), str):
-                    assistant_content = result["response"]                    
+                    assistant_content = result["response"]
 
                 elif isinstance(result.get("message"), dict) and isinstance(result["message"].get("content"), str):
-                    assistant_content = result["message"]["content"]        
+                    assistant_content = result["message"]["content"]
 
                 elif (
                     isinstance(result.get("choices"), list)
@@ -579,7 +573,7 @@ class Bot(Widget):
 
         # 3) Fallback UI note on invalid command
         if not command_ok:
-            self.board_widget.add_llm_response_to_history(
+            self.board_widget.add_cmd_to_home_screen_cmd_history(
                 self.id, "[color=#FF0000][b]ERR[/b][/color]"
             )
 

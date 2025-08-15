@@ -5,7 +5,36 @@ from configs.app_config import config
 
 
 class Bullet:
-    """This class models the bullets shot by the bots. It takes care of its own rendering and the detection of collission against the opponent and the arena's limits."""
+    """
+    Bullet class models the bullets fired by bots in the game. It manages its own rendering, movement, and collision detection with both the arena boundaries and other bots.
+
+    Attributes:
+        parent_id (int): ID of the bot that fired the bullet.
+        x (float): Current x-coordinate of the bullet.
+        y (float): Current y-coordinate of the bullet.
+        rot (float): Rotation angle of the bullet in degrees.
+        step (float): Distance the bullet moves per update.
+        diameter (float): Visual diameter of the bullet (for rendering purposes).
+        colour (tuple): RGBA color of the bullet.
+
+    Methods:
+        __init__(parent_id, x, y, rot):
+            Initializes a new Bullet instance with the given parent bot ID, position, and rotation.
+
+        render():
+            Renders the bullet as a circle at its current position using the specified color.
+
+        rot_rad():
+            Returns the bullet's rotation in radians.
+
+        update(bots):
+            Updates the bullet's position, checks for collisions with bots and arena boundaries.
+            Returns a tuple (alive, damaged_bot_id), where 'alive' is a boolean indicating if the bullet should remain in play, and 'damaged_bot_id' is the ID of the bot hit (if any).
+
+        segment_hits_bot(bot, p1, p2):
+            Determines if the line segment from p1 to p2 intersects with the given bot, considering shield status and shield arc.
+            Returns True if the bot is hit (and takes damage), or False if there is no hit or the hit is blocked by the shield.
+    """
 
     def __init__(self, parent_id, x, y, rot):
         self.parent_id = parent_id  # ID of the parent bot

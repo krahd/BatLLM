@@ -55,14 +55,48 @@ from game.ollama_connector import OllamaConnector
 
 
 class GameBoard(Widget, EventDispatcher):
-    """The GameBoard is BatLLM's game world. It is algo a Kivi Widget, so it can be used in the Kivy UI.
-    It takes care of all the in-game logic, interacts with the bots and the history_manager.
-    The HomeScreen is BatLLM with the outside world and GameBoard is the inside world implementation of everything in the game (with the exception of the LLMs, which are contacted directly by the bots).
-
-    Args:
-            Widget (_type_): Kivi's base Widget
-
     """
+    The GameBoard is BatLLM's game world and a Kivy Widget, responsible for managing all in-game logic, bot interactions, and session history. It serves as the internal game engine, handling rounds, turns, bot actions, UI updates, and communication with LLMs via the OllamaConnector. The GameBoard coordinates the flow of the game, including starting new games, managing prompts, rendering the game state, processing user input, and saving/loading session data. It interacts closely with the HistoryManager for tracking game progress and with the UI for displaying game status and results.
+    Attributes:
+        bots (list): List of Bot instances participating in the game.
+        bullet_trace (list): List of bullet positions for rendering bullet traces.
+        bullet_alpha (float): Alpha value for bullet trace fading effect.
+        sound_shoot (Sound): Sound effect for shooting.
+        sound_bot_hit (Sound): Sound effect for bot hit.
+        current_turn (NumericProperty): Current turn number within the round.
+        current_round (NumericProperty): Current round number within the game.
+        games_started (NumericProperty): Number of games started in the session.
+        shuffled_bots (list): List of bots in randomized order for turn-taking.
+        history_manager (HistoryManager): Manages chat and game history.
+    Methods:
+        __init__(**kwargs): Initializes the GameBoard, sets up input, rendering, and state.
+        on_current_turn(instance, value): Updates UI when the turn changes.
+        on_current_round(instance, value): Updates UI when the round changes.
+        on_games_started(instance, value): Updates UI when a new game starts.
+        start_new_game(): Resets state and starts a new game.
+        save_session(filename): Saves the current session via the HistoryManager.
+        on_kv_post(base_widget): Called after KV rules are applied; starts a new game.
+        _keyboard_closed(): Handles virtual keyboard closure.
+        _redraw(*args): Triggers a redraw of the game board.
+        render(*args): Draws the current game state.
+        on_touch_down(touch): Handles mouse/touch input for focus.
+        on_touch_move(touch): Handles mouse drag events (unused).
+        add_text_to_home_screen_cmd_history(bot_id, text): Appends text to the bot's output history in the UI.
+        add_cmd_to_home_screen_cmd_history(bot_id, command): Appends parsed LLM command to the UI.
+        submit_prompt(bot_id, new_prompt): Handles prompt submission and round progression.
+        game_is_over(): Checks if the game has ended.
+        play_turn(dt): Executes a single turn and manages round/turn transitions.
+        end_game(): Ends the game and displays results.
+        update_title_label(): Updates the UI label with current game/round/turn info.
+        on_bot_llm_interaction_complete(bot): Callback after a bot completes LLM interaction.
+        get_bot_by_id(bot_id): Retrieves a bot by its ID.
+        snapshot(): Returns a snapshot of the current bot states.
+        _on_keyboard_down(keyboard, keycode, text, modifiers): Handles keyboard input for debugging/testing.
+        shoot(bot_id): Handles shooting logic for a bot.
+        _grab_keyboard(): Requests keyboard focus for the widget.
+        _on_keyboard_closed(): Cleans up keyboard bindings on closure.
+    """
+    
 
     bots = []
     bullet_trace = []
@@ -76,8 +110,17 @@ class GameBoard(Widget, EventDispatcher):
     shuffled_bots = None
     history_manager = None
 
+
     def __init__(self, **kwargs):
-        """Constructor"""
+        """
+        Constructor. Initializes the GameBoard instance.
+        Sets up keyboard input handling, binds redraw events to size and position changes,
+        and initializes various game state variables such as bullet trace, alpha value,
+        sound effects, turn and round counters, and bot shuffling. Instantiates the
+        HistoryManager for session chat history and the OllamaConnector for LLM communication.
+        Schedules the render loop to update the UI at the configured frame rate.
+        """
+        
         super(GameBoard, self).__init__(**kwargs)
 
         self._keyboard = Window.request_keyboard(
@@ -102,17 +145,15 @@ class GameBoard(Widget, EventDispatcher):
         # Create the connector responsible for LLM communication
         self.ollama_connector = OllamaConnector()
 
-        # NOTE: Chat history is now stored exclusively within the HistoryManager.
-        # Previously, GameBoard maintained a separate ``chat_history_shared`` list
-        # for shared-context mode while each Bot stored its own ``chat_history``
-        # for independent-context mode. To avoid duplicating state, all chat
-        # messages are recorded via ``HistoryManager.record_message`` and
+        # NOTE: Chat history is stored exclusively within the HistoryManager.
+        # All chat ``HistoryManager.record_message`` and
         # retrieved via ``HistoryManager.get_chat_history``. See the
         # HistoryManager for details.
 
         # Render loop
         Clock.schedule_interval(
             self._redraw, 1.0 / config.get("ui", "frame_rate"))
+
 
     def on_current_turn(self, instance, value):
         """Callback for current_turn property change.
@@ -124,6 +165,7 @@ class GameBoard(Widget, EventDispatcher):
         """
         self.update_title_label()
 
+
     def on_current_round(self, instance, value):
         """Callback for current_round property change.
         It updates the title label with the new round information.
@@ -134,18 +176,36 @@ class GameBoard(Widget, EventDispatcher):
         """
         self.update_title_label()
 
-    def on_games_started(self, instance, value):
-        """Callback for games_started property change.
-        It updates the title label with the new game count.
 
-        Args:
-                instance (_type_): The instance of the GameBoard.
-                value (_type_): The new value of the games_started property.
+    def on_games_started(self, instance, value):
+        """
+        Callback triggered when the `games_started` property changes.
+
+        This method updates the title label to reflect the new number of games started.
+
+            instance: The instance of the GameBoard where the property changed.
+            value: The new value of the `games_started` property.
+        
+        started property.
         """
         self.update_title_label()
 
+
     def start_new_game(self):
-        """Starts a new game. It resets all the information pertaining to the previous game."""
+        """
+        Starts a new game by resetting game state and initializing bots.
+
+        This method performs the following actions:
+        - Resets the current turn, round, and shuffled bots to their initial states.
+        - Creates two new Bot instances, each associated with this GameBoard.
+        - If this is not the first game, updates the home screen command history for each bot and resets their readiness for the next round.
+        - Increments the count of games started.
+        - Notifies the history manager to start tracking the new game.
+
+        Returns:
+            None
+        """
+       
         # reset values
         self.current_turn = 0
         self.current_round = 0
@@ -164,6 +224,7 @@ class GameBoard(Widget, EventDispatcher):
         self.games_started += 1
         self.history_manager.start_game(self)
 
+    #TODO check / test / implement save and load session
     def save_session(self, filename):
         """Upon user confirmation it asks the HistoryManager to save all the session information recorded until this moment.
 
@@ -178,6 +239,7 @@ class GameBoard(Widget, EventDispatcher):
         self.history_manager.save_session(filepath)
         print("done")
 
+
     def on_kv_post(self, base_widget):
         """This method is called after the KV rules have been applied
 
@@ -190,15 +252,18 @@ class GameBoard(Widget, EventDispatcher):
             lambda dt: self.start_new_game(), 0
         )  # Start a new game after the KV rules have been applied
 
+
     def _keyboard_closed(self):
         """virtual keyboard closed handler. Unbinds the listener."""
 
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
 
+
     def _redraw(self, *args):
         """Refreshes the screen by calling render()"""
         self.render()
+
 
     def render(self, *args):
         """Draws the game world in its current state.
@@ -242,6 +307,7 @@ class GameBoard(Widget, EventDispatcher):
                 else:
                     self.bullet_trace.clear()
 
+
     def on_touch_down(self, touch):
         """
         If the gameboard is clicked on, it grabs the keyboard focus.
@@ -260,6 +326,7 @@ class GameBoard(Widget, EventDispatcher):
 
         return super().on_touch_down(touch)
 
+
     def on_touch_move(self, touch):
         """Mouse drag event handler. Not used.
         Args:
@@ -274,6 +341,7 @@ class GameBoard(Widget, EventDispatcher):
             return True
 
         return super().on_touch_move(touch)
+
 
     def add_text_to_home_screen_cmd_history(self, bot_id, text):
         """
@@ -303,6 +371,7 @@ class GameBoard(Widget, EventDispatcher):
         else:
             print(
                 f"ERROR: Could not find output history box for bot_id: {bot_id}")
+
 
     def add_cmd_to_home_screen_cmd_history(self, bot_id, command):
         """

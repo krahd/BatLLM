@@ -1,7 +1,8 @@
-from kivy.config import Config as KivyConfig
-import yaml
-from pathlib import Path
 import copy
+from pathlib import Path
+
+import yaml
+from kivy.config import Config as KivyConfig
 
 APP_NAME = "BatLLM"
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
@@ -37,6 +38,7 @@ class AppConfig:
         self._config = copy.deepcopy(DEFAULTS)
         self._path = path
         self.load(path)
+        
 
     def load(self, path=CONFIG_PATH):
         """Loads the configuration from the specified path.
@@ -53,6 +55,7 @@ class AppConfig:
 
                     self._config[section].update(values)
 
+
     def save(self, path=CONFIG_PATH):
         """Saves the current configuration to the specified path or the default path.
         If the path is None, it uses the path set during initialization.
@@ -66,11 +69,13 @@ class AppConfig:
         with open(path, "w") as f:
             yaml.dump(self._config, f)
 
+
     def get(self, section, key):
         """Gets a configuration value from the specified section and key."""
         return self._config.get(section, {}).get(
             key, DEFAULTS.get(section, {}).get(key)
         )
+        
 
     def set(self, section, key, value):
         """Sets a configuration value for the specified section and key.
@@ -82,6 +87,7 @@ class AppConfig:
                 self._config[section] = {}
 
         self._config[section][key] = value
+
 
     def as_dict(self):
         """Returns the configuration as a dictionary."""

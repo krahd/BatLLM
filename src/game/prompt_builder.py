@@ -444,6 +444,7 @@ class PromptBuilder:
     def build_chat_payload(self, shared_context: bool, augmented: bool) -> Dict[str, Any]:
         payload: Dict[str, Any] = {
             "model": self.model,
+            "stream": False,
             "messages": self.build_chat_messages(shared_context=shared_context, augmented=augmented),
         }
         if self.num_ctx:
