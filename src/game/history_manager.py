@@ -35,8 +35,7 @@ class HistoryManager:
     Usage:
     - Instantiate once per session/run.
     - Call start_game(), start_round(), start_turn(), and their corresponding end_* methods at appropriate times.
-    - Use record_message(), record_parsed_command(), and record_post_action_state() to log bot-LLM interactions.
-    # TODO this will changes
+    - Use record_play()
     - Retrieve history for display, debugging, or saving via to_json(), to_text(), to_compact_text(), etc.
 
     Attributes:
@@ -48,14 +47,14 @@ class HistoryManager:
     Methods:
         start_game(game_board): Begin a new game and initialize its history.
         end_game(game, force=False): Finalize the current game, recording end time and winner.
+
         start_round(game, first_round=False): Begin a new round within the current game.
         end_round(game): Finalize the current round.
+
         start_turn(game): Begin a new turn within the current round.
         end_turn(game): Finalize the current turn.
 
-        record_message(bot_id, role, content): Record a chat message for the current turn.
-        record_parsed_command(bot_id, command): Record the parsed command for a bot in the current turn.
-        record_post_action_state(bot_id, game): Record a bot's state after its action in the current turn.
+        record_play(bot): Record a play for the bot in the current turn.
 
         get_chat_history(bot_id=None, shared=True): Retrieve chat history for the current game.
 
@@ -291,7 +290,7 @@ class HistoryManager:
 
 
 
-    def add_play(self, bot: Bot):
+    def record_play(self, bot: Bot):
         """
         Record a play for the bot in the current turn.
         This is a convenience method to record the bot's last command and response.
@@ -422,3 +421,332 @@ class HistoryManager:
             filepath, "w", encoding="utf-8"
         ) as f:  # JSON spec requires UTF-8 support by decoders.
             json.dump(self.games, f, indent=4, ensure_ascii=False)
+
+
+    # Get the full session history as a human - readable string.
+    def to_text(self, include_timestamps=False, include_messages=False):
+        """
+        Get the full history in a human-readable indented text format (key: value style).
+        Returns a multi-line string.
+        """
+        lines = []
+        game_num = 1
+
+        for game in self.games:
+
+            # Game Number
+            lines.append(f"Game {game_num}:")
+            game_num += 1
+
+            # Game-level details
+            if include_timestamps:
+                if "start_time" in game:
+                    lines.append(f"    Start Time: {game['start_time']}")
+
+                if "end_time" in game:
+                    lines.append(f"    End Time: {game['end_time']}")
+
+            # Initial state of bots at game start
+            if "initial_state" in game:
+                init_state = game["initial_state"]
+                bot_states = []
+
+                for bot_id, info in init_state.items():
+                    # Example: "BotA (HP=100)"
+                    hp = info.get("health")
+
+                    if hp is not None:
+                        bot_states.append(f"{bot_id} (HP={hp})")
+                    else:
+                        bot_states.append(f"{bot_id}")
+
+                if bot_states:
+                    lines.append("    Bots: " + ", ".join(bot_states))
+
+            # All of the game's rounds
+            for round_entry in game.get("rounds", []):
+                rnd = round_entry.get("round")
+                lines.append(f"    Round {rnd}:")
+
+
+                if include_timestamps:
+                    if "start_time" in round_entry:
+                        lines.append(f"        Start: {round_entry['start_time']}")
+
+                # All of the turns in this round:
+                for turn in round_entry.get("turns", []):
+                    tnum = turn.get("turn")
+
+                    # Turn header line
+                    lines.append(f"        Turn {tnum}:")
+
+                    # For each bot, for each variable, show its values at before and after the turn.
+
+                    # TODO check this
+                    pre = turn.get("pre_state", {})
+                    post = turn.get("post_state", {})
+
+                    for bot_id, pre_info in pre.items():
+                        post_info = post.get(bot_id, {})
+
+                        # Health change example
+                        if "health" in pre_info or "health" in post_info:
+                            pre_hp = pre_info.get("health")
+                            post_hp = post_info.get("health")
+
+                            if pre_hp is None:
+                                # If pre_hp missing, assume 0 or unknown
+                                pre_hp = pre_hp if pre_hp is not None else "N/A"
+
+                            if post_hp is None:
+                                post_hp = post_hp if post_hp is not None else "N/A"
+
+                            if pre_hp == post_hp or post_hp is None or pre_hp is None:
+                                # No change (or unknown)
+                                lines.append(
+                                    f"            {bot_id} HP: {pre_hp}")
+
+                            else:
+                                change = (
+                                    post_hp - pre_hp
+                                    if isinstance(pre_hp, (int, float))
+                                    and isinstance(post_hp, (int, float))
+                                    else None
+                                )
+
+                                if change is None:
+                                    # If not numeric or can't compute change, just show arrow
+                                    lines.append(
+                                        f"            {bot_id} HP: {pre_hp} -> {post_hp}"
+                                    )
+                                else:
+                                    # Show change with sign
+                                    sign = "+" if change > 0 else ""
+                                    lines.append(
+                                        f"            {bot_id} HP: {pre_hp} -> {post_hp} ({sign}{change})"
+                                    )
+
+                        # we can show how other attributes changed as well.
+
+                    # If a bot died during this turn (alive became false), mark it
+                    for bot_id, pre_info in pre.items():
+                        pre_alive = pre_info.get("health", 0) > 0
+                        post_alive = post.get(bot_id, {}).get("health", 0) > 0
+
+                        if pre_alive and post_alive is False:  # was alive, now not
+                            lines.append(f"            [{bot_id} died]")
+
+                    # messages
+                    if include_messages:
+                        for play in turn.get("plays", []):
+                            bot_id = play.get("bot_id")
+                            llm_response = play.get("llm_response")
+                            cmd = play.get("cmd")
+
+                            if bot_id is not None:
+                                lines.append(f'            [{bot_id}] LLM Response: "{llm_response}"')
+                                lines.append(f'            [{bot_id}] Command: {cmd}')
+
+                # Round end and winner
+                if include_timestamps:
+                    if "end_time" in round_entry:
+                        lines.append(f"        End: {round_entry['end_time']}")
+
+            # Game winner
+            if "winner" in game:
+                win = game["winner"]
+
+                lines.append(f"    Winner: {win if win else '(none)'}")
+
+            # Blank line between sessions if multiple
+            lines.append("")
+
+        return "\n".join(lines)
+
+
+
+    # Get a compact, UI - friendly summary of the session history.
+    def to_compact_text(self, include_timestamps=False, include_messages=True) -> str:
+        """Produce a readable, Markup-decotrated, compact summary of the history for the UI left pane.
+
+        Structure:
+        - Game header and start time
+        - For each round: header, prompts per bot
+        - For each turn: commands per bot and post-turn state snapshot
+        """
+
+        if not self.games:
+            return "No history yet. Play a round to see events here."
+
+        out: list[str] = []
+
+        for g_idx, game in enumerate(self.games, 1):
+
+            out.append(
+                f"[size=20sp][color=#FF0000]Game {g_idx}[/color][/size]")
+
+            if include_timestamps:
+                if game.get("start_time"):
+                    out.append(f"  Start: {game['start_time']}")
+
+            for round_entry in game.get("rounds", []):
+                rnum = round_entry.get("round")
+                out.append(f"  [b]Round {rnum}[/b]")
+
+                prompts = round_entry.get("prompts", [])
+                if prompts:
+                    out.append("    Prompts:")
+                    for p in prompts:
+                        out.append(
+                            f"      Bot {p.get('bot_id')}: {p.get('prompt', '')}")
+
+                for turn in round_entry.get("turns", []):
+                    tnum = turn.get("turn")
+                    out.append(f"    Turn {tnum}")
+
+                    if include_messages:
+                        # Aggregate per-bot messages for this turn
+                        for play in turn.get("plays", []):
+                            bot_id = play.get("bot_id")
+                            llm_response = play.get("llm_response")
+                            cmd = play.get("cmd")
+
+                            if bot_id is not None:
+                                out.append(f'      Bot {bot_id}: llm "{llm_response}" -> cmd="{cmd}"')
+
+
+
+                    # Post-turn state
+                    post = turn.get("post_state", {})
+                    if post:
+                        out.append("      State:")
+                        for b_id, info in post.items():
+                            x = info.get("x")
+                            y = info.get("y")
+                            rot = info.get("rot")
+                            hp = info.get("health")
+                            shield = info.get("shield")
+                            out.append(
+                                f"        Bot {b_id}: x={x:.3f} y={y:.3f} rot={rot:.1f}d health={hp} shield={'ON' if shield else 'OFF'}"
+                                if isinstance(x, (int, float)) and isinstance(y, (int, float)) and isinstance(rot, (int, float))
+                                else f"        Bot {b_id}: health={hp} shield={'ON' if shield else 'OFF'}"
+                            )
+
+            if game.get("winner") is not None:
+                out.append(f"  Winner: {game['winner']}")
+            out.append("")
+
+        return "\n".join(out).rstrip()
+
+
+
+
+
+
+    # Get a compact, per - bot summary of the session history.
+    def to_compact_text_for_bot(self, bot_id: int) -> str:
+
+        """Produce a compact, per-bot history summary for the UI left pane.
+
+        Format example:
+        Game 1
+          Round 1.
+            Prompt: <bot's prompt at round start>
+            state: <initial state summary>
+            Turn 1:
+                llm res -> cmd cmd
+                cmd: <parsed command>
+                state: <post-action state summary>
+
+        Notes:
+        - Only includes entries for the specified bot.
+        - Does not include timestamps or the bot id in lines (it's implied).
+        """
+        if not self.games:
+            return "No history yet."
+
+        def fmt_state(info: dict | None) -> str:
+            if not isinstance(info, dict):
+                return ""
+            x = info.get("x")
+            y = info.get("y")
+            rot = info.get("rot")
+            hp = info.get("health")
+            shield = info.get("shield")
+            if isinstance(x, (int, float)) and isinstance(y, (int, float)) and isinstance(rot, (int, float)):
+                return f"x={x:.3f} y={y:.3f} rot={rot:.1f}d health={hp} shield={'ON' if shield else 'OFF'}"
+            return f"health={hp} shield={'ON' if shield else 'OFF'}"
+
+        def set_newlines(text: str, newlines=1) -> str:
+            """Ensure text ends with a specific number of newlines."""
+            return text.rstrip("\n") + "\n" * (newlines - 1)
+
+        lines: list[str] = []
+
+        for gi, game in enumerate(self.games, start=1):
+            lines.append(set_newlines(
+                f"[b][color=#2a2a90][size=35sp]Game {gi}[/size][/color][/b]", 2))
+
+            for round_entry in game.get("rounds", []):
+                rnum = round_entry.get("round")
+                lines.append(set_newlines(
+                    f"[size=26sp][b]Round {rnum}.[/b][/size]", 1))
+
+                # Prompt at round start (for this bot only)
+                prompt_text = ""
+                for p in round_entry.get("prompts", []):
+                    if int(p.get("bot_id", -1)) == int(bot_id):
+                        prompt_text = p.get("prompt", "")
+                        break
+
+                if prompt_text:
+                    lines.append(set_newlines(
+                        f"\n[size=18sp][b]Prompt:[/b]\n[i] {prompt_text}[/i][/size]\n", 2))
+
+                # Initial state at round start (this bot only)
+                init_state = None
+                try:
+                    init_state = round_entry.get(
+                        "initial_state", {}).get(bot_id)
+
+                except Exception:
+                    init_state = None
+
+                if init_state is not None:
+                    lines.append(set_newlines(
+                        f"[b]State:[/b]  {fmt_state(init_state)}", 2))
+                    lines.append("......................")
+
+                # Turns
+                for turn in round_entry.get("turns", []):
+                    tnum = turn.get("turn")
+                    lines.append(set_newlines(f"[b][size=28sp]Turn {tnum}:[/size][/b]", 1))
+
+
+                    for play in turn.get("plays", []) or []:
+                        if int(play.get("bot_id", -1)) == int(bot_id):
+                            llm_response = play.get("llm_response").strip()
+                            cmd = play.get("cmd").strip()
+
+                            lines.append(
+                                f'[color=#208020]llm "{llm_response}"[/color] -> [color=#a000af]cmd="{cmd}"[/color]')
+
+                            break
+
+                    # Post-action state (if recorded for this bot); otherwise fall back to turn post_state
+                    post_action = (turn.get("post_action_states", {}) or {}).get(int(bot_id))
+
+                    if post_action is None:
+                        post_action = (turn.get("post_state", {})
+                                       or {}).get(bot_id)
+
+                    if post_action is not None:
+                        lines.append(set_newlines(
+                            f"[b]state: {fmt_state(post_action)}[/b]", 1))
+
+                    lines.append("")
+
+            # Blank line between games
+            lines.append("")
+
+        return "\n".join(lines).rstrip()

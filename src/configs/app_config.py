@@ -38,7 +38,7 @@ class AppConfig:
         self._config = copy.deepcopy(DEFAULTS)
         self._path = path
         self.load(path)
-        
+
 
     def load(self, path=CONFIG_PATH):
         """Loads the configuration from the specified path.
@@ -46,7 +46,7 @@ class AppConfig:
         """
 
         if path.exists():
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 user_config = yaml.safe_load(f) or {}
 
                 for section, values in user_config.items():
@@ -54,6 +54,7 @@ class AppConfig:
                         self._config[section] = {}
 
                     self._config[section].update(values)
+
 
 
     def save(self, path=CONFIG_PATH):
@@ -66,8 +67,9 @@ class AppConfig:
 
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             yaml.dump(self._config, f)
+
 
 
     def get(self, section, key):
@@ -75,7 +77,7 @@ class AppConfig:
         return self._config.get(section, {}).get(
             key, DEFAULTS.get(section, {}).get(key)
         )
-        
+
 
     def set(self, section, key, value):
         """Sets a configuration value for the specified section and key.

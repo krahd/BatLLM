@@ -27,6 +27,7 @@ from kivy.uix.widget import Widget
 
 from configs.app_config import config
 from game.bullet import Bullet
+from util.utils import markup
 
 
 class Bot(Widget):
@@ -278,7 +279,6 @@ class Bot(Widget):
 
 
 
-
     # TODO check this, this should set the bot ready to submit a new prompt, not a new round
     def prepare_prompt_submission(self, new_prompt: str):
         """
@@ -299,7 +299,8 @@ class Bot(Widget):
     # LLM
     def submit_prompt_to_llm(self):
         # TODO implement this method to submit the current prompt to the LLM
-        pass
+        self.board_widget.ollama_connector.send_prompt_to_llm(self)
+
 
 
     def _on_llm_response(self, res):
@@ -319,13 +320,13 @@ class Bot(Widget):
                 self.move()
 
             case "C":
-                angle = float(cmd[1:])  # if C, assume an angle follows and tries to parse it as a float
+                angle = float(res[1:])  # if C, assume an angle follows and tries to parse it as a float
                 self.last_cmd = f"C{angle}"
 
                 self.rotate(angle)
 
             case "A":
-                angle = float(cmd[1:])
+                angle = float(res[1:])
                 self.last_cmd = f"A{angle}"
                 self.rotate(-angle)
 
@@ -334,16 +335,16 @@ class Bot(Widget):
                 self.last_cmd = "B"
 
             case "S":
-                if len(cmd) == 1:
+                if len(res) == 1:
                     self.last_cmd = "S"
                     self.toggle_shield()
 
                 else:
-                    if cmd[1] == "1":
+                    if res[1] == "1":
                         self.last_cmd = "S1"
                         self.shield = True
 
-                    elif cmd[1] == "0":
+                    elif res[1] == "0":
                         self.last_cmd = "S0"
                         self.shield = False
 
@@ -359,21 +360,19 @@ class Bot(Widget):
         print(f"***** last_llm_response: {self.last_llm_response}")
         print(f"***** last_cmd: {self.last_cmd}")
 
-        # TODO create a helper function to deal with markup,
-        # something like markup_text(text, size="16sp", color="#000000", bold=True, italic=False)
 
         if not command_ok:
-            self.board_widget.add_cmd_to_home_screen_cmd_history(self.id, "[color=#FF0000][b]ERR[/b][/color]")
+            color = "#FF0000"
+            bold = True
+
         else:
-            self.board_widget.add_cmd_to_home_screen_cmd_history(self.id, self.last_cmd)
+            color = "#000000"
+            bold = False
 
 
+        self.board_widget.add_cmd_to_home_screen_cmd_history(self.id, markup(self.last_cmd, color=color, bold=bold))
 
-        # TODO check what is this compact history thing and why would it be needed
-        self.board_widget.history_manager.record_parsed_command(self.id, self.last_cmd if command_ok else "")
-        self.board_widget.history_manager.record_post_action_state(self.id, self.board_widget)
-        self.board_widget.history_manager.record_message(self.id, "llm_response", self.last_llm_response)
-        # TODO change these three records to history_manager.record_play(self)
+        self.board_widget.history_manager.record_play(self)
 
 
         # Finish Play, let the board know we ready for the next turn.

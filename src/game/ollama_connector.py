@@ -80,6 +80,7 @@ class OllamaConnector:
         self.header = self._get_mode_header_text()
 
         payload = self._build_payload(bot)
+
         # response = await AsyncClient().chat(payload)
         async with AsyncClient() as client:
             response = await client.chat(payload)
@@ -94,31 +95,8 @@ class OllamaConnector:
         else:
             self.ctx = response.context
 
-        # Store the last response in the bot
-        bot.last_llm_response = response.message.content
-
-
-        # Store the last command in the bot
-        bot.last_cmd = response.message.content.strip() if response.message.content else ""
-
-        # Record the response in the bot's history
-        bot.board_widget.history_manager.record_message(
-            bot.id, "assistant", bot.last_llm_response
-        )
-        # Record the play in the bot's history
-        bot.board_widget.history_manager.record_play(
-            bot.id,
-            llm_raw_response=bot.last_llm_response,
-            cmd=bot.last_cmd if bot.last_cmd else "ERR",
-        )
-        # Notify the board that the bot is ready for the next turn
-        bot.ready_for_next_turn = True
-        bot.board_widget.on_bot_llm_interaction_complete(bot)
-        # Notify the bot that the LLM interaction is complete
-        bot.on_llm_interaction_complete()
-        # Notify the bot that the LLM interaction is complete
-
-
+        # Let the bot handle the response
+        bot._on_llm_response(response.message.content)
 
 
 
@@ -128,15 +106,14 @@ class OllamaConnector:
     def _get_mode_header_text(self) -> str:
         """Loads from assets/headers the header (system prompt) text for the LLM request based on the mode.
 
-
         Returns:
             str: _description_
         """
 
-
         # Determine the key based on the mode and context type (2x2 matrix)
         if not self.augmenting_prompt:
             key = ("not_augmented_header_independent" if self.independent_contexts else "not_augmented_header_shared")
+
         else:
             key = ("augmented_header_independent" if self.independent_contexts else "augmented_header_shared")
 

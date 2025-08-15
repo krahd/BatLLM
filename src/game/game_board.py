@@ -145,10 +145,6 @@ class GameBoard(Widget, EventDispatcher):
         # Create the connector responsible for LLM communication
         self.ollama_connector = OllamaConnector()
 
-        # NOTE: Chat history is stored exclusively within the HistoryManager.
-        #  All chat ``HistoryManager.record_message`` and
-        # retrieved via ``HistoryManager.get_chat_history``. See the
-        # HistoryManager for details.
 
         # Render loop
         Clock.schedule_interval(
@@ -385,6 +381,7 @@ class GameBoard(Widget, EventDispatcher):
         text = f"[color=#000000]{command}[/color]\n"
         self.add_text_to_home_screen_cmd_history(bot_id, text)
 
+
     def submit_prompt(self, bot_id, new_prompt):
         """Tells the bot with bot_id to submit its promt for the coming round.
         If both bots have submitted, it starts the next turn.
@@ -442,6 +439,7 @@ class GameBoard(Widget, EventDispatcher):
         # internally and handle scheduling subsequent turns.
         self.play_turn(0)
 
+
     def game_is_over(self):
         """Checks if the game is over.
 
@@ -457,6 +455,7 @@ class GameBoard(Widget, EventDispatcher):
             return True
 
         return False
+
 
     def play_turn(self, dt):
         """Executes one turn.
@@ -506,6 +505,8 @@ class GameBoard(Widget, EventDispatcher):
             b.ready_for_next_turn = False
             b.submit_prompt_to_llm()
 
+
+
     def end_game(self):
         """
         Ends the game and displays the final results.
@@ -524,6 +525,8 @@ class GameBoard(Widget, EventDispatcher):
             size=(470, 460),
         )
         popup.open()
+
+
 
     def update_title_label(self):
         """Updates the label above the game board with the current game, round and turn information."""
@@ -557,6 +560,8 @@ class GameBoard(Widget, EventDispatcher):
             Clock.schedule_once(self.play_turn, 0)
 
 
+
+
     def get_bot_by_id(self, bot_id: int):
         """Returns the bot instance with the specified ID.
 
@@ -569,12 +574,14 @@ class GameBoard(Widget, EventDispatcher):
         return None
 
 
+
     def snapshot(self) -> dict[int, dict]:
         return {
             b.id: {"x": b.x, "y": b.y, "rot": b.rot,
                    "health": b.health, "shield": int(bool(b.shield))}
             for b in self.bots
         }
+
 
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
@@ -662,6 +669,8 @@ class GameBoard(Widget, EventDispatcher):
                 self.end_game()
                 self.start_new_game()
 
+
+
     def _grab_keyboard(self):
         """Request the keyboard and bind our handler."""
         if self._keyboard is None:
@@ -672,6 +681,8 @@ class GameBoard(Widget, EventDispatcher):
             )
             if self._keyboard:
                 self._keyboard.bind(on_key_down=self._on_keyboard_down)
+
+
 
     def _on_keyboard_closed(self):
         """Unbind and drop reference when keyboard is released."""

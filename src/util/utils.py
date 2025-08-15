@@ -6,6 +6,7 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
+from configs.app_config import config
 
 
 def find_id_in_parents(searcher, target_id):
@@ -206,3 +207,45 @@ def show_text_input_dialog(
 
     layout.add_widget(btn_layout)
     popup.open()
+
+
+
+def markup(text: str, font_size=config.get("ui", "font_size"), color="#000000", bold=False, italic=False) -> str:
+    """
+    Wraps the given text in Kivy markup tags for font size, color, bold, and italic.
+
+    Args:
+        text (str): The text to be wrapped.
+        font_size (int, optional): The font size to apply. Defaults to config value "ui"/"font_size".
+        color (str, optional): The color to apply in hex format (e.g., "#ff0000"). Defaults to black ("#000000").
+        bold (bool, optional): Whether to apply bold formatting. Defaults to False.
+        italic (bool, optional): Whether to apply italic formatting. Defaults to False.
+
+    Returns:
+        str: The text wrapped in Kivy markup tags.
+    """
+    if not text:
+        return ""
+
+    if font_size <= 0:
+        font_size = config.get("ui", "font_size")
+
+    if not color.startswith("#") or len(color) != 7:
+        color = "#000000"  # default to black if invalid
+
+    wrapped_text = f"[size={font_size}][color={color}]"
+    if bold:
+        wrapped_text += "[b]"
+    if italic:
+        wrapped_text += "[i]"
+
+    wrapped_text += text
+
+    if italic:
+        wrapped_text += "[/i]"
+    if bold:
+        wrapped_text += "[/b]"
+
+    wrapped_text += "[/color][/size]"
+
+    return wrapped_text
