@@ -85,6 +85,8 @@ class HistoryManager:
         # accesses this data to reconstruct the conversation for either shared
         # context (both bots combined) or independent context (per bot).
 
+
+
     def _now_iso(self):
         """Get current timestamp string in ISO 8601 format."""
         return datetime.now().isoformat()  # e.g. "2025-07-25T21:05:30.123456"
@@ -163,6 +165,7 @@ class HistoryManager:
         self.current_turn = None
 
 
+
     def start_round(self, game):
         """
         Start a new round within the current game.
@@ -178,7 +181,6 @@ class HistoryManager:
             raise ValueError(
                 "Cannot start a round without an active game. Call start_game first."
             )
-
 
         # Create the new round entry
         round_number = len(self.current_game["rounds"]) + 1
@@ -265,6 +267,7 @@ class HistoryManager:
 
 
 
+
     def end_turn(self, game):
         """
         End the current turn. Called after the turn's action is resolved.
@@ -286,6 +289,8 @@ class HistoryManager:
         self.current_turn = None
 
 
+
+
     def add_play(self, bot: Bot):
         """
         Record a play for the bot in the current turn.
@@ -298,6 +303,8 @@ class HistoryManager:
             raise ValueError(
                 "Cannot record a play without an active turn. Call start_turn first."
             )
+
+
 
         if self.current_turn["plays"] is None or not isinstance(self.current_turn["plays"], list) or len(self.current_turn["plays"]) == 0:
             # Initialize plays list if it doesn't exist
@@ -312,12 +319,10 @@ class HistoryManager:
 
 
 
-
-    # TODO rename to something like get llm responses
     def get_chat_history(self, bot_id: int | None = None, shared: bool = True) -> list[dict[str, str]]:
         """Reconstruct the chat history for the current game.
         """
-        history: list[dict[str, str]] = []
+        history: list[dict[str, str, str]] = []
         # If there is no active game, return empty history.
         if not self.current_game:
             return history
@@ -326,36 +331,17 @@ class HistoryManager:
         rounds = self.current_game.get("rounds", [])
         for rnd in rounds:
             for turn in rnd.get("turns", []):
+                for play in turn.get("plays", []):
+                    history.append({"bot_id": play["bot_id"], "llm_response": play["llm_response"], "cmd": play["cmd"]})
 
-                # TODO change this to use the res cmd and state
-                for msg in turn.get("messages", []):
-                    if shared or bot_id is None:
-                        history.append(
-                           {"role": msg["role"], "content": msg["content"]})
-                            else:
-                            # Only include messages from the specified bot.
-                            if msg.get("bot_id") == bot_id:
-                            history.append(
-                               {"role": msg["role"], "content": msg["content"]})
 
-                                # Also include any messages recorded in the current turn (if it exists).
-                                # TODO Change this to use the res cmd and state
-                                if self.current_turn and "messages" in self.current_turn:
-                                for msg in self.current_turn["messages"]:
-                                if shared or bot_id is None:
-                                history.append(
-                        {"role": msg["role"], "content": msg["content"]})
-                        else:
-                        if msg.get("bot_id") == bot_id:
-                        history.append(
-                           {"role": msg["role"], "content": msg["content"]})
 
-                            return history
+        return history
 
 
 
 
-                            def _get_bots_state(self, game):
+    def _get_bots_state(self, game):
         """
         Helper method to get a snapshot of all relevant bot data from the game.
         Returns a dictionary of bot states (keyed by bot name or id).
@@ -377,16 +363,16 @@ class HistoryManager:
                     else list(game.bots.values())
                 )
 
-                except TypeError:
+            except TypeError:
                 # If game.bots is not directly iterable (e.g., a single object), make it a single-element list
                 bots_iter = [game.bots]
 
-                bots = bots_iter
+            bots = bots_iter
 
-                # Iterate over the collected bot objects and record their state
-                for bot in bots:
+            # Iterate over the collected bot objects and record their state
+            for bot in bots:
                 if not bot:
-                continue
+                    continue
 
                 bot_id = bot.id
 
@@ -403,36 +389,36 @@ class HistoryManager:
 
                 state[bot_id] = bot_info
 
-                return state
+            return state
 
 
 
-                def _determine_winner(self, game):
-                """
+    def _determine_winner(self, game):
+        """
         In only one bot is alive, it's the winner. Otherwise, return None.
         """
-                bots_state = self._get_bots_state(game)
+        bots_state = self._get_bots_state(game)
 
-                alive_bots = [id for id, info in bots_state.items()
-                     if info["health"] > 0]
+        alive_bots = [id for id, info in bots_state.items()
+                      if info["health"] > 0]
 
         if len(alive_bots) == 1:
-                        # Only one bot alive -> that bot is the winner
+            # Only one bot alive -> that bot is the winner
             return alive_bots[0]
 
         else:
-                        # Either no bots alive (draw or both died) or more than one alive (no winner yet)
+            # Either no bots alive (draw or both died) or more than one alive (no winner yet)
             return None
 
 
 
     def save_session(self, filepath):
-                """
+        """
         Save the entire session history to a JSON file.
         This will include all games played in this session.
         """
 
         with open(
-            filepath, "w", encoding ="utf-8"
+            filepath, "w", encoding="utf-8"
         ) as f:  # JSON spec requires UTF-8 support by decoders.
-        json.dump(self.games, f, indent=4, ensure_ascii=False)
+            json.dump(self.games, f, indent=4, ensure_ascii=False)
