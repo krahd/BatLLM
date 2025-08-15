@@ -12,7 +12,7 @@ game:
   shield_size: 40
   step_length: 0.02
   total_rounds: 2
-  turns_per_round: 20
+  turns_per_round: 13
 llm:
   augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
   augmentation_header_shared: src/assets/prompts/shared_1.txt

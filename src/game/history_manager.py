@@ -703,12 +703,12 @@ class HistoryManager:
 
         for gi, game in enumerate(self.games, start=1):
             lines.append(set_newlines(
-                f"[b][color=#ff0000][size=20sp]Game {gi}[/size][/color][/b]", 2))
+                f"[b][color=#2a2a90][size=35sp]Game {gi}[/size][/color][/b]", 2))
 
             for round_entry in game.get("rounds", []):
                 rnum = round_entry.get("round")
                 lines.append(set_newlines(
-                    f"[size=18sp][b]Round {rnum}.[/b][/size]", 1))
+                    f"[size=26sp][b]Round {rnum}.[/b][/size]", 1))
 
                 # Prompt at round start (for this bot only)
                 prompt_text = ""
@@ -718,24 +718,26 @@ class HistoryManager:
                         break
                 if prompt_text:
                     lines.append(set_newlines(
-                        f"[b]Prompt:[/b] {prompt_text}\n", 1))
+                        f"\n[size=18sp][b]Prompt:[/b]\n[i] {prompt_text}[/i][/size]\n", 2))
 
                 # Initial state at round start (this bot only)
                 init_state = None
                 try:
                     init_state = round_entry.get(
                         "initial_state", {}).get(bot_id)
+
                 except Exception:
                     init_state = None
 
                 if init_state is not None:
                     lines.append(set_newlines(
                         f"[b]State:[/b]  {fmt_state(init_state)}", 2))
+                    lines.append("......................")
 
                 # Turns
                 for turn in round_entry.get("turns", []):
                     tnum = turn.get("turn")
-                    lines.append(set_newlines(f"[b]Turn {tnum}:[/b]", 1))
+                    lines.append(set_newlines(f"[b][size=28sp]Turn {tnum}:[/size][/b]", 1))
 
                     # LLM assistant message for this bot
                     llm_text = ""
@@ -743,18 +745,20 @@ class HistoryManager:
                         if int(msg.get("bot_id", -1)) == int(bot_id) and msg.get("role") == "assistant":
                             llm_text = (msg.get("content") or "").strip()
                             break
+
                     if llm_text:
-                        lines.append(set_newlines(f"[b]llm:[/b]", 1))
+                        lines.append(set_newlines(f"[b]LLM:[/b]", 1))
                         lines.append(set_newlines(
-                            f"[color=#808080]{llm_text.strip("\n")}[/color]"))
+                            f"[color=#208020]{llm_text.strip("\n")}[/color]"))
 
                     # Parsed command (if recorded)
                     cmd = (turn.get("parsed_commands", {})
                            or {}).get(int(bot_id))
+
                     if cmd is None or cmd == "":
                         cmd = "ERR"
 
-                    lines.append(set_newlines(f"[b]cmd:[/b] {cmd}", 1))
+                    lines.append(set_newlines(f"[b][color=#a000af]cmd: {cmd}[/color][/b]", 1))
 
                     # Post-action state (if recorded for this bot); otherwise fall back to turn post_state
                     post_action = (turn.get("post_action_states", {}) or {}).get(
@@ -764,7 +768,7 @@ class HistoryManager:
                                        or {}).get(bot_id)
                     if post_action is not None:
                         lines.append(set_newlines(
-                            f"[b]state:[/b] {fmt_state(post_action)}", 1))
+                            f"[b]state: {fmt_state(post_action)}[/b]", 1))
 
                     lines.append("")
 

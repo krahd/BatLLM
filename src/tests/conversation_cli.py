@@ -13,6 +13,7 @@ Classes:
             /exit  -> quit the chat session
             /reset -> clear conversation history
             /sys <text> -> set or replace the system prompt
+            /history -> display current conversation history
 
 Usage:
     Run this script directly to start an interactive chat session with the configured model.
