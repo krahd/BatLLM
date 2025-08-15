@@ -16,7 +16,9 @@ from kivy.graphics import (
     Rotate,
     Translate,
 )
-from kivy.properties import NumericProperty, ObjectProperty  # type: ignore[import]
+
+# type: ignore[import]
+from kivy.properties import NumericProperty, ObjectProperty
 from kivy.uix.widget import Widget
 
 from configs.app_config import config
@@ -43,7 +45,7 @@ class Bot(Widget):
     ready_for_next_round: bool | None = None
     ready_for_next_turn: bool | None = None
     augmenting_prompt: bool | None = None
-    independent_models: bool | None = None
+    independent_contexts: bool | None = None
 
     # Config-derived values
     shield_range_deg: float | None = None
@@ -59,8 +61,10 @@ class Bot(Widget):
         self.board_widget = board_widget
         self.ready_for_next_round = False
         self.ready_for_next_turn = False
-        self.augmenting_prompt = bool(config.get("game", "prompt_augmentation"))
-        self.independent_models = bool(config.get("game", "independent_models"))
+        self.augmenting_prompt = bool(
+            config.get("game", "prompt_augmentation"))
+        self.independent_contexts = bool(
+            config.get("game", "independent_contexts"))
 
         if bot_id == 1:
             self.color = (0.8, 0.88, 1, 0.85)
@@ -240,24 +244,30 @@ class Bot(Widget):
         Side Effects:
             Modifies self.prompt_history_index and self.current_prompt.
         """
-        
+
         prompts = []
-        
+
         hm = self.board_widget.history_manager
         if hm.current_round and "prompts" in hm.current_round:
-            prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
-            
+            prompts = [
+                p["prompt"]
+                for p in hm.current_round["prompts"]
+                if p.get("bot_id") == self.id
+            ]
+
         if self.prompt_history_index is None:
             if prompts:
                 self.prompt_history_index = len(prompts) - 1
-                
+
         else:
             if self.prompt_history_index > 0:
                 self.prompt_history_index -= 1
-                
-        if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
-            self.current_prompt = prompts[self.prompt_history_index]
 
+        if (
+            self.prompt_history_index is not None
+            and 0 <= self.prompt_history_index < len(prompts)
+        ):
+            self.current_prompt = prompts[self.prompt_history_index]
 
     def forward_prompt_history(self):
         """
@@ -273,26 +283,31 @@ class Bot(Widget):
             - Updates `self.prompt_history_index` and `self.current_prompt` attributes.
         """
         prompts = []
-        
+
         hm = self.board_widget.history_manager
-        
+
         if hm.current_round and "prompts" in hm.current_round:
-            prompts = [p["prompt"] for p in hm.current_round["prompts"] if p.get("bot_id") == self.id]
-            
+            prompts = [
+                p["prompt"]
+                for p in hm.current_round["prompts"]
+                if p.get("bot_id") == self.id
+            ]
+
         if self.prompt_history_index is None:
             if prompts:
                 self.prompt_history_index = 0
         else:
             if self.prompt_history_index < len(prompts) - 1:
                 self.prompt_history_index += 1
-                
-        if self.prompt_history_index is not None and 0 <= self.prompt_history_index < len(prompts):
-            self.current_prompt = prompts[self.prompt_history_index]
 
+        if (
+            self.prompt_history_index is not None
+            and 0 <= self.prompt_history_index < len(prompts)
+        ):
+            self.current_prompt = prompts[self.prompt_history_index]
 
     def get_current_prompt_from_history(self):
         return self.current_prompt or ""
-
 
     def get_current_prompt(self):
         """
@@ -303,7 +318,6 @@ class Bot(Widget):
         """
         return self.get_current_prompt_from_history()
 
-
     def get_prompt(self):
         """
         Retrieves the current prompt from the conversation history.
@@ -312,7 +326,6 @@ class Bot(Widget):
             str: The current prompt extracted from the history.
         """
         return self.get_current_prompt_from_history()
-
 
     def set_augmenting_prompt(self, augmenting: bool):
         """
@@ -323,7 +336,6 @@ class Bot(Widget):
         """
         self.augmenting_prompt = augmenting
 
-
     def get_augmenting_prompt(self):
         """
         Returns True if an augmenting prompt is set, otherwise False.
@@ -332,7 +344,6 @@ class Bot(Widget):
             bool: True if self.augmenting_prompt is truthy, False otherwise.
         """
         return bool(self.augmenting_prompt)
-
 
     def prepare_prompt_submission(self, new_prompt: str):
         """
@@ -349,72 +360,94 @@ class Bot(Widget):
         self.ready_for_next_round = True
 
     # ------------------------- LLM communication -------------------------
+
     def submit_prompt_to_llm(self):
-        """Build and send a chat request with: header, prompt(+state), and history."""
-        
-        # Refresh flags
-        self.augmenting_prompt = bool(config.get("game", "prompt_augmentation"))
-        self.independent_models = bool(config.get("game", "independent_models"))
+        """
+        Build and send a single /api/chat request to the LLM.
 
-        messages, user_content = self._build_chat_messages()
-        
-        # Record the user message for this turn
-        
-        self.board_widget.history_manager.record_message(self.id, "user", user_content)
+        - Uses PromptBuilder to construct the full payload (shared vs independent,
+        augmented vs non-augmented).
+        - In history we only store the assistant's raw output and the parsed command elsewhere.
+        - If augmented mode is on and the header file is missing/unreadable,
+        PromptBuilder will raise RuntimeError and crash (by design).
+        """
+        # Local import to avoid module init order issues
+        from game.prompt_builder import PromptBuilder
 
-        data = {
-            "model": config.get("llm", "model"),
-            "messages": messages,
-            "stream": False,
-        }
+        shared_context = config.get("game", "independent_contexts") != "1"
+        augmented = config.get("game", "prompt_augmentation") == "1"
 
-        base_url = config.get("llm", "url")
+        # Build the payload (may raise if augmented header file is missing)
+        pb = PromptBuilder(
+            history_manager=self.board_widget.history_manager,
+            game_board=self.board_widget,
+            self_bot=self,
+            cfg=getattr(self, "app_config", None),
+        )
+
+        payload = pb.build_chat_payload(
+            shared_context=shared_context, augmented=augmented)
+
+        # Compose chat URL from app_config (works with configparser-like or dict-of-dicts)
+
+        base_url = (config.get("llm", "url")).rstrip("/")
         port = config.get("llm", "port")
-        path = config.get("llm", "path") or "/api/chat"
+        path = config.get("llm", "path")
         chat_url = f"{base_url}:{port}{path}"
 
-        # Optional debug: log outgoing payload
+        # Debug outgoing payload
         if bool(config.get("llm", "debug_requests")):
             try:
-                preview = json.dumps(data, indent=2)
-                
+                preview = json.dumps(payload, indent=2)
             except (TypeError, ValueError, OverflowError):
                 preview = str(data)
 
-            print ("---->>>----------------------------------------------------------------------")
-            print(f"(debug)[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}")
-            print ("----<<<----------------------------------------------------------------------\n\n")
+            print(
+                "---->>>----------------------------------------------------------------------"
+            )
+            print(
+                f"(debug)[LLM][Bot {self.id}] POST {chat_url} with payload:\n{preview}"
+            )
+            print(
+                "----<<<----------------------------------------------------------------------\n\n"
+            )
 
-        self.board_widget.ollama_connector.send_request(
-            chat_url,
-            data,
-            self._on_llm_response,
-            self._on_llm_failure,
-            self._on_llm_error,
+        # Fire the async request through your existing connector
+        return self.board_widget.ollama_connector.send_request(
+            url=chat_url,
+            data=payload,
+            on_success=self._on_llm_response,
+            # consider a verbose variant if you want to log resp body
+            on_failure=self._on_llm_failure,
+            on_error=self._on_llm_error,
         )
-        
+
+    
 
     def _get_mode_header_text(self) -> str:
-        
+
         if not self.augmenting_prompt:
             return ""
-        
+
         # Get the augmentation header text for the LLM request based on the mode
         key = (
             "augmentation_header_independent"
-            if self.independent_models
+            if self.independent_contexts
             else "augmentation_header_shared"
         )
-        
+
         path = config.get("llm", key)
-        
+
         try:
             with open(path, "r", encoding="utf-8") as f:
                 return f.read()
-            
+
         except FileNotFoundError:
-            shared_fallback = os.path.join(os.path.dirname(path), "src/assets/prompts/augmentation_header_shared_1.txt")
-            
+            shared_fallback = os.path.join(
+                os.path.dirname(path),
+                "src/assets/prompts/augmentation_header_shared_1.txt",
+            )
+
             try:
                 with open(shared_fallback, "r", encoding="utf-8") as f:
                     return f.read()
@@ -422,100 +455,57 @@ class Bot(Widget):
                 return ""
 
 
-    def _build_user_message_content(self) -> str:
-        
-        if not self.augmenting_prompt:
-            content = (self.current_prompt or "") + "\n"
-
-        else:
-            content = "PLAYER_INPUT:\n"
-            content += (self.current_prompt or "") + "\n"
-            content += "GAME_STATE:\n"
-            content += f"Self.x: {self.x}, Self.y: {self.y}\n"
-            content += f"Self.rot: {self.rot}\n"  # degrees
-            content += f"Self.shield: {'ON' if self.shield else 'OFF'}\n"
-            content += f"Self.health: {self.health}\n"
-            
-            opp = self.board_widget.get_bot_by_id(3 - self.id)
-            
-            if opp is not None:
-                content += (
-                    f"Opponent.x: {opp.x}, Opponent.y: {opp.y}\n"
-                    f"Opponent.rot: {opp.rot}\n"
-                    f"Opponent.shield: {'ON' if opp.shield else 'OFF'}\n"
-                    f"Opponent.health: {opp.health}\n"
-                )
-                
-        return content
-
-
-    def _build_chat_messages(self) -> tuple[list[dict[str, str]], str]:
-        system_message = {"role": "system", "content": self._get_mode_header_text()}
-
-        #print (f"******* [LLM][Bot {self.id}] System message content:\n{system_message['content']}")
-        
-        if self.independent_models:
-            history = self.board_widget.history_manager.get_chat_history(self.id, shared=False)
-        else:
-            history = self.board_widget.history_manager.get_chat_history(None, shared=True)
-            
-        user_content = self._build_user_message_content()
-        #print (f"***[LLM][Bot {self.id}] User message content:\n{user_content}")
-        
-        user_message = {"role": "user", "content": user_content}
-        #print (f"***[LLM][Bot {self.id}] User message content:\n{user_message}")
-
-        messages: list[dict[str, str]] = [system_message]
-        messages.extend(history)
-        messages.append(user_message)
-
-        #print ("---------")
-        #print("Messages to LLM:\n")
-        
-        #for i, msg in enumerate(messages):
-        #    print(f"Message {i}: role={msg.get('role')}, content={msg.get('content')!r}")
-            
-        #print("\nUser content:")
-        #print(user_content)
-        #print ("---------")
-        
-        
-        return messages, user_content
 
     def _on_llm_failure(self, _request, _error):
         self.board_widget.on_bot_llm_interaction_complete(self)
 
+
     def _on_llm_error(self, _request, _error):
         self.board_widget.on_bot_llm_interaction_complete(self)
 
+
     def _on_llm_response(self, _req, result):
         """Parse the LLM reply, execute it, record history, and finish the turn."""
+
         
+        #print(json.dumps(result, indent=2))
+        print (">> result length:", len(str(result)) if result else 0)
+        
+
         # 1) Extract assistant content from common chat API shapes
         assistant_content = ""
         try:
             if isinstance(result, dict):
                 if isinstance(result.get("response"), str):
-                    assistant_content = result["response"]
-                    
+                    assistant_content = result["response"]                    
+
                 elif isinstance(result.get("message"), dict) and isinstance(result["message"].get("content"), str):
-                    assistant_content = result["message"]["content"]
-                    
-                elif isinstance(result.get("choices"), list) and result["choices"] and isinstance(result["choices"][0], dict):
+                    assistant_content = result["message"]["content"]        
+
+                elif (
+                    isinstance(result.get("choices"), list)
+                    and result["choices"]
+                    and isinstance(result["choices"][0], dict)
+                ):
                     choice = result["choices"][0]
-                    msg = choice.get("message") if isinstance(choice, dict) else None
-                    
+                    msg = choice.get("message") if isinstance(
+                        choice, dict) else None
+
                     if isinstance(msg, dict) and isinstance(msg.get("content"), str):
                         assistant_content = msg["content"]
-                        
+
                 elif isinstance(result.get("content"), str):
                     assistant_content = result["content"]
-                    
+
         except (TypeError, KeyError, ValueError):
             assistant_content = ""
 
-        assistant_content = assistant_content.strip() if isinstance(assistant_content, str) else ""
+        assistant_content = (
+            assistant_content.strip() if isinstance(assistant_content, str) else ""
+        )
         self.last_llm_response = assistant_content
+
+        print(f"***** last_llm_response: {assistant_content}")
 
         # 2) Interpret command
         cmd = assistant_content
@@ -524,42 +514,59 @@ class Bot(Widget):
         try:
             if isinstance(cmd, str):
                 command = cmd
+
             elif isinstance(cmd, list) and len(cmd) > 0:
                 command = cmd[0]
+
             else:
                 command_ok = False
 
             if command_ok and isinstance(command, str) and command:
+
                 match command[0]:
                     case "M":
-                        self.board_widget.add_llm_response_to_history(self.id, "M")
+                        self.board_widget.add_cmd_to_home_screen_cmd_history(
+                            self.id, "M")
                         self.move()
 
                     case "C":
                         angle = float(command[1:])
-                        self.board_widget.add_llm_response_to_history(self.id, f"C{angle}")
+                        self.board_widget.add_cmd_to_home_screen_cmd_history(
+                            self.id, f"C{angle}"
+                        )
                         self.rotate(angle)
 
                     case "A":
                         angle = float(command[1:])
-                        self.board_widget.add_llm_response_to_history(self.id, f"A{angle}")
+                        self.board_widget.add_cmd_to_home_screen_cmd_history(
+                            self.id, f"A{angle}"
+                        )
                         self.rotate(-angle)
 
                     case "B":
                         self.board_widget.shoot(self.id)
-                        self.board_widget.add_llm_response_to_history(self.id, "B")
+                        self.board_widget.add_cmd_to_home_screen_cmd_history(
+                            self.id, "B")
 
                     case "S":
                         if len(command) == 1:
-                            self.board_widget.add_llm_response_to_history(self.id, "S")
+                            self.board_widget.add_cmd_to_home_screen_cmd_history(
+                                self.id, "S")
                             self.toggle_shield()
+
                         else:
                             if command[1] == "1":
-                                self.board_widget.add_llm_response_to_history(self.id, "S1")
+                                self.board_widget.add_cmd_to_home_screen_cmd_history(
+                                    self.id, "S1"
+                                )
                                 self.shield = True
+
                             elif command[1] == "0":
-                                self.board_widget.add_llm_response_to_history(self.id, "S0")
+                                self.board_widget.add_cmd_to_home_screen_cmd_history(
+                                    self.id, "S0"
+                                )
                                 self.shield = False
+
                             else:
                                 command_ok = False
 
@@ -568,7 +575,7 @@ class Bot(Widget):
 
         except (ValueError, IndexError, TypeError) as e:
             command_ok = False
-            print(f"exception: {e}")
+            print(f">>>>> exception: {e}")
 
         # 3) Fallback UI note on invalid command
         if not command_ok:
@@ -584,13 +591,15 @@ class Bot(Widget):
             self.board_widget.history_manager.record_post_action_state(
                 self.id, self.board_widget
             )
-            
+
         except Exception:
             # Non-fatal: compact history will omit if not available
             pass
 
         # 4) Record assistant message in history
-        self.board_widget.history_manager.record_message(self.id, "assistant", assistant_content)
+        self.board_widget.history_manager.record_message(
+            self.id, "assistant", assistant_content
+        )
 
         # 5) Finish turn
         self.ready_for_next_turn = True

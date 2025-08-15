@@ -14,7 +14,7 @@ DEFAULTS = {
     "game": {
         "total_rounds": 3,
         "turns_per_round": 5,
-        "independent_models": True,
+        "independent_contexts": True,
         "prompt_augmentation": False,
         "initial_health": 20,
         "bullet_damage": 3,

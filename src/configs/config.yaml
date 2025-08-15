@@ -5,7 +5,7 @@ game:
   bullet_damage: 5
   bullet_diameter: 0.2
   bullet_step_length: 0.01
-  independent_models: true
+  independent_contexts: true
   initial_health: 30
   prompt_augmentation: true
   shield_initial_state: true
@@ -18,9 +18,9 @@ llm:
   augmentation_header_shared: src/assets/prompts/shared_1.txt
   debug_requests: true
   model: llama3.2:latest
+  num_ctx: 32768
   path: /api/chat
   port: 11434
-  num_ctx: 32768
   url: http://localhost
 ui:
   ' primary_color': '#ffffff'

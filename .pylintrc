@@ -331,11 +331,6 @@ overgeneral-exceptions=builtins.BaseException,builtins.Exception
 
 [FORMAT]
 
-# Number of blank lines required after function or class definitions.
-# (default: 2)
-blank-lines-after-function-or-class = 4
-
-
 # Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
 expected-line-ending-format=
 
@@ -350,7 +345,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=160
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -619,6 +614,9 @@ mixin-class-rgx=.*[Mm]ixin
 # List of decorators that change the signature of a decorated function.
 signature-mutators=
 
+
+ignored-modules=kivy,kivy.properties
+extension-pkg-allow-list=kivy
 
 [VARIABLES]
 

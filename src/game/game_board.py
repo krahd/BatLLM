@@ -71,7 +71,8 @@ class GameBoard(Widget, EventDispatcher):
     sound_bot_hit = None
     current_turn = NumericProperty(0)  # Start with turn 0
     current_round = NumericProperty(0)  # Start with round 0
-    games_started = NumericProperty(0)  # Count of games started in this session
+    # Count of games started in this session
+    games_started = NumericProperty(0)
     shuffled_bots = None
     history_manager = None
 
@@ -79,7 +80,8 @@ class GameBoard(Widget, EventDispatcher):
         """Constructor"""
         super(GameBoard, self).__init__(**kwargs)
 
-        self._keyboard = Window.request_keyboard(self._keyboard_closed, self, "text")
+        self._keyboard = Window.request_keyboard(
+            self._keyboard_closed, self, "text")
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
         self.bind(size=self._redraw, pos=self._redraw)
@@ -109,7 +111,8 @@ class GameBoard(Widget, EventDispatcher):
         # HistoryManager for details.
 
         # Render loop
-        Clock.schedule_interval(self._redraw, 1.0 / config.get("ui", "frame_rate"))
+        Clock.schedule_interval(
+            self._redraw, 1.0 / config.get("ui", "frame_rate"))
 
     def on_current_turn(self, instance, value):
         """Callback for current_turn property change.
@@ -153,7 +156,7 @@ class GameBoard(Widget, EventDispatcher):
 
         if self.games_started > 0:
             for b in self.bots:
-                self.add_text_to_llm_response_history(
+                self.add_text_to_home_screen_cmd_history(
                     b.id, "[b][color=#f00000]\n\nNew Game\n\n[/color][/b]"
                 )
                 b.ready_for_next_round = False  # need a new prompt for a new round
@@ -272,7 +275,7 @@ class GameBoard(Widget, EventDispatcher):
 
         return super().on_touch_move(touch)
 
-    def add_text_to_llm_response_history(self, bot_id, text):
+    def add_text_to_home_screen_cmd_history(self, bot_id, text):
         """
         Adds the text to the output history box next to the bot's prompt input.
 
@@ -286,18 +289,22 @@ class GameBoard(Widget, EventDispatcher):
         if box is not None:
             box.text += text
 
-            scroll = find_id_in_parents(self, f"scroll_output_history_player_{bot_id}")
+            scroll = find_id_in_parents(
+                self, f"scroll_output_history_player_{bot_id}")
+
             lbl = find_id_in_parents(self, f"output_history_player_{bot_id}")
             n_lines = lbl.text.count("\n")
 
             if (
                 n_lines > 20
             ):  # After the first 20 liines, we scroll to the bottom every time we add a new line
-                Clock.schedule_once(lambda dt: setattr(scroll, "scroll_y", 0), 0)
+                Clock.schedule_once(
+                    lambda dt: setattr(scroll, "scroll_y", 0), 0)
         else:
-            print(f"ERROR: Could not find output history box for bot_id: {bot_id}")
+            print(
+                f"ERROR: Could not find output history box for bot_id: {bot_id}")
 
-    def add_llm_response_to_history(self, bot_id, command):
+    def add_cmd_to_home_screen_cmd_history(self, bot_id, command):
         """
         Appends the result of parsing the llm's response to the
         scrollable label in the home_screen that each player has
@@ -307,7 +314,7 @@ class GameBoard(Widget, EventDispatcher):
                 command (_type_): correct llm responses parse into commands
         """
         text = f"[color=#000000]{command}[/color]\n"
-        self.add_text_to_llm_response_history(bot_id, text)
+        self.add_text_to_home_screen_cmd_history(bot_id, text)
 
     def submit_prompt(self, bot_id, new_prompt):
         """Tells the bot with bot_id to submit its promt for the coming round.
@@ -336,7 +343,7 @@ class GameBoard(Widget, EventDispatcher):
 
         # Notify players via the output history and reset the ready flags.
         for b in self.bots:
-            self.add_text_to_llm_response_history(
+            self.add_text_to_home_screen_cmd_history(
                 b.id, f"[color=#000000][b]Round {self.current_round}[/b][/color]\n"
             )
             b.ready_for_next_round = False
@@ -393,14 +400,14 @@ class GameBoard(Widget, EventDispatcher):
         if not self.current_turn < config.get("game", "turns_per_round"):
             # round's over
             self.history_manager.end_round(self)
-            
+
             for b in self.bots:
                 # Insert blank line to separate rounds in the UI.
-                self.add_text_to_llm_response_history(b.id, "\n\n")
+                self.add_text_to_home_screen_cmd_history(b.id, "\n\n")
                 # Directly log the end of the round to the UI. Previously this
                 # attempted to call ``b.log``, but Bot has no ``log`` method.
                 # We instead use the GameBoard's helper to append text.
-                self.add_text_to_llm_response_history(
+                self.add_text_to_home_screen_cmd_history(
                     b.id, f"[color=#a00000]Round {self.current_round} ended.[/color]\n\n"
                 )
 
@@ -477,16 +484,23 @@ class GameBoard(Widget, EventDispatcher):
             self.history_manager.end_turn(self)
             Clock.schedule_once(self.play_turn, 0)
 
-    def get_bot_by_id(self, bot_id):
+    def get_bot_by_id(self, bot_id: int):
         """Returns the bot instance with the specified ID.
 
         Args:
                 bot_id (_type_): The bot with the id or None if not found.
         """
-        for bot_instance in self.bots:
-            if bot_instance.id == bot_id:
-                return bot_instance
+        for b in self.bots:
+            if getattr(b, "id", None) == bot_id:
+                return b
         return None
+
+    def snapshot(self) -> dict[int, dict]:
+        return {
+            b.id: {"x": b.x, "y": b.y, "rot": b.rot,
+                   "health": b.health, "shield": int(bool(b.shield))}
+            for b in self.bots
+        }
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """Keyboard handler for the game board. It is used for debug and testing purposes alone.

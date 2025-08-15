@@ -1,3 +1,5 @@
+from game.bot import Bot
+from configs.app_config import config
 import sys
 import os
 from pathlib import Path
@@ -8,11 +10,26 @@ SRC_DIR = Path(__file__).resolve().parents[1]  # .../BatLLM/src
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from configs.app_config import config
-from game.bot import Bot
-
 
 class DummyHistory:
+    """
+    DummyHistory is a simple class for simulating and recording chat history in a game-like structure.
+
+    Attributes:
+        current_game (dict): Stores the overall game state, including all rounds.
+        current_round (dict): Represents the current round, containing its turns.
+        current_turn (dict): Represents the current turn, containing its messages.
+
+    Methods:
+        record_message(bot_id, role, content):
+            Records a message in the current turn with the specified bot ID, role, and content.
+
+        get_chat_history(bot_id=None, shared=True):
+            Retrieves the chat history for the current turn.
+            If 'shared' is True or 'bot_id' is None, returns all messages.
+            Otherwise, returns only messages sent by the specified bot ID.
+    """
+
     def __init__(self):
         self.current_game = {"rounds": []}
         self.current_round = {"round": 1, "turns": []}
@@ -21,11 +38,33 @@ class DummyHistory:
         self.current_round["turns"].append(self.current_turn)
 
     def record_message(self, bot_id, role, content):
+        """
+        Records a message in the current conversation turn.
+
+        Args:
+            bot_id (str): Identifier of the bot sending or receiving the message.
+            role (str): The role of the message sender (e.g., 'user', 'assistant').
+            content (str): The content of the message.
+
+        Side Effects:
+            Appends a dictionary representing the message to the 'messages' list in the current turn.
+            Initializes the 'messages' list if it does not exist.
+        """
         self.current_turn.setdefault("messages", []).append(
             {"bot_id": bot_id, "role": role, "content": content}
         )
 
     def get_chat_history(self, bot_id=None, shared=True):
+        """
+        Retrieve the chat history for the current turn, optionally filtered by bot ID and sharing status.
+
+        Args:
+            bot_id (Optional[Any]): The identifier of the bot whose messages should be included. If None, includes all bots.
+            shared (bool): If True, includes all messages regardless of bot ID. If False, filters messages by the specified bot_id.
+
+        Returns:
+            List[Dict[str, str]]: A list of message dictionaries, each containing 'role' and 'content' keys.
+        """
         out = []
         for msg in self.current_turn.get("messages", []):
             if shared or bot_id is None or msg["bot_id"] == bot_id:
@@ -34,6 +73,31 @@ class DummyHistory:
 
 
 class DummyBoard:
+    """
+    DummyBoard is a mock class simulating a board interface for testing LLM interactions.
+
+    Attributes:
+        history_manager (DummyHistory): Manages the history of interactions.
+        ollama_connector (SimpleNamespace): Simulates sending requests to an LLM backend.
+        bots (list): List of bot instances associated with the board.
+
+    Methods:
+        on_bot_llm_interaction_complete(bot):
+            Callback invoked when a bot's LLM interaction is complete.
+
+        add_llm_response_to_history(bot_id, cmd):
+            Logs the LLM response command for a given bot.
+
+        add_text_to_llm_response_history(bot_id, text):
+            Logs additional text to the LLM response history for a given bot.
+
+        get_bot_by_id(bot_id):
+            Retrieves a bot instance by its ID.
+
+        shoot(bot_id):
+            Simulates a shoot action by a bot.
+    """
+
     def __init__(self):
         self.history_manager = DummyHistory()
         self.ollama_connector = SimpleNamespace(

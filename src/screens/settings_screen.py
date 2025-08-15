@@ -15,7 +15,7 @@ class SettingsScreen(Screen):
     initial_health = NumericProperty(config.get("game", "initial_health"))
     bullet_damage = NumericProperty(config.get("game", "bullet_damage"))
     shield_size = NumericProperty(config.get("game", "shield_size"))
-    independent_models = BooleanProperty(config.get("game", "independent_models"))
+    independent_contexts = BooleanProperty(config.get("game", "independent_contexts"))
     prompt_augmentation = BooleanProperty(config.get("game", "prompt_augmentation"))
 
 
@@ -40,7 +40,7 @@ class SettingsScreen(Screen):
         config.set("game", "initial_health", int(self.ids.health_slider.value))
         config.set("game", "bullet_damage", int(self.ids.damage_slider.value))
         config.set("game", "shield_size", int(self.ids.shield_slider.value))        
-        config.set("game", "independent_models", self.ids.independent_checkbox.active)
+        config.set("game", "independent_contexts", self.ids.independent_checkbox.active)
         config.set("game", "prompt_augmentation", self.ids.augmentation_checkbox.active)
             
 

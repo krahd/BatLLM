@@ -121,15 +121,6 @@ class HistoryManager:
                 "Cannot start a round without an active game. Call start_game first."
             )
 
-        # TODO review this logic
-        # If not the first round, ensure no round is currently active
-        # if not first_round:
-        #    # If we were already in a round, then raise an error
-        #    if self.current_round and "end_time" not in self.current_round:
-        #             "Cannot start a round while in one. Call end_round first."
-        #         )
-        #        raise ValueError(
-
         # Create the new round entry
         round_number = len(self.current_game["rounds"]) + 1
 
@@ -165,7 +156,8 @@ class HistoryManager:
         # If a turn is in progress within this round, raise an error
         if self.current_turn and "post_state" not in self.current_turn:
             if not self.current_round:
-                raise ValueError("Cannot end a round mid turn. Call end_turn first")
+                raise ValueError(
+                    "Cannot end a round mid turn. Call end_turn first")
 
         # Mark round end time
         self.current_round["end_time"] = self._now_iso()
@@ -210,7 +202,8 @@ class HistoryManager:
         """
         if not self.current_turn:
             # If there's no active turn we throw an exception
-            raise ValueError("Cannot end a non-existent turn. Call start_turn first.")
+            raise ValueError(
+                "Cannot end a non-existent turn. Call start_turn first.")
 
         # Record the turn's end time
         self.current_turn["end_time"] = self._now_iso()
@@ -251,6 +244,7 @@ class HistoryManager:
         ``messages`` list is created lazily on first use. Messages are
         appended in the order they are recorded.
         """
+
         # Ensure we only record messages when a turn is active.
         if not self.current_turn:
             return
@@ -267,6 +261,7 @@ class HistoryManager:
         """
         if not self.current_turn:
             return
+
         cmds = self.current_turn.setdefault("parsed_commands", {})
         cmds[int(bot_id)] = command or ""
 
@@ -288,6 +283,9 @@ class HistoryManager:
         except Exception:
             # Non-fatal: if we cannot snapshot state, skip silently
             pass
+
+    # this is not used at all in the communication with the llms
+    # it can be used for debugging, logging, or UI
 
     def get_chat_history(self, bot_id: int | None = None, shared: bool = True) -> list[dict[str, str]]:
         """Reconstruct the chat history for the current game.
@@ -325,20 +323,24 @@ class HistoryManager:
             for turn in rnd.get("turns", []):
                 for msg in turn.get("messages", []):
                     if shared or bot_id is None:
-                        history.append({"role": msg["role"], "content": msg["content"]})
+                        history.append(
+                            {"role": msg["role"], "content": msg["content"]})
                     else:
                         # Only include messages from the specified bot.
                         if msg.get("bot_id") == bot_id:
-                            history.append({"role": msg["role"], "content": msg["content"]})
+                            history.append(
+                                {"role": msg["role"], "content": msg["content"]})
 
         # Also include any messages recorded in the current turn (if it exists).
         if self.current_turn and "messages" in self.current_turn:
             for msg in self.current_turn["messages"]:
                 if shared or bot_id is None:
-                    history.append({"role": msg["role"], "content": msg["content"]})
+                    history.append(
+                        {"role": msg["role"], "content": msg["content"]})
                 else:
                     if msg.get("bot_id") == bot_id:
-                        history.append({"role": msg["role"], "content": msg["content"]})
+                        history.append(
+                            {"role": msg["role"], "content": msg["content"]})
 
         return history
 
@@ -407,7 +409,8 @@ class HistoryManager:
         """
         bots_state = self._get_bots_state(game)
 
-        alive_bots = [id for id, info in bots_state.items() if info["health"] > 0]
+        alive_bots = [id for id, info in bots_state.items()
+                      if info["health"] > 0]
 
         if len(alive_bots) == 1:
             # Only one bot alive -> that bot is the winner
@@ -509,7 +512,8 @@ class HistoryManager:
 
                             if pre_hp == post_hp or post_hp is None or pre_hp is None:
                                 # No change (or unknown)
-                                lines.append(f"            {bot_id} HP: {pre_hp}")
+                                lines.append(
+                                    f"            {bot_id} HP: {pre_hp}")
 
                             else:
                                 change = (
@@ -569,7 +573,7 @@ class HistoryManager:
         marker = "PLAYER_INPUT:"
         try:
             idx = content.find(marker)
-            snippet = content[idx + len(marker) :] if idx >= 0 else content
+            snippet = content[idx + len(marker):] if idx >= 0 else content
             for line in snippet.splitlines():
                 s = line.strip()
                 if s:
@@ -591,7 +595,8 @@ class HistoryManager:
 
         out: list[str] = []
         for g_idx, game in enumerate(self.games, 1):
-            out.append(f"[size=20sp][color=#FF0000]Game {g_idx}[/color][/size]")
+            out.append(
+                f"[size=20sp][color=#FF0000]Game {g_idx}[/color][/size]")
             if game.get("start_time"):
                 out.append(f"  Start: {game['start_time']}")
 
@@ -603,7 +608,8 @@ class HistoryManager:
                 if prompts:
                     out.append("    Prompts:")
                     for p in prompts:
-                        out.append(f"      Bot {p.get('bot_id')}: {p.get('prompt','')}")
+                        out.append(
+                            f"      Bot {p.get('bot_id')}: {p.get('prompt', '')}")
 
                 for turn in round_entry.get("turns", []):
                     tnum = turn.get("turn")
@@ -615,13 +621,14 @@ class HistoryManager:
                         b = msg.get("bot_id")
                         if b is None:
                             continue
-                        
+
                         entry = per_bot.setdefault(int(b), {})
                         role = msg.get("role")
                         content = msg.get("content", "")
-                        
+
                         if role == "user":
-                            entry["user"] = self._extract_player_input_summary(content)
+                            entry["user"] = self._extract_player_input_summary(
+                                content)
                         elif role == "assistant":
                             entry["assistant"] = (content or "").strip()
 
@@ -631,7 +638,8 @@ class HistoryManager:
                             e = per_bot[b_id]
                             u = e.get("user", "")
                             a = e.get("assistant", "")
-                            out.append(f"        Bot {b_id}: prompt='{u}' -> cmd='{a}'")
+                            out.append(
+                                f"        Bot {b_id}: prompt='{u}' -> cmd='{a}'")
 
                     # Post-turn state
                     post = turn.get("post_state", {})
@@ -687,19 +695,20 @@ class HistoryManager:
                 return f"x={x:.3f} y={y:.3f} rot={rot:.1f}d health={hp} shield={'ON' if shield else 'OFF'}"
             return f"health={hp} shield={'ON' if shield else 'OFF'}"
 
-
         def set_newlines(text: str, newlines=1) -> str:
             """Ensure text ends with a specific number of newlines."""
             return text.rstrip("\n") + "\n" * (newlines - 1)
 
         lines: list[str] = []
-        
+
         for gi, game in enumerate(self.games, start=1):
-            lines.append (set_newlines(f"[b][color=#ff0000][size=20sp]Game {gi}[/size][/color][/b]", 2))
-            
-            for round_entry in game.get("rounds", []):                
+            lines.append(set_newlines(
+                f"[b][color=#ff0000][size=20sp]Game {gi}[/size][/color][/b]", 2))
+
+            for round_entry in game.get("rounds", []):
                 rnum = round_entry.get("round")
-                lines.append(set_newlines(f"[size=18sp][b]Round {rnum}.[/b][/size]", 1))
+                lines.append(set_newlines(
+                    f"[size=18sp][b]Round {rnum}.[/b][/size]", 1))
 
                 # Prompt at round start (for this bot only)
                 prompt_text = ""
@@ -708,17 +717,20 @@ class HistoryManager:
                         prompt_text = p.get("prompt", "")
                         break
                 if prompt_text:
-                    lines.append(set_newlines(f"[b]Prompt:[/b] {prompt_text}\n", 1))
+                    lines.append(set_newlines(
+                        f"[b]Prompt:[/b] {prompt_text}\n", 1))
 
                 # Initial state at round start (this bot only)
                 init_state = None
                 try:
-                    init_state = round_entry.get("initial_state", {}).get(bot_id)
+                    init_state = round_entry.get(
+                        "initial_state", {}).get(bot_id)
                 except Exception:
                     init_state = None
-                    
+
                 if init_state is not None:
-                    lines.append(set_newlines(f"[b]State:[/b]  {fmt_state(init_state)}", 2))
+                    lines.append(set_newlines(
+                        f"[b]State:[/b]  {fmt_state(init_state)}", 2))
 
                 # Turns
                 for turn in round_entry.get("turns", []):
@@ -733,26 +745,30 @@ class HistoryManager:
                             break
                     if llm_text:
                         lines.append(set_newlines(f"[b]llm:[/b]", 1))
-                        lines.append(set_newlines(f"[color=#808080]{llm_text.strip("\n")}[/color]"))
-                        
+                        lines.append(set_newlines(
+                            f"[color=#808080]{llm_text.strip("\n")}[/color]"))
 
                     # Parsed command (if recorded)
-                    cmd = (turn.get("parsed_commands", {}) or {}).get(int(bot_id))
+                    cmd = (turn.get("parsed_commands", {})
+                           or {}).get(int(bot_id))
                     if cmd is None or cmd == "":
                         cmd = "ERR"
-                    
-                    lines.append(set_newlines(f"[b]cmd:[/b] {cmd}",1))
+
+                    lines.append(set_newlines(f"[b]cmd:[/b] {cmd}", 1))
 
                     # Post-action state (if recorded for this bot); otherwise fall back to turn post_state
-                    post_action = (turn.get("post_action_states", {}) or {}).get(int(bot_id))
+                    post_action = (turn.get("post_action_states", {}) or {}).get(
+                        int(bot_id))
                     if post_action is None:
-                        post_action = (turn.get("post_state", {}) or {}).get(bot_id)
+                        post_action = (turn.get("post_state", {})
+                                       or {}).get(bot_id)
                     if post_action is not None:
-                        lines.append(set_newlines(f"[b]state:[/b] {fmt_state(post_action)}", 1))
+                        lines.append(set_newlines(
+                            f"[b]state:[/b] {fmt_state(post_action)}", 1))
 
                     lines.append("")
-                    
-            # Blank line between games            
+
+            # Blank line between games
             lines.append("")
 
         return "\n".join(lines).rstrip()
