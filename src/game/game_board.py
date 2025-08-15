@@ -96,7 +96,7 @@ class GameBoard(Widget, EventDispatcher):
         _grab_keyboard(): Requests keyboard focus for the widget.
         _on_keyboard_closed(): Cleans up keyboard bindings on closure.
     """
-    
+
 
     bots = []
     bullet_trace = []
@@ -120,7 +120,7 @@ class GameBoard(Widget, EventDispatcher):
         HistoryManager for session chat history and the OllamaConnector for LLM communication.
         Schedules the render loop to update the UI at the configured frame rate.
         """
-        
+
         super(GameBoard, self).__init__(**kwargs)
 
         self._keyboard = Window.request_keyboard(
@@ -146,7 +146,7 @@ class GameBoard(Widget, EventDispatcher):
         self.ollama_connector = OllamaConnector()
 
         # NOTE: Chat history is stored exclusively within the HistoryManager.
-        # All chat ``HistoryManager.record_message`` and
+        #  All chat ``HistoryManager.record_message`` and
         # retrieved via ``HistoryManager.get_chat_history``. See the
         # HistoryManager for details.
 
@@ -185,7 +185,7 @@ class GameBoard(Widget, EventDispatcher):
 
             instance: The instance of the GameBoard where the property changed.
             value: The new value of the `games_started` property.
-        
+
         started property.
         """
         self.update_title_label()
@@ -205,7 +205,7 @@ class GameBoard(Widget, EventDispatcher):
         Returns:
             None
         """
-       
+
         # reset values
         self.current_turn = 0
         self.current_round = 0
@@ -224,7 +224,7 @@ class GameBoard(Widget, EventDispatcher):
         self.games_started += 1
         self.history_manager.start_game(self)
 
-    #TODO check / test / implement save and load session
+    # TODO check / test / implement save and load session
     def save_session(self, filename):
         """Upon user confirmation it asks the HistoryManager to save all the session information recorded until this moment.
 
@@ -541,8 +541,11 @@ class GameBoard(Widget, EventDispatcher):
 
             game_title_label.text += "[/size]"
 
+
+
     def on_bot_llm_interaction_complete(self, bot):
         """Callback method executed after a prompt-response cycle has been completed by a bot
+        if all bots are ready for the next turn yt ends the turn and schedules the next one
 
         Args:
                 bot (_type_): the bot
@@ -552,6 +555,7 @@ class GameBoard(Widget, EventDispatcher):
             self.current_turn += 1
             self.history_manager.end_turn(self)
             Clock.schedule_once(self.play_turn, 0)
+
 
     def get_bot_by_id(self, bot_id: int):
         """Returns the bot instance with the specified ID.
@@ -564,6 +568,7 @@ class GameBoard(Widget, EventDispatcher):
                 return b
         return None
 
+
     def snapshot(self) -> dict[int, dict]:
         return {
             b.id: {"x": b.x, "y": b.y, "rot": b.rot,
@@ -571,9 +576,10 @@ class GameBoard(Widget, EventDispatcher):
             for b in self.bots
         }
 
+
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         """Keyboard handler for the game board. It is used for debug and testing purposes alone.
-        Once the codebase is more mature it will probably be removed (commented out, actually)
+        Once the codebase is more mature it should be conditional on the debug flag.
 
         Args:
                 keyboard (_type_): type of keyboard
@@ -615,9 +621,13 @@ class GameBoard(Widget, EventDispatcher):
                     sys.exit(0)
 
                 case "l":
+                    # TODO load a prompt to both fields and submit them so that it starts a new round
+                    # to make testing easier
                     pass
 
             return True
+
+
 
     def shoot(self, bot_id):
         """A bullet is shot by a bot.

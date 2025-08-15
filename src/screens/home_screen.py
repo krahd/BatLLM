@@ -82,6 +82,7 @@ class HomeScreen(Screen):
             _on_saving_cancelled,
         )
 
+
     def start_new_game(self, force=False):
         """
         Presents a confirmation dialog to the user to start a new game.
@@ -99,11 +100,13 @@ class HomeScreen(Screen):
         else:
             _start_new_game()
 
+
     def get_game_board(self) -> GameBoard:
         """
         Returns the GameBoard instance.
         """
         return self.ids.game_board
+
 
     def go_to_settings_screen(self):
         """
@@ -111,6 +114,7 @@ class HomeScreen(Screen):
         Switches the current screen to the settings screen.
         """
         self.manager.current = "settings"
+
 
     def go_to_history_screen(self, bot_id):
         """
@@ -126,6 +130,7 @@ class HomeScreen(Screen):
         history_screen.update(bot_id, compact, full_text)
         self.manager.current = "history"
 
+
     def save_prompt(self, bot_id):
         """
         Allows the user to save the content of the bot's prompt edition field to a file.
@@ -140,6 +145,7 @@ class HomeScreen(Screen):
             return
         dlg = SaveDialog(content_to_save=ti.text, start_folder=start_folder)
         dlg.open()
+
 
     def set_prompt_input_text(self, bot_id, text):
         """
@@ -160,6 +166,7 @@ class HomeScreen(Screen):
         else:
             pass
 
+
     def get_prompt_input_text(self, bot_id):
         """
         It returns the current state of the prompt edition field for the specified bot id.
@@ -178,6 +185,7 @@ class HomeScreen(Screen):
             return text_input.text
 
         return ""
+
 
     def get_prompt_history_selected_text(self, bot_id):
         """
@@ -199,6 +207,7 @@ class HomeScreen(Screen):
             print(f"No TextInput found for id: {input_id}")
             return ""
 
+
     def prompt_history_add_text(self, bot_id, text):
         """
         Stores the current state of the prompt being edited in the prompt
@@ -215,6 +224,7 @@ class HomeScreen(Screen):
         if text_input:
             text_input.text = text
 
+
     def rewind_prompt_history(self, bot_id):
         """
         Selects the previous prompt in the bot's prompt history and sets it as the current prompt.
@@ -226,6 +236,7 @@ class HomeScreen(Screen):
         b = self.ids.game_board.get_bot_by_id(bot_id)
         b.rewind_prompt_history()
         self.prompt_history_add_text(bot_id, b.get_current_prompt_from_history())
+
 
     def forward_prompt_history(self, bot_id):
         """
@@ -239,6 +250,7 @@ class HomeScreen(Screen):
         b.forward_prompt_history()
         self.prompt_history_add_text(bot_id, b.get_current_prompt_from_history())
 
+
     def copy_prompt_history_selected_text(self, bot_id):
         """
         Copies the selected prompt from the bot's prompt history to the editing area.
@@ -249,6 +261,7 @@ class HomeScreen(Screen):
 
         new_prompt = self.get_prompt_history_selected_text(bot_id)
         self.set_prompt_input_text(bot_id, new_prompt)
+
 
     def submit_prompt(self, bot_id):
         """
@@ -271,6 +284,7 @@ class HomeScreen(Screen):
             # tell the board to submit the prompt for this bot_id
             gbw = self.ids.game_board
             gbw.submit_prompt(bot_id, new_prompt)
+
 
     def load_prompt(self, bot_id):
         """
@@ -295,8 +309,9 @@ class HomeScreen(Screen):
 
         dialog.open()
 
-    # --- events -----------------------
 
+
+    # --- events -----------------------
     def on_request_close(self, *args, **kwargs):
         """
         Handles the request to close the application.
@@ -361,6 +376,8 @@ class HomeScreen(Screen):
         )
         return True
 
+
+
     def on_enter(self):
         """
         Called when the screen is entered.
@@ -368,4 +385,4 @@ class HomeScreen(Screen):
         """
 
         self.ids.overlay.darken = 0.2  # Set the initial overlay alpha value
-        self.ids.overlay.desaturation = 0.1  #  Set the initial desaturation value
+        self.ids.overlay.desaturation = 0.1  # Set the initial desaturation value

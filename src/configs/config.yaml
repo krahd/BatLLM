@@ -14,8 +14,11 @@ game:
   total_rounds: 2
   turns_per_round: 13
 llm:
-  augmentation_header_independent: src/assets/prompts/augmentation_header_independent_1.txt
-  augmentation_header_shared: src/assets/prompts/shared_1.txt
+  not_augmented_header_independent: src/assets/headers/not_agumented_header_independent_1.txt
+  not_augmented_header_shared: src/assets/headers/not_agumented_header_shared_1.txt
+  augmented_header_independent: src/assets/headers/agumented_header_independent_1.txt
+  augmented_header_shared: src/assets/headers/agumented_header_shared_1.txt
+
   debug_requests: true
   model: llama3.2:latest
   num_ctx: 32768
