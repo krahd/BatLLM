@@ -1,145 +1,95 @@
-"""Module responsible for communication with the LLM.
-It uses Ollama API to send requests and receive responses and stores the context of the conversation.
-"""
+"""Ollama connector: manages chat requests and per-bot/shared contexts."""
+from typing import Any, Dict, List, Optional
 
-import json
-from typing import Callable, Any, Dict, List, Optional
+from ollama import Client
+
 from configs.app_config import config
-from game.bot import Bot
-import asyncio
-from ollama import AsyncClient
+
 
 class OllamaConnector:
-    """
-    OllamaConnector is a class responsible for managing the connection to the Ollama API.
-.
-    """
-    augmenting_prompt: bool = True
-    independent_contexts: bool = False
-
-
-
+    """Manages the connection to the Ollama API and tracks chat contexts."""
 
     def __init__(self) -> None:
-        self.augmenting_prompt = None
-        self.independent_contexts = None
+        # HTTP client
+        self.client: Optional[Client] = None
 
-        self.ctx_by_bot = None
-        self.ctx_shared = None
-
-        self.header = None
-        self.model = None
-        self.num_ctx = None
-        self.endpoint: None
-        self.temperature = None
-        self.timeout = None
-        self.top_p = None
-        self.top_k = None
-        self.max_tokens = None
-        self.stop = None
-        self.seed = None
-        self.num_thread = None
-        self.model = None
-        self.endpoint: None
-        self.num_ctx = None
-        self.num_predict = None
-
-        self.client = None
-
-
-
-    def _build_payload(self, bot_id: int, user_text: str, seed=False):
-        """
-        Builds the payload for the Ollama API request based on the bot's context and configuration.
-
-        Args:
-            bot (Bot): The bot instance for which the payload is being built.
-            seed (bool): If True, the payload is built for seeding the context (the llm forgets the previous context).
-
-        Returns:
-            The payload to be sent to the Ollama API.
-        """
-
-        payload = {"model": self.model, "stream": False}
-
-        # if seed or there is no context, we create a new context and add the system message with self.header
-        if seed or self.ctx_by_bot[bot_id] is None if self.independent_contexts else self.ctx_shared is None:
-            messages = []
-
-            if self.header is not None and self.header != "":
-                messages.append({"role": "system", "content": self.header})
-
-            messages.append({"role": "user", "content": user_text})
-
-        else:
-            messages = [{"role": "user", "content": bot.get_current_prompt()}]
-            # we don't return the context because it's stored in self.ctx_by_bot or self.ctx_shared
-            # and can be accessed with self._current_ctx(bot_id)
-
-        return payload
-
-
-    def load_options(self, bot_id: int, force=False) -> None:
-        """
-        Loads the configuration options from the app_config.
-        Creates the Client instance if it does not exist or if force is True.
-        Updates the options exposed by the game interface from the UI and the rest from the config
-        NOTE: When a new option is exposed by the UI 
-        we **must** move it from load_options to update_options_exposed_by_ui
-
-        Args:
-            force (bool): If True, creates a new Client instance even if it already exists.
-        """
-
-        self.temperature = Optional[int] = config.get("llm", "temperature")
-        self.top_p = Optional[int] = config.get("llm", "top_p")
-        self.top_k = Optional[int] = config.get("llm", "top_k")
-        self.timeout = config.get("llm", "timeout")
-        self.max_tokens: Optional[int] = config.get("llm", "max_tokens") or None
-
-        self.stop = Optional[int] = config.get("llm", "stop") or None
-        self.seed = Optional[int] = config.get("llm", "seed") or None
-        self.num_thread = Optional[int] = config.get("llm", "num_thread") or None
-
-        self.model = config.get("llm", "model")
-        self.endpoint: str = f"{config.get("llm", "url")}:{config.get("llm", "port")}{config.get("llm", "path")}"
-        self.num_ctx = config.get("llm", "num_ctx") or None
-        self.num_predict: Optional[int] = config.get("llm", "num_predict") or None
-
-        self.header = self._get_mode_header_text()
-
-
-        if self.ctx_by_bot is None or force:
-            self.ctx_by_bot: Dict[int, Optional[List[int]]] = {bot.id: None for bot in bot.board_widget.bots}
-
-        if self.ctx_shared is None or force:
-            self.ctx_shared = Optional[List[int]] = None
-
+        # Contexts
         self.ctx_by_bot: Dict[int, Optional[List[int]]] = {}
         self.ctx_shared: Optional[List[int]] = None
+        self.independent_contexts: bool = False
+        self.augmenting_prompt: bool = False
 
+        # LLM options (defaults)
+        self.temperature: Optional[float] = None
+        self.top_p: Optional[float] = None
+        self.top_k: Optional[int] = None
+        self.timeout: Optional[float] = None
+        self.max_tokens: Optional[int] = None
+        self.stop: Optional[Any] = None
+        self.seed: Optional[int] = None
+        self.num_thread: Optional[int] = None
+        self.model: str = ""
+        self.endpoint: str = ""
+        self.num_ctx: Optional[int] = None
+        self.num_predict: Optional[int] = None
+        self.system_instructions: str = ""
+
+
+
+    def load_options(self, force: bool = False) -> None:
+        """Load configuration and ensure client and contexts are consistent."""
+
+        # Read from config
+        self.temperature = config.get("llm", "temperature")
+        self.top_p = config.get("llm", "top_p")
+        self.top_k = config.get("llm", "top_k")
+        self.timeout = config.get("llm", "timeout")
+        self.max_tokens = config.get("llm", "max_tokens") or None
+        self.stop = config.get("llm", "stop") or None
+        self.seed = config.get("llm", "seed") or None
+        self.num_thread = config.get("llm", "num_thread") or None
+
+        self.model = config.get("llm", "model")
+        url = config.get("llm", "url")
+        port = config.get("llm", "port")
+        path = config.get("llm", "path")
+        self.endpoint = f"{url}:{port}{path}"
+        host = f"{url}:{port}"
+        self.num_ctx = config.get("llm", "num_ctx") or None
+        self.num_predict = config.get("llm", "num_predict") or None
+
+        self.system_instructions = self._get_system_instructions_text()
+
+        # Reset contexts when requested
+        if force:
+            self.ctx_by_bot: Dict[int, Optional[List[int]]] = {}
+            self.ctx_shared: Optional[List[int]] = None
+
+        # Client setup
         if self.client is None or force:
             self.client = Client(host=host, timeout=self.timeout)
 
 
 
-    def update_options_exposed_by_ui(self, augmenting_prompt, independent_contexts) -> None:
+    def update_options_exposed_by_ui(self, *, augmenting_prompt: bool, independent_contexts: bool) -> None:
+        """updates options exposed by the UI, passed as parameters
+
+        Args:
+            augmenting_prompt (bool): _description_
+            independent_contexts (bool): _description_
+        """
         self.augmenting_prompt = augmenting_prompt
         self.independent_contexts = independent_contexts
 
 
 
-    def gen_options(self, bot_id: int, : Bot, force=False) -> dict:
-        """
-        Refreshes all the connector's options and returns the generation options for the Ollama API request.
-        Returns the generation options for the Ollama API request.
 
-        Returns:
-            dict: A dictionary containing the generation options.
-        """
+    def gen_options(self, bot_id: int, force: bool = False) -> Dict[str, Any]:
+        """Refresh connector options and return generation options for chat."""
+        # Load or refresh the options from the config and the UI
+        self.load_options(force)
 
-        self.load_options(bot, force)  # Load or refresh the options from the config and the UI
-        res = {}
+        res: Dict[str, Any] = {}
 
         if self.temperature is not None:
             res["temperature"] = self.temperature
@@ -162,108 +112,122 @@ class OllamaConnector:
         if self.num_thread is not None:
             res["num_thread"] = self.num_thread
 
-        if self.header is not None and self.header != "":
-            res["header"] = self.header
+        if self.system_instructions is not None and self.system_instructions != "":
+            res["augmenting_header"] = self.system_instructions
 
         if self.num_ctx is not None:
             res["num_ctx"] = self.num_ctx
 
+        if self.num_predict is not None:
+            res["num_predict"] = self.num_predict
+
         return res
 
 
+    # the * in a function signature makes everything after it keyword-only (PEP 3102).
+    # so here all the arguments must be passed by name 'cept for bot_id.
+    def send_prompt_to_llm_sync(
+        self,
+        bot_id: int,
+        *,
+        user_text: str,
+        new_augmenting_prompt: Optional[bool] = None,
+        new_independent_contexts: Optional[bool] = None,
 
-    def send_prompt_to_llm_sync(self,
-                                bot_id: int,
-                                *,
-                                ctx: Optional[List[int]],
-                                user_text: str,
-                                new_augmenting_prompt: bool = None,
-                                new_independent_contexts: bool = None,
-
-                                ) -> str:
-
+    ) -> str:
         """
-        Sends a syc request to the Ollama API 
-
-        Args:
-            bot_id (int): The ID of the bot for which the request is being sent.
-            ctx (Optional[List[int]]): The context to be used for the request.
-            user_text (str): The user input text to be sent to the LLM.
-            new_augmenting_prompt (bool, optional): If provided, overrides the current augmenting prompt setting.
-            new_independent_contexts (bool, optional): If provided, overrides the current independent contexts setting.
+        Send a synchronous chat request to the Ollama API.
         """
-
         if new_augmenting_prompt is not None:
             self.augmenting_prompt = new_augmenting_prompt
 
         if new_independent_contexts is not None:
             self.independent_contexts = new_independent_contexts
 
-
-        # Users can change the mode of the game without restarting or saving the preferences
-        # therefore we need to check the mode every time we send a request
         self.load_options(bot_id)
+        ctx = self._current_ctx(bot_id)
 
-        payload = self._build_payload(bot, self.gen_options(bot))
+        if self.seed or ctx is None:
+            # If seed set or no context, start a new context and include augmenting_header
+            messages = []
 
-        client = Client(host=self.endpoint, header={"Content-Type": "application/json"})
-        response = client.chat(payload)  # TODO change this to a new client method
+            if self.system_instructions is not None and self.system_instructions != "":
+                messages.append({"role": "system", "content": self.system_instructions})
 
-        if response.error:
-            raise Exception(f"Error from Ollama: {response.error}")
-
-
-        # Store the context for the bot
-        if self.independent_contexts:
-            self.ctx_by_bot[bot.id] = response.context
+            messages.append({"role": "user", "content": user_text})
+            res = self.client.chat(model=self.model,
+                                   messages=messages,
+                                   options=self.gen_options(bot_id),
+                                   stream=False,
+                                   )
         else:
-            self.ctx_shared = response.context
+            messages = [{"role": "user", "content": user_text}]
+            res = self.client.chat(
+                model=self.model,
+                messages=messages,
+                options=self.gen_options(bot_id),
+                stream=False,
+            )
 
-        # Let the bot handle the response
-        bot._on_llm_response(response.message.content)
+        # Expected shape: {'message': {'role': 'assistant', 'content': '...'}, 'context': [...]}
+        if not isinstance(res, dict):
+            raise RuntimeError(f"Unexpected response type: {type(res)}")
+
+        # Save updated context
+        self._store_ctx(bot_id, res.get("context"))
+
+        # Extract content
+        content = ""
+        if isinstance(res.get("message"), dict):
+            content = (res["message"].get("content") or "").strip()
+        elif isinstance(res.get("response"), str):
+            content = res["response"].strip()
+
+        if not content:
+            raise RuntimeError(f"Empty content from model: {res}")
+
+        return content
+
+    # -- context management helpers: reset, _current_ctx, _store_ctx --
+    def reset_contexts(self) -> None:
+        """new ctxds
+        """
+        self.ctx_by_bot.clear()
+        self.ctx_shared = None
+
+
+    def _current_ctx(self, bot_id: int) -> Optional[List[int]]:
+        return self.ctx_by_bot.get(bot_id) if self.independent_contexts else self.ctx_shared
+
+
+    def _store_ctx(self, bot_id: int, ctx: Optional[List[int]]) -> None:
+        if ctx is None:
+            return
+        if self.independent_contexts:
+            self.ctx_by_bot[bot_id] = ctx
+        else:
+            self.ctx_shared = ctx
 
 
 
-        # -- context management helpers: reset, _current_ctx, _store_ctx --
-        def reset_contexts(self) -> None:
-            self.ctx_by_bot.clear()
-            self.shared_ctx = None
-
-        def _current_ctx(self, bot_id: int) -> Optional[List[int]]:
-            return self.ctx_by_bot.get(bot_id) if self.independent_contexts else self.shared_ctx
-
-        def _store_ctx(self, bot_id: int, ctx: Optional[List[int]]) -> None:
-            if ctx is None:
-                return
-
-            if self.independent_contexts:
-                self.ctx_by_bot[bot_id] = ctx
-
-            else:
-                self.shared_ctx = ctx
-
-
-
-        def _get_mode_header_text(self) -> str:
-            """Loads from assets/headers the header (system prompt) text for the LLM request based on the mode.
+    def _get_system_instructions_text(self) -> str:
+        """Loads from assets/headers the header (system prompt) text for the LLM request based on the mode.
 
         Returns:
             str: _description_
         """
+        # Determine the key based on the mode and context type (2x2 matrix)
+        if not self.augmenting_prompt:
+            key = ("system_instructions_not_augmented_independent" if self.independent_contexts else "system_instructions_not_augmented_shared")
 
-            # Determine the key based on the mode and context type (2x2 matrix)
-            if not self.augmenting_prompt:
-            key = ("not_augmented_header_independent" if self.independent_contexts else "not_augmented_header_shared")
+        else:
+            key = ("system_instructions_augmented_independent" if self.independent_contexts else "system_instructions_augmented_shared")
 
-            else:
-            key = ("augmented_header_independent" if self.independent_contexts else "augmented_header_shared")
+        # Get the path to the augmentation header text file from the config
+        path = config.get("llm", key)
 
-            # Get the path to the augmentation header text file from the config
-            path = config.get("llm", key)
-
-            try:
+        try:
             with open(path, "r", encoding="utf-8") as f:
-            return f.read()
-
-            except FileNotFoundError:
-            raise FileNotFoundError(f"Augmentation header file not found: {path}")
+                return f.read()
+        except FileNotFoundError as exc:
+            raise FileNotFoundError(f"System instructions file not found: {path}") from exc

@@ -14,19 +14,18 @@ game:
   total_rounds: 2
   turns_per_round: 13
 llm:
-  not_augmented_header_independent: src/assets/headers/not_agumented_header_independent_1.txt
-  not_augmented_header_shared: src/assets/headers/not_agumented_header_shared_1.txt
-  augmented_header_independent: src/assets/headers/agumented_header_independent_1.txt
-  augmented_header_shared: src/assets/headers/agumented_header_shared_1.txt
+  system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
+  system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
+  system_instructions_augmented_independent: src/headers/system_instructions/augmented_independent_1.txt
+  system_instructions_augmented_shared: src/headers/system_instructions/augmented_shared_1.txt
 
   debug_requests: true
   model: llama3.2:latest
-  num_ctx: 32768
+  num_ctx: 4096
   path: /api/chat
   port: 11434
   url: http://localhost
 ui:
-  ' primary_color': '#ffffff'
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'

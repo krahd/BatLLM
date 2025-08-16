@@ -1,5 +1,5 @@
 """
-This module defines the `Bot` class, a Kivy Widget subclass that encapsulates the state and behavior of a game bot, 
+This module defines the `Bot` class, a Kivy Widget subclass that encapsulates the state and behavior of a game bot,
 including graphical rendering, action execution, prompt history management, and LLM communication.
 """
 
@@ -180,7 +180,7 @@ class Bot(Widget):
         Rotates the object by a specified angle in degrees.
 
         Args:
-            angle (float): The angle in degrees to rotate the object. 
+            angle (float): The angle in degrees to rotate the object.
             Positive values rotate clockwise, negative values rotate counterclockwise.
 
         The rotation is normalized to stay within the range [0, 360) degrees.
@@ -313,7 +313,7 @@ class Bot(Widget):
     # LLM
     def submit_prompt_to_llm(self):
         # TODO implement this method to submit the current prompt to the LLM
-        await self.board_widget.ollama_connector.send_prompt_to_llm(self)
+        self.board_widget.ollama_connector.send_prompt_to_llm_sync(self.id, user_text=self.get_current_prompt())
 
 
 
