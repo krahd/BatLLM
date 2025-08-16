@@ -1,38 +1,186 @@
-"""Ollama connector: manages chat requests and per-bot/shared contexts."""
+"""Ollama connector: manages chat requests and per-bot/shared message histories.
+
+This connector targets Ollama's /api/chat contract. It does NOT use the deprecated
+`context` field. Instead, it sends the whole `messages` list each call.
+
+Design highlights
+-----------------
+- History management:
+  * independent_contexts=True  => one messages[] per bot_id (isolated histories)
+  * independent_contexts=False => one shared messages[] for all bots
+- Augmenting:
+  * augmenting_prompt=True  => load a system header (strict). Missing file raises.
+  * augmenting_prompt=False => no system header; students must provide structure.
+- Per-turn state:
+  * Each user request embeds a compact JSON state block at the top of the user message,
+    followed by the player's free-form prompt. Example:
+        [GAME_STATE]
+        {"SELF":{"X":0.20,"Y":0.30,"ROT":23,"HEALTH":20,"SHIELD":1},
+         "OPP":{"X":0.22,"Y":0.22,"ROT":22,"HEALTH":21,"SHIELD":0}}
+        [PLAYER_INPUT]
+        RETURN B
+"""
+
+from __future__ import annotations
+
+import json
 from typing import Any, Dict, List, Optional
 
 from ollama import Client
-
 from configs.app_config import config
+from util.utils import _maybe_float, _maybe_int
+
+Message = Dict[str, str]  # {"role": "system"|"user"|"assistant", "content": str}
 
 
 class OllamaConnector:
-    """Manages the connection to the Ollama API and tracks chat contexts."""
+    """
+    Lean sync connector for Ollama.
+    - Reuses one HTTP session
+    - Tracks context per-bot or shared
+    """
 
     def __init__(self) -> None:
-        # HTTP client
-        self.client: Optional[Client] = None
+        """Manage chat with an Ollama model using message histories (no KV `context`)."""
 
-        # Contexts
-        self.ctx_by_bot: Dict[int, Optional[List[int]]] = {}
-        self.ctx_shared: Optional[List[int]] = None
+        # ---- Public knobs that UI may toggle live --------------------------------
+        augmenting_prompt: bool
+        independent_contexts: bool
+
+        # ---- LLM options (read from config; some may be None) --------------------
+        temperature: Optional[float]
+        top_p: Optional[float]
+        top_k: Optional[int]
+        timeout: Optional[float]
+        max_tokens: Optional[int]
+        stop: Optional[Any]
+        seed: Optional[int]
+        num_thread: Optional[int]
+        model: str
+        num_ctx: Optional[int]
+        num_predict: Optional[int]
+
+        # ---- Internals ------------------------------------------------------------
+        client: Optional[Client]
+        _system_instructions: str
+        _history_by_bot: Dict[int, List[Message]]
+        _history_shared: List[Message]
+        _max_history_messages: int  # simple, cheap cap (per history list)
+
+
+    def __init__(self) -> None:
+        # Defaults
         self.independent_contexts: bool = False
         self.augmenting_prompt: bool = False
 
-        # LLM options (defaults)
-        self.temperature: Optional[float] = None
-        self.top_p: Optional[float] = None
-        self.top_k: Optional[int] = None
-        self.timeout: Optional[float] = None
-        self.max_tokens: Optional[int] = None
-        self.stop: Optional[Any] = None
-        self.seed: Optional[int] = None
-        self.num_thread: Optional[int] = None
-        self.model: str = ""
-        self.endpoint: str = ""
-        self.num_ctx: Optional[int] = None
-        self.num_predict: Optional[int] = None
-        self.system_instructions: str = ""
+        self.temperature = None
+        self.top_p = None
+        self.top_k = None
+        self.timeout = None
+        self.max_tokens = None
+        self.stop = None
+        self.seed = None
+        self.num_thread = None
+        self.model = ""
+        self.num_ctx = None
+        self.num_predict = None
+
+        self.client = None
+        self._system_instructions = ""
+        self._history_by_bot = {}
+        self._history_shared = []
+        self._max_history_messages = int(config.get("llm", "max_history_messages")
+                                         or config.get("game", "turns_per_round") * 2
+                                         or 40)
+
+        # Initial load
+        self.load_options(force=True)
+
+
+    def _ensure_system_message(self, history: List[Message]) -> None:
+        """Ensure the system header (if any) is at messages[0]."""
+
+        if not self._system_instructions:
+            # If we don't have system instructions we remove it from the history
+            if history and history[0].get("role") == "system":
+                del history[0]
+            return
+
+        if not history or history[0].get("role") != "system":
+            history.insert(0, {"role": "system", "content": self._system_instructions})
+
+        else:
+            # keep it updated if file changed on disk and we reloaded
+            if history[0].get("content") != self._system_instructions:
+                history[0]["content"] = self._system_instructions
+
+
+    def reset_histories(self) -> None:
+        """Drop all accumulated message histories."""
+        self._history_by_bot.clear()
+        self._history_shared.clear()  # type: ignore[attr-defined]
+
+
+    def _build_user_message(self, *, game_state: Dict[str, Any], player_text: str) -> Message:
+        """Build the `user` message content = compact state JSON + player's prompt."""
+
+        # Compact JSON for token efficiency;
+        state_str = json.dumps(game_state, separators=(",", ":"), ensure_ascii=False)
+        content = f"[GAME_STATE]\n{state_str}\n[PLAYER_INPUT]\n{player_text}"
+        return {"role": "user", "content": content}
+
+
+    def _get_history_ref(self, bot_id: int) -> List[Message]:
+        """Return a reference to the active messages[] list."""
+        if self.independent_contexts:
+            lst = self._history_by_bot.get(bot_id)
+            if lst is None:
+                lst = []
+                self._history_by_bot[bot_id] = lst
+            return lst
+        else:
+            return self._history_shared
+
+
+    def _trim_history_inplace(self, history: List[Message]) -> None:
+        """Enforme maximum length of the history list in place.
+
+        Policy:
+          - Keep at most `_max_history_messages` entries.
+          - ensure_system_message() 
+        """
+
+        #  negative limit or None means no limit.
+        if not self._max_history_messages or self._max_history_messages <= 0:
+            return
+        max_n = max(1, self._max_history_messages)
+
+        if len(history) <= max_n:
+            return
+
+
+        tail = history[-max_n:]
+        history.clear()
+        history.extend(tail)
+        self._ensure_system_message(history)
+        # TODO verify this works OK
+
+
+
+
+    def _current_ctx(self, bot_id: int) -> Optional[list[int]]:
+        return self.ctx_by_bot.get(bot_id) if self.independent_contexts else self.shared_ctx
+
+
+
+    def _store_ctx(self, bot_id: int, ctx: Optional[list[int]]) -> None:
+        if ctx is None:
+            return
+        if self.independent_contexts:
+            self.ctx_by_bot[bot_id] = ctx
+        else:
+            self.shared_ctx = ctx
+
 
 
 
@@ -40,14 +188,22 @@ class OllamaConnector:
         """Load configuration and ensure client and contexts are consistent."""
 
         # Read from config
-        self.temperature = config.get("llm", "temperature")
-        self.top_p = config.get("llm", "top_p")
-        self.top_k = config.get("llm", "top_k")
-        self.timeout = config.get("llm", "timeout")
+        # Read from config (cast to proper types)
+        self.temperature = _maybe_float(config.get("llm", "temperature"))
+        self.top_p = _maybe_float(config.get("llm", "top_p"))
+        self.top_k = _maybe_int(config.get("llm", "top_k"))
+
+        self.timeout = config.get("llm", "timeout") or 55
+
+        self.num_thread = _maybe_int(config.get("llm", "num_thread"))
+        self.seed = _maybe_int(config.get("llm", "seed"))
+        self.stop = _maybe_int(config.get("llm", "stop"))
+
+        self.num_ctx = _maybe_int(config.get("llm", "num_ctx"))
+        self.num_predict = _maybe_int(config.get("llm", "num_predict"))
+
         self.max_tokens = config.get("llm", "max_tokens") or None
         self.stop = config.get("llm", "stop") or None
-        self.seed = config.get("llm", "seed") or None
-        self.num_thread = config.get("llm", "num_thread") or None
 
         self.model = config.get("llm", "model")
         url = config.get("llm", "url")
@@ -55,8 +211,6 @@ class OllamaConnector:
         path = config.get("llm", "path")
         self.endpoint = f"{url}:{port}{path}"
         host = f"{url}:{port}"
-        self.num_ctx = config.get("llm", "num_ctx") or None
-        self.num_predict = config.get("llm", "num_predict") or None
 
         self.system_instructions = self._get_system_instructions_text()
 
@@ -71,23 +225,35 @@ class OllamaConnector:
 
 
 
-    def update_options_exposed_by_ui(self, *, augmenting_prompt: bool, independent_contexts: bool) -> None:
+    def update_options_exposed_by_ui(
+        self,
+        *,
+        augmenting_prompt: bool,
+        independent_contexts: bool,
+        reset_histories_on_mode_change: bool = True,
+    ) -> None:
         """updates options exposed by the UI, passed as parameters
-
-        Args:
-            augmenting_prompt (bool): _description_
-            independent_contexts (bool): _description_
         """
+        mode_changed = (
+            augmenting_prompt != self.augmenting_prompt
+            or independent_contexts != self.independent_contexts
+        )
         self.augmenting_prompt = augmenting_prompt
         self.independent_contexts = independent_contexts
 
+        # Reload system header path (and raise if missing when augmenting=True)
+        self._system_instructions = self._get_system_instructions_text()
+
+        # Histories from a prior mode are typically not compatible; drop them.
+        if reset_histories_on_mode_change and mode_changed:
+            self.reset_histories()
 
 
-
-    def gen_options(self, bot_id: int, force: bool = False) -> Dict[str, Any]:
+    def gen_options(self) -> Dict[str, Any]:
         """Refresh connector options and return generation options for chat."""
+
         # Load or refresh the options from the config and the UI
-        self.load_options(force)
+        self.load_options()
 
         res: Dict[str, Any] = {}
 
@@ -112,9 +278,6 @@ class OllamaConnector:
         if self.num_thread is not None:
             res["num_thread"] = self.num_thread
 
-        if self.system_instructions is not None and self.system_instructions != "":
-            res["augmenting_header"] = self.system_instructions
-
         if self.num_ctx is not None:
             res["num_ctx"] = self.num_ctx
 
@@ -124,89 +287,85 @@ class OllamaConnector:
         return res
 
 
-    # the * in a function signature makes everything after it keyword-only (PEP 3102).
-    # so here all the arguments must be passed by name 'cept for bot_id.
+
+    # Send message and return response
     def send_prompt_to_llm_sync(
         self,
-        bot_id: int,
         *,
+        bot_id: int,
         user_text: str,
+        game_state: Optional[Dict[str, Any]],
+        reset: bool = False,
         new_augmenting_prompt: Optional[bool] = None,
         new_independent_contexts: Optional[bool] = None,
 
     ) -> str:
-        """
-        Send a synchronous chat request to the Ollama API.
-        """
-        if new_augmenting_prompt is not None:
-            self.augmenting_prompt = new_augmenting_prompt
+        """Send a synchronous chat request using message histories.
 
-        if new_independent_contexts is not None:
-            self.independent_contexts = new_independent_contexts
+        Args:
+            bot_id:          The numeric ID of the bot (stable id).
+            user_text:       The *player* prompt for this bot (free-form, UPPERCASE recommended by you).
+            game_state:      Small JSON describing the current turn state (uppercase keys). Example:
+                             {"SELF":{"X":0.20,"Y":0.30,"ROT":23,"HEALTH":20,"SHIELD":1},
+                              "OPP":{"X":0.22,"Y":0.22,"ROT":22,"HEALTH":21,"SHIELD":0}}
+            reset:           If True, reset the context (clear history) before sending.
+            new_augmenting_prompt:     If provided, apply and reload header (raises if missing).
+            new_independent_contexts:  If provided, switch history mode (resets histories).
 
-        self.load_options(bot_id)
+        Returns:
+            The assistant's text content (single command if your header/player prompt enforces it).
+        """
+
         ctx = self._current_ctx(bot_id)
 
-        if self.seed or ctx is None:
-            # If seed set or no context, start a new context and include augmenting_header
-            messages = []
-
-            if self.system_instructions is not None and self.system_instructions != "":
-                messages.append({"role": "system", "content": self.system_instructions})
-
-            messages.append({"role": "user", "content": user_text})
-            res = self.client.chat(model=self.model,
-                                   messages=messages,
-                                   options=self.gen_options(bot_id),
-                                   stream=False,
-                                   )
-        else:
-            messages = [{"role": "user", "content": user_text}]
-            res = self.client.chat(
-                model=self.model,
-                messages=messages,
-                options=self.gen_options(bot_id),
-                stream=False,
+        # Live flag updates (respecting your UI toggles)
+        if new_augmenting_prompt is not None or new_independent_contexts is not None:
+            self.update_options_exposed_by_ui(
+                augmenting_prompt=new_augmenting_prompt if new_augmenting_prompt is not None else self.augmenting_prompt,
+                independent_contexts=new_independent_contexts if new_independent_contexts is not None else self.independent_contexts,
+                reset_histories_on_mode_change=True,
             )
 
-        # Expected shape: {'message': {'role': 'assistant', 'content': '...'}, 'context': [...]}
+        # TODO create a new function named self.update() that makes sure that we have the latest values in every member of selfs
+        self.load_options()
+
+
+        if reset:
+            self.reset_histories()
+
+        history = self._get_history_ref(bot_id)
+        history.append(self._build_user_message(game_state=game_state, player_text=user_text))
+        self._trim_history_inplace(history)
+
+        # send the request
+        res = self.client.chat(
+            model=self.model,
+            messages=history,
+            options=self.gen_options(),
+            stream=False,
+        )
+
         if not isinstance(res, dict):
-            raise RuntimeError(f"Unexpected response type: {type(res)}")
+            raise RuntimeError(f"Unexpected response type from Ollama: {type(res)}")
 
-        # Save updated context
-        self._store_ctx(bot_id, res.get("context"))
 
-        # Extract content
+        # Try common shapes
         content = ""
         if isinstance(res.get("message"), dict):
             content = (res["message"].get("content") or "").strip()
+
         elif isinstance(res.get("response"), str):
-            content = res["response"].strip()
+            content = (res["response"] or "").strip()
 
         if not content:
             raise RuntimeError(f"Empty content from model: {res}")
 
+        # Persist assistant reply
+        history.append({"role": "assistant", "content": content})
+
+        # self._trim_history_inplace(history)
+
         return content
-
-    # -- context management helpers: reset, _current_ctx, _store_ctx --
-    def reset_contexts(self) -> None:
-        """new ctxds
-        """
-        self.ctx_by_bot.clear()
-        self.ctx_shared = None
-
-
-    def _current_ctx(self, bot_id: int) -> Optional[List[int]]:
-        return self.ctx_by_bot.get(bot_id) if self.independent_contexts else self.ctx_shared
-
-
-    def _store_ctx(self, bot_id: int, ctx: Optional[List[int]]) -> None:
-        if ctx is None:
-            return
-        if self.independent_contexts:
-            self.ctx_by_bot[bot_id] = ctx
-        else:
-            self.ctx_shared = ctx
 
 
 

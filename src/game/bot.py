@@ -312,7 +312,6 @@ class Bot(Widget):
 
     # LLM
     def submit_prompt_to_llm(self):
-        # TODO implement this method to submit the current prompt to the LLM
         self.board_widget.ollama_connector.send_prompt_to_llm_sync(self.id, user_text=self.get_current_prompt())
 
 

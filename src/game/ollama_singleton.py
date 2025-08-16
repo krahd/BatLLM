@@ -4,7 +4,7 @@ from functools import lru_cache
 import atexit
 
 from configs.app_config import config
-from game.ollama_connector import OllamaConnector
+from game.ollama_connector_old import OllamaConnector
 
 
 # TODO call reset_contexts() or reset_singletons() after any changes in Settings_Screen

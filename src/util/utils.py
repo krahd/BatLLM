@@ -10,6 +10,20 @@ from kivy.uix.textinput import TextInput
 from configs.app_config import config
 
 
+def _maybe_int(v):
+    try:
+        return None if v in (None, "") else int(v)
+    except (TypeError, ValueError):
+        return None
+
+def _maybe_float(v):
+    try:
+        return None if v in (None, "") else float(v)
+    except (TypeError, ValueError):
+        return None
+
+
+
 def find_id_in_parents(searcher, target_id):
     """
     Searches recursively for an element among the ancestors of a Kivy element by its id

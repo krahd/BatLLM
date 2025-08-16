@@ -51,7 +51,7 @@ from game.bot import Bot
 from game.history_manager import HistoryManager
 from util.normalized_canvas import NormalizedCanvas
 from util.utils import find_id_in_parents, markup, show_fading_alert
-from game.ollama_connector import OllamaConnector
+from game.ollama_connector_old import OllamaConnector
 
 
 class GameBoard(Widget, EventDispatcher):
