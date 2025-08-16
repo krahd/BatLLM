@@ -1,4 +1,5 @@
 from colorsys import rgb_to_hls, hls_to_rgb
+from typing import Optional
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.uix.boxlayout import BoxLayout
@@ -210,7 +211,7 @@ def show_text_input_dialog(
 
 
 
-def markup(text: str, font_size=config.get("ui", "font_size"), color="#000000", bold=False, italic=False) -> str:
+def markup(text: str, font_size: Optional[int] = None, color="#000000", bold=False, italic=False) -> str:
     """
     Wraps the given text in Kivy markup tags for font size, color, bold, and italic.
 
@@ -224,28 +225,18 @@ def markup(text: str, font_size=config.get("ui", "font_size"), color="#000000", 
     Returns:
         str: The text wrapped in Kivy markup tags.
     """
+    if font_size is None:
+        font_size = config.get("ui", "font_size")  # evaluated per call
+
+
     if not text:
         return ""
 
-    if font_size <= 0:
+    if font_size <= 0 or not isinstance(font_size, int):
         font_size = config.get("ui", "font_size")
 
     if not color.startswith("#") or len(color) != 7:
         color = "#000000"  # default to black if invalid
 
-    wrapped_text = f"[size={font_size}][color={color}]"
-    if bold:
-        wrapped_text += "[b]"
-    if italic:
-        wrapped_text += "[i]"
 
-    wrapped_text += text
-
-    if italic:
-        wrapped_text += "[/i]"
-    if bold:
-        wrapped_text += "[/b]"
-
-    wrapped_text += "[/color][/size]"
-
-    return wrapped_text
+    return f"[size={font_size}][color={color}]{'[b]' if bold else ''}{'[i]' if italic else ''}{text}{'[/i]' if italic else ''}{'[/b]' if bold else ''}[/color][/size]"

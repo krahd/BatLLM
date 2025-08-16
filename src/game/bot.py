@@ -46,7 +46,7 @@ class Bot(Widget):
     # Runtime state
     current_prompt: str | None = None
     prompt_history_index: int | None = None  # the index of the current prompt in the UI prompt storage
-
+    ready_for_next_round: bool | None = None
     ready_for_next_turn: bool | None = None
 
     # LLM related
@@ -60,9 +60,15 @@ class Bot(Widget):
         self.board_widget = board_widget
 
         self.ready_for_next_turn = False
-        self.augmenting_prompt = self.board_widget.history_manager.augmenting_prompt
-        self.independent_contexts = self.board_widget.history_manager.independent_contexts
 
+
+        self.augmenting_prompt = bool(
+            config.get("game", "prompt_augmentation"))
+
+        self.independent_contexts = bool(
+            config.get("game", "independent_contexts"))
+
+        self.ready_for_next_turn = False
 
         # TODO colours load from theme properties
         if bot_id == 1:
@@ -251,6 +257,12 @@ class Bot(Widget):
             if self.prompt_history_index > 0:
                 self.prompt_history_index -= 1
 
+        if (
+            self.prompt_history_index is not None
+            and 0 <= self.prompt_history_index < len(prompts)
+        ):
+            self.current_prompt = prompts[self.prompt_history_index]
+
 
     def forward_prompt_history(self):
         """
@@ -275,11 +287,13 @@ class Bot(Widget):
             if self.prompt_history_index < len(prompts) - 1:
                 self.prompt_history_index += 1
 
+        if (
+            self.prompt_history_index is not None
+            and 0 <= self.prompt_history_index < len(prompts)
+        ):
+            self.current_prompt = prompts[self.prompt_history_index]
 
 
-
-
-    # TODO check this, this should set the bot ready to submit a new prompt, not a new round
     def prepare_prompt_submission(self, new_prompt: str):
         """
         Prepares the bot for submitting a new prompt.
@@ -292,15 +306,19 @@ class Bot(Widget):
         """
         self.current_prompt = new_prompt
         self.prompt_history_index = None
-        self.ready_for_next_turn = True
+        self.ready_for_next_round = True
 
 
 
     # LLM
     def submit_prompt_to_llm(self):
         # TODO implement this method to submit the current prompt to the LLM
-        self.board_widget.ollama_connector.send_prompt_to_llm(self)
+        await self.board_widget.ollama_connector.send_prompt_to_llm(self)
 
+
+
+    def get_current_prompt(self):
+        return self.current_prompt or ""
 
 
     def _on_llm_response(self, res):

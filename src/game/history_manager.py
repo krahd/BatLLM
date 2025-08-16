@@ -3,6 +3,7 @@ from datetime import datetime
 
 from configs.app_config import config
 from game.bot import Bot
+from kivy.utils import escape_markup
 
 """
 Events
@@ -597,8 +598,9 @@ class HistoryManager:
                 if prompts:
                     out.append("    Prompts:")
                     for p in prompts:
+                        prompt_txt = escape_markup(str(p.get('prompt', '')))
                         out.append(
-                            f"      Bot {p.get('bot_id')}: {p.get('prompt', '')}")
+                            f"      Bot {p.get('bot_id')}: {prompt_txt}")
 
                 for turn in round_entry.get("turns", []):
                     tnum = turn.get("turn")
@@ -608,8 +610,8 @@ class HistoryManager:
                         # Aggregate per-bot messages for this turn
                         for play in turn.get("plays", []):
                             bot_id = play.get("bot_id")
-                            llm_response = play.get("llm_response")
-                            cmd = play.get("cmd")
+                            llm_response = escape_markup(str(play.get("llm_response", "")))
+                            cmd = escape_markup(str(play.get("cmd", "")))
 
                             if bot_id is not None:
                                 out.append(f'      Bot {bot_id}: llm "{llm_response}" -> cmd="{cmd}"')
@@ -700,6 +702,7 @@ class HistoryManager:
                         break
 
                 if prompt_text:
+                    prompt_text = escape_markup(str(prompt_text))
                     lines.append(set_newlines(
                         f"\n[size=18sp][b]Prompt:[/b]\n[i] {prompt_text}[/i][/size]\n", 2))
 
@@ -722,27 +725,22 @@ class HistoryManager:
                     tnum = turn.get("turn")
                     lines.append(set_newlines(f"[b][size=28sp]Turn {tnum}:[/size][/b]", 1))
 
-
                     for play in turn.get("plays", []) or []:
                         if int(play.get("bot_id", -1)) == int(bot_id):
-                            llm_response = play.get("llm_response").strip()
-                            cmd = play.get("cmd").strip()
-
+                            llm_response = escape_markup(str(play.get("llm_response", "")).strip())
+                            cmd = escape_markup(str(play.get("cmd", "")).strip())
                             lines.append(
-                                f'[color=#208020]llm "{llm_response}"[/color] -> [color=#a000af]cmd="{cmd}"[/color]')
-
+                                f'[color=#208020]llm "{llm_response}"[/color] -> [color=#a000af]cmd="{cmd}"[/color]'
+                            )
                             break
 
                     # Post-action state (if recorded for this bot); otherwise fall back to turn post_state
                     post_action = (turn.get("post_action_states", {}) or {}).get(int(bot_id))
-
                     if post_action is None:
-                        post_action = (turn.get("post_state", {})
-                                       or {}).get(bot_id)
+                        post_action = (turn.get("post_state", {}) or {}).get(bot_id)
 
                     if post_action is not None:
-                        lines.append(set_newlines(
-                            f"[b]state: {fmt_state(post_action)}[/b]", 1))
+                        lines.append(set_newlines(f"[b]state: {fmt_state(post_action)}[/b]", 1))
 
                     lines.append("")
 

@@ -50,7 +50,7 @@ from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
 from util.normalized_canvas import NormalizedCanvas
-from util.utils import find_id_in_parents, show_fading_alert
+from util.utils import find_id_in_parents, markup, show_fading_alert
 from game.ollama_connector import OllamaConnector
 
 
@@ -409,9 +409,7 @@ class GameBoard(Widget, EventDispatcher):
 
         # Notify players via the output history and reset the ready flags.
         for b in self.bots:
-            self.add_text_to_home_screen_cmd_history(
-                b.id, f"[color=#000000][b]Round {self.current_round}[/b][/color]\n"
-            )
+            self.add_text_to_home_screen_cmd_history(b.id, markup("Round {self.current_round}", bold=True))
             b.ready_for_next_round = False
 
         # Randomise the order of playing turns. Use the number of bots to sample all of them.
@@ -475,9 +473,10 @@ class GameBoard(Widget, EventDispatcher):
                 # Directly log the end of the round to the UI. Previously this
                 # attempted to call ``b.log``, but Bot has no ``log`` method.
                 # We instead use the GameBoard's helper to append text.
-                self.add_text_to_home_screen_cmd_history(
-                    b.id, f"[color=#a00000]Round {self.current_round} ended.[/color]\n\n"
-                )
+                self.add_text_to_home_screen_cmd_history(b.id,
+                                                         markup("Round {self.current_round} ended.",
+                                                                color="#a00000", bold=True)
+                                                         )
 
             round_res = "\n"
 

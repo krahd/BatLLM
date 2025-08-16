@@ -235,7 +235,7 @@ class HomeScreen(Screen):
 
         b = self.ids.game_board.get_bot_by_id(bot_id)
         b.rewind_prompt_history()
-        self.prompt_history_add_text(bot_id, b.get_current_prompt_from_history())
+        self.prompt_history_add_text(bot_id, b.get_current_prompt())
 
 
     def forward_prompt_history(self, bot_id):
