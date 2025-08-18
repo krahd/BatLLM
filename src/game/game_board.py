@@ -615,8 +615,12 @@ class GameBoard(Widget, EventDispatcher):
                     sys.exit(0)
 
                 case "l":
-                    # TODO load a prompt to both fields and submit them so that it starts a new round to make testing easier
-                    pass
+                    # TODO add to the history gui use .ids
+
+                    self.submit_prompt_to_history_gui(1, "Return a random but valid command.")
+                    self.submit_prompt_to_history_gui(2,
+                                                      "If you are looking towards your opponent and your shield is up, return S\nIf you are looking towards your opponent and your shield is down, return B\nIf you are not looking towards your opponent rotate to face your opponent")
+
 
             return True
 

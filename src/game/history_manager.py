@@ -713,7 +713,12 @@ class HistoryManager:
             for round_entry in game.get("rounds", []):
                 rnum = round_entry.get("round")
                 lines.append(set_newlines(
-                    f"[size=26sp][b]Round {rnum}.[/b][/size]", 1))
+                    f"[size=26sp][b]Round {rnum}[/b][/size]", 1))
+
+                #  system message
+                # TODO get system message from wherever we stored it. Perhaps it should be added
+                # TODO to the history manager
+
 
                 # Prompt at round start (for this bot only)
                 prompt_text = ""
@@ -725,11 +730,10 @@ class HistoryManager:
                 if prompt_text:
                     prompt_text = escape_markup(str(prompt_text))
                     lines.append(set_newlines(
-                        f"\n[size=18sp][b]Prompt:[/b]\n", 1))
-
+                        f"[size=16sp]<prompt>", 1))
                     for lin in prompt_text.split("\n"):
-                        lines.append(f"[i]{lin.strip()}[/i]\n")
-                    lines.append("[b][/prompt][/b]")
+                        lines.append(f"[i]{lin.strip()}[/i]")
+                    lines.append("</prompt>")
 
 
                 # Initial state at round start (this bot only)

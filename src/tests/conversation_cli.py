@@ -10,7 +10,7 @@ Classes:
     ConversationCLI:
         - Simple conversation with the LLM.
         - Commands_
-            /exit  -> quit 
+            /exit  -> quit
             /reset -> clear history
             /sys [<text>] -> print, set, or replace the system prompt
             /history -> display current history
@@ -82,7 +82,7 @@ class ConversationCLI():
 
 
 
-    def _ensure_system(self, text: Optional[str]) -> None:
+    def _ensure_system_message(self, text: Optional[str]) -> None:
         if text is None:
             return
 
@@ -152,13 +152,21 @@ class ConversationCLI():
         """
         self.history = history
 
+    def print_help(self) -> str:
+        """Helper for help
+        Returns:
+            str: a string with the available commands
+        """
+        print(f"Endpoint: {self.endpoint}")
+        print("Commands: /exit, /reset, /sys [text], /history, /help, /?\n\n")
+
 
     def run(self) -> None:
-        """Runs the interactive chat loop.
+        """Main loop (chat)
         """
-        print("Chat with a BatLLM model.")
-        print(f"Endpoint: {self.endpoint}")
-        print("Commands: /exit, /reset, /sys [<text>], /history\n")
+
+        self.print_help()
+        print("")
 
         while True:
             try:
@@ -176,28 +184,31 @@ class ConversationCLI():
 
             if line == "/reset":
                 self.history.clear()
-                print("[History cleared]")
+                print("[history cleared]")
                 continue
 
             if line.startswith("/sys"):
                 sys_msg = line[4:].strip()
-                print(f"**{sys_msg}]")
 
                 if not (sys_msg is None or sys_msg == ""):
                     sys_msg = sys_msg[0:]
-                    self._ensure_system(sys_msg)
-                    print(f"[System prompt set to: {sys_msg}")
+                    self._ensure_system_message(sys_msg)
+                    print(f"[system prompt set to: {sys_msg}")
 
                 else:
-                    print(f"[History[0]: {self.history[0]}]")
+                    print(f"[history[0]: {self.history[0]}]")
 
                 continue
 
             if line == "/history":
-                print("[History]")
+                print("<history>")
                 for msg in self.history:
                     print(f"{msg['role']}: {msg['content']}")
-                print("[/History]")
+                print("</history>")
+                continue
+
+            if line == "/help" or line == "/?":
+                self.print_help()
                 continue
 
             reply = self.send_prompt_to_llm(line)

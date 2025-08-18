@@ -79,14 +79,19 @@ class LoadTextDialog(Popup):
         sel = self.ids.filechooser.selection
         if not sel:
             return
+
         path = sel[0]
+        print(f"XXX Loading file: {path}")
         if not path.lower().endswith(".txt"):
             return
+
         try:
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
+
         except Exception:
             content = ""
+
         # Invoke the callback, then close
         try:
             self.on_choice(content)
@@ -112,5 +117,3 @@ class LoadTextDialog(Popup):
                 self._load_selected()
                 return True
         return super().on_touch_down(touch)
-
-

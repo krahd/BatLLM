@@ -8,6 +8,10 @@ This connector targets Ollama's /api/chat contract. It does NOT use the deprecat
 from __future__ import annotations
 
 import json
+import os
+import sys
+from pathlib import Path
+
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
@@ -87,28 +91,24 @@ class OllamaConnector:
         self.load_options(force=True)
 
 
-    def _ensure_system_message(self, history: List[Message]) -> None:
+    def _ensure_system_message(self, history) -> None:
         """Ensure the system header (if any) is at messages[0]."""
 
+        # if self._system_instructions is None or empty string
         if self._system_instructions is None or not self._system_instructions.strip():
             # If we don't have system instructions we remove it from the history
             if history and history[0].get("role") == "system":
                 del history[0]
             return
 
-        if not history or history[0].get("role") != "system":
+        if len(history) == 0:
             history.insert(0, {"role": "system", "content": self._system_instructions})
 
-        else:
-            # keep it updated if file changed on disk and we reloaded
-            if history[0].get("content") != self._system_instructions:
-                history[0]["content"] = self._system_instructions
+        elif not history[0].get("role") != "system":
+            history.insert(0, {"role": "system", "content": self._system_instructions})
 
-
-
-        print(f"** self._system_instructions = {self._system_instructions!r}")
-        print(f"** history[0] = {history[0]!r}")
-        print("")
+        elif history[0].get("content") != self._system_instructions:
+            history[0]["content"] = self._system_instructions
 
 
     def reset_histories(self) -> None:
@@ -141,7 +141,7 @@ class OllamaConnector:
 
 
     def _get_history_ref(self, bot_id: int) -> List[Message]:
-        """Return a reference to the current history (a messages[] list), taking into account if the 
+        """Return a reference to the current history (a messages[] list), taking into account if the
         context is shared or not"""
 
         if self.independent_contexts:
@@ -182,8 +182,7 @@ class OllamaConnector:
         tail = history[-max_n:]
         history.clear()
         history.extend(tail)
-        self._ensure_system_message(history)
-
+        self._ensure_system_message(history)  # ensure system message is at index 0
         # TODO verify this works OK
 
 
@@ -215,7 +214,8 @@ class OllamaConnector:
         self.endpoint = f"{url}:{port}{path}"
         host = f"{url}:{port}"
 
-        self._system_instructions = self._get_system_instructions_text()
+        self.independent_contexts = config.get("game", "independent_contexts")
+        self.augmenting_prompt = config.get("game", "prompt_augmentation")
 
         # Reset contexts when requested
         if force:
@@ -229,12 +229,13 @@ class OllamaConnector:
 
     def process_settings(
         self,
+        bot_id: int,
         *,
         augmenting_prompt: Optional[bool] = None,
         independent_contexts: Optional[bool] = None,
         reset_histories_on_mode_change: bool = True,
     ) -> None:
-        """updates the game options that are exposed to the user by the UI (settings), which are 
+        """updates the game options that are exposed to the user by the UI (settings), which are
         passed as optional parameters to this method.
 
         if reset_histories_on_mode_change and the settings have changed then histories are reset
@@ -243,16 +244,19 @@ class OllamaConnector:
         mode_changed = augmenting_prompt not in (
             None, self.augmenting_prompt) or independent_contexts not in (None, self.independent_contexts)
 
-        self.augmenting_prompt = augmenting_prompt
-        self.independent_contexts = independent_contexts
+        if augmenting_prompt is not None:
+            self.augmenting_prompt = augmenting_prompt
 
-        # Reload system instructions
-        self._system_instructions = self._get_system_instructions_text()
+        if independent_contexts is not None:
+            self.independent_contexts = independent_contexts
 
         # Histories from a prior mode might be not compatible with the new mode so we allow them to be reset them if the mode changed.
         if reset_histories_on_mode_change and mode_changed:
             self.reset_histories()
 
+        # Reload system instructions
+        self._system_instructions = self._get_system_instructions_text()
+        self._ensure_system_message(self._get_history_ref(bot_id))
 
     def gen_options(self) -> Dict[str, Any]:
         """Refresh connector options and return generation options for chat."""
@@ -311,7 +315,7 @@ class OllamaConnector:
         Args:
             bot_id: The numeric ID of the bot (stable id).
             user_text: The *player* prompt
-            game_state: JSON w/ current state                             
+            game_state: JSON w/ current state
             reset: If True, reset the context (clear history) before sending.
             new_augmenting_prompt: If provided, update mode and reset history.
             new_independent_contexts:  If provided, update mode and reset history.
@@ -321,20 +325,25 @@ class OllamaConnector:
         """
 
 
-        self.process_settings(augmenting_prompt=new_augmenting_prompt,
+
+
+        self.process_settings(bot_id=bot_id,
+                              augmenting_prompt=new_augmenting_prompt,
                               independent_contexts=new_independent_contexts,
                               reset_histories_on_mode_change=True
                               )
+
+
         if reset:
             self.reset_histories()
 
         self.load_options()
 
+
         history = self._get_history_ref(bot_id)
         history.append(self._build_user_message(game_state=game_state, player_text=user_text))
         self._ensure_system_message(history)
         self._trim_history_inplace(history)
-
 
         # send the request
         res: "ChatResponse" = self.client.chat(
@@ -346,12 +355,10 @@ class OllamaConnector:
 
         # ---- Extract assistant text ----
         content = ""
-
         # Preferred path: ChatResponse object
         try:
             # res.message is a ChatMessage; .content is the text
             content = (res.message.content or "").strip()  # type: ignore[attr-defined]
-
 
         except Exception:
             # Fallback for environments that return a dict
@@ -386,19 +393,32 @@ class OllamaConnector:
         Returns:
             str: _description_
         """
+
+
+
         # Determine the key based on the mode and context type (2x2 matrix)
         if not self.augmenting_prompt:
-            key = ("system_instructions_not_augmented_independent" if self.independent_contexts else "system_instructions_not_augmented_shared")
-
+            if self.independent_contexts:
+                key = "system_instructions_not_augmented_independent"
+            else:
+                key = "system_instructions_not_augmented_shared"
         else:
-            key = ("system_instructions_augmented_independent" if self.independent_contexts else "system_instructions_augmented_shared")
+            if self.independent_contexts:
+                key = "system_instructions_augmented_independent"
+            else:
+                key = "system_instructions_augmented_shared"
+
 
         # Get the path to the augmentation header text file from the config
-        path = config.get("llm", key)
+        filename = config.get("llm", key)
+        path = os.path.join(os.getcwd(), filename)
 
         try:
+
+
             with open(path, "r", encoding="utf-8") as f:
-                return f.read()
+                inst = f.read()
+                return inst
 
         except FileNotFoundError as exc:
             raise FileNotFoundError(f"System instructions file not found: {path}") from exc

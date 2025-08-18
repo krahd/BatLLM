@@ -12,15 +12,15 @@ game:
   shield_size: 40
   step_length: 0.02
   total_rounds: 2
-  turns_per_round: 8
+  turns_per_round: 2
 llm:
   debug_requests: false
   model: llama3.2:latest
   num_ctx: 4096
   path: /api/chat
   port: 11434
-  system_instructions_augmented_independent: src/assets/system_instructions/augmented_independent_1.txt
-  system_instructions_augmented_shared: src/assets/system_instructions/augmented_shared_1.txt
+  system_instructions_augmented_independent: src/headers/system_instructions/augmented_independent_1.txt
+  system_instructions_augmented_shared: src/headers/system_instructions/augmented_shared_1.txt
   system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
   system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
   url: http://localhost
