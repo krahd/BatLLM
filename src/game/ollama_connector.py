@@ -89,7 +89,7 @@ class OllamaConnector:
     def _ensure_system_message(self, history: List[Message]) -> None:
         """Ensure the system header (if any) is at messages[0]."""
 
-        if not self._system_instructions:
+        if self._system_instructions is None or not self._system_instructions.strip():
             # If we don't have system instructions we remove it from the history
             if history and history[0].get("role") == "system":
                 del history[0]
@@ -111,11 +111,15 @@ class OllamaConnector:
 
 
     def _build_user_message(self, *, game_state: Dict[str, Any], player_text: str) -> Message:
-        """Build the `user` message content = compact state JSON + player's prompt."""
+        """Build the `user` message content"""
 
-        # Compact JSON for token efficiency;
-        state_str = json.dumps(game_state, separators=(",", ":"), ensure_ascii=False)
-        content = f"[GAME_STATE]\n{state_str}\n[PLAYER_INPUT]\n{player_text}"
+        if self.augmenting_prompt:
+            # Compact JSON for token efficiency;
+            content = f"[GAME_STATE]\n{json.dumps(game_state, separators=(",", ":"), ensure_ascii=False)}\n[PLAYER_INPUT]\n{player_text}"
+
+        else:
+            content = player_text
+
         return {"role": "user", "content": content}
 
 
@@ -142,6 +146,7 @@ class OllamaConnector:
         #  negative limit or None means no limit.
         if not self._max_history_messages or self._max_history_messages <= 0:
             return
+
         max_n = max(1, self._max_history_messages)
 
         if len(history) <= max_n:
@@ -183,7 +188,7 @@ class OllamaConnector:
         self.endpoint = f"{url}:{port}{path}"
         host = f"{url}:{port}"
 
-        self.system_instructions = self._get_system_instructions_text()
+        self._system_instructions = self._get_system_instructions_text()
 
         # Reset contexts when requested
         if force:
@@ -262,10 +267,6 @@ class OllamaConnector:
 
 
 
-    def _normalize_response(res: dict[str, Any]) -> dict[str, Any]:
-        return res
-
-
 
     # Send message and return response
     def send_prompt_to_llm_sync(
@@ -305,7 +306,10 @@ class OllamaConnector:
 
         history = self._get_history_ref(bot_id)
         history.append(self._build_user_message(game_state=game_state, player_text=user_text))
+        self._ensure_system_message(history)
         self._trim_history_inplace(history)
+
+        print(self._system_instructions)
 
         # send the request
         res: "ChatResponse" = self.client.chat(
@@ -340,7 +344,7 @@ class OllamaConnector:
             typename = type(res).__name__
             raise RuntimeError(f"Empty or unparseable content from model (type={typename}).")
 
-        # Persist assistant reply into our history
+        # Persist llm reply into our history
         history.append({"role": "assistant", "content": content})
 
         # Optionally trim again if you enforce a hard cap:
@@ -369,5 +373,6 @@ class OllamaConnector:
         try:
             with open(path, "r", encoding="utf-8") as f:
                 return f.read()
+
         except FileNotFoundError as exc:
             raise FileNotFoundError(f"System instructions file not found: {path}") from exc

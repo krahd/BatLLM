@@ -242,15 +242,16 @@ def markup(text: str, font_size: Optional[int] = None, color="#000000", bold=Fal
     if font_size is None:
         font_size = config.get("ui", "font_size")  # evaluated per call
 
-
     if not text:
         return ""
 
     if font_size <= 0 or not isinstance(font_size, int):
         font_size = config.get("ui", "font_size")
+    else:
+        font_size = 18
 
     if not color.startswith("#") or len(color) != 7:
         color = "#000000"  # default to black if invalid
 
 
-    return f"[size={font_size}][color={color}]{'[b]' if bold else ''}{'[i]' if italic else ''}{text}{'[/i]' if italic else ''}{'[/b]' if bold else ''}[/color][/size]"
+    return f"[size={font_size}sp][color={color}]{'[b]' if bold else ''}{'[i]' if italic else ''}{text}{'[/i]' if italic else ''}{'[/b]' if bold else ''}[/color][/size]"

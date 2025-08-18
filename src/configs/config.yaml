@@ -7,14 +7,14 @@ game:
   bullet_step_length: 0.01
   independent_contexts: true
   initial_health: 30
-  prompt_augmentation: false
+  prompt_augmentation: true
   shield_initial_state: true
   shield_size: 40
   step_length: 0.02
   total_rounds: 2
-  turns_per_round: 13
+  turns_per_round: 10
 llm:
-  debug_requests: true
+  debug_requests: false
   model: llama3.2:latest
   num_ctx: 4096
   path: /api/chat

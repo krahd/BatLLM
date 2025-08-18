@@ -390,10 +390,11 @@ class GameBoard(Widget, EventDispatcher):
         self.current_round += 1
         self.current_turn += 1
 
-        # WERWERWE HERE IS THE PROBLEM
+        # TODO check this
         # Notify players via the output history and reset the ready flags.
         for b in self.bots:
-            self.add_text_to_home_screen_cmd_history(b.id, markup("Round {self.current_round}", bold=True))
+            self.add_text_to_home_screen_cmd_history(b.id, markup(
+                f"Round {self.current_round}\n", font_size=18, bold=True))
             b.ready_for_next_round = False
 
         # Randomise the order of playing turns. Use the number of bots to sample all of them.
@@ -404,7 +405,9 @@ class GameBoard(Widget, EventDispatcher):
 
         # Begin the first turn of the round. `play_turn` will call start_turn
         # internally and handle scheduling subsequent turns.
-        self.play_turn(0)
+
+
+        Clock.schedule_once(self.play_turn, 0)
 
 
     def game_is_over(self):
@@ -434,7 +437,7 @@ class GameBoard(Widget, EventDispatcher):
 
         if not self.current_turn < config.get("game", "turns_per_round"):
             # round's over
-            self.history_manager.end_round(self)
+            self.history_manager.end_round()
 
             for b in self.bots:
                 # Insert blank line to separate rounds in the UI.
@@ -442,7 +445,7 @@ class GameBoard(Widget, EventDispatcher):
                 # Directly log the end of the round to the UI
                 # using the GameBoard's helper to append text.
                 self.add_text_to_home_screen_cmd_history(b.id,
-                                                         markup("Round {self.current_round} ended.",
+                                                         markup(f"Round {self.current_round} ended.",
                                                                 color="#a00000", bold=True)
                                                          )
 

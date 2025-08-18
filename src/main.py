@@ -10,9 +10,15 @@ from configs.app_config import config
 from util.utils import show_confirmation_dialog
 import sys
 from kivymd.app import MDApp
+from kivy.config import Config
 import os
-
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
+
+
+
+
+
+
 
 
 
@@ -93,5 +99,9 @@ class BatLLM(MDApp):
 
 
 if __name__ == "__main__":
+    Window.maximize()
+    # os.environ["KIVY_NO_CONSOLELOG"] = "1"
+    Config.set('kivy', 'log_level', 'error')
+    Config.write()
     Window.maximize()
     BatLLM().run()
