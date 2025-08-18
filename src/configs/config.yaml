@@ -11,8 +11,8 @@ game:
   shield_initial_state: true
   shield_size: 40
   step_length: 0.02
-  total_rounds: 3
-  turns_per_round: 10
+  total_rounds: 2
+  turns_per_round: 2
 llm:
   debug_requests: false
   model: llama3.2:latest

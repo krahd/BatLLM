@@ -725,7 +725,15 @@ class HistoryManager:
                 if prompt_text:
                     prompt_text = escape_markup(str(prompt_text))
                     lines.append(set_newlines(
-                        f"\n[size=18sp][b]Prompt:[/b]\n[i] {prompt_text}[/i][/size]\n", 2))
+                        f"\n[size=18sp][b]Prompt:[/b]\n", 1))
+
+
+                    for lin in prompt_text.split("\n"):
+                        lines.append(f"[i]{lin.strip()}[/i]\n")
+
+                    lines.append("[b][/prompt][/b]")
+
+
 
                 # Initial state at round start (this bot only)
                 init_state = None
@@ -751,7 +759,7 @@ class HistoryManager:
                             llm_response = escape_markup(str(play.get("llm_response", "")).strip())
                             cmd = escape_markup(str(play.get("cmd", "")).strip())
                             lines.append(
-                                f'[b][color=#208020][llm response]"[/color][/b]\n'
+                                f"[b][color=#208020][llm response][/color][/b]\n"
                             )
 
                             for lin in llm_response.split("\n"):
