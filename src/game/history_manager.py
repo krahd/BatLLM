@@ -730,10 +730,10 @@ class HistoryManager:
                 if prompt_text:
                     prompt_text = escape_markup(str(prompt_text))
                     lines.append(set_newlines(
-                        f"[size=16sp]<prompt>", 1))
+                        f"[size=16sp][b]prompt:[/b]", 1))
                     for lin in prompt_text.split("\n"):
                         lines.append(f"[i]{lin.strip()}[/i]")
-                    lines.append("</prompt>")
+                    lines.append("[/size]")
 
 
                 # Initial state at round start (this bot only)
@@ -753,21 +753,19 @@ class HistoryManager:
                 # Turns
                 for turn in round_entry.get("turns", []):
                     tnum = turn.get("turn")
-                    lines.append(set_newlines(f"[b][size=28sp]Turn {tnum}:[/size][/b]", 1))
+                    lines.append(f"[b][size=28sp]Turn {tnum}:[/size][/b]")
 
                     for play in turn.get("plays", []) or []:
                         if int(play.get("bot_id", -1)) == int(bot_id):
                             llm_response = escape_markup(str(play.get("llm_response", "")).strip())
                             cmd = escape_markup(str(play.get("cmd", "")).strip())
                             lines.append(
-                                f"[b][color=#208020][llm response][/color][/b]\n"
-                            )
+                                f"[b][color=#208020]llm response:[/color][/b] {llm_response!r}")
 
-                            for lin in llm_response.split("\n"):
-                                lines.append(f"[i][color=#208020]{lin.strip()}[/color][/i]")
+                            # for lin in llm_response.split("\n"):
+                            #    lines.append(f"[i][color=#208020]{lin.strip()}[/color][/i]")
 
-                            lines.append("[/llm response]")
-                            lines.append(f"[b][color=#af0000]cmd: {cmd}[/color][/b]")
+                            lines.append(f"[color=#af0000][b]cmd: [/b]{cmd}[/color]")
 
                             break
 
@@ -777,7 +775,8 @@ class HistoryManager:
                         post_action = (turn.get("post_state", {}) or {}).get(bot_id)
 
                     if post_action is not None:
-                        lines.append(set_newlines(f"[b]state: {fmt_state(post_action)}[/b]", 1))
+                        lines.append(
+                            f"[color=#0000f0][b]state:[/b] {fmt_state(post_action)}[/color]")
 
                     lines.append("")
 
