@@ -1,9 +1,11 @@
 import json
 from datetime import datetime
 
+from kivy.utils import escape_markup
+
 from configs.app_config import config
 from game.bot import Bot
-from kivy.utils import escape_markup
+import codecs
 
 """
 Events
@@ -98,6 +100,8 @@ class HistoryManager:
         Start a new game. Initialize the game log with start time and initial bot states.
         `game_board` is the BoardGameWidget
         """
+        print("######## start_game called")
+
 
         # If a game was in progress without proper ending, finalize it (to keep data consistent)
         if self.current_game and "end_time" not in self.current_game:
@@ -135,6 +139,8 @@ class HistoryManager:
         End the current game. This can be called at any time (e.g., normal game end or aborted mid-round).
         It finalizes any ongoing round/turn and records the end time and final outcome.
         """
+
+        print("######## end_game called")
 
         if not self.current_game:
             raise ValueError(
@@ -177,6 +183,8 @@ class HistoryManager:
             ValueError: If there is no active game or a round is already in progress.
         """
 
+        print("######## start_round called")
+
         if not self.current_game:
             raise ValueError(
                 "Cannot start a round without an active game. Call start_game first."
@@ -202,8 +210,22 @@ class HistoryManager:
         # TODO  how add the prompts to the new round
         # self.current_round["prompts"] = []
 
+        # Once the round has been started, record each bot's prompt into the
+        # HistoryManager. Prompts are stored as a list of dictionaries with
+        # `bot_id` and `prompt` fields. This replaces the old prompt_history
+        # mechanism.
+        if self.current_round is not None:
+            self.current_round["prompts"] = []  # reset
+            for b in game.bots:
+                prompt_text = b.current_prompt or ""
+                self.current_round["prompts"].append(
+                    {"bot_id": b.id, "prompt": prompt_text}
+                )
 
-        # Reset current turn
+                # For UI navigation, reset each bot's prompt history cursor
+                b.prompt_history_index = None
+
+        # Reset current turn, this is a new round
         self.current_turn = None
 
 
@@ -212,6 +234,9 @@ class HistoryManager:
         """
         End the current round. Records the end time and round winner.
         """
+
+        print("######## end_round called")
+
 
         # if there's no active round, raise an error
         if not self.current_round:
@@ -242,6 +267,8 @@ class HistoryManager:
         Records the pre-turn state and which bot is acting (if available).
         """
 
+        print("######## start_turn called")
+
         if not self.current_round:
             # If there's no active round we throw an exception
             raise ValueError(
@@ -255,7 +282,8 @@ class HistoryManager:
             "turn": turn_number,
             "start_time": self._now_iso(),
             "pre_state": {},
-            "llm_response": {},
+            "plays": [],
+            "cmd": "",
             "post_state": {},
         }
 
@@ -266,6 +294,31 @@ class HistoryManager:
         self.current_round["turns"].append(self.current_turn)
 
 
+    def record_play(self, bot: Bot):
+        """
+        Record a play for the bot in the current turn.
+        This includes the bot's LLM response and the command it executed.
+        """
+
+        print("######## record_play called")
+
+        if not self.current_turn:
+            # raise ValueError(
+            #    "Cannot record a play without an active turn. Call start_turn first."
+            # )
+            print("Cannot record a play without an active turn. Call start_turn first.")
+
+        else:
+            # Create a play entry
+            play = {
+                "bot_id": bot.id,
+                "llm_response": bot.last_llm_response,
+                "cmd": bot.last_cmd,
+            }
+
+            # Append to the current turn's plays
+            self.current_turn.setdefault("plays", []).append(play)
+
 
 
     def end_turn(self, game):
@@ -273,6 +326,9 @@ class HistoryManager:
         End the current turn. Called after the turn's action is resolved.
         Records the post-turn state and clears the current turn.
         """
+
+        print("######## end_turn called")
+
         if not self.current_turn:
             # If there's no active turn we throw an exception
             raise ValueError(
@@ -281,40 +337,11 @@ class HistoryManager:
         # Record the turn's end time
         self.current_turn["end_time"] = self._now_iso()
 
-
         # Snapshot post-turn state of all bots
         self.current_turn["post_state"] = self._get_bots_state(game)
 
         # Clear current_turn (it remains in the turns list of the round)
         self.current_turn = None
-
-
-
-
-    def record_play(self, bot: Bot):
-        """
-        Record a play for the bot in the current turn.
-        This is a convenience method to record the bot's last command and response.
-        """
-
-
-        if not self.current_turn:
-            # If there's no active turn, raise an error
-            raise ValueError(
-                "Cannot record a play without an active turn. Call start_turn first."
-            )
-
-
-
-        if self.current_turn["plays"] is None or not isinstance(self.current_turn["plays"], list) or len(self.current_turn["plays"]) == 0:
-            # Initialize plays list if it doesn't exist
-            plays = []
-
-        play = {}
-        play["bot_id"] = bot.id
-        play["llm_response"] = bot.last_llm_response
-        play["cmd"] = bot.last_cmd if bot.last_cmd else "ERR"
-        self.current_turn.setdefault("plays", []).append(play)
 
 
 
@@ -384,8 +411,8 @@ class HistoryManager:
                 bot_info["y"] = bot.y
                 bot_info["rot"] = bot.rot
                 bot_info["shield"] = bot.shield
-                bot_info["prompt"] = bot.get_current_prompt()
-                bot_info["llm_response"] = bot.last_llm_response
+                bot_info["current_prompt"] = bot.get_current_prompt()
+                bot_info["last_llm_response"] = bot.last_llm_response
 
                 state[bot_id] = bot_info
 

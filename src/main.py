@@ -10,6 +10,11 @@ from configs.app_config import config
 from util.utils import show_confirmation_dialog
 import sys
 from kivymd.app import MDApp
+import os
+
+os.environ["KIVY_NO_CONSOLELOG"] = "1"
+
+
 
 
 Builder.load_file("screens/settings_screen.kv")

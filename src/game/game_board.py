@@ -4,32 +4,22 @@ game_board.py
 
 The :mod:`game_board` module contains the :class:`~game.game_board.GameBoard`
 class which implements BatLLM's in-game logic and user interface. It acts
-as the "world" in which bots move, shoot and interact, and it mediates
-communication between bots, the LLM via :class:`~game.ollama_connector.OllamaConnector`,
+as the "world" in which bots act, and it mediates communication between bots,
+the LLM via :class:`~game.ollama_connector.OllamaConnector`,
 and the :class:`~game.history_manager.HistoryManager` which records all game
 state and chat history.
 
 Key features:
+- Maintains a list of :class:`~game.bot.Bot` instances representing the players. Bots are created at the start of each game.
+- Coordinates the flow of games, rounds and turns, and updates ``current_turn`` and ``current_round`` counters accordingly.
+- Renders the game graphics using Kivy and updates various UI labels.
+- Provides helper methods to append text to scrollable history boxes in the HomeScreen (see ``add_text_to_llm_response_history``).
+- Uses the HistoryManager as the single source of truth for all chat messages.
+- Chat messages are recorded via ``HistoryManager.record_message`` and reconstructed with ``HistoryManager.get_chat_history``.
+- At the end of each round, the board logs status text directly through ``add_text_to_llm_response_history``.
 
-* Maintains a list of :class:`~game.bot.Bot` instances representing the
-  players. Bots are created at the start of each game.
-* Coordinates the flow of games, rounds and turns, and updates
-  ``current_turn`` and ``current_round`` counters accordingly.
-* Renders the game graphics using Kivy and updates various UI labels.
-* Provides helper methods to append text to scrollable history boxes in
-  the HomeScreen (see ``add_text_to_llm_response_history``).
-* Uses the HistoryManager as the single source of truth for all chat
-  messages. The previous ``chat_history_shared`` and per-bot
-  ``chat_history`` lists have been removed to avoid duplication. Chat
-  messages are recorded via ``HistoryManager.record_message`` and
-  reconstructed with ``HistoryManager.get_chat_history``.
-* At the end of each round, the board logs status text directly through
-  ``add_text_to_llm_response_history``. Calls to ``b.log`` were removed
-  since :class:`~game.bot.Bot` no longer defines a ``log`` method.
-
-This design simplifies data flow: the GameBoard drives the game loop and
-delegates state recording to the HistoryManager. The UI updates are handled
-through a small set of clearly defined helper methods.
+The GameBoard drives the game loop and delegates state recording to the HistoryManager.
+The UI updates are handled through a small set of helper methods.
 """
 
 import os
@@ -51,12 +41,12 @@ from game.bot import Bot
 from game.history_manager import HistoryManager
 from util.normalized_canvas import NormalizedCanvas
 from util.utils import find_id_in_parents, markup, show_fading_alert
-from game.ollama_connector_old import OllamaConnector
+from game.ollama_connector import OllamaConnector  # TODO move to singleton
 
 
 class GameBoard(Widget, EventDispatcher):
     """
-    The GameBoard is BatLLM's game world and a Kivy Widget, responsible for managing all in-game logic, bot interactions, and session history. It serves as the internal game engine, handling rounds, turns, bot actions, UI updates, and communication with LLMs via the OllamaConnector. The GameBoard coordinates the flow of the game, including starting new games, managing prompts, rendering the game state, processing user input, and saving/loading session data. It interacts closely with the HistoryManager for tracking game progress and with the UI for displaying game status and results.
+    The GameBoard is BatLLM's game world and a Kivy Widget.
     Attributes:
         bots (list): List of Bot instances participating in the game.
         bullet_trace (list): List of bullet positions for rendering bullet traces.
@@ -68,6 +58,7 @@ class GameBoard(Widget, EventDispatcher):
         games_started (NumericProperty): Number of games started in the session.
         shuffled_bots (list): List of bots in randomized order for turn-taking.
         history_manager (HistoryManager): Manages chat and game history.
+
     Methods:
         __init__(**kwargs): Initializes the GameBoard, sets up input, rendering, and state.
         on_current_turn(instance, value): Updates UI when the turn changes.
@@ -113,12 +104,8 @@ class GameBoard(Widget, EventDispatcher):
 
     def __init__(self, **kwargs):
         """
-        Constructor. Initializes the GameBoard instance.
-        Sets up keyboard input handling, binds redraw events to size and position changes,
-        and initializes various game state variables such as bullet trace, alpha value,
-        sound effects, turn and round counters, and bot shuffling. Instantiates the
-        HistoryManager for session chat history and the OllamaConnector for LLM communication.
-        Schedules the render loop to update the UI at the configured frame rate.
+        Constructor. Initializes the GameBoard instance and
+        schedules the render loop to update the UI at the configured frame rate.
         """
 
         super(GameBoard, self).__init__(**kwargs)
@@ -190,12 +177,6 @@ class GameBoard(Widget, EventDispatcher):
     def start_new_game(self):
         """
         Starts a new game by resetting game state and initializing bots.
-
-        This method performs the following actions:
-        - Resets the current turn, round, and shuffled bots to their initial states.
-        - Creates two new Bot instances, each associated with this GameBoard.
-        - If this is not the first game, updates the home screen command history for each bot and resets their readiness for the next round.
-        - Increments the count of games started.
         - Notifies the history manager to start tracking the new game.
 
         Returns:
@@ -402,11 +383,14 @@ class GameBoard(Widget, EventDispatcher):
 
         # Both bots are ready, so start a new round.
         # Reset the turn counter and increment the round counter.
-        self.current_turn = 0
         if self.current_round is None:
             self.current_round = 0
-        self.current_round += 1
+            self.current_turn = 0
 
+        self.current_round += 1
+        self.current_turn += 1
+
+        # WERWERWE HERE IS THE PROBLEM
         # Notify players via the output history and reset the ready flags.
         for b in self.bots:
             self.add_text_to_home_screen_cmd_history(b.id, markup("Round {self.current_round}", bold=True))
@@ -417,21 +401,6 @@ class GameBoard(Widget, EventDispatcher):
 
         # Tell the history manager that a new round is starting.
         self.history_manager.start_round(self)
-
-        # Once the round has been started, record each bot's prompt into the
-        # HistoryManager. Prompts are stored as a list of dictionaries with
-        # `bot_id` and `prompt` fields. This replaces the old prompt_history
-        # mechanism.
-        if self.history_manager.current_round is not None:
-            self.history_manager.current_round["prompts"] = []  # reset
-            for b in self.bots:
-                prompt_text = b.current_prompt or ""
-                self.history_manager.current_round["prompts"].append(
-                    {"bot_id": b.id, "prompt": prompt_text}
-                )
-
-                # For UI navigation, reset each bot's prompt history cursor
-                b.prompt_history_index = None
 
         # Begin the first turn of the round. `play_turn` will call start_turn
         # internally and handle scheduling subsequent turns.
@@ -470,15 +439,14 @@ class GameBoard(Widget, EventDispatcher):
             for b in self.bots:
                 # Insert blank line to separate rounds in the UI.
                 self.add_text_to_home_screen_cmd_history(b.id, "\n\n")
-                # Directly log the end of the round to the UI. Previously this
-                # attempted to call ``b.log``, but Bot has no ``log`` method.
-                # We instead use the GameBoard's helper to append text.
+                # Directly log the end of the round to the UI
+                # using the GameBoard's helper to append text.
                 self.add_text_to_home_screen_cmd_history(b.id,
                                                          markup("Round {self.current_round} ended.",
                                                                 color="#a00000", bold=True)
                                                          )
 
-            round_res = "\n"
+            round_res = "\n"  # Collects round results to display in the popup.
 
             if self.game_is_over():
                 self.end_game()
@@ -497,12 +465,19 @@ class GameBoard(Widget, EventDispatcher):
 
             return
 
-        # round's not over, so we continue with the next turn
+        # If the round is not over, we start a turn and submit each bot's prompt to the LLM.
         self.update_title_label()
         self.history_manager.start_turn(self)
-        for b in self.shuffled_bots:
+
+        for b in self.bots:
+            # Reset the bot's ready_for_next_turn flag for the new turn.
             b.ready_for_next_turn = False
+
+
+        # Submission go in this round's shuffled order.
+        for b in self.shuffled_bots:
             b.submit_prompt_to_llm()
+
 
 
 
@@ -552,7 +527,10 @@ class GameBoard(Widget, EventDispatcher):
         Args:
                 bot (_type_): the bot
         """
+        # Record the bot's play in the history manager.
+        self.history_manager.record_play(bot)
 
+        # if all bots are done, end turn and schedule the next one
         if all(b.ready_for_next_turn for b in self.bots):
             self.current_turn += 1
             self.history_manager.end_turn(self)
@@ -688,3 +666,21 @@ class GameBoard(Widget, EventDispatcher):
         if self._keyboard:
             self._keyboard.unbind(on_key_down=self._on_keyboard_down)
             self._keyboard = None
+
+
+
+    def get_game_state(self) -> dict:
+        """Returns the current game state as a dictionary.
+        This includes bot positions, health, and other relevant data.
+
+        Returns:
+            dict: A dictionary representing the current game state.
+        """
+        return {
+            "bots": self.snapshot(),
+            "current_turn": self.current_turn,
+            "current_round": self.current_round,
+            "bullet_trace": self.bullet_trace,
+            "bullet_alpha": self.bullet_alpha,
+        }
+        # TODO Add any other game state information as needed

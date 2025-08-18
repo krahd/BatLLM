@@ -1,30 +1,19 @@
-"""Ollama connector: manages chat requests and per-bot/shared message histories.
+"""
+Ollama connector: manages chat requests and per-bot/shared message histories.
 
 This connector targets Ollama's /api/chat contract. It does NOT use the deprecated
 `context` field. Instead, it sends the whole `messages` list each call.
-
-Design highlights
------------------
-- History management:
-  * independent_contexts=True  => one messages[] per bot_id (isolated histories)
-  * independent_contexts=False => one shared messages[] for all bots
-- Augmenting:
-  * augmenting_prompt=True  => load a system header (strict). Missing file raises.
-  * augmenting_prompt=False => no system header; students must provide structure.
-- Per-turn state:
-  * Each user request embeds a compact JSON state block at the top of the user message,
-    followed by the player's free-form prompt. Example:
-        [GAME_STATE]
-        {"SELF":{"X":0.20,"Y":0.30,"ROT":23,"HEALTH":20,"SHIELD":1},
-         "OPP":{"X":0.22,"Y":0.22,"ROT":22,"HEALTH":21,"SHIELD":0}}
-        [PLAYER_INPUT]
-        RETURN B
 """
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # Only imported for type checking; won't run at runtime.
+    from ollama._types import ChatResponse
 
 from ollama import Client
 from configs.app_config import config
@@ -147,7 +136,7 @@ class OllamaConnector:
 
         Policy:
           - Keep at most `_max_history_messages` entries.
-          - ensure_system_message() 
+          - ensure_system_message()
         """
 
         #  negative limit or None means no limit.
@@ -167,27 +156,9 @@ class OllamaConnector:
 
 
 
-
-    def _current_ctx(self, bot_id: int) -> Optional[list[int]]:
-        return self.ctx_by_bot.get(bot_id) if self.independent_contexts else self.shared_ctx
-
-
-
-    def _store_ctx(self, bot_id: int, ctx: Optional[list[int]]) -> None:
-        if ctx is None:
-            return
-        if self.independent_contexts:
-            self.ctx_by_bot[bot_id] = ctx
-        else:
-            self.shared_ctx = ctx
-
-
-
-
     def load_options(self, force: bool = False) -> None:
         """Load configuration and ensure client and contexts are consistent."""
 
-        # Read from config
         # Read from config (cast to proper types)
         self.temperature = _maybe_float(config.get("llm", "temperature"))
         self.top_p = _maybe_float(config.get("llm", "top_p"))
@@ -216,8 +187,7 @@ class OllamaConnector:
 
         # Reset contexts when requested
         if force:
-            self.ctx_by_bot: Dict[int, Optional[List[int]]] = {}
-            self.ctx_shared: Optional[List[int]] = None
+            self.reset_histories()
 
         # Client setup
         if self.client is None or force:
@@ -225,26 +195,30 @@ class OllamaConnector:
 
 
 
-    def update_options_exposed_by_ui(
+    def process_settings(
         self,
         *,
-        augmenting_prompt: bool,
-        independent_contexts: bool,
+        augmenting_prompt: Optional[bool] = None,
+        independent_contexts: Optional[bool] = None,
         reset_histories_on_mode_change: bool = True,
     ) -> None:
-        """updates options exposed by the UI, passed as parameters
+        """updates options that are exposed to the user by the UI (settings)
+        passed as optional parameters.
+        if reset_histories_on_mode_change and there are changes in the settings then self.reset_histories() is called.
         """
-        mode_changed = (
-            augmenting_prompt != self.augmenting_prompt
-            or independent_contexts != self.independent_contexts
-        )
+
+
+        mode_changed = augmenting_prompt not in (
+            None, self.augmenting_prompt) or independent_contexts not in (None, self.independent_contexts)
+
         self.augmenting_prompt = augmenting_prompt
         self.independent_contexts = independent_contexts
 
-        # Reload system header path (and raise if missing when augmenting=True)
+        # Reload system instructions
         self._system_instructions = self._get_system_instructions_text()
 
-        # Histories from a prior mode are typically not compatible; drop them.
+        # Histories from a prior mode might be not compatible with the new mode.
+        # So we can reset them if the mode changed.
         if reset_histories_on_mode_change and mode_changed:
             self.reset_histories()
 
@@ -288,13 +262,18 @@ class OllamaConnector:
 
 
 
+    def _normalize_response(res: dict[str, Any]) -> dict[str, Any]:
+        return res
+
+
+
     # Send message and return response
     def send_prompt_to_llm_sync(
         self,
-        *,
         bot_id: int,
+        *,
         user_text: str,
-        game_state: Optional[Dict[str, Any]],
+        game_state: dict[str, Any],
         reset: bool = False,
         new_augmenting_prompt: Optional[bool] = None,
         new_independent_contexts: Optional[bool] = None,
@@ -303,66 +282,68 @@ class OllamaConnector:
         """Send a synchronous chat request using message histories.
 
         Args:
-            bot_id:          The numeric ID of the bot (stable id).
-            user_text:       The *player* prompt for this bot (free-form, UPPERCASE recommended by you).
-            game_state:      Small JSON describing the current turn state (uppercase keys). Example:
-                             {"SELF":{"X":0.20,"Y":0.30,"ROT":23,"HEALTH":20,"SHIELD":1},
-                              "OPP":{"X":0.22,"Y":0.22,"ROT":22,"HEALTH":21,"SHIELD":0}}
-            reset:           If True, reset the context (clear history) before sending.
-            new_augmenting_prompt:     If provided, apply and reload header (raises if missing).
-            new_independent_contexts:  If provided, switch history mode (resets histories).
+            bot_id: The numeric ID of the bot (stable id).
+            user_text: The *player* prompt
+            game_state: JSON w/ current state                             
+            reset: If True, reset the context (clear history) before sending.
+            new_augmenting_prompt: If provided, update mode and reset history.
+            new_independent_contexts:  If provided, update mode and reset history.
 
         Returns:
             The assistant's text content (single command if your header/player prompt enforces it).
         """
 
-        ctx = self._current_ctx(bot_id)
 
-        # Live flag updates (respecting your UI toggles)
-        if new_augmenting_prompt is not None or new_independent_contexts is not None:
-            self.update_options_exposed_by_ui(
-                augmenting_prompt=new_augmenting_prompt if new_augmenting_prompt is not None else self.augmenting_prompt,
-                independent_contexts=new_independent_contexts if new_independent_contexts is not None else self.independent_contexts,
-                reset_histories_on_mode_change=True,
-            )
-
-        # TODO create a new function named self.update() that makes sure that we have the latest values in every member of selfs
-        self.load_options()
-
-
+        self.process_settings(augmenting_prompt=new_augmenting_prompt,
+                              independent_contexts=new_independent_contexts,
+                              reset_histories_on_mode_change=True
+                              )
         if reset:
             self.reset_histories()
+
+        self.load_options()
 
         history = self._get_history_ref(bot_id)
         history.append(self._build_user_message(game_state=game_state, player_text=user_text))
         self._trim_history_inplace(history)
 
         # send the request
-        res = self.client.chat(
+        res: "ChatResponse" = self.client.chat(
             model=self.model,
             messages=history,
             options=self.gen_options(),
             stream=False,
         )
 
-        if not isinstance(res, dict):
-            raise RuntimeError(f"Unexpected response type from Ollama: {type(res)}")
-
-
-        # Try common shapes
+        # ---- Extract assistant text ----
         content = ""
-        if isinstance(res.get("message"), dict):
-            content = (res["message"].get("content") or "").strip()
+        # Preferred path: ChatResponse object
+        try:
+            # res.message is a ChatMessage; .content is the text
+            content = (res.message.content or "").strip()  # type: ignore[attr-defined]
 
-        elif isinstance(res.get("response"), str):
-            content = (res["response"] or "").strip()
+
+        except Exception:
+            # Fallback for environments that return a dict
+
+            if isinstance(res, dict):
+                msg = res.get("message")
+
+                if isinstance(msg, dict):
+                    content = (msg.get("content") or "").strip()
+
+                elif isinstance(res.get("response"), str):
+                    content = (res["response"] or "").strip()
 
         if not content:
-            raise RuntimeError(f"Empty content from model: {res}")
+            # Helpful debug info without dumping the entire object
+            typename = type(res).__name__
+            raise RuntimeError(f"Empty or unparseable content from model (type={typename}).")
 
-        # Persist assistant reply
+        # Persist assistant reply into our history
         history.append({"role": "assistant", "content": content})
 
+        # Optionally trim again if you enforce a hard cap:
         # self._trim_history_inplace(history)
 
         return content

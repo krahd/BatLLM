@@ -61,14 +61,11 @@ class Bot(Widget):
 
         self.ready_for_next_turn = False
 
-
         self.augmenting_prompt = bool(
             config.get("game", "prompt_augmentation"))
 
         self.independent_contexts = bool(
             config.get("game", "independent_contexts"))
-
-        self.ready_for_next_turn = False
 
         # TODO colours load from theme properties
         if bot_id == 1:
@@ -310,9 +307,22 @@ class Bot(Widget):
 
 
 
-    # LLM
+
     def submit_prompt_to_llm(self):
-        self.board_widget.ollama_connector.send_prompt_to_llm_sync(self.id, user_text=self.get_current_prompt())
+        """Submits the prompt and sends the response for processing."""
+
+        res = self.board_widget.ollama_connector.send_prompt_to_llm_sync(
+            self.id, game_state=self.get_game_state(),
+            user_text=self.get_current_prompt()
+        )
+
+        self.process_llm_response(res)
+
+
+
+
+    def get_game_state(self) -> dict:
+        return self.board_widget.get_game_state() if self.board_widget else {}
 
 
 
@@ -320,7 +330,7 @@ class Bot(Widget):
         return self.current_prompt or ""
 
 
-    def _on_llm_response(self, res):
+    def process_llm_response(self, res: str):
         """
         Handles the LLM response by parsing it, executing the command, recording history, and finishing the turn.
 
@@ -329,54 +339,54 @@ class Bot(Widget):
 
         """
         self.last_llm_response = res
+        self.last_cmd = "Res not parsed, error"
         command_ok = True
 
-        match res[0]:
-            case "M":
-                self.last_cmd = "M"
-                self.move()
+        try:
+            match res[0]:
+                case "M":
+                    self.last_cmd = "M"
+                    self.move()
 
-            case "C":
-                angle = float(res[1:])  # if C, assume an angle follows and tries to parse it as a float
-                self.last_cmd = f"C{angle}"
+                case "C":
+                    angle = float(res[1:])  # if C, assume an angle follows and tries to parse it as a float
+                    self.last_cmd = f"C{angle}"
+                    self.rotate(angle)
 
-                self.rotate(angle)
+                case "A":
+                    angle = float(res[1:])
+                    self.last_cmd = f"A{angle}"
+                    self.rotate(-angle)
 
-            case "A":
-                angle = float(res[1:])
-                self.last_cmd = f"A{angle}"
-                self.rotate(-angle)
+                case "B":
+                    self.board_widget.shoot(self.id)
+                    self.last_cmd = "B"
 
-            case "B":
-                self.board_widget.shoot(self.id)
-                self.last_cmd = "B"
-
-            case "S":
-                if len(res) == 1:
-                    self.last_cmd = "S"
-                    self.toggle_shield()
-
-                else:
-                    if res[1] == "1":
-                        self.last_cmd = "S1"
-                        self.shield = True
-
-                    elif res[1] == "0":
-                        self.last_cmd = "S0"
-                        self.shield = False
+                case "S":
+                    if len(res) == 1:
+                        self.last_cmd = "S"
+                        self.toggle_shield()
 
                     else:
-                        command_ok = False
-                        self.last_cmd = "ERR"
+                        if res[1] == "1":
+                            self.last_cmd = "S1"
+                            self.shield = True
 
-            case _:
-                command_ok = False
-                self.last_cmd = "ERR"
+                        elif res[1] == "0":
+                            self.last_cmd = "S0"
+                            self.shield = False
 
+                        else:
+                            command_ok = False
+                            self.last_cmd = "ERR"
 
-        print(f"***** last_llm_response: {self.last_llm_response}")
-        print(f"***** last_cmd: {self.last_cmd}")
+                case _:
+                    command_ok = False
+                    self.last_cmd = "ERR"
 
+        except Exception as e:
+            command_ok = False
+            self.last_cmd = "ERR"
 
         if not command_ok:
             color = "#FF0000"
@@ -386,12 +396,8 @@ class Bot(Widget):
             color = "#000000"
             bold = False
 
-
         self.board_widget.add_cmd_to_home_screen_cmd_history(self.id, markup(self.last_cmd, color=color, bold=bold))
 
-        self.board_widget.history_manager.record_play(self)
-
-
-        # Finish Play, let the board know we ready for the next turn.
         self.ready_for_next_turn = True
+        # Finish Play, let the board know we ready for the next turn.
         self.board_widget.on_bot_llm_interaction_complete(self)
