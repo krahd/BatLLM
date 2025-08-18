@@ -100,7 +100,6 @@ class HistoryManager:
         Start a new game. Initialize the game log with start time and initial bot states.
         `game_board` is the BoardGameWidget
         """
-        print("######## start_game called")
 
 
         # If a game was in progress without proper ending, finalize it (to keep data consistent)
@@ -139,8 +138,6 @@ class HistoryManager:
         End the current game. This can be called at any time (e.g., normal game end or aborted mid-round).
         It finalizes any ongoing round/turn and records the end time and final outcome.
         """
-
-        print("######## end_game called")
 
         if not self.current_game:
             raise ValueError(
@@ -183,7 +180,6 @@ class HistoryManager:
             ValueError: If there is no active game or a round is already in progress.
         """
 
-        print("######## start_round called")
 
         if not self.current_game:
             raise ValueError(
@@ -235,7 +231,6 @@ class HistoryManager:
         End the current round. Records the end time and round winner.
         """
 
-        print("######## end_round called")
 
 
         # if there's no active round, raise an error
@@ -267,7 +262,6 @@ class HistoryManager:
         Records the pre-turn state and which bot is acting (if available).
         """
 
-        print("######## start_turn called")
 
         if not self.current_round:
             # If there's no active round we throw an exception
@@ -300,7 +294,6 @@ class HistoryManager:
         This includes the bot's LLM response and the command it executed.
         """
 
-        print("######## record_play called")
 
         if not self.current_turn:
             # raise ValueError(
@@ -326,8 +319,6 @@ class HistoryManager:
         End the current turn. Called after the turn's action is resolved.
         Records the post-turn state and clears the current turn.
         """
-
-        print("######## end_turn called")
 
         if not self.current_turn:
             # If there's no active turn we throw an exception
@@ -359,7 +350,8 @@ class HistoryManager:
         for rnd in rounds:
             for turn in rnd.get("turns", []):
                 for play in turn.get("plays", []):
-                    history.append({"bot_id": play["bot_id"], "llm_response": play["llm_response"], "cmd": play["cmd"]})
+                    history.append(
+                        {"bot_id": play["bot_id"], "llm_response": play["llm_response"], "cmd": play["cmd"]})
 
 
 
@@ -572,7 +564,8 @@ class HistoryManager:
                             cmd = play.get("cmd")
 
                             if bot_id is not None:
-                                lines.append(f'            [{bot_id}] LLM Response: "{llm_response}"')
+                                lines.append(
+                                    f'            [{bot_id}] LLM Response: "{llm_response}"')
                                 lines.append(f'            [{bot_id}] Command: {cmd}')
 
                 # Round end and winner
@@ -641,7 +634,8 @@ class HistoryManager:
                             cmd = escape_markup(str(play.get("cmd", "")))
 
                             if bot_id is not None:
-                                out.append(f'      Bot {bot_id}: llm "{llm_response}" -> cmd="{cmd}"')
+                                out.append(
+                                    f'      Bot {bot_id}: llm "{llm_response}" -> cmd="{cmd}"')
 
 
 
@@ -757,8 +751,15 @@ class HistoryManager:
                             llm_response = escape_markup(str(play.get("llm_response", "")).strip())
                             cmd = escape_markup(str(play.get("cmd", "")).strip())
                             lines.append(
-                                f'[color=#208020]llm "{llm_response}"[/color] -> [color=#a000af]cmd="{cmd}"[/color]'
+                                f'[b][color=#208020][llm response]"[/color][/b]\n'
                             )
+
+                            for lin in llm_response.split("\n"):
+                                lines.append(f"[i][color=#208020]{lin.strip()}[/color][/i]")
+
+                            lines.append("[/llm response]")
+                            lines.append(f"[b][color=#af0000]cmd: {cmd}[/color][/b]")
+
                             break
 
                     # Post-action state (if recorded for this bot); otherwise fall back to turn post_state

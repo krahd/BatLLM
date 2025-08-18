@@ -15,7 +15,6 @@ import os
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 
-
 Builder.load_file("screens/settings_screen.kv")
 Builder.load_file("screens/home_screen.kv")
 Builder.load_file("screens/history_screen.kv")

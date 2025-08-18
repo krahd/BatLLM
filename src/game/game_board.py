@@ -240,6 +240,7 @@ class GameBoard(Widget, EventDispatcher):
     def _redraw(self, *args):
         """Refreshes the screen by calling render()"""
         # TODO check this
+        self.render()
         #  Clock.schedule_once(self.render())
         # We don't need to schedule it because _redraw itself is scheduled with Clodk.schedule_interval to begin with
 
@@ -279,7 +280,8 @@ class GameBoard(Widget, EventDispatcher):
                 bot.render()
 
             for x, y in self.bullet_trace:
-                Color(1, 0, 0, self.bullet_alpha)  # Red color for bullet trace # TODO make it configurable from theme
+                # Red color for bullet trace # TODO make it configurable from theme
+                Color(1, 0, 0, self.bullet_alpha)
                 Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
 
                 if self.bullet_alpha > 0:
