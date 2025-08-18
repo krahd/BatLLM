@@ -7,15 +7,16 @@ This connector targets Ollama's /api/chat contract. It does NOT use the deprecat
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 import json
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 if TYPE_CHECKING:
     # Only imported for type checking; won't run at runtime.
     from ollama._types import ChatResponse
 
 from ollama import Client
+
 from configs.app_config import config
 from util.utils import _maybe_float, _maybe_int
 
@@ -102,6 +103,12 @@ class OllamaConnector:
             # keep it updated if file changed on disk and we reloaded
             if history[0].get("content") != self._system_instructions:
                 history[0]["content"] = self._system_instructions
+
+
+
+        print(f"** self._system_instructions = {self._system_instructions!r}")
+        print(f"** history[0] = {history[0]!r}")
+        print("")
 
 
     def reset_histories(self) -> None:

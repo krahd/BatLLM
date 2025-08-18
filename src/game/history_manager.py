@@ -727,12 +727,9 @@ class HistoryManager:
                     lines.append(set_newlines(
                         f"\n[size=18sp][b]Prompt:[/b]\n", 1))
 
-
                     for lin in prompt_text.split("\n"):
                         lines.append(f"[i]{lin.strip()}[/i]\n")
-
                     lines.append("[b][/prompt][/b]")
-
 
 
                 # Initial state at round start (this bot only)
