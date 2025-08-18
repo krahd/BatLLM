@@ -11,7 +11,7 @@ game:
   shield_initial_state: true
   shield_size: 40
   step_length: 0.02
-  total_rounds: 2
+  total_rounds: 3
   turns_per_round: 10
 llm:
   debug_requests: false

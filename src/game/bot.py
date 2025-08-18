@@ -89,7 +89,9 @@ class Bot(Widget):
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 359)  # degrees
 
-
+    def rot_rad(self):
+        """Returns the rotation in radians."""
+        return math.radians(self.rot)
 
     def render(self):
         """

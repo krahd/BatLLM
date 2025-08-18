@@ -106,7 +106,7 @@ class HistoryManager:
         # If a game was in progress without proper ending, finalize it (to keep data consistent)
         if self.current_game and "end_time" not in self.current_game:
             # Finalize previous session if not already ended
-            self.end_game(game_board, force=True)
+            self.end_game(game_board)
 
 
 

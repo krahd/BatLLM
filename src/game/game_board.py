@@ -438,6 +438,8 @@ class GameBoard(Widget, EventDispatcher):
         if not self.current_turn < config.get("game", "turns_per_round"):
             # round's over
             self.history_manager.end_round()
+            self.current_turn = 0  # Reset turn counter for the next round
+
 
             for b in self.bots:
                 # Insert blank line to separate rounds in the UI.
@@ -448,6 +450,7 @@ class GameBoard(Widget, EventDispatcher):
                                                          markup(f"Round {self.current_round} ended.",
                                                                 color="#a00000", bold=True)
                                                          )
+
 
             round_res = "\n"  # Collects round results to display in the popup.
 
@@ -587,16 +590,17 @@ class GameBoard(Widget, EventDispatcher):
 
         if keycode[1] == "escape":
             keyboard.release()
+
         else:
             match keycode[1]:
                 case "m":
                     bot.move()
 
                 case "r":
-                    bot.rotate(0.2)
+                    bot.rotate(10)
 
                 case "t":
-                    bot.rotate(-0.2)
+                    bot.rotate(-10)
 
                 case "s":
                     bot.toggle_shield()
@@ -608,8 +612,7 @@ class GameBoard(Widget, EventDispatcher):
                     sys.exit(0)
 
                 case "l":
-                    # TODO load a prompt to both fields and submit them so that it starts a new round
-                    # to make testing easier
+                    # TODO load a prompt to both fields and submit them so that it starts a new round to make testing easier
                     pass
 
             return True

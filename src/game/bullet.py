@@ -63,8 +63,10 @@ class Bullet:
         """Returns the rotation in radians."""
         return math.radians(self.rot)
 
-    def update(self, bots):
-        """Check for out of bounds and collisions with bots.
+
+    def update(self, bots) -> tuple[bool, int | None]:
+        """Check for out of bounds and collisions with bots. 
+        Returns (bullet is still alive, damaged_bot_id).
 
         Args:
             bots (_type_): all the game bots
@@ -88,6 +90,7 @@ class Bullet:
         for bot in bots:
             if bot.id == self.parent_id:
                 continue  # skip the bot that fired this bullet
+
             hit = self.segment_hits_bot(bot, (x, y), (nx, ny))
 
             if hit:
@@ -122,7 +125,7 @@ class Bullet:
         self.x, self.y = nx, ny
         return True, None
 
-    def segment_hits_bot(self, bot, p1, p2):
+    def segment_hits_bot(self, bot, p1, p2) -> bool:
         """Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
 
         Args:
@@ -140,6 +143,7 @@ class Bullet:
         # Segment vector
         dx = p2[0] - p1[0]
         dy = p2[1] - p1[1]
+
         # Vector from bot center to p1
         fx = p1[0] - cx
         fy = p1[1] - cy
@@ -162,8 +166,10 @@ class Bullet:
 
         if 0 <= t1 <= 1:
             hit_t = t1
+
         elif 0 <= t2 <= 1:
             hit_t = t2
+
         if hit_t is None:
             return False  # intersection point not within this segment step
 
@@ -179,7 +185,8 @@ class Bullet:
         impact_angle = math.atan2(hit_y - cy, hit_x - cx)
 
         shield_half_angle = math.radians(
-            bot.shield_range
+            bot.shield_range + 18
+            # TODO check, I'm adding this to make sure the shield covers enough
         )  # half of the shield coverage, in radians
 
         # Calculate smallest angular difference between impact direction and bot's facing direction
