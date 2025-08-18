@@ -263,7 +263,7 @@ class HomeScreen(Screen):
         self.set_prompt_input_text(bot_id, new_prompt)
 
 
-    def submit_prompt(self, bot_id):
+    def submit_prompt_to_history_gui(self, bot_id):
         """
         Stores the text in the prompt edition field in the bot's prompt history and selects it.
         Flags the bot as ready to submit the prompt to its LLM.
@@ -283,7 +283,8 @@ class HomeScreen(Screen):
 
             # tell the board to submit the prompt for this bot_id
             gbw = self.ids.game_board
-            gbw.submit_prompt(bot_id, new_prompt)
+            gbw.submit_prompt_to_history_gui(bot_id, new_prompt)
+
 
 
     def load_prompt(self, bot_id):

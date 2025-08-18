@@ -1,3 +1,4 @@
+"""Configuration loader module"""
 import copy
 from pathlib import Path
 
@@ -46,7 +47,7 @@ class AppConfig:
         """
 
         if path.exists():
-            with open(path, "r") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 user_config = yaml.safe_load(f) or {}
 
                 for section, values in user_config.items():

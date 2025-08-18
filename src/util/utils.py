@@ -1,3 +1,5 @@
+"""General use utilities for BatLLM"""
+
 from colorsys import rgb_to_hls, hls_to_rgb
 from typing import Optional
 from kivy.animation import Animation
@@ -152,6 +154,7 @@ def show_fading_alert(title, message, duration=1.5, fade_duration=2.0):
         anim.start(popup)
 
     popup.open()
+    # TODO check if duration means what it should
     Clock.schedule_once(fade_and_close, duration)
 
 
@@ -171,7 +174,8 @@ def show_text_input_dialog(
         on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
         title (str, optional): title of the dialog. Defaults to "".
         default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
-        input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". It is only visible if the default value is empty
+        input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". 
+        It is only visible if the default value is empty
     """
 
     layout = BoxLayout(orientation="vertical", spacing=25, padding=10)

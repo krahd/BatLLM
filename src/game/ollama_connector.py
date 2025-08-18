@@ -110,29 +110,48 @@ class OllamaConnector:
         self._history_shared.clear()  # type: ignore[attr-defined]
 
 
+
     def _build_user_message(self, *, game_state: Dict[str, Any], player_text: str) -> Message:
-        """Build the `user` message content"""
+        """Build the user message content for the game mode
+
+        Args:
+            game_state (Dict[str, Any]): The state of the game as a dict
+            player_text (str): The user prompt
+
+        Returns:
+            Message: The user message to send to the llm
+        """
 
         if self.augmenting_prompt:
             # Compact JSON for token efficiency;
             content = f"[GAME_STATE]\n{json.dumps(game_state, separators=(",", ":"), ensure_ascii=False)}\n[PLAYER_INPUT]\n{player_text}"
 
         else:
+            # if not augmenting then the message content is the user prompt as-is
             content = player_text
 
         return {"role": "user", "content": content}
 
 
     def _get_history_ref(self, bot_id: int) -> List[Message]:
-        """Return a reference to the active messages[] list."""
+        """Return a reference to the current history (a messages[] list), taking into account if the 
+        context is shared or not"""
+
         if self.independent_contexts:
             lst = self._history_by_bot.get(bot_id)
             if lst is None:
                 lst = []
                 self._history_by_bot[bot_id] = lst
             return lst
+
         else:
-            return self._history_shared
+            his = self._history_shared
+            if self._history_shared is None:
+                his = []
+                self._history_shared = his
+            return his
+
+
 
 
     def _trim_history_inplace(self, history: List[Message]) -> None:
@@ -157,6 +176,7 @@ class OllamaConnector:
         history.clear()
         history.extend(tail)
         self._ensure_system_message(history)
+
         # TODO verify this works OK
 
 
@@ -207,11 +227,11 @@ class OllamaConnector:
         independent_contexts: Optional[bool] = None,
         reset_histories_on_mode_change: bool = True,
     ) -> None:
-        """updates options that are exposed to the user by the UI (settings)
-        passed as optional parameters.
-        if reset_histories_on_mode_change and there are changes in the settings then self.reset_histories() is called.
-        """
+        """updates the game options that are exposed to the user by the UI (settings), which are 
+        passed as optional parameters to this method.
 
+        if reset_histories_on_mode_change and the settings have changed then histories are reset
+        """
 
         mode_changed = augmenting_prompt not in (
             None, self.augmenting_prompt) or independent_contexts not in (None, self.independent_contexts)
@@ -222,8 +242,7 @@ class OllamaConnector:
         # Reload system instructions
         self._system_instructions = self._get_system_instructions_text()
 
-        # Histories from a prior mode might be not compatible with the new mode.
-        # So we can reset them if the mode changed.
+        # Histories from a prior mode might be not compatible with the new mode so we allow them to be reset them if the mode changed.
         if reset_histories_on_mode_change and mode_changed:
             self.reset_histories()
 
@@ -309,7 +328,6 @@ class OllamaConnector:
         self._ensure_system_message(history)
         self._trim_history_inplace(history)
 
-        print(self._system_instructions)
 
         # send the request
         res: "ChatResponse" = self.client.chat(
@@ -321,6 +339,7 @@ class OllamaConnector:
 
         # ---- Extract assistant text ----
         content = ""
+
         # Preferred path: ChatResponse object
         try:
             # res.message is a ChatMessage; .content is the text

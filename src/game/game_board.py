@@ -74,7 +74,7 @@ class GameBoard(Widget, EventDispatcher):
         on_touch_move(touch): Handles mouse drag events (unused).
         add_text_to_home_screen_cmd_history(bot_id, text): Appends text to the bot's output history in the UI.
         add_cmd_to_home_screen_cmd_history(bot_id, command): Appends parsed LLM command to the UI.
-        submit_prompt(bot_id, new_prompt): Handles prompt submission and round progression.
+        submit_prompt_to_game(bot_id, new_prompt): Handles prompt submission and round progression.
         game_is_over(): Checks if the game has ended.
         play_turn(dt): Executes a single turn and manages round/turn transitions.
         end_game(): Ends the game and displays results.
@@ -239,7 +239,9 @@ class GameBoard(Widget, EventDispatcher):
 
     def _redraw(self, *args):
         """Refreshes the screen by calling render()"""
-        self.render()
+        # TODO check this
+        #  Clock.schedule_once(self.render())
+        # We don't need to schedule it because _redraw itself is scheduled with Clodk.schedule_interval to begin with
 
 
     def render(self, *args):
@@ -277,8 +279,9 @@ class GameBoard(Widget, EventDispatcher):
                 bot.render()
 
             for x, y in self.bullet_trace:
-                Color(1, 0, 0, self.bullet_alpha)  # Red color for bullet trace
+                Color(1, 0, 0, self.bullet_alpha)  # Red color for bullet trace # TODO make it configurable from theme
                 Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
+
                 if self.bullet_alpha > 0:
                     self.bullet_alpha -= 0.0015  # Decrease alpha for fading effect
                 else:
@@ -343,8 +346,7 @@ class GameBoard(Widget, EventDispatcher):
             if (
                 n_lines > 20
             ):  # After the first 20 liines, we scroll to the bottom every time we add a new line
-                Clock.schedule_once(
-                    lambda dt: setattr(scroll, "scroll_y", 0), 0)
+                Clock.schedule_once(setattr(scroll, "scroll_y", 0))
         else:
             print(
                 f"ERROR: Could not find output history box for bot_id: {bot_id}")
@@ -363,7 +365,7 @@ class GameBoard(Widget, EventDispatcher):
         self.add_text_to_home_screen_cmd_history(bot_id, text)
 
 
-    def submit_prompt(self, bot_id, new_prompt):
+    def submit_prompt_to_history_gui(self, bot_id, new_prompt):
         """Tells the bot with bot_id to submit its promt for the coming round.
         If both bots have submitted, it starts the next turn.
 
@@ -406,8 +408,7 @@ class GameBoard(Widget, EventDispatcher):
         # Begin the first turn of the round. `play_turn` will call start_turn
         # internally and handle scheduling subsequent turns.
 
-
-        Clock.schedule_once(self.play_turn, 0)
+        Clock.schedule_once(self.play_turn)
 
 
     def game_is_over(self):
@@ -540,7 +541,7 @@ class GameBoard(Widget, EventDispatcher):
         if all(b.ready_for_next_turn for b in self.bots):
             self.current_turn += 1
             self.history_manager.end_turn(self)
-            Clock.schedule_once(self.play_turn, 0)
+            Clock.schedule_once(self.play_turn)
 
 
 
@@ -631,7 +632,7 @@ class GameBoard(Widget, EventDispatcher):
         damaged_bot_id = None
 
         if bullet is not None:
-            Clock.schedule_once(lambda dt: self.sound_shoot.play())
+            Clock.schedule_once(self.sound_shoot.play())
         else:
             bullet_is_alive = False
 
@@ -640,11 +641,13 @@ class GameBoard(Widget, EventDispatcher):
 
             # only draw the bullet when it is outside the bot that fires it
             dist = ((bullet.x - bot.x) ** 2 + (bullet.y - bot.y) ** 2) ** 0.5
+
             if dist * 0.97 > bot.diameter / 2:
-                self.bullet_trace.append((bullet.x, bullet.y))
+                # TODO check this
+                Clock.schedule_once(self.bullet_trace.append((bullet.x, bullet.y)))
 
         if damaged_bot_id is not None:
-            Clock.schedule_once(lambda dt: self.sound_bot_hit.play())
+            Clock.schedule_once(self.sound_bot_hit.play())
 
             self.get_bot_by_id(damaged_bot_id).damage()
 

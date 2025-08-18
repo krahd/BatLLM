@@ -16,13 +16,6 @@ os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 
 
-
-
-
-
-
-
-
 Builder.load_file("screens/settings_screen.kv")
 Builder.load_file("screens/home_screen.kv")
 Builder.load_file("screens/history_screen.kv")
@@ -71,7 +64,7 @@ class BatLLM(MDApp):
             ValueError: If a line contains an invalid hex color value.
         """
         self.theme_colors = {}
-        with open("theme_colors.properties", "r") as f:
+        with open("theme_colors.properties", "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#"):

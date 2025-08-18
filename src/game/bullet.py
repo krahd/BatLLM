@@ -185,9 +185,11 @@ class Bullet:
         impact_angle = math.atan2(hit_y - cy, hit_x - cx)
 
         shield_half_angle = math.radians(
+            # half of the shield coverage, in radians
             bot.shield_range + 18
             # TODO check, I'm adding this to make sure the shield covers enough
-        )  # half of the shield coverage, in radians
+            # TODO make it a configuration parameter or something
+        )
 
         # Calculate smallest angular difference between impact direction and bot's facing direction
         diff = (impact_angle - bot.rot_rad() + math.pi) % (2 * math.pi) - math.pi
@@ -200,6 +202,3 @@ class Bullet:
 
         # Otherwise, the hit lands on an unshielded portion of the bot
         return True
-
-
-# todo check and recheck the math, i wen from def to rad to deg and it shouldn't work
