@@ -71,11 +71,11 @@ class ConversationCLI():
 
         except HTTPError as e:
             try:
-                body = e.read().decode("utf-8")
-                return {"error": f"HTTP {e.code}", "details": body}
-
-            except Exception:
-                return {"error": f"HTTP {e.code}", "details": str(e)}
+                body_bytes = e.read()
+                body = body_bytes.decode("utf-8", errors="replace")
+            except (OSError, AttributeError):
+                body = str(e)
+            return {"error": f"HTTP {e.code}", "details": body}
 
         except URLError as e:
             return {"error": "Network error", "details": str(e)}
@@ -154,6 +154,8 @@ class ConversationCLI():
 
 
     def run(self) -> None:
+        """Runs the interactive chat loop.
+        """
         print("Chat with a BatLLM model.")
         print(f"Endpoint: {self.endpoint}")
         print("Commands: /exit, /reset, /sys [<text>], /history\n")
