@@ -44,7 +44,7 @@
             
                 BoxLayout:   # The first column column is divided in 10, 5 per player            
                     orientation: "vertical"
-                    size_hint_x: 0.306  
+                    size_hint_x: 0.506  
                     padding: 0, 1, 1, 1
                     spacing: 1
 
@@ -567,7 +567,7 @@
                             
                             size_hint_x: None                    
                             size_hint_y: None
-                            width: 250
+                            width: 300
                             
                             id: header_label                                 
                             markup: True
@@ -575,13 +575,14 @@
                             halign: "left"
                             valign: "middle"
 
-                            color: .2, .2, .2, 1
+                            color: .82, .2, .2, 1
                             text_size: self.width, self.height
 
 
                         Label:
                             id: game_title_label
-                            font_size: "16sp"
+                            font_size: "18sp"
+                            bold: True
                             
                             size_hint_x: 1
                             size_hint_y: None
@@ -599,6 +600,8 @@
                     AnchorLayout:
                         anchor_x: "center"
                         anchor_y: "center"                    
+                        padding: 0
+                        spacing: 0
                         canvas.before:
                             Color:                              
                                 rgba: .8, .83, .8, 1
@@ -607,9 +610,7 @@
                                 size: self.size                                                                    
                         GameBoard:
                             id: game_board
-                            size_hint: 1, 1
-
-
+                            size_hint: .5, .5
 
                                         
 
