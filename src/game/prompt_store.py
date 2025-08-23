@@ -16,7 +16,7 @@ class PromptStore:
         # bot_id -> {"prompts": [...], "index": int}
         self._data: Dict[int, Dict[str, object]] = {}
 
-    # ---------------- Core API ----------------
+
 
     def add_prompt(self, id: int, prompt: str) -> int:
         """
@@ -45,6 +45,8 @@ class PromptStore:
             return prompts[rec["index"]]
         return None
 
+
+
     def forward(self, id: int) -> Optional[str]:
         """
         Move the index one step forward for bot `id`, if possible.
@@ -60,6 +62,8 @@ class PromptStore:
             return prompts[rec["index"]]
         return None
 
+
+
     def reset(self, id: Optional[int] = None) -> None:
         """
         Reset prompts.
@@ -71,6 +75,8 @@ class PromptStore:
             return
         # Per-bot reset
         self._data[id] = {"prompts": [], "index": -1}
+
+
 
     def get_current_prompt(self, id: int) -> Optional[str]:
         """
@@ -86,6 +92,8 @@ class PromptStore:
             return prompts[idx]
         return None
 
+
+
     def get_index(self, id: int) -> int:
         """
         Return the current index for bot `id`.
@@ -98,7 +106,7 @@ class PromptStore:
 
 
 
-    def toString(self) -> str:
+    def to_string(self) -> str:
         """
         Return a human-readable multi-line string summarizing all stored prompts.
         """
@@ -118,7 +126,7 @@ class PromptStore:
 
 
 
-    # ---------------- Optional: quick self-test ----------------
+
     @classmethod
     def _self_test(cls) -> None:
         ps = cls()
@@ -156,9 +164,9 @@ class PromptStore:
 
 
 
-
+# Local self-test
 if __name__ == "__main__":
     ps = PromptStore._self_test()
     print("_")
-    print(ps.toString())
+    print(ps.to_string())
     print("__")

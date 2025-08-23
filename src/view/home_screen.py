@@ -9,6 +9,7 @@ from kivy.uix.screenmanager import Screen
 
 from configs.app_config import config
 from game.bot import Bot
+# from game.game_board import GameBoard
 from game.game_board import GameBoard
 from game.history_manager import HistoryManager
 from view.load_text_dialog import LoadTextDialog
