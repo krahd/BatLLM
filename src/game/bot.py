@@ -10,6 +10,7 @@ import random
 from math import cos, sin
 from typing import Any
 
+from kivy.animation import Animation
 from kivy.core.text import Label
 from kivy.graphics import (
     Color,
@@ -83,14 +84,17 @@ class Bot(Widget):
         self.health = int(config.get("game", "initial_health"))
         self.step = float(config.get("game", "step_length"))
 
-        # Ramdom initial position and rotation
+        # Random initial position and rotation
         self.x = random.uniform(0, 1)
         self.y = random.uniform(0, 1)
         self.rot = random.uniform(0, 359)  # degrees
 
+
     def rot_rad(self):
         """Returns the rotation in radians."""
         return math.radians(self.rot)
+
+
 
     def render(self):
         """
@@ -160,8 +164,35 @@ class Bot(Widget):
         PopMatrix()
 
 
-    # --Bot in-game actions
-    def move(self):
+    def move(self, distance: float = None, duration: float = 0.12, easing: str = "out_quad", on_complete=None):
+        """ 
+        Move forward in the facing direction (self.rot) by 'distance' (normalized units),
+        animated over 'duration' seconds.
+        """
+
+        if distance is None:
+            distance = self.step
+
+
+
+        # compute target
+        rad = math.radians(self.rot)
+        nx = self.x + math.cos(rad) * distance
+        ny = self.y + math.sin(rad) * distance
+       # nx, ny = self._clamp_to_bounds(nx, ny)
+
+        # cancel any in-flight move to avoid stacking
+        Animation.cancel_all(self, 'x', 'y')
+        anim = Animation(x=nx, y=ny, duration=duration, t=easing)
+        if on_complete:
+            anim.bind(on_complete=lambda *_: on_complete())
+        anim.start(self)
+
+
+
+
+
+    def move_instantaneously(self):
         """
         One step for a bot...
 
@@ -172,8 +203,23 @@ class Bot(Widget):
         self.x += (self.step or 0.02) * cos(rad)
         self.y += (self.step or 0.02) * sin(rad)
 
+    def rotate(self, angle: float, duration: float = 0.12, easing: str = "out_quad", on_complete=None):
+        """
+        Smoothly rotate by delta_deg over 'duration' seconds.
+        """
+        # cancel any in-flight rotation to avoid fighting animations TODO: test
 
-    def rotate(self, angle: float):
+        Animation.cancel_all(self, 'rot')
+
+        target = (self.rot + angle) % 360
+
+        anim = Animation(rot=target, duration=duration, t=easing)
+        if on_complete:
+            anim.bind(on_complete=lambda *_: on_complete())
+        anim.start(self)
+
+
+    def rotate_instantaneously(self, angle: float):
         """
         Rotates the object by a specified angle in degrees.
 
@@ -186,12 +232,15 @@ class Bot(Widget):
         self.rot = (self.rot + angle) % 360
 
 
+
+
     def damage(self):
         """
         Bot hit by a bullet, loses health.
         """
         self.health -= int(config.get("game", "bullet_damage"))
         self.health = max(self.health, 0)
+
 
 
     def toggle_shield(self):
@@ -231,6 +280,21 @@ class Bot(Widget):
 
 
 
+
+
+    def prepare_prompt_submission(self, new_prompt: str):
+        """
+        Prepares the bot for submitting a new prompt.
+
+        This method sets the current prompt to the provided `new_prompt`, resets the prompt history index,
+        and marks the bot as ready for the next round.
+
+        Args:
+            new_prompt (str): The new prompt to be submitted.
+        """
+        self.current_prompt = new_prompt
+        self.prompt_history_index = None
+        self.ready_for_next_round = True
 
 
 

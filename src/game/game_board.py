@@ -220,7 +220,7 @@ class GameBoard(Widget):
             case "m":
                 bot.move()
             case "r":
-                bot.rotate(10)
+                bot.rotate(20)
             case "t":
                 bot.rotate(-10)
             case "s":
