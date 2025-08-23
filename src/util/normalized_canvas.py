@@ -8,7 +8,7 @@ class NormalizedCanvas:
     Top-left corner of the widget is (0, 0) and bottom-right corner is (1, 1).
     It can be used in a `with` statement to automatically handle the canvas transformations.
     """
-    
+
     def __init__(self, widget):
         """Initializes the NormalizedCanvas with a widget.
         Args:
@@ -17,7 +17,7 @@ class NormalizedCanvas:
         self.widget = widget
         self.canvas = widget.canvas
 
-    def __enter__(self):        
+    def __enter__(self):
         """Enters the context manager, setting up the canvas transformations.
         This is called when the `with` block is entered, ensuring that the canvas is prepared for drawing.
         It applies translations and scaling to normalize the coordinates to the widget's dimensions.
@@ -25,11 +25,11 @@ class NormalizedCanvas:
             _type_: The canvas context, allowing for drawing operations within the `with` block.
         """
 
-        
+
         self._canvas_context = self.canvas.__enter__()
-        
+
         PushMatrix()
-        Translate(self.widget.x, self.widget.y + self.widget.height, 0)      
+        Translate(self.widget.x, self.widget.y + self.widget.height, 0)
 
         padding = getattr(self.widget, "padding", [0, 0, 0, 0])
         if isinstance(padding, (int, float)):
@@ -45,31 +45,33 @@ class NormalizedCanvas:
 
         inner_width = self.widget.width - pad_left - pad_right
         inner_height = self.widget.height - pad_top - pad_bottom
-       
-        #Scale(self.widget.width, -self.widget.height, 1)    
-        
+
+        # Scale(self.widget.width, -self.widget.height, 1)
+
         # Scale to the smaller of inner_width and inner_height to keep the board square
-        scale_size = min(inner_width, inner_height)              
-    
+        scale_size = min(inner_width, inner_height)
+
         Scale(scale_size, -scale_size, 1)
-        Scale (.95, .95, 1)
-        Translate(0.17, .03, 0)
-        #Translate(offset_x, offset_y, 0)
-        
-        
-        return self._canvas_context 
+        # Scale(.95, .95, 1)
+        # TODO check why this is needed, it should be centered already, this centres in the X
+        Translate(0.05, 0, 0)
+
+        # Translate(offset_x, offset_y, 0)
+
+
+        return self._canvas_context
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Exits the context manager, restoring the canvas state.
         This is called when the `with` block is exited, ensuring that the canvas transformations are cleaned up.
         """
-        PopMatrix()      
+        PopMatrix()
         self.canvas.__exit__(exc_type, exc_val, exc_tb)
 
 
 
     @staticmethod
-    def to(widget, x, y):   
+    def to(widget, x, y):
         """Converts absolute coordinates (x, y) to normalized coordinates within the widget.
         The coordinates are normalized to the range [0, 1] based on the widget's size.
         Args:
@@ -78,10 +80,10 @@ class NormalizedCanvas:
             y (float): The y-coordinate to normalize.
         Returns:
             tuple: A tuple containing the normalized x and y coordinates.   
-        """     
+        """
         if widget.width == 0 or widget.height == 0:
-            return 0.0, 0.0  
-            
+            return 0.0, 0.0
+
         local_x = x - widget.x
         local_y = y - widget.y
         nx = local_x / float(widget.width)
@@ -98,5 +100,5 @@ class NormalizedCanvas:
             touch (_type_): The touch event containing x and y coordinates. 
         Returns:
             tuple: A tuple containing the normalized x and y coordinates of the touch event.    
-        """        
+        """
         return NormalizedCanvas.normalize_point(widget, touch.x, touch.y)
