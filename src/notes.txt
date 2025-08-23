@@ -1,0 +1,78 @@
+i defined promptStore.
+
+rename the prompt history in home kv to promptStore
+use the promptstore to handle all that, bot only has current prompt not current index
+
+
+rename:  scroll_prompt_store_viewer_1 and prompt_store_viewer_1
+to: gui_scroll_prompt_store_viewer_1  prompt_store_viewer_1
+
+
+
+
+bot:
+ def old_forward_prompt_history(self):
+        """
+        Advances the prompt history index to the next prompt for the current bot, if available.
+
+        """
+        prompts = []
+
+        hm = self.board_widget.history_manager
+
+        if hm.current_round and "prompts" in hm.current_round:
+            prompts = [
+                p["prompt"]
+                for p in hm.current_round["prompts"]
+                if p.get("bot_id") == self.id
+            ]
+
+        if self.prompt_history_index is None:
+            if prompts:
+                self.prompt_history_index = 0
+        else:
+            if self.prompt_history_index < len(prompts) - 1:
+                self.prompt_history_index += 1
+
+        if (
+            self.prompt_history_index is not None
+            and 0 <= self.prompt_history_index < len(prompts)
+        ):
+            self.current_prompt = prompts[self.prompt_history_index]
+
+
+
+
+ # -- Prompt history - HomeScreen UI helpers
+    def rewind_prompt_history(self):
+        """
+        Rewinds the bot's prompt history to the previous prompt in the UI prompt storage, if available.
+
+
+        """
+
+        prompts = []
+
+        hm = self.board_widget.history_manager
+        if hm.current_round and "prompts" in hm.current_round:
+            prompts = [
+                p["prompt"]
+                for p in hm.current_round["prompts"]
+                if p.get("bot_id") == self.id
+            ]
+
+        if self.prompt_history_index is None:
+            if prompts:
+                self.prompt_history_index = len(prompts) - 1
+
+        else:
+            if self.prompt_history_index > 0:
+                self.prompt_history_index -= 1
+
+        if (
+            self.prompt_history_index is not None
+            and 0 <= self.prompt_history_index < len(prompts)
+        ):
+            self.current_prompt = prompts[self.prompt_history_index]
+
+

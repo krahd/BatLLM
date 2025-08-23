@@ -39,57 +39,21 @@ from kivy.uix.widget import Widget
 from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
-from util.normalized_canvas import NormalizedCanvas
+from view.normalized_canvas import NormalizedCanvas
 from util.utils import find_id_in_parents, markup, show_fading_alert
 from game.ollama_connector import OllamaConnector  # TODO move to singleton
+from game.prompt_store import PromptStore
 
 
 class GameBoard(Widget, EventDispatcher):
     """
     The GameBoard is BatLLM's game world and a Kivy Widget.
-    Attributes:
-        bots (list): List of Bot instances participating in the game.
-        bullet_trace (list): List of bullet positions for rendering bullet traces.
-        bullet_alpha (float): Alpha value for bullet trace fading effect.
-        sound_shoot (Sound): Sound effect for shooting.
-        sound_bot_hit (Sound): Sound effect for bot hit.
-        current_turn (NumericProperty): Current turn number within the round.
-        current_round (NumericProperty): Current round number within the game.
-        games_started (NumericProperty): Number of games started in the session.
-        shuffled_bots (list): List of bots in randomized order for turn-taking.
-        history_manager (HistoryManager): Manages chat and game history.
-
-    Methods:
-        __init__(**kwargs): Initializes the GameBoard, sets up input, rendering, and state.
-        on_current_turn(instance, value): Updates UI when the turn changes.
-        on_current_round(instance, value): Updates UI when the round changes.
-        on_games_started(instance, value): Updates UI when a new game starts.
-        start_new_game(): Resets state and starts a new game.
-        save_session(filename): Saves the current session via the HistoryManager.
-        on_kv_post(base_widget): Called after KV rules are applied; starts a new game.
-        _keyboard_closed(): Handles virtual keyboard closure.
-        _redraw(*args): Triggers a redraw of the game board.
-        render(*args): Draws the current game state.
-        on_touch_down(touch): Handles mouse/touch input for focus.
-        on_touch_move(touch): Handles mouse drag events (unused).
-        add_text_to_home_screen_cmd_history(bot_id, text): Appends text to the bot's output history in the UI.
-        add_cmd_to_home_screen_cmd_history(bot_id, command): Appends parsed LLM command to the UI.
-        submit_prompt_to_game(bot_id, new_prompt): Handles prompt submission and round progression.
-        game_is_over(): Checks if the game has ended.
-        play_turn(dt): Executes a single turn and manages round/turn transitions.
-        end_game(): Ends the game and displays results.
-        update_title_label(): Updates the UI label with current game/round/turn info.
-        on_bot_llm_interaction_complete(bot): Callback after a bot completes LLM interaction.
-        get_bot_by_id(bot_id): Retrieves a bot by its ID.
-        snapshot(): Returns a snapshot of the current bot states.
-        _on_keyboard_down(keyboard, keycode, text, modifiers): Handles keyboard input for debugging/testing.
-        shoot(bot_id): Handles shooting logic for a bot.
-        _grab_keyboard(): Requests keyboard focus for the widget.
-        _on_keyboard_closed(): Cleans up keyboard bindings on closure.
+    It manages the game state, including bots, turns, rounds, and rendering.
     """
 
 
     bots = []
+    prompt_store = None
     bullet_trace = []
     bullet_alpha = 1
     sound_shoot = None
@@ -110,8 +74,7 @@ class GameBoard(Widget, EventDispatcher):
 
         super(GameBoard, self).__init__(**kwargs)
 
-        self._keyboard = Window.request_keyboard(
-            self._keyboard_closed, self, "text")
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self, "text")
         self._keyboard.bind(on_key_down=self._on_keyboard_down)
 
         self.bind(size=self._redraw, pos=self._redraw)
@@ -126,6 +89,7 @@ class GameBoard(Widget, EventDispatcher):
         self.current_round = 0
         self.games_started = 0
         self.shuffled_bots = None
+        self.prompt_store = None
 
         self.history_manager = HistoryManager()  # Create the session history manager
 
@@ -188,8 +152,16 @@ class GameBoard(Widget, EventDispatcher):
         self.current_round = 0
         self.shuffled_bots = None
 
+
         # Create two bot instances with reference to this GameBoard
         self.bots = [Bot(bot_id=i, board_widget=self) for i in range(1, 3)]
+
+
+        # Create an empty prompt store for each bot
+        self.prompt_store = PromptStore()
+        # for b in self.bots:
+        # self.prompt_store.create_store(b.id)
+
 
         if self.games_started > 0:
             for b in self.bots:
@@ -197,6 +169,7 @@ class GameBoard(Widget, EventDispatcher):
                     b.id, "[b][color=#f00000]\n\nNew Game\n\n[/color][/b]"
                 )
                 b.ready_for_next_round = False  # need a new prompt for a new round
+
 
         self.games_started += 1
         self.history_manager.start_game(self)
@@ -367,7 +340,7 @@ class GameBoard(Widget, EventDispatcher):
         self.add_text_to_home_screen_cmd_history(bot_id, text)
 
 
-    def submit_prompt_to_history_gui(self, bot_id, new_prompt):
+    def submit_prompt_to_bot(self, bot_id, new_prompt):
         """Tells the bot with bot_id to submit its promt for the coming round.
         If both bots have submitted, it starts the next turn.
 
@@ -378,14 +351,16 @@ class GameBoard(Widget, EventDispatcher):
 
         # Record the new prompt for the specified bot.
         bot = self.get_bot_by_id(bot_id)
-        bot.prepare_prompt_submission(new_prompt)
+        bot.current_prompt = new_prompt
+        bot.ready_for_next_round = True
 
-        # Only start a new round when all bots have provided a prompt.
+
         # If not everyone is ready yet, simply return and wait for the other bot.
         if not all(b.ready_for_next_round for b in self.bots):
             return
 
-        # Both bots are ready, so start a new round.
+        # If all bots are ready, we start a new round (the only moment where bots are given new prompts is at the start of a round).
+
         # Reset the turn counter and increment the round counter.
         if self.current_round is None:
             self.current_round = 0
@@ -395,11 +370,12 @@ class GameBoard(Widget, EventDispatcher):
         self.current_turn += 1
 
         # TODO check this
+        # TODO move this to a different method
         # Notify players via the output history and reset the ready flags.
         for b in self.bots:
             self.add_text_to_home_screen_cmd_history(b.id, markup(
                 f"Round {self.current_round}\n", font_size=18, bold=True))
-            b.ready_for_next_round = False
+            b.ready_for_next_round = False  # TODO check this, truebefore, now false
 
         # Randomise the order of playing turns. Use the number of bots to sample all of them.
         self.shuffled_bots = random.sample(self.bots, len(self.bots))
@@ -617,9 +593,9 @@ class GameBoard(Widget, EventDispatcher):
                 case "l":
                     # TODO add to the history gui use .ids
 
-                    self.submit_prompt_to_history_gui(1, "Return a random but valid command.")
-                    self.submit_prompt_to_history_gui(2,
-                                                      "If you are looking towards your opponent and your shield is up, return S\nIf you are looking towards your opponent and your shield is down, return B\nIf you are not looking towards your opponent rotate to face your opponent")
+
+                    self.submit_prompt_being_edited(2,
+                                                    "If you are looking towards your opponent and your shield is up, return S\nIf you are looking towards your opponent and your shield is down, return B\nIf you are not looking towards your opponent rotate to face your opponent")
 
 
 

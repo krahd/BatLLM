@@ -3,9 +3,9 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.core.window import Window
 from kivy.properties import DictProperty
 from kivy.utils import get_color_from_hex
-from screens.home_screen import HomeScreen
-from screens.settings_screen import SettingsScreen
-from screens.history_screen import HistoryScreen
+from view.home_screen import HomeScreen
+from view.settings_screen import SettingsScreen
+from view.history_screen import HistoryScreen
 from configs.app_config import config
 from util.utils import show_confirmation_dialog
 import sys
@@ -15,9 +15,9 @@ import os
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
 
 
-Builder.load_file("screens/settings_screen.kv")
-Builder.load_file("screens/home_screen.kv")
-Builder.load_file("screens/history_screen.kv")
+Builder.load_file("view/settings_screen.kv")
+Builder.load_file("view/home_screen.kv")
+Builder.load_file("view/history_screen.kv")
 
 
 class BatLLM(MDApp):

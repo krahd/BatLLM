@@ -11,8 +11,8 @@ from configs.app_config import config
 from game.bot import Bot
 from game.game_board import GameBoard
 from game.history_manager import HistoryManager
-from util.load_text_dialog import LoadTextDialog
-from util.save_dialog import SaveDialog
+from view.load_text_dialog import LoadTextDialog
+from view.save_dialog import SaveDialog
 from util.utils import show_confirmation_dialog, show_text_input_dialog
 
 
@@ -140,17 +140,32 @@ class HomeScreen(Screen):
         """
 
         start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")
-        ti = self.ids.get(f"prompt_player_{bot_id}")
+        ti = self.ids.get(f"prompt_input_{bot_id}")
+
         if not ti:
             return
+
         dlg = SaveDialog(content_to_save=ti.text, start_folder=start_folder)
         dlg.open()
 
-
-    def set_prompt_input_text(self, bot_id, text):
+    def set_prompt_history_text(self, bot_id, text):
         """
-        Copies the text to the bot's prompt edition field.
-        If the bot is not found, it does nothing.
+        Sets the content of the prompt history field for the specified bot id with the given text.
+
+        Args:
+            id (_type_): The bot id
+            text (_type_): The prompt.
+
+        """
+
+        input_id = f"prompt_store_viewer_{bot_id}"
+        self.ids.get(input_id).text = text
+
+
+    def set_prompt_gui_input_text(self, bot_id, text):
+        """
+        Replaces the content of the prompt edition field for the specified bot id with the given text.
+
 
         Args:
             id (_type_): The bot  id
@@ -158,16 +173,15 @@ class HomeScreen(Screen):
 
         """
 
-        input_id = f"prompt_player_{bot_id}"
-        text_input = self.ids.get(input_id)
-
-        if text_input:
-            text_input.text = text
-        else:
-            pass
+        input_id = f"prompt_input_{bot_id}"
 
 
-    def get_prompt_input_text(self, bot_id):
+        print(f"setting prompt input text for id {input_id} to: {text}")
+
+        self.ids.get(input_id).text = text
+
+
+    def get_prompt_gui_input_text(self, bot_id):
         """
         It returns the current state of the prompt edition field for the specified bot id.
 
@@ -178,13 +192,13 @@ class HomeScreen(Screen):
             _type_: The text or an empty string if there's no bot with that id..
         """
 
-        input_id = f"prompt_player_{bot_id}"
+        input_id = f"prompt_input_{bot_id}"
         text_input = self.ids.get(input_id)
 
         if text_input:
             return text_input.text
 
-        return ""
+        return None
 
 
     def get_prompt_history_selected_text(self, bot_id):
@@ -208,37 +222,46 @@ class HomeScreen(Screen):
             return ""
 
 
-    def prompt_history_add_text(self, bot_id, text):
+    def prompt_store_gui_set_text(self, bot_id, text):
         """
-        Stores the current state of the prompt being edited in the prompt
-        history for the specified bot id.
+        Blindliy sets the content of the prompt store being shown in the guy.
 
         Args:
             id (_type_): bot id
             text (_type_): text to add to the prompts entered in the UI since the app started
         """
 
-        input_id = f"prompt_history_player_{bot_id}"
+        input_id = f"prompt_store_viewer_{bot_id}"
         text_input = self.ids.get(input_id)
 
         if text_input:
             text_input.text = text
 
 
-    def rewind_prompt_history(self, bot_id):
+    def rewind_prompt_store(self, bot_id):
         """
         Selects the previous prompt in the bot's prompt history and sets it as the current prompt.
 
         Args:
             bot_id (_type_): the bot id
         """
+        store = self.get_game_board().prompt_store
 
-        b = self.ids.game_board.get_bot_by_id(bot_id)
-        b.rewind_prompt_history()
-        self.prompt_history_add_text(bot_id, b.get_current_prompt())
+        print("********** CLICK ON REWIND PROMPT STORE FOR BOT", bot_id)
+
+        new_prompt = (store.rewind(bot_id))
+        print(f"New prompt: {new_prompt}")
+
+        if (new_prompt is not None):
+            self.prompt_store_gui_set_text(bot_id, new_prompt)
+
+        else:
+            print("**** EERR can't rewind prompt store any more :()")
+            # TODO delete this print
 
 
-    def forward_prompt_history(self, bot_id):
+
+    def forward_prompt_store(self, bot_id):
         """
         Selects the prenext  prompt in the bot's prompt history and sets it as the current prompt.
 
@@ -246,12 +269,10 @@ class HomeScreen(Screen):
             bot_id (_type_): The bot id
         """
 
-        b = self.ids.game_board.get_bot_by_id(bot_id)
-        b.forward_prompt_history()
-        self.prompt_history_add_text(bot_id, b.get_current_prompt_from_history())
+        self.prompt_store_gui_set_text(bot_id, self.get_game_board().prompt_store.forward(bot_id))
 
 
-    def copy_prompt_history_selected_text(self, bot_id):
+    def retrieve_prompt_history_selected_text(self, bot_id):
         """
         Copies the selected prompt from the bot's prompt history to the editing area.
 
@@ -259,11 +280,19 @@ class HomeScreen(Screen):
             bot_id (_type_): The bot id.
         """
 
-        new_prompt = self.get_prompt_history_selected_text(bot_id)
-        self.set_prompt_input_text(bot_id, new_prompt)
 
 
-    def submit_prompt_to_history_gui(self, bot_id):
+
+        # get the current prompt from the prompt store
+        new_prompt = self.get_game_board().prompt_store.get_current_prompt(bot_id)
+        # it should be the same than the one being shown in the prompt store viewer
+        print("$$$$$$ new prompt:", new_prompt)
+
+        #  set it as the current prompt being edited
+        self.set_prompt_gui_input_text(bot_id, new_prompt)
+
+
+    def submit_prompt_being_edited(self, bot_id):
         """
         Stores the text in the prompt edition field in the bot's prompt history and selects it.
         Flags the bot as ready to submit the prompt to its LLM.
@@ -272,18 +301,18 @@ class HomeScreen(Screen):
             bot_id (_type_): the bot id
         """
 
-        new_prompt = self.get_prompt_input_text(bot_id)
+        new_prompt = self.get_prompt_gui_input_text(bot_id)
 
         if len(new_prompt) > 0:  # ignore empty prompts
-            # update the ui
-            self.prompt_history_add_text(
-                bot_id, new_prompt
-            )  # copy the text to the prompt history
-            self.set_prompt_input_text(bot_id, "")  # Clear the input field
+            self.set_prompt_gui_input_text(bot_id, "")  # Clear the editing field
+            self.set_prompt_history_text(bot_id, new_prompt)
 
-            # tell the board to submit the prompt for this bot_id
+            #  add the prompt to the store and to the bot
             gbw = self.ids.game_board
-            gbw.submit_prompt_to_history_gui(bot_id, new_prompt)
+            gui_element_id = f"prompt_store_viewer_{bot_id}"
+
+            gbw.prompt_store.add_prompt(bot_id, new_prompt)
+            gbw.submit_prompt_to_bot(bot_id, new_prompt)
 
 
 
@@ -301,7 +330,7 @@ class HomeScreen(Screen):
                 pass
             else:
                 # print("Loaded text:\n", text[:200])  # first 200 chars
-                input_id = f"prompt_player_{bot_id}"
+                input_id = f"prompt_input_{bot_id}"
                 text_input = self.ids.get(input_id)
                 text_input.text = text
 

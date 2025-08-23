@@ -45,7 +45,6 @@ class Bot(Widget):
 
     # Runtime state
     current_prompt: str | None = None
-    prompt_history_index: int | None = None  # the index of the current prompt in the UI prompt storage
     ready_for_next_round: bool | None = None
     ready_for_next_turn: bool | None = None
 
@@ -230,82 +229,8 @@ class Bot(Widget):
         """
         return float(self.shield_range_deg or 0)
 
-    # -- Prompt history - HomeScreen UI helpers
-    def rewind_prompt_history(self):
-        """
-        Rewinds the bot's prompt history to the previous prompt in the UI prompt storage, if available.
 
 
-        """
-
-        prompts = []
-
-        hm = self.board_widget.history_manager
-        if hm.current_round and "prompts" in hm.current_round:
-            prompts = [
-                p["prompt"]
-                for p in hm.current_round["prompts"]
-                if p.get("bot_id") == self.id
-            ]
-
-        if self.prompt_history_index is None:
-            if prompts:
-                self.prompt_history_index = len(prompts) - 1
-
-        else:
-            if self.prompt_history_index > 0:
-                self.prompt_history_index -= 1
-
-        if (
-            self.prompt_history_index is not None
-            and 0 <= self.prompt_history_index < len(prompts)
-        ):
-            self.current_prompt = prompts[self.prompt_history_index]
-
-
-    def forward_prompt_history(self):
-        """
-        Advances the prompt history index to the next prompt for the current bot, if available.
-
-        """
-        prompts = []
-
-        hm = self.board_widget.history_manager
-
-        if hm.current_round and "prompts" in hm.current_round:
-            prompts = [
-                p["prompt"]
-                for p in hm.current_round["prompts"]
-                if p.get("bot_id") == self.id
-            ]
-
-        if self.prompt_history_index is None:
-            if prompts:
-                self.prompt_history_index = 0
-        else:
-            if self.prompt_history_index < len(prompts) - 1:
-                self.prompt_history_index += 1
-
-        if (
-            self.prompt_history_index is not None
-            and 0 <= self.prompt_history_index < len(prompts)
-        ):
-            self.current_prompt = prompts[self.prompt_history_index]
-
-
-    def prepare_prompt_submission(self, new_prompt: str):
-        """
-        Prepares the bot for submitting a new prompt.
-
-        This method sets the current prompt to the provided `new_prompt`, resets the prompt history index,
-        and marks the bot as ready for the next round.
-
-        Args:
-            new_prompt (str): The new prompt to be submitted.
-        """
-        self.current_prompt = new_prompt
-        self.prompt_history_index = None
-        self.ready_for_next_round = True
 
 
 
@@ -325,6 +250,11 @@ class Bot(Widget):
 
     def get_game_state(self) -> dict:
         return self.board_widget.get_game_state() if self.board_widget else {}
+
+
+
+    def set_current_prompt(self, prompt: str):
+        self.current_prompt = prompt
 
 
 
@@ -351,7 +281,8 @@ class Bot(Widget):
                     self.move()
 
                 case "C":
-                    angle = float(res[1:])  # if C, assume an angle follows and tries to parse it as a float
+                    # if C, assume an angle follows and tries to parse it as a float
+                    angle = float(res[1:])
                     self.last_cmd = f"C{angle}"
                     self.rotate(angle)
 
@@ -398,7 +329,8 @@ class Bot(Widget):
             color = "#000000"
             bold = False
 
-        self.board_widget.add_cmd_to_home_screen_cmd_history(self.id, markup(self.last_cmd, color=color, bold=bold))
+        self.board_widget.add_cmd_to_home_screen_cmd_history(
+            self.id, markup(self.last_cmd, color=color, bold=bold))
 
         self.ready_for_next_turn = True
         # Finish Play, let the board know we ready for the next turn.
