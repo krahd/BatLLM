@@ -300,7 +300,9 @@ class GameBoard(Widget):
             for bot in self.bots:
                 bot.render()
 
+
             # Bullet trace (alpha fading managed outside the draw loop)
+            # We don't use bullet.render, instead we handle bullet rendering here
             for x, y in self.bullet_trace:
                 Color(1, 0, 0, self.bullet_alpha)  # TODO: theme color
                 Ellipse(pos=(x - 0.005, y - 0.005), size=(0.005, 0.005))
@@ -486,7 +488,8 @@ class GameBoard(Widget):
 
             # Only draw the bullet when it is outside the bot that fires it
             dist = ((self.bullet.x - bot.x) ** 2 + (self.bullet.y - bot.y) ** 2) ** 0.5
-            if dist * 0.97 > bot.diameter / 2:
+            if dist * 0.97 > bot.diameter / 2 and self.bullet.x > 0 and self.bullet.x < 1 and self.bullet.y > 0 and self.bullet.y < 1:
+
                 self.bullet_trace.append((self.bullet.x, self.bullet.y))
 
             if not alive:

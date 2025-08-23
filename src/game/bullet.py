@@ -49,6 +49,9 @@ class Bullet:
 
         self.colour = (1, 0, 0, 1)  #
 
+
+
+
     def render(self):
         """Renders the bullet as a circle at its current position with the specified color."""
         # TODO improve the rendering, at least a little bit.
@@ -58,6 +61,9 @@ class Bullet:
         Color(*self.colour)
         Ellipse(pos=(0, 0), size=(self.diameter, self.diameter))
         PopMatrix()
+
+
+
 
     def rot_rad(self):
         """Returns the rotation in radians."""
@@ -124,6 +130,9 @@ class Bullet:
         # No collision with any bot; update bullet position
         self.x, self.y = nx, ny
         return True, None
+
+
+
 
     def segment_hits_bot(self, bot, p1, p2) -> bool:
         """Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
