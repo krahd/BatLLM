@@ -189,6 +189,7 @@ class OllamaConnector:
 
     def load_options(self, force: bool = False) -> None:
         """Load configuration and ensure client and contexts are consistent."""
+        # TODO create a yaml for default settings
 
         # Read from config (cast to proper types)
         self.temperature = _maybe_float(config.get("llm", "temperature"))
@@ -246,9 +247,13 @@ class OllamaConnector:
 
         if augmenting_prompt is not None:
             self.augmenting_prompt = augmenting_prompt
+            # store change in config without saving it
+            config.set("game", "prompt_augmentation", augmenting_prompt)
 
         if independent_contexts is not None:
             self.independent_contexts = independent_contexts
+            # store change in config without saving it
+            config.set("game", "independent_contexts", independent_contexts)
 
         # Histories from a prior mode might be not compatible with the new mode so we allow them to be reset them if the mode changed.
         if reset_histories_on_mode_change and mode_changed:

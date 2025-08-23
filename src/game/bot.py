@@ -82,7 +82,7 @@ class Bot(Widget):
         self.shield = bool(config.get("game", "shield_initial_state"))
         self.shield_range_deg = float(config.get("game", "shield_size"))
         self.health = int(config.get("game", "initial_health"))
-        self.step = float(config.get("game", "step_length"))
+        self.step = float(config.get("game", "bot_step_length"))
 
         # Random initial position and rotation
         self.x = random.uniform(0, 1)
@@ -164,11 +164,14 @@ class Bot(Widget):
         PopMatrix()
 
 
-    def move(self, distance: float = None, duration: float = 0.12, easing: str = "out_quad", on_complete=None):
+    def move(self, distance: float = None, duration: float = 0.24, easing: str = "out_quad", on_complete=None):
         """ 
         Move forward in the facing direction (self.rot) by 'distance' (normalized units),
         animated over 'duration' seconds.
         """
+
+        # update step from config in case it changed in the settings
+        self.step = float(config.get("game", "bot_step_length"))
 
         if distance is None:
             distance = self.step
@@ -200,10 +203,11 @@ class Bot(Widget):
             None
         """
         rad = math.radians(self.rot)
+        self.step = config.get("game", "bot_step_length")
         self.x += (self.step or 0.02) * cos(rad)
         self.y += (self.step or 0.02) * sin(rad)
 
-    def rotate(self, angle: float, duration: float = 0.12, easing: str = "out_quad", on_complete=None):
+    def rotate(self, angle: float, duration: float = 0.24, easing: str = "out_quad", on_complete=None):
         """
         Smoothly rotate by delta_deg over 'duration' seconds.
         """
@@ -211,11 +215,12 @@ class Bot(Widget):
 
         Animation.cancel_all(self, 'rot')
 
-        target = (self.rot + angle) % 360
+        target = (self.rot + angle)
 
         anim = Animation(rot=target, duration=duration, t=easing)
         if on_complete:
             anim.bind(on_complete=lambda *_: on_complete())
+            self.rot = self.rot % 360
         anim.start(self)
 
 

@@ -215,6 +215,40 @@
                     cursor_color: .7, .7, .7, 1
                     cursor_image: "assets/images/slider_gray_image.png"
 
+            # Bot Step Length
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Step Length"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                Label:
+                    id: step_label
+                    text: str(float(step_slider.value))
+                    font_size: sp(20)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.1
+
+                Slider:
+                    id: step_slider
+                    min: 0.01
+                    max: 0.5
+                    value: root.bot_step_length
+                    step: 0.01
+                    on_value: step_label.text = f"{self.value:.2f}"
+                    size_hint_x: 0.5
+                    cursor_color: .7, .7, .7, 1
+                    cursor_image: "assets/images/slider_gray_image.png"
+
         # Checkbox options
         BoxLayout:
             orientation: 'vertical'

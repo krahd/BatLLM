@@ -2,6 +2,7 @@ data:
   saved_sessions_folder: saved_sessions
 game:
   bot_diameter: 0.1
+  bot_step_length: 0.21
   bullet_damage: 5
   bullet_diameter: 0.2
   bullet_step_length: 0.01
@@ -10,7 +11,6 @@ game:
   prompt_augmentation: true
   shield_initial_state: true
   shield_size: 40
-  step_length: 0.02
   total_rounds: 2
   turns_per_round: 8
 llm:
