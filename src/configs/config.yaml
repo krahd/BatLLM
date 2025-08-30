@@ -2,7 +2,7 @@ data:
   saved_sessions_folder: saved_sessions
 game:
   bot_diameter: 0.1
-  bot_step_length: 0.21
+  bot_step_length: 0.08
   bullet_damage: 5
   bullet_diameter: 0.2
   bullet_step_length: 0.01
@@ -15,24 +15,24 @@ game:
   turns_per_round: 8
 llm:
   debug_requests: false
+  max_tokens: null
   model: mistral-small:latest
   num_ctx: 4096
+  num_predict: null
+  num_thread: null
   path: /api/chat
   port: 11434
+  seed: null
+  stop: null
   system_instructions_augmented_independent: src/assets/system_instructions/augmented_independent_1.txt
   system_instructions_augmented_shared: src/assets/system_instructions/augmented_shared_1.txt
   system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
   system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
-  url: http://localhost
   temperature: null
-  top_p: null
-  top_k: null
   timeout: null
-  max_tokens: null
-  stop: null
-  seed: null
-  num_thread: null
-  num_predict: null
+  top_k: null
+  top_p: null
+  url: http://localhost
 ui:
   ' primary_color': '#ffffff'
   font_size: 16

@@ -164,7 +164,7 @@ class Bot(Widget):
         PopMatrix()
 
 
-    def move(self, distance: float = None, duration: float = 0.24, easing: str = "out_quad", on_complete=None):
+    def move(self, distance: float = None, duration: float = 0.48, easing: str = "out_quad", on_complete=None):
         """ 
         Move forward in the facing direction (self.rot) by 'distance' (normalized units),
         animated over 'duration' seconds.
