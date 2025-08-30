@@ -15,7 +15,7 @@ game:
   turns_per_round: 8
 llm:
   debug_requests: false
-  model: llama3.2:latest
+  model: mistral-small:latest
   num_ctx: 4096
   path: /api/chat
   port: 11434

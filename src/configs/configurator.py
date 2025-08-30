@@ -36,10 +36,10 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
 
 # -------- Appearance constants --------
-FONT_BASE = 18
-FONT_SMALL = 16
-ROW_HEIGHT = 48
-PAD = 10
+FONT_BASE = 38
+FONT_SMALL = 32
+ROW_HEIGHT = 70
+PAD = 40
 Window.minimum_width = 1150
 Window.minimum_height = 760
 
@@ -605,7 +605,7 @@ class BatLLMConfigApp(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Predefine attributes used later to avoid AttributeError during early calls
-        self.status: Optional[Label] = Label()
+        self.status: Label = Label()
         self.ollama = OllamaClient()
 
     def build(self):
