@@ -34,60 +34,32 @@ class OllamaConnector:
     - Tracks context per-bot or shared
     """
 
-    def __init__(self) -> None:
-        """Manage chat with an Ollama model using message histories (no KV `context`)."""
-
-        # ---- Public knobs that UI may toggle live --------------------------------
-        augmenting_prompt: bool
-        independent_contexts: bool
-
-        # ---- LLM options (read from config; some may be None) --------------------
-        temperature: Optional[float]
-        top_p: Optional[float]
-        top_k: Optional[int]
-        timeout: Optional[float]
-        max_tokens: Optional[int]
-        stop: Optional[Any]
-        seed: Optional[int]
-        num_thread: Optional[int]
-        model: str
-        num_ctx: Optional[int]
-        num_predict: Optional[int]
-
-        # ---- Internals ------------------------------------------------------------
-        client: Optional[Client]
-        _system_instructions: str
-        _history_by_bot: Dict[int, List[Message]]
-        _history_shared: List[Message]
-        _max_history_messages: int  # simple, cheap cap (per history list)
-
 
     def __init__(self) -> None:
-        # Defaults
         self.independent_contexts: bool = False
         self.augmenting_prompt: bool = False
 
-        self.temperature = None
-        self.top_p = None
-        self.top_k = None
-        self.timeout = None
-        self.max_tokens = None
-        self.stop = None
-        self.seed = None
-        self.num_thread = None
-        self.model = ""
-        self.num_ctx = None
-        self.num_predict = None
+        self.temperature: int | float | None = None
+        self.top_p: float | None = None
+        self.top_k: int | None = None
+        self.timeout: float | None = None
+        self.max_tokens: int | None = None
+        self.stop: list[str] | None = None
+        self.seed: int | None = None
+        self.num_thread: int | None = None
+        self.model: str = ""
+        self.num_ctx: int | None = None
+        self.num_predict: int | None = None
 
         self.client = None
-        self._system_instructions = ""
-        self._history_by_bot = {}
-        self._history_shared = []
-        self._max_history_messages = int(config.get("llm", "max_history_messages")
-                                         or config.get("game", "turns_per_round") * 2
-                                         or 40)
+        self._system_instructions: str = ""
+        self._history_by_bot: dict[int, list[Message]] = {}
+        self._history_shared: list[Message] = []
 
-        # Initial load
+        turns_per_round = config.get("game", "turns_per_round") or 10
+        max_hist_cfg = config.get("llm", "max_history_messages")
+        self._max_history_messages: int = int(max_hist_cfg or (int(turns_per_round) * 2))
+
         self.load_options(force=True)
 
 
