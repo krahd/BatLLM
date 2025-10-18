@@ -40,7 +40,8 @@ Between rounds, players have the opportunity to adjust their strategy by writing
 | ---------- | ------------------------------------------------------------ | ------- |
 | `C{angle}` | **Rotate clockwise** by `angle` degrees.                     | `C90`   |
 | `A{angle}` | **Rotate anticlockwise** by `angle` degrees.                 | `A45`   |
-| `M`        | **Move forward** by one step `[STEP_LENGTH]`.                | `M`     |
+| `M{step}`  | **Move forward** by one step of `step` length.               | `M0.3`  |
+| `M{step}`  | **Move forward** by one step of default size.                | `M`     |
 | `S1`       | **Raise shield**. Remains up until changed.                  | `S1`    |
 | `S0`       | **Lower shield**. Remains down until changed.                | `S0`    |
 | `S`        | **Toggle shield**: raises if down, lowers if up.             | `S`     |

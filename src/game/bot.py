@@ -352,8 +352,15 @@ class Bot(Widget):
         try:
             match res[0]:
                 case "M":
-                    self.last_cmd = "M"
-                    self.move()
+                    if len(res) == 1:
+                        self.last_cmd = "M"
+                        self.move()
+
+                    else:
+                        # if Mx, assume a step follows and tries to parse it as a float
+                        step = float(res[1:])
+                        self.last_cmd = f"M{step}"
+                        self.move(step)
 
                 case "C":
                     # if C, assume an angle follows and tries to parse it as a float

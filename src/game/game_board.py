@@ -43,7 +43,12 @@ from game.bot import Bot
 from game.history_manager import HistoryManager
 from game.ollama_connector import OllamaConnector  # TODO move to singleton
 from game.prompt_store import PromptStore
-from util.utils import find_id_in_parents, markup, show_fading_alert
+from util.utils import (
+    find_id_in_parents,
+    markup,
+    show_fading_alert,
+    show_text_input_dialog,
+)
 from view.normalized_canvas import NormalizedCanvas
 
 
@@ -217,6 +222,8 @@ class GameBoard(Widget):
             return True
 
         match keycode[1]:
+            case "c":
+                self._prompt_manual_command(bot)
             case "m":
                 bot.move()
             case "r":
@@ -246,6 +253,21 @@ class GameBoard(Widget):
     # -------------------------------------------------------------------------
     # Input events
     # -------------------------------------------------------------------------
+
+    def _prompt_manual_command(self, bot: Bot) -> None:
+        """
+        Show a popup to collect a manual command for the selected bot and execute it.
+        """
+
+        def _dispatch(command: str) -> None:
+            bot.process_llm_response(command.strip().upper())
+
+        show_text_input_dialog(
+            on_confirm=_dispatch,
+            title=f"Bot {bot.id} Command",
+            message="Enter a command (e.g. M, M0.2, C20, A15, S, S1, S0, B).",
+            input_hint="Command",
+        )
 
     def on_touch_down(self, touch):
         """
