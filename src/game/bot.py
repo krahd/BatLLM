@@ -43,6 +43,7 @@ class Bot(Widget):
     shield = ObjectProperty(None)
     health = NumericProperty(0)
     board_widget = ObjectProperty(None)  # The game board where the bot lives
+    default_step = NumericProperty(0)
 
     # Runtime state
     current_prompt: str | None = None
@@ -67,6 +68,9 @@ class Bot(Widget):
         self.independent_contexts = bool(
             config.get("game", "independent_contexts"))
 
+        self.default_step = float(
+            config.get("game", "bot_step_default_length"))
+
         # TODO colours load from theme properties
         if bot_id == 1:
             self.color = (0.8, 0.88, 1, 0.85)
@@ -82,7 +86,7 @@ class Bot(Widget):
         self.shield = bool(config.get("game", "shield_initial_state"))
         self.shield_range_deg = float(config.get("game", "shield_size"))
         self.health = int(config.get("game", "initial_health"))
-        self.step = float(config.get("game", "bot_step_length"))
+        self.default_step = float(config.get("game", "bot_step_default_length"))
 
         # Random initial position and rotation
         self.x = random.uniform(0, 1)
@@ -171,10 +175,10 @@ class Bot(Widget):
         """
 
         # update step from config in case it changed in the settings
-        self.step = float(config.get("game", "bot_step_length"))
+        self.default_step = float(config.get("game", "bot_step_default_length"))
 
         if distance is None:
-            distance = self.step
+            distance = self.default_step
 
 
 
@@ -195,7 +199,7 @@ class Bot(Widget):
 
 
 
-    def move_instantaneously(self):
+    def move_instantaneously(self, step: float = default_step):
         """
         One step for a bot...
 
@@ -203,9 +207,11 @@ class Bot(Widget):
             None
         """
         rad = math.radians(self.rot)
-        self.step = config.get("game", "bot_step_length")
-        self.x += (self.step or 0.02) * cos(rad)
-        self.y += (self.step or 0.02) * sin(rad)
+
+        self.x += (step) * cos(rad)
+        self.y += (step) * sin(rad)
+
+
 
     def rotate(self, angle: float, duration: float = 0.24, easing: str = "out_quad", on_complete=None):
         """
