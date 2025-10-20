@@ -2,7 +2,7 @@ data:
   saved_sessions_folder: saved_sessions
 game:
   bot_diameter: 0.1
-  bot_step_default_length: 0.08
+  bot_step_length: 0.11
   bullet_damage: 5
   bullet_diameter: 0.2
   bullet_step_length: 0.01

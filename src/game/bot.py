@@ -69,7 +69,7 @@ class Bot(Widget):
             config.get("game", "independent_contexts"))
 
         self.default_step = float(
-            config.get("game", "bot_step_default_length"))
+            config.get("game", "bot_step_length"))
 
         # TODO colours load from theme properties
         if bot_id == 1:
@@ -86,7 +86,7 @@ class Bot(Widget):
         self.shield = bool(config.get("game", "shield_initial_state"))
         self.shield_range_deg = float(config.get("game", "shield_size"))
         self.health = int(config.get("game", "initial_health"))
-        self.default_step = float(config.get("game", "bot_step_default_length"))
+        self.default_step = float(config.get("game", "bot_step_length"))
 
         # Random initial position and rotation
         self.x = random.uniform(0, 1)
@@ -175,7 +175,7 @@ class Bot(Widget):
         """
 
         # update step from config in case it changed in the settings
-        self.default_step = float(config.get("game", "bot_step_default_length"))
+        self.default_step = float(config.get("game", "bot_step_length"))
 
         if distance is None:
             distance = self.default_step
