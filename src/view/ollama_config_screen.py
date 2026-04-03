@@ -11,6 +11,7 @@ from urllib.request import urlopen
 
 import requests
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.properties import ListProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 
@@ -31,8 +32,20 @@ class OllamaConfigScreen(Screen):
     selected_remote_model = StringProperty("")
 
     def on_pre_enter(self, *_args):
+        Window.unbind(on_key_down=self.handle_window_key_down)
+        Window.bind(on_key_down=self.handle_window_key_down)
         self.refresh_ollama_status()
         self.refresh_local_models()
+
+    def on_pre_leave(self, *_args):
+        Window.unbind(on_key_down=self.handle_window_key_down)
+
+    def handle_window_key_down(self, _window, key, *_args):
+        if key != 27:
+            return False
+
+        self.go_to_settings_screen()
+        return True
 
     def go_to_settings_screen(self):
         self.manager.current = "settings"

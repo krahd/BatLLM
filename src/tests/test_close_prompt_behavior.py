@@ -159,6 +159,20 @@ def test_home_screen_close_uses_dont_save_label_when_prompt_enabled(monkeypatch)
     assert exited["code"] == 0
 
 
+def test_home_screen_escape_uses_close_flow(monkeypatch) -> None:
+    screen = HomeScreen()
+    close_called = {"value": False}
+
+    monkeypatch.setattr(
+        screen,
+        "on_request_close",
+        lambda *args, **kwargs: close_called.__setitem__("value", True) or True,
+    )
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert close_called["value"] is True
+
+
 
 def test_home_screen_close_skips_save_prompt_when_disabled(monkeypatch) -> None:
     screen = HomeScreen()
@@ -256,6 +270,23 @@ def test_home_screen_close_skips_all_prompts_when_both_disabled(monkeypatch) -> 
     assert prompt_called["value"] is False
     assert fake_app.stopped is True
     assert exited["code"] == 0
+
+
+def test_settings_escape_matches_cancel(monkeypatch) -> None:
+    screen = SettingsScreen()
+    screen.manager = SimpleNamespace(current="settings")
+    cancel_called = {"value": False}
+
+    monkeypatch.setattr(
+        screen,
+        "cancel_and_return",
+        lambda: cancel_called.__setitem__("value", True) or setattr(
+            screen.manager, "current", "home"),
+    )
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert cancel_called["value"] is True
+    assert screen.manager.current == "home"
 
 
 

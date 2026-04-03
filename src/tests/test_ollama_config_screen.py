@@ -45,6 +45,14 @@ def test_ollama_screen_navigates_back_to_settings() -> None:
     assert screen.manager.current == "settings"
 
 
+def test_ollama_screen_escape_returns_to_settings() -> None:
+    screen = OllamaConfigScreen()
+    screen.manager = DummyManager(current="ollama_config")
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert screen.manager.current == "settings"
+
+
 def test_start_and_stop_call_scripts(monkeypatch) -> None:
     screen = OllamaConfigScreen()
     calls = []
@@ -161,7 +169,7 @@ def test_pull_requires_confirmation(monkeypatch) -> None:
     def fake_pull(_name: str):
         called["pull"] = True
 
-    def fake_confirm(_title: str, _msg: str, on_confirm: Callable | None = None, on_cancel=None, **_kwargs):
+    def fake_confirm(_title: str, _msg: str, _on_confirm: Callable | None = None, on_cancel=None, **_kwargs):
         if on_cancel:
             on_cancel()
 
@@ -181,7 +189,7 @@ def test_delete_requires_confirmation(monkeypatch) -> None:
     def fake_delete(_name: str):
         called["delete"] = True
 
-    def fake_confirm(_title: str, _msg: str, on_confirm: Callable | None = None, on_cancel=None, **_kwargs):
+    def fake_confirm(_title: str, _msg: str, _on_confirm: Callable | None = None, on_cancel=None, **_kwargs):
         if on_cancel:
             on_cancel()
 

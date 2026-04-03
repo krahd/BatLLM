@@ -5,6 +5,7 @@ from pathlib import Path
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 
 from configs.app_config import config
@@ -343,6 +344,12 @@ class HomeScreen(Screen):
 
 
     # --- events -----------------------
+    def handle_window_key_down(self, _window, key, *_args):
+        if key != 27:
+            return False
+
+        return self.on_request_close()
+
     def on_request_close(self, *args, **kwargs):
         """
         Handles the request to close the application.
@@ -426,6 +433,9 @@ class HomeScreen(Screen):
         return True
 
 
+    def on_leave(self):
+        Window.unbind(on_key_down=self.handle_window_key_down)
+
 
     def on_enter(self):
         """
@@ -435,3 +445,5 @@ class HomeScreen(Screen):
 
         self.ids.overlay.darken = 0.2  # Set the initial overlay alpha value
         self.ids.overlay.desaturation = 0.1  # Set the initial desaturation value
+        Window.unbind(on_key_down=self.handle_window_key_down)
+        Window.bind(on_key_down=self.handle_window_key_down)
