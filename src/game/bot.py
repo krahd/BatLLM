@@ -399,6 +399,7 @@ class Bot(Widget):
                     command_ok = False
                     self.last_cmd = "ERR"
 
+        # TODO check this except block scope
         except Exception as e:
             command_ok = False
             self.last_cmd = "ERR"

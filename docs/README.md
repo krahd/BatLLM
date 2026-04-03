@@ -70,6 +70,28 @@ To **stop** the Ollama instance you may run:
 ./stop_ollama.sh
 ```
 
+## Testing
+
+BatLLM includes a one-command test runner with two modes:
+
+```bash
+./run_tests.sh core
+```
+
+Runs non-interactive smoke checks only (config integrity, shell script syntax, and Python source compilation).
+
+```bash
+./run_tests.sh full
+```
+
+Runs the full smoke suite, including live Ollama integration checks. This mode starts Ollama, runs tests, and stops Ollama automatically.
+
+If needed, make the runner executable once:
+
+```bash
+chmod +x run_tests.sh
+```
+
 ## Playing
 
 As before, for a more detailed overview of _the game_, please refer to the [User Guide](USER_GUIDE.md)

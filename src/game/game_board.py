@@ -227,9 +227,9 @@ class GameBoard(Widget):
             case "m":
                 bot.move()
             case "r":
-                bot.rotate(20)
+                bot.rotate(10)
             case "t":
-                bot.rotate(-20)
+                bot.rotate(-10)
             case "s":
                 bot.toggle_shield()
             case "b":
