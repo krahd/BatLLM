@@ -92,6 +92,35 @@ If needed, make the runner executable once:
 chmod +x run_tests.sh
 ```
 
+## Ollama Control Screen
+
+BatLLM now includes an in-app Ollama control interface available from the Settings screen.
+
+### Access
+
+1. Start BatLLM.
+2. Open **Settings**.
+3. Click **Open Ollama Screen**.
+
+### Features
+
+The Ollama screen supports the following actions:
+
+1. **Start Ollama**: Runs the local startup script and attempts to warm the configured model.
+2. **Stop Ollama**: Stops running models and stops the Ollama server process.
+3. **Choose Local Model**: Refresh and select from locally available models, then save as active `llm.model`.
+4. **Download Model**: Refresh remote models and request a download with confirmation.
+5. **Delete Model**: Remove a local model with confirmation.
+
+### Missing Ollama Handling
+
+If Ollama cannot be started because it is missing, the screen prompts for a path and shows installation guidance (safe command suggestion flow, no automatic install).
+
+### Safety Notes
+
+1. Download and delete actions require explicit confirmation.
+2. Automated tests for these actions use mocks and do not perform real model downloads or deletions.
+
 ## Playing
 
 As before, for a more detailed overview of _the game_, please refer to the [User Guide](USER_GUIDE.md)

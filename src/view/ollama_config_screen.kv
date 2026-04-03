@@ -1,0 +1,139 @@
+#:kivy 2.3.1
+
+<OllamaConfigScreen>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(30)
+        spacing: dp(16)
+
+        Label:
+            text: "Ollama Configuration"
+            color: 0, 0, 0, 1
+            font_size: sp(34)
+            size_hint_y: None
+            height: self.texture_size[1] + dp(6)
+
+        Label:
+            text: root.status_text
+            color: 0.1, 0.2, 0.35, 1
+            font_size: sp(18)
+            size_hint_y: None
+            height: self.texture_size[1] + dp(4)
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            spacing: dp(10)
+
+            Button:
+                text: "Start Ollama"
+                font_size: sp(20)
+                background_color: .6, .8, .9, .8
+                color: 1, 1, 1, 1
+                on_press: root.start_ollama()
+
+            Button:
+                text: "Stop Ollama"
+                font_size: sp(20)
+                background_color: 1, .7, .8, .9
+                color: 1, 1, 1, 1
+                on_press: root.stop_ollama()
+
+        BoxLayout:
+            spacing: dp(20)
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: dp(10)
+
+                Label:
+                    text: "Local Models"
+                    color: 0, 0, 0, 1
+                    font_size: sp(22)
+                    size_hint_y: None
+                    height: self.texture_size[1] + dp(4)
+
+                Spinner:
+                    id: local_spinner
+                    text: root.selected_local_model if root.selected_local_model else "Select local model"
+                    values: root.local_models
+                    size_hint_y: None
+                    height: dp(50)
+                    on_text: root.selected_local_model = self.text if self.text != "Select local model" else ""
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(50)
+                    spacing: dp(8)
+
+                    Button:
+                        text: "Refresh Local"
+                        font_size: sp(18)
+                        on_press: root.refresh_local_models()
+
+                    Button:
+                        text: "Use Selected"
+                        font_size: sp(18)
+                        on_press: root.set_model_from_selection()
+
+                    Button:
+                        text: "Delete Selected"
+                        font_size: sp(18)
+                        background_color: 1, .7, .8, .9
+                        color: 1, 1, 1, 1
+                        on_press: root.request_delete_selected_model()
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: dp(10)
+
+                Label:
+                    text: "Remote Models"
+                    color: 0, 0, 0, 1
+                    font_size: sp(22)
+                    size_hint_y: None
+                    height: self.texture_size[1] + dp(4)
+
+                Spinner:
+                    id: remote_spinner
+                    text: root.selected_remote_model if root.selected_remote_model else "Select remote model"
+                    values: root.remote_models
+                    size_hint_y: None
+                    height: dp(50)
+                    on_text: root.selected_remote_model = self.text if self.text != "Select remote model" else ""
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(50)
+                    spacing: dp(8)
+
+                    Button:
+                        text: "Refresh Remote"
+                        font_size: sp(18)
+                        on_press: root.refresh_remote_models()
+
+                    Button:
+                        text: "Download Selected"
+                        font_size: sp(18)
+                        background_color: .6, .8, .9, .8
+                        color: 1, 1, 1, 1
+                        on_press: root.request_pull_selected_model()
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            padding: 0, dp(6), 0, 0
+
+            Button:
+                text: "Back to Settings"
+                font_size: sp(20)
+                background_color: .6, .8, .9, .8
+                color: 1, 1, 1, 1
+                on_press: root.go_to_settings_screen()

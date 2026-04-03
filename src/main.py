@@ -6,6 +6,7 @@ from kivy.utils import get_color_from_hex
 from view.home_screen import HomeScreen
 from view.settings_screen import SettingsScreen
 from view.history_screen import HistoryScreen
+from view.ollama_config_screen import OllamaConfigScreen
 from configs.app_config import config
 from util.utils import show_confirmation_dialog
 import sys
@@ -18,6 +19,7 @@ os.environ["KIVY_NO_CONSOLELOG"] = "1"
 Builder.load_file("view/settings_screen.kv")
 Builder.load_file("view/home_screen.kv")
 Builder.load_file("view/history_screen.kv")
+Builder.load_file("view/ollama_config_screen.kv")
 
 
 class BatLLM(MDApp):
@@ -41,6 +43,7 @@ class BatLLM(MDApp):
         sm.add_widget(home)
         sm.add_widget(SettingsScreen(name="settings"))
         sm.add_widget(HistoryScreen(name="history"))
+        sm.add_widget(OllamaConfigScreen(name="ollama_config"))
 
         self.icon = "assets/images/logo_small.png"  # TODO create an icon
         self.title = config.get("ui", "title")

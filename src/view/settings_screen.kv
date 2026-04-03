@@ -259,6 +259,30 @@
 
             BoxLayout:
                 orientation: 'horizontal'
+                size_hint_y: None
+                height: dp(50)
+                spacing: dp(12)
+
+                Label:
+                    text: "Ollama Controls"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                    size_hint_x: 0.45
+
+                Button:
+                    text: "Open Ollama Screen"
+                    font_size: '20sp'
+                    size_hint: None, None
+                    size: dp(260), dp(44)
+                    color: 1, 1, 1, 1
+                    background_color: .6, .8, .9, .8
+                    on_press: root.go_to_ollama_config_screen()
+
+            BoxLayout:
+                orientation: 'horizontal'
                 spacing: -410
                 size_hint_y: None
                 height: dp(50)

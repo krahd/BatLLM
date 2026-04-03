@@ -59,3 +59,7 @@ class SettingsScreen(Screen):
         """Switches the current screen to the home screen.
         """
         self.manager.current = "home"
+
+    def go_to_ollama_config_screen(self):
+        """Switches to the Ollama configuration screen."""
+        self.manager.current = "ollama_config"
