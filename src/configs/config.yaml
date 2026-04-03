@@ -35,9 +35,9 @@ llm:
   url: http://localhost
 ui:
   ' primary_color': '#ffffff'
-  confirm_on_exit: true
+  confirm_on_exit: false
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'
-  prompt_save_on_exit: true
+  prompt_save_on_exit: false
   title: BatLLM
