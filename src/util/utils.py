@@ -4,6 +4,7 @@ from colorsys import rgb_to_hls, hls_to_rgb
 from typing import Optional
 from kivy.animation import Animation
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -165,6 +166,8 @@ def show_text_input_dialog(
     message="",
     default_text="",
     input_hint="Enter a text",
+    confirm_text="Save",
+    cancel_text="Cancel",
 ):
     """
     A modal dialog for the user to enter a text input.
@@ -176,6 +179,8 @@ def show_text_input_dialog(
         default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
         input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". 
         It is only visible if the default value is empty
+        confirm_text (str, optional): label for the confirm button. Defaults to "Save".
+        cancel_text (str, optional): label for the cancel button. Defaults to "Cancel".
     """
 
     layout = BoxLayout(orientation="vertical", spacing=25, padding=10)
@@ -197,8 +202,10 @@ def show_text_input_dialog(
     layout.add_widget(input_field)
 
     btn_layout = BoxLayout(size_hint_y=None, height=60, spacing=10)
-    btn_ok = Button(text="Save")
-    btn_cancel = Button(text="Cancel")
+    btn_ok = Button(text=confirm_text)
+    btn_cancel = Button(text=cancel_text)
+
+    keyboard = {"instance": None}
 
     popup = Popup(
         title=title,
@@ -219,12 +226,36 @@ def show_text_input_dialog(
         if on_cancel:
             on_cancel()
 
+    def on_keyboard_closed():
+        keyboard["instance"] = None
+
+    def on_key_down(_keyboard, keycode, _text, _modifiers):
+        key = keycode[1]
+        if key in ("enter", "numpadenter"):
+            confirm_action()
+            return True
+        if key == "escape":
+            cancel_action()
+            return True
+        return False
+
+    def attach_keyboard(*_args):
+        keyboard["instance"] = Window.request_keyboard(on_keyboard_closed, popup)
+        if keyboard["instance"]:
+            keyboard["instance"].bind(on_key_down=on_key_down)
+
+    def detach_keyboard(*_args):
+        if keyboard["instance"]:
+            keyboard["instance"].unbind(on_key_down=on_key_down)
+            keyboard["instance"] = None
+
     btn_ok.bind(on_release=confirm_action)
     btn_cancel.bind(on_release=cancel_action)
     btn_layout.add_widget(btn_ok)
     btn_layout.add_widget(btn_cancel)
 
     layout.add_widget(btn_layout)
+    popup.bind(on_open=attach_keyboard, on_dismiss=detach_keyboard)
     popup.open()
 
 

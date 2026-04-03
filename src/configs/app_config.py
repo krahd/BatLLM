@@ -26,6 +26,8 @@ DEFAULTS = {
         " primary_color": "#ffffff",
         "font_size": 14,
         "frame_rate": 60,
+        "confirm_on_exit": True,
+        "prompt_save_on_exit": True,
     },
 }
 
