@@ -1,6 +1,7 @@
 """Module HistoryScreen 
     """
 from kivy.uix.screenmanager import Screen
+from util.utils import switch_screen
 
 class HistoryScreen(Screen):
     """
@@ -33,4 +34,4 @@ class HistoryScreen(Screen):
         """
         Navigates back to the home screen by setting the current screen of the manager to "home".
         """
-        self.manager.current = "home"
+        switch_screen(self.manager, "home", direction="right")

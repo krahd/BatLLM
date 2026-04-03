@@ -16,7 +16,12 @@ from kivy.properties import ListProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 
 from configs.app_config import config
-from util.utils import show_confirmation_dialog, show_fading_alert, show_text_input_dialog
+from util.utils import (
+    show_confirmation_dialog,
+    show_fading_alert,
+    show_text_input_dialog,
+    switch_screen,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -48,7 +53,7 @@ class OllamaConfigScreen(Screen):
         return True
 
     def go_to_settings_screen(self):
-        self.manager.current = "settings"
+        switch_screen(self.manager, "settings", direction="right")
 
     def _llm_endpoint(self) -> tuple[str, int]:
         url = str(config.get("llm", "url") or "http://localhost").rstrip("/")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
+from view.history_screen import HistoryScreen
 from view.ollama_config_screen import OllamaConfigScreen
 from view.settings_screen import SettingsScreen
 
@@ -13,9 +14,15 @@ class DummyProc:
         self.stderr = stderr
 
 
+class DummyTransition:
+    def __init__(self, direction: str = "left"):
+        self.direction = direction
+
+
 class DummyManager:
     def __init__(self, current: str = "settings"):
         self.current = current
+        self.transition = DummyTransition()
 
 
 def _run_sync(screen: OllamaConfigScreen):
@@ -34,6 +41,7 @@ def test_settings_navigates_to_ollama_screen() -> None:
     screen.go_to_ollama_config_screen()
 
     assert screen.manager.current == "ollama_config"
+    assert screen.manager.transition.direction == "left"
 
 
 def test_ollama_screen_navigates_back_to_settings() -> None:
@@ -43,6 +51,7 @@ def test_ollama_screen_navigates_back_to_settings() -> None:
     screen.go_to_settings_screen()
 
     assert screen.manager.current == "settings"
+    assert screen.manager.transition.direction == "right"
 
 
 def test_ollama_screen_escape_returns_to_settings() -> None:
@@ -51,6 +60,17 @@ def test_ollama_screen_escape_returns_to_settings() -> None:
 
     assert screen.handle_window_key_down(None, 27) is True
     assert screen.manager.current == "settings"
+    assert screen.manager.transition.direction == "right"
+
+
+def test_history_screen_back_navigates_right() -> None:
+    screen = HistoryScreen()
+    screen.manager = DummyManager(current="history")
+
+    screen.go_back_home()
+
+    assert screen.manager.current == "home"
+    assert screen.manager.transition.direction == "right"
 
 
 def test_start_and_stop_call_scripts(monkeypatch) -> None:

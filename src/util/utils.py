@@ -69,6 +69,24 @@ def tame_color(color, desaturation=0.0, lighten=0.0):
     return (r_out, g_out, b_out)
 
 
+def switch_screen(manager, target: str, direction: Optional[str] = None):
+    """
+    Navigates to another screen and optionally sets the transition direction first.
+
+    Args:
+        manager: ScreenManager-like object controlling the current screen.
+        target (str): Target screen name.
+        direction (Optional[str]): Transition direction such as "left" or "right".
+    """
+
+    if direction:
+        transition = getattr(manager, "transition", None)
+        if transition is not None and hasattr(transition, "direction"):
+            transition.direction = direction
+
+    manager.current = target
+
+
 # ------ Dialogs ------------------------------------------
 
 

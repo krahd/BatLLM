@@ -15,7 +15,7 @@ from game.game_board import GameBoard
 from game.history_manager import HistoryManager
 from view.load_text_dialog import LoadTextDialog
 from view.save_dialog import SaveDialog
-from util.utils import show_confirmation_dialog, show_text_input_dialog
+from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
 
 
 class HomeScreen(Screen):
@@ -115,7 +115,7 @@ class HomeScreen(Screen):
         Handler for the settings button.
         Switches the current screen to the settings screen.
         """
-        self.manager.current = "settings"
+        switch_screen(self.manager, "settings", direction="left")
 
 
     def go_to_history_screen(self, bot_id):
@@ -130,7 +130,7 @@ class HomeScreen(Screen):
         # Right pane: full detailed text for the whole game
         full_text = gbw.history_manager.to_text()
         history_screen.update(bot_id, compact, full_text)
-        self.manager.current = "history"
+        switch_screen(self.manager, "history", direction="left")
 
 
     def save_prompt(self, bot_id):

@@ -259,55 +259,63 @@
 
             BoxLayout:
                 orientation: 'horizontal'
-                spacing: -410
+                spacing: dp(10)
                 size_hint_y: None
                 height: dp(50)
 
                 Label:
                     text: "Independent Models"
                     font_size: sp(22)
-                    color:  0, 0, 0, 1 
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
                     halign: "left"
                     valign: "middle"
-                    padding: 290, 0, 0, 0
-                    
-                    size_hint_x: 0
-                                    
-                CheckBox:
-                    id: independent_checkbox
-                    active: root.independent_contexts
-                    size_hint_x: 0.02
-                    halign: "left"
-                    background_checkbox_normal: "assets/images/checkbox_off.png"
-                    background_checkbox_down: "assets/images/checkbox_on.png"
-                    
+                    text_size: self.size
 
-            BoxLayout:                   
+                AnchorLayout:
+                    size_hint_x: 0.6
+                    anchor_x: "right"
+                    anchor_y: "center"
+
+                    CheckBox:
+                        id: independent_checkbox
+                        active: root.independent_contexts
+                        size_hint: None, None
+                        size: dp(32), dp(32)
+                        background_checkbox_normal: "assets/images/checkbox_off.png"
+                        background_checkbox_down: "assets/images/checkbox_on.png"
+
+            BoxLayout:
                 orientation: 'horizontal'
-                spacing: -410
+                spacing: dp(10)
                 size_hint_y: None
                 height: dp(50)
 
                 Label:
                     text: "Prompt Augmentation"
                     font_size: sp(22)
-                    color: 0, 0, 0, 1                   
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
                     halign: "left"
                     valign: "middle"
-                    padding: 325, 0, 0, 0
-                    
-                    size_hint_x: 0
+                    text_size: self.size
 
-                CheckBox:
-                    id: augmentation_checkbox
-                    active: root.prompt_augmentation
-                    
-                    background_checkbox_normal: "assets/images/checkbox_off.png"
-                    background_checkbox_down: "assets/images/checkbox_on.png"
+                AnchorLayout:
+                    size_hint_x: 0.6
+                    anchor_x: "right"
+                    anchor_y: "center"
+
+                    CheckBox:
+                        id: augmentation_checkbox
+                        active: root.prompt_augmentation
+                        size_hint: None, None
+                        size: dp(32), dp(32)
+                        background_checkbox_normal: "assets/images/checkbox_off.png"
+                        background_checkbox_down: "assets/images/checkbox_on.png"
 
             BoxLayout:
                 orientation: 'horizontal'
-                spacing: -410
+                spacing: dp(10)
                 size_hint_y: None
                 height: dp(50)
 
@@ -315,21 +323,27 @@
                     text: "Confirm on Exit"
                     font_size: sp(22)
                     color: 0, 0, 0, 1
+                    size_hint_x: 0.4
                     halign: "left"
                     valign: "middle"
-                    padding: 305, 0, 0, 0
-                    size_hint_x: 0
+                    text_size: self.size
 
-                CheckBox:
-                    id: confirm_on_exit_checkbox
-                    active: root.confirm_on_exit
+                AnchorLayout:
+                    size_hint_x: 0.6
+                    anchor_x: "right"
+                    anchor_y: "center"
 
-                    background_checkbox_normal: "assets/images/checkbox_off.png"
-                    background_checkbox_down: "assets/images/checkbox_on.png"
+                    CheckBox:
+                        id: confirm_on_exit_checkbox
+                        active: root.confirm_on_exit
+                        size_hint: None, None
+                        size: dp(32), dp(32)
+                        background_checkbox_normal: "assets/images/checkbox_off.png"
+                        background_checkbox_down: "assets/images/checkbox_on.png"
 
             BoxLayout:
                 orientation: 'horizontal'
-                spacing: -410
+                spacing: dp(10)
                 size_hint_y: None
                 height: dp(50)
 
@@ -337,17 +351,23 @@
                     text: "Prompt to Save on Exit"
                     font_size: sp(22)
                     color: 0, 0, 0, 1
+                    size_hint_x: 0.4
                     halign: "left"
                     valign: "middle"
-                    padding: 305, 0, 0, 0
-                    size_hint_x: 0
+                    text_size: self.size
 
-                CheckBox:
-                    id: save_on_exit_checkbox
-                    active: root.prompt_save_on_exit
+                AnchorLayout:
+                    size_hint_x: 0.6
+                    anchor_x: "right"
+                    anchor_y: "center"
 
-                    background_checkbox_normal: "assets/images/checkbox_off.png"
-                    background_checkbox_down: "assets/images/checkbox_on.png"
+                    CheckBox:
+                        id: save_on_exit_checkbox
+                        active: root.prompt_save_on_exit
+                        size_hint: None, None
+                        size: dp(32), dp(32)
+                        background_checkbox_normal: "assets/images/checkbox_off.png"
+                        background_checkbox_down: "assets/images/checkbox_on.png"
 
         # Buttons
         BoxLayout:
