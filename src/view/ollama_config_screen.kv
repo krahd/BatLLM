@@ -46,6 +46,13 @@
                 color: 1, 1, 1, 1
                 on_press: root.stop_ollama()
 
+            Button:
+                text: "Refresh Status"
+                font_size: sp(20)
+                background_color: .8, .8, .8, 1
+                color: 0, 0, 0, 1
+                on_press: root.refresh_ollama_status()
+
         BoxLayout:
             spacing: dp(20)
 
@@ -125,6 +132,48 @@
                         background_color: .6, .8, .9, .8
                         color: 1, 1, 1, 1
                         on_press: root.request_pull_selected_model()
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: dp(8)
+
+            Label:
+                text: "Current Ollama Status"
+                color: 0, 0, 0, 1
+                font_size: sp(22)
+                size_hint_y: None
+                height: self.texture_size[1] + dp(4)
+                halign: "left"
+                text_size: self.width, None
+
+            Label:
+                text: root.status_details
+                color: 0.15, 0.15, 0.15, 1
+                font_size: sp(16)
+                size_hint_y: None
+                height: max(self.texture_size[1] + dp(10), dp(88))
+                halign: "left"
+                valign: "top"
+                text_size: self.width, None
+
+            Label:
+                text: "Ollama and Terminal Output"
+                color: 0, 0, 0, 1
+                font_size: sp(22)
+                size_hint_y: None
+                height: self.texture_size[1] + dp(4)
+                halign: "left"
+                text_size: self.width, None
+
+            TextInput:
+                id: output_log_box
+                text: root.output_log
+                readonly: True
+                multiline: True
+                font_size: sp(14)
+                foreground_color: 0, 0, 0, 1
+                background_color: .96, .96, .96, 1
+                cursor_blink: False
 
         BoxLayout:
             size_hint_y: None

@@ -350,18 +350,23 @@ class HomeScreen(Screen):
         If the user confirms it offers to save the session to a file
         """
 
-        def _on_exit_cancelled():
+        def force_exit():
             """
-            Callback for the exit cancellation dialog.
-            If the user cancels, it does nothing.
+            Exits the application.
             """
-            pass
 
-        def _on_exit_confirmed():
+            App.get_running_app().stop()
+            sys.exit(0)
+
+        def _continue_exit_flow():
             """
-            Callback for the exit confirmation dialog.
-            If the user confirms, it offers to save the session to a file.
+            Continues with save-prompt handling or exits directly,
+            depending on the UI configuration.
             """
+
+            if not config.get("ui", "prompt_save_on_exit"):
+                force_exit()
+                return True
 
             def _on_filename_confirmed(filename):
                 """
@@ -380,23 +385,36 @@ class HomeScreen(Screen):
                 """
                 force_exit()
 
-            def force_exit():
-                """
-                Exits the application.
-                """
-
-                App.get_running_app().stop()
-                sys.exit(0)
-
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
             show_text_input_dialog(
                 on_confirm=_on_filename_confirmed,
                 on_cancel=_on_filename_cancelled,
                 title="Save As",
-                message="Please enter a filename or cancel\nto exit without saving.",
+                message="Please enter a filename or choose Don't Save\nto exit without saving.",
                 default_text=f"session-{timestamp}.json",
+                confirm_text="Save",
+                cancel_text="Don't Save",
             )
 
+            return True
+
+        def _on_exit_cancelled():
+            """
+            Callback for the exit cancellation dialog.
+            If the user cancels, it does nothing.
+            """
+            pass
+
+        def _on_exit_confirmed():
+            """
+            Callback for the exit confirmation dialog.
+            If the user confirms, it continues with the configured exit flow.
+            """
+
+            return _continue_exit_flow()
+
+        if not config.get("ui", "confirm_on_exit"):
+            _continue_exit_flow()
             return True
 
         show_confirmation_dialog(

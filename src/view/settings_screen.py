@@ -18,6 +18,8 @@ class SettingsScreen(Screen):
     bot_step_length = NumericProperty(config.get("game", "bot_step_length"))
     independent_contexts = BooleanProperty(config.get("game", "independent_contexts"))
     prompt_augmentation = BooleanProperty(config.get("game", "prompt_augmentation"))
+    confirm_on_exit = BooleanProperty(config.get("ui", "confirm_on_exit"))
+    prompt_save_on_exit = BooleanProperty(config.get("ui", "prompt_save_on_exit"))
 
 
 
@@ -45,6 +47,8 @@ class SettingsScreen(Screen):
         config.set("game", "bot_step_length", round(float(self.ids.step_slider.value), 2))
         config.set("game", "independent_contexts", self.ids.independent_checkbox.active)
         config.set("game", "prompt_augmentation", self.ids.augmentation_checkbox.active)
+        config.set("ui", "confirm_on_exit", self.ids.confirm_on_exit_checkbox.active)
+        config.set("ui", "prompt_save_on_exit", self.ids.save_on_exit_checkbox.active)
 
 
 

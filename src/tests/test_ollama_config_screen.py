@@ -19,7 +19,12 @@ class DummyManager:
 
 
 def _run_sync(screen: OllamaConfigScreen):
-    screen._run_in_thread = lambda fn: fn()  # type: ignore[method-assign]
+    setattr(screen, "_run_in_thread", lambda fn: fn())
+
+
+def _run_clock_now(monkeypatch) -> None:
+    monkeypatch.setattr("view.ollama_config_screen.Clock.schedule_once",
+                        lambda callback, _dt=0: callback(0))
 
 
 def test_settings_navigates_to_ollama_screen() -> None:
@@ -40,49 +45,93 @@ def test_ollama_screen_navigates_back_to_settings() -> None:
     assert screen.manager.current == "settings"
 
 
-def test_start_and_stop_call_scripts() -> None:
+def test_start_and_stop_call_scripts(monkeypatch) -> None:
     screen = OllamaConfigScreen()
     calls = []
     _run_sync(screen)
+    _run_clock_now(monkeypatch)
 
     def fake_run_script(script_name: str, *args: str):
         calls.append((script_name, args))
         return DummyProc(returncode=0, stdout="ok", stderr="")
 
-    screen._run_script = fake_run_script  # type: ignore[method-assign]
-    screen.refresh_local_models = lambda: None  # type: ignore[method-assign]
+    setattr(screen, "_run_script", fake_run_script)
+    monkeypatch.setattr(screen, "refresh_ollama_status", lambda: None)
+    monkeypatch.setattr(screen, "refresh_local_models", lambda: None)
 
     screen.start_ollama()
     screen.stop_ollama()
 
     assert ("start_ollama.sh", ()) in calls
     assert ("stop_ollama.sh", ("-v",)) in calls
+    assert "./start_ollama.sh" in screen.output_log
+    assert "./stop_ollama.sh -v" in screen.output_log
+    assert "ok" in screen.output_log
 
 
-def test_start_failure_prompts_install_guidance() -> None:
+def test_start_failure_prompts_install_guidance(monkeypatch) -> None:
     screen = OllamaConfigScreen()
     _run_sync(screen)
     prompted = {"value": False}
-    original_schedule = screen._set_status.__globals__["Clock"].schedule_once
+    _run_clock_now(monkeypatch)
 
-    def run_now(callback, _dt=0):
-        callback(0)
-
-    screen._set_status.__globals__["Clock"].schedule_once = run_now
-
-    screen._run_script = lambda *_args, **_kwargs: DummyProc(  # type: ignore[method-assign]
+    setattr(screen, "_run_script", lambda *_args, **_kwargs: DummyProc(
         returncode=1,
         stdout="",
         stderr="ollama: command not found",
-    )
-    screen._open_install_guidance = lambda: prompted.__setitem__(
-        "value", True)  # type: ignore[method-assign]
+    ))
+    setattr(screen, "_open_install_guidance", lambda: prompted.__setitem__("value", True))
 
-    try:
-        screen.start_ollama()
-        assert prompted["value"] is True
-    finally:
-        screen._set_status.__globals__["Clock"].schedule_once = original_schedule
+    screen.start_ollama()
+
+    assert prompted["value"] is True
+    assert "ollama: command not found" in screen.output_log
+
+
+def test_format_status_report_when_ollama_missing() -> None:
+    screen = OllamaConfigScreen()
+
+    report = getattr(screen, "_format_status_report")(
+        {
+            "found": False,
+            "version": "",
+            "running": False,
+            "server_version": "",
+            "running_models": [],
+            "configured_model": "mistral-small:latest",
+        }
+    )
+
+    assert "Ollama CLI: not found" in report
+    assert "Installed version: unavailable" in report
+    assert "Server status: not running" in report
+    assert "BatLLM model: mistral-small:latest" in report
+
+
+def test_refresh_status_reports_running_model(monkeypatch) -> None:
+    screen = OllamaConfigScreen()
+    _run_sync(screen)
+    _run_clock_now(monkeypatch)
+
+    monkeypatch.setattr(
+        screen,
+        "_collect_ollama_status",
+        lambda: {
+            "found": True,
+            "version": "ollama version is 0.18.2",
+            "running": True,
+            "server_version": "0.18.2",
+            "running_models": ["mistral-small:latest"],
+            "configured_model": "mistral-small:latest",
+        },
+    )
+
+    screen.refresh_ollama_status()
+
+    assert "Installed version: ollama version is 0.18.2" in screen.status_details
+    assert "Server status: running" in screen.status_details
+    assert "Running models: mistral-small:latest" in screen.status_details
+    assert "BatLLM model: mistral-small:latest (running)" in screen.status_details
 
 
 def test_set_model_from_selection_persists(monkeypatch) -> None:
@@ -112,7 +161,7 @@ def test_pull_requires_confirmation(monkeypatch) -> None:
     def fake_pull(_name: str):
         called["pull"] = True
 
-    def fake_confirm(_title: str, _msg: str, on_confirm: Callable, on_cancel=None):
+    def fake_confirm(_title: str, _msg: str, on_confirm: Callable | None = None, on_cancel=None, **_kwargs):
         if on_cancel:
             on_cancel()
 
@@ -132,7 +181,7 @@ def test_delete_requires_confirmation(monkeypatch) -> None:
     def fake_delete(_name: str):
         called["delete"] = True
 
-    def fake_confirm(_title: str, _msg: str, on_confirm: Callable, on_cancel=None):
+    def fake_confirm(_title: str, _msg: str, on_confirm: Callable | None = None, on_cancel=None, **_kwargs):
         if on_cancel:
             on_cancel()
 
@@ -153,7 +202,7 @@ def test_pull_runs_when_confirmed(monkeypatch) -> None:
     def fake_pull(_name: str):
         called["pull"] = True
 
-    def fake_confirm(_title: str, _msg: str, on_confirm: Callable, on_cancel=None):
+    def fake_confirm(_title: str, _msg: str, on_confirm: Callable | None = None, _on_cancel=None, **_kwargs):
         on_confirm()
 
     monkeypatch.setattr(screen, "_pull_model", fake_pull)
@@ -174,7 +223,7 @@ def test_delete_runs_when_confirmed(monkeypatch) -> None:
     def fake_delete(_name: str):
         called["delete"] = True
 
-    def fake_confirm(_title: str, _msg: str, on_confirm: Callable, on_cancel=None):
+    def fake_confirm(_title: str, _msg: str, on_confirm: Callable | None = None, _on_cancel=None, **_kwargs):
         on_confirm()
 
     monkeypatch.setattr(screen, "_delete_model", fake_delete)
