@@ -101,7 +101,12 @@ class OllamaConnector:
 
         if self.augmenting_prompt:
             # Compact JSON for token efficiency;
-            content = f"[GAME_STATE]\n{json.dumps(game_state, separators=(",", ":"), ensure_ascii=False)}\n[PLAYER_INPUT]\n{player_text}"
+            game_state_json = json.dumps(
+                game_state,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            )
+            content = f"[GAME_STATE]\n{game_state_json}\n[PLAYER_INPUT]\n{player_text}"
 
         else:
             # if not augmenting then the message content is the user prompt as-is
