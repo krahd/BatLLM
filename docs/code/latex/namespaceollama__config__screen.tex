@@ -1,0 +1,44 @@
+\doxysection{ollama\+\_\+config\+\_\+screen Namespace Reference}
+\hypertarget{namespaceollama__config__screen}{}\label{namespaceollama__config__screen}\index{ollama\_config\_screen@{ollama\_config\_screen}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classollama__config__screen_1_1_ollama_config_screen}{Ollama\+Config\+Screen}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceollama__config__screen_afef773609959880283e2e24c9b569362}\label{namespaceollama__config__screen_afef773609959880283e2e24c9b569362} 
+{\bfseries ROOT} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).resolve().parents\+[2]\+
+\item 
+\Hypertarget{namespaceollama__config__screen_a572cd3c5f5983edc04a06a3e55ffb4e4}\label{namespaceollama__config__screen_a572cd3c5f5983edc04a06a3e55ffb4e4} 
+str {\bfseries REMOTE\+\_\+\+LIBRARY\+\_\+\+URL} = "{}https:\+/\+/\+ollama.\+com/\+library"{}
+\item 
+\doxymbox{\hyperlink{namespaceollama__config__screen_abb019557e1ee0bae90f0fd3853036945}{REMOTE\+\_\+\+MODEL\+\_\+\+CARD\+\_\+\+RE}}
+\item 
+\Hypertarget{namespaceollama__config__screen_ae96628569d589bb9445afb7bd4f87f8b}\label{namespaceollama__config__screen_ae96628569d589bb9445afb7bd4f87f8b} 
+{\bfseries REMOTE\+\_\+\+MODEL\+\_\+\+SIZE\+\_\+\+RE} = re.\+compile(r\textquotesingle{}$<$span x-\/test-\/size\+[\texorpdfstring{$^\wedge$}{\string^}$>$]\+\texorpdfstring{$\ast$}{*}$>$(\+[\texorpdfstring{$^\wedge$}{\string^}$<$]\++)$<$/\+span$>$\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Ollama configuration and model-management screen.\end{DoxyVerb}
+ 
+
+\label{doc-var-members}
+\Hypertarget{namespaceollama__config__screen_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespaceollama__config__screen_abb019557e1ee0bae90f0fd3853036945}\index{ollama\_config\_screen@{ollama\_config\_screen}!REMOTE\_MODEL\_CARD\_RE@{REMOTE\_MODEL\_CARD\_RE}}
+\index{REMOTE\_MODEL\_CARD\_RE@{REMOTE\_MODEL\_CARD\_RE}!ollama\_config\_screen@{ollama\_config\_screen}}
+\doxysubsubsection{\texorpdfstring{REMOTE\_MODEL\_CARD\_RE}{REMOTE\_MODEL\_CARD\_RE}}
+{\footnotesize\ttfamily \label{namespaceollama__config__screen_abb019557e1ee0bae90f0fd3853036945} 
+ollama\+\_\+config\+\_\+screen.\+REMOTE\+\_\+\+MODEL\+\_\+\+CARD\+\_\+\+RE}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ re.compile(}
+\DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{r'<a\ href="{}/library/([\string^"{}/:?\#]+)"{}\(\backslash\)s+class="{}group\ w-\/full\ space-\/y-\/5"{}>(.*?)</a>'},}
+\DoxyCodeLine{00003\ \ \ \ \ re.S,}
+\DoxyCodeLine{00004\ )}
+
+\end{DoxyCode}

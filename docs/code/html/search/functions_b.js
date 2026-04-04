@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['render_0',['render',['../classbot_1_1_bot.html#a57942fda65929bf805cef2aadde1e3aa',1,'bot.Bot.render()'],['../classbullet_1_1_bullet.html#afb1e383c0ef61c64c7ff0e1dd5e41c12',1,'bullet.Bullet.render()'],['../classgame__board_1_1_game_board.html#ac481c974047b4bbb17bad99f7d5e1fd0',1,'game_board.GameBoard.render()']]],
-  ['rewind_5fprompt_5fhistory_1',['rewind_prompt_history',['../classbot_1_1_bot.html#a8510cb4cd54a109d95ad8cc2741f961d',1,'bot.Bot.rewind_prompt_history()'],['../classhome__screen_1_1_home_screen.html#a424d6376acf54f2aa9d213ccd1c35e99',1,'home_screen.HomeScreen.rewind_prompt_history()']]],
-  ['rotate_2',['rotate',['../classbot_1_1_bot.html#a4391c7011a8cbd4e3d5ad2a989f35b05',1,'bot::Bot']]]
+  ['play_5fturn_0',['play_turn',['../classgame__board_1_1_game_board.html#a7d775f911d1baf6a3bbfbaa7f3b4b79f',1,'game_board::GameBoard']]],
+  ['prepare_5fprompt_5fsubmission_1',['prepare_prompt_submission',['../classbot_1_1_bot.html#a55177f2afb50de74de9cba34f211bd42',1,'bot::Bot']]],
+  ['print_5fhelp_2',['print_help',['../classtests_1_1conversation__cli_1_1_conversation_c_l_i.html#a8994424a43b86e5971c542f11827a633',1,'tests::conversation_cli::ConversationCLI']]],
+  ['process_5fllm_5fresponse_3',['process_llm_response',['../classbot_1_1_bot.html#acb39c317d60a602b7ba809cf2c4e0eb8',1,'bot::Bot']]],
+  ['process_5fsettings_4',['process_settings',['../classollama__connector_1_1_ollama_connector.html#a01803e9aebb48547a87cf86e3ebb4c4e',1,'ollama_connector::OllamaConnector']]],
+  ['prompt_5fstore_5fgui_5fset_5ftext_5',['prompt_store_gui_set_text',['../classhome__screen_1_1_home_screen.html#a2a1d6383f5545d775c575e988bee0945',1,'home_screen::HomeScreen']]]
 ];

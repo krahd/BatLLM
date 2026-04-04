@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['historymanager_0',['HistoryManager',['../classhistory__manager_1_1_history_manager.html',1,'history_manager']]],
-  ['historyscreen_1',['HistoryScreen',['../classhistory__screen_1_1_history_screen.html',1,'history_screen']]],
-  ['homescreen_2',['HomeScreen',['../classhome__screen_1_1_home_screen.html',1,'home_screen']]]
+  ['dummymanager_0',['DummyManager',['../classtests_1_1test__ollama__config__screen_1_1_dummy_manager.html',1,'tests::test_ollama_config_screen']]],
+  ['dummyproc_1',['DummyProc',['../classtests_1_1test__ollama__config__screen_1_1_dummy_proc.html',1,'tests.test_ollama_config_screen.DummyProc'],['../classtests_1_1test__ollama__config__screen__logic_1_1_dummy_proc.html',1,'tests.test_ollama_config_screen_logic.DummyProc']]],
+  ['dummytransition_2',['DummyTransition',['../classtests_1_1test__ollama__config__screen_1_1_dummy_transition.html',1,'tests::test_ollama_config_screen']]]
 ];

@@ -1,187 +1,177 @@
-> ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](DOCUMENTATION.md) &mdash; [User Guide](USER_GUIDE.md) &mdash; [Contributing](CONTRIBUTING.md) &mdash; [FAQ](FAQ.md) &mdash; [Credits](CREDITS.md)**
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # BatLLM
 
-**BatLLM** is a _free and libre_ open source research project, education tool, and, at its very core, a game. A simple, human-vs-human, turn-based battle game. The game, however, does not expose any interaction mechanisms to play. Players are required to utilise an AI to play. These AIs (think ChatGPT but running locally) dont know anything about the game. Deploying effective gaming strategies using AI-mediated interaction is the players' task.
+BatLLM is a free and libre local game for learning with LLMs. Two human players write prompts, two model-backed bots interpret those prompts, and the bots fight inside a simple turn-based arena.
 
-Like every other area where AI is used, having the best strategy for the problem space (the game world) alone is not enough to win. By combining language, strategy, and AI-driven gameplay, **BatLLM** hopes to offer a fun, safe, self-directed, independent and hands-on platform to explore and learn about the prowess and shortcomings of LLMs.
+The project is intentionally practical: the point is not just to watch an LLM answer text prompts, but to make prompt quality, model behavior, context design, and system configuration materially affect the outcome of play.
 
-_In a world increasingly shaped by AI, and marked by profound asymmetries of power, knowledge, and access, developing critical and practical AI literacy is both urgent and necessary._
+![BatLLM demo](./screenshots/quick_demo.gif)
 
-The project aims to support a broader social understanding of AI, leveraging intuitive understandings with experiential learning. We hope to contribute to the process of bulding AI prompting skills while highlighting the need for critical engagements with the social, political and economic dynamics that are deeply entrenched in generative AI systems.
+## What Is In The App
 
-This README consistes of this introduction, a very brief introduction to the game, and a minimalistic guide to getting started with the project. To know more about **BatLLM**, its objectives and technical details, please refer to the [project documentation](DOCUMENTATION.md).
+BatLLM currently ships with:
 
-> [!IMPORTANT]
-> **BatLLM** was developed as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
->
-> [!WARNING]
-> BatLLM is provided as-is, without warranties of any kind. It may change your local Ollama environment, including the active model selection, running server state, and local model inventory.
->
-> [!CAUTION]
-> If you use Ollama for other projects, be careful with BatLLM's Ollama controls. Starting, stopping, downloading, or deleting models from BatLLM can affect models and services that are also used elsewhere on the same machine.
+1. a main gameplay screen for prompt entry and round control
+2. a settings screen for gameplay and exit-flow options
+3. a history screen for prompt and response review
+4. an Ollama configuration screen for local service and model management
 
-<!-- ![Screenshot of Main Screen](./screenshots/before_starting.png) -->
-
-![Demo Gif](./screenshots/quick_demo.gif)
-
-## Getting Started
+## Requirements
 
 ### System Requirements
 
-1. **Python:** 3.8 or higher. Python 3.11 is recommended.
-2. **Environment:** While the code should work almost everywhere, development and testing has been done exclusively on a M1 laptop with MacOS 15.5
-3. **Hardware:** While BotLLM itself is extremely light, the computer (or another one in the same network) needs to be able able to run locally the LLM models used.
+1. Python 3.8 or newer. Python 3.11 or 3.12 is recommended.
+2. A local Ollama installation if you want to run BatLLM with the default workflow.
+3. Hardware capable of running the local model you choose.
 
-### LLM Models
+### Python Dependencies
 
-As of now, **BatLLM** prompts the LLMs via HTTP requests. Everything, especially the GUI, assumes that players and LLMs share a single machine.
+The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports, including `requests` and the Python `ollama` client.
 
-**BatLLM** does not care about the local architecture. All it needs is a local endpoint to post queries to. The default and recommended setup path is now through BatLLM itself, using the in-app Ollama Control Screen from Settings.
+### Ollama Requirements
 
-If Ollama is already installed on your machine, BatLLM can use that existing installation. If it is missing, BatLLM can guide you through the setup flow and then let you choose, download, and manage models from inside the app.
+BatLLM uses both:
 
-### Installation
+- the Python `ollama` package during gameplay
+- the `ollama` CLI for the in-app start/stop/version workflow and helper scripts
 
-To run **BatLLM** on your computer you must download the project and run it using Python. To achieve this you may:
+If the CLI is missing, the app can show install guidance, but it does not install Ollama automatically.
 
-**Clone this repository**, create and activate a Python virtual environment. Install the project requirements using PIP.
+## Quick Start
+
+Clone the repository, create a virtual environment, install the Python dependencies, and launch the app:
 
 ```bash
-git clone https://github.com/krahd/batllm.git
-cd batllm
+git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
 python -m venv .venv_BatLLM
 source .venv_BatLLM/bin/activate
 pip install -r requirements.txt
-```
-
-**Run BatLLM** using python:
-
-```bash
 python src/main.py
 ```
 
-After BatLLM opens, use **Settings -> Open Ollama Screen** as the default way to:
-
-1. Start or stop Ollama.
-2. Refresh and select a local model.
-3. Browse downloadable models.
-4. Download or delete models with confirmation.
-
-### Manual Ollama Setup (Optional)
-
-Use this only if you prefer to manage Ollama yourself or if Ollama is already installed and you want to keep using your own workflow.
-
-With **[Homebrew](https://formulae.brew.sh/formula/ollama)**, installing Ollama only requires running `brew install ollama`.
-
-You may then start Ollama from the repository root with:
+If the Ollama CLI is not already installed, install it separately. On macOS with Homebrew:
 
 ```bash
-./start_ollama.sh
+brew install ollama
 ```
 
-And stop it with:
+## Recommended Ollama Workflow
 
-```bash
-./stop_ollama.sh
-```
+The default operational path is inside the app:
 
-If you want to install a model yourself, you may use standard Ollama commands such as:
+1. launch BatLLM
+2. open `Settings`
+3. click `Ollama Config`
+4. use the Ollama screen to start Ollama, select a local model, and download or delete models as needed
 
-```bash
-ollama pull llama3.2:latest
-```
+The `Local Models` and `Remote Models` controls open modal pickers. Those pickers:
+
+- refresh their data before opening
+- render the model names in white text
+- highlight the current selection
+- use tightly packed rows with no gap between adjacent model entries
+- close on `Esc`
+- close when the user clicks outside the popup
+
+Remote models are loaded from `https://ollama.com/library`.
+
+### Local vs Remote Models
+
+- local models already exist in your Ollama installation and can be selected immediately
+- remote models are only candidates for download; they are not usable until pulled locally
+
+### What `Use Selected` Does
+
+Choosing a local model and pressing `Use Selected` updates `llm.model` in `src/configs/config.yaml`. BatLLM then attempts to make that model available for gameplay. If BatLLM previously started a different model itself, it may stop that earlier managed model before warming the newly selected one.
+
+## Safety
+
+> [!WARNING]
+> BatLLM is provided as-is. The Ollama screen operates on your real local Ollama installation.
 
 > [!CAUTION]
-> Manual and in-app Ollama management both operate on the same local Ollama installation. Deleting or replacing a model in BatLLM can remove a model that another project depends on.
+> If other tools use the same Ollama installation, BatLLM can affect them by starting or stopping the server, downloading models, deleting models, or switching the model BatLLM itself uses.
+
+Destructive or expensive actions are guarded by confirmation dialogs where implemented, but the effects are still real:
+
+- `Download Selected` downloads a local Ollama model
+- `Delete Selected` deletes a local Ollama model
+- `Start Ollama` and `Stop Ollama` control the configured local service
+
+## Screens At A Glance
+
+### Home
+
+The home screen is where players:
+
+- write and submit prompts
+- browse prompt history
+- load and save prompt text
+- start new games
+- open settings and history
+
+Pressing `Esc` on the home screen enters the configured exit flow. Depending on the settings, BatLLM may:
+
+- ask for exit confirmation
+- ask whether to save the session before exit
+- exit immediately
+
+### Settings
+
+The settings screen controls:
+
+- rounds, turns, health, damage, shield size, and step length
+- independent vs shared model contexts
+- prompt augmentation
+- `Confirm on Exit`
+- `Prompt to Save on Exit`
+
+The button that opens the Ollama screen is labeled `Ollama Config`.
+
+### History
+
+The history screen shows:
+
+- a compact, per-bot history pane
+- a full session history pane
+
+It currently uses an explicit `Back` button to return to the home screen.
+
+### Ollama Config
+
+The Ollama screen shows:
+
+- current Ollama status
+- a multi-line output log
+- local model controls
+- remote model controls
+
+Illustrated references:
+
+![Ollama control screen diagram](./images/ollama-control-screen.svg)
+![Local model picker diagram](./images/local-model-picker.svg)
+![Remote model picker diagram](./images/remote-model-picker.svg)
 
 ## Testing
 
-BatLLM includes a one-command test runner with two modes:
+See [TESTING.md](TESTING.md) for the full testing guide.
+
+Common commands:
 
 ```bash
 ./run_tests.sh core
 ```
 
-Runs non-interactive smoke checks only (config integrity, shell script syntax, and Python source compilation).
-
 ```bash
-./run_tests.sh full
+KIVY_WINDOW=mock KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_HOME=/tmp/batllm-kivy PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py
 ```
 
-Runs the full smoke suite, including live Ollama integration checks. This mode starts Ollama, runs tests, and stops Ollama automatically.
+## More Documentation
 
-If needed, make the runner executable once:
-
-```bash
-chmod +x run_tests.sh
-```
-
-## Ollama Control Screen
-
-BatLLM includes an in-app Ollama control interface available from the Settings screen. This is the default workflow for most users.
-
-### Access
-
-1. Start BatLLM.
-2. Open **Settings**.
-3. Click **Open Ollama Screen**.
-
-### Features
-
-The Ollama screen supports the following actions:
-
-1. **Start Ollama**: Runs the local startup script and attempts to warm the configured model.
-2. **Stop Ollama**: Stops running models and stops the Ollama server process.
-3. **Choose Local Model**: Refresh and select from locally available models, then save as active `llm.model`.
-4. **Download Model**: Refresh remote models and request a download with confirmation.
-5. **Delete Model**: Remove a local model with confirmation.
-
-### Missing Ollama Handling
-
-If Ollama cannot be started because it is missing, the screen prompts for a path and shows installation guidance (safe command suggestion flow, no automatic install).
-
-### Safety Notes
-
-1. Download and delete actions require explicit confirmation.
-2. Automated tests for these actions use mocks and do not perform real model downloads or deletions.
-3. BatLLM's Ollama controls can affect other local projects that use the same Ollama service and model store.
-4. Deleting a model from BatLLM deletes the local Ollama model, not just BatLLM's reference to it.
-
-## Disclaimer
-
-BatLLM is offered as-is for research, education, and experimentation. The project makes no guarantee that it will preserve your local Ollama setup, maintain compatibility with all local models, or be suitable for any specific workflow. You are responsible for reviewing changes before downloading, deleting, or reconfiguring models.
-
-## Playing
-
-As before, for a more detailed overview of _the game_, please refer to the [User Guide](USER_GUIDE.md)
-
-### Brutal LLM Bot Battle Pit
-
-An execution of BatLLM's app is called a session. By convention, _Sessions enjoy a 1:1:1 correspondence between Human Players, AI models, and Game Bots_. **Games** are **Rounds** of **Turns** (A _Turn_ consits of two _Plays_; Plays are modelled implictly).
-
-Before each round, players prepare and submit the prompt that will be used for all of their Plays during thhis round. Gameplay is almost entirely devoted to creating, testing, and improving Prompts.
-
-The game supports four different playing modes via two user-controllable flags. One defines whether the players share the prompt context or not . The other one controls whether the user-provided prompts are augmented with a complete and up-todate game state.
-
-The GUI includes some tools for prompt management, game configuration, gameplay control, and provides real–time (although simple) graphic rendering of rounds.
-
-In addition to the gameplay screens, BatLLM now includes an Ollama Control Screen for local model and server management. Because that screen can modify your shared Ollama installation, use it carefully if your machine is also used for other local AI workflows.
-
-### Chat history management
-
-Earlier revisions of BatLLM stored the conversation between each bot and the
-LLM in per-bot `chat_history` lists, and maintained an additional
-`chat_history_shared` list when both players shared a single context. This
-duplicated information and made it difficult to reconstruct a complete
-conversation. To simplify the design, **all chat messages are now
-recorded centrally by the `HistoryManager`**. Whenever a bot sends a prompt
-or receives a response, it calls `HistoryManager.record_message` to store
-the message along with its role (``"user"`` or ``"assistant"``) and bot
-identifier. At any point the full conversation can be reconstructed using
-`HistoryManager.get_chat_history(shared=True)` for the shared context or
-`HistoryManager.get_chat_history(bot_id, shared=False)` when each bot
-maintains a separate context. As a result, the `Bot` class no longer
-defines a `chat_history` attribute.
-
-> ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](DOCUMENTATION.md) &mdash; [User Guide](USER_GUIDE.md) &mdash; [Contributing](CONTRIBUTING.md) &mdash; [FAQ](FAQ.md) &mdash; [Credits](CREDITS.md)**
+- usage and screen-by-screen instructions: [USER_GUIDE.md](USER_GUIDE.md)
+- configuration reference: [CONFIGURATION.md](CONFIGURATION.md)
+- troubleshooting: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- contributor guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- release notes: [CHANGELOG.md](CHANGELOG.md)

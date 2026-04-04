@@ -6,11 +6,13 @@
 \Hypertarget{classbullet_1_1_bullet_a954ef38411a9dcfb04edfa54723b8c3e}\label{classbullet_1_1_bullet_a954ef38411a9dcfb04edfa54723b8c3e} 
 {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, parent\+\_\+id, x, y, rot)
 \item 
-\mbox{\hyperlink{classbullet_1_1_bullet_afb1e383c0ef61c64c7ff0e1dd5e41c12}{render}} (self)
+\doxymbox{\hyperlink{classbullet_1_1_bullet_afb1e383c0ef61c64c7ff0e1dd5e41c12}{render}} (self)
 \item 
-\mbox{\hyperlink{classbullet_1_1_bullet_a71b35dbbeed092706f1824d0c29b53a5}{update}} (self, bots)
+\doxymbox{\hyperlink{classbullet_1_1_bullet_a1a4a34fba6cd78fbee318d3c45a1ec83}{rot\+\_\+rad}} (self)
 \item 
-\mbox{\hyperlink{classbullet_1_1_bullet_a8d2bee4b44bbffa45a6f52c95cdd8372}{segment\+\_\+hits\+\_\+bot}} (self, bot, p1, p2)
+tuple\+[bool, int\texorpdfstring{$\vert$}{|}None]\+ \doxymbox{\hyperlink{classbullet_1_1_bullet_a75803b4305b26da081ca8f63c7689020}{update}} (self, bots)
+\item 
+bool \doxymbox{\hyperlink{classbullet_1_1_bullet_a535a2f42241ed77ee67f44874a641184}{segment\+\_\+hits\+\_\+bot}} (self, \doxymbox{\hyperlink{namespacebot}{bot}}, p1, p2)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
@@ -27,19 +29,46 @@
 \Hypertarget{classbullet_1_1_bullet_afc9eee6d1602894fdfcc831eeb1e9dc3}\label{classbullet_1_1_bullet_afc9eee6d1602894fdfcc831eeb1e9dc3} 
 {\bfseries rot} = rot
 \item 
-\Hypertarget{classbullet_1_1_bullet_aedc384feb1e1c9552818ddbd580d883b}\label{classbullet_1_1_bullet_aedc384feb1e1c9552818ddbd580d883b} 
-float {\bfseries step} = 0.\+01
+\Hypertarget{classbullet_1_1_bullet_ac6e4e619429077f089d9d095fcd10fce}\label{classbullet_1_1_bullet_ac6e4e619429077f089d9d095fcd10fce} 
+{\bfseries step} = float(config.\+get("{}game"{}, "{}bullet\+\_\+step\+\_\+length"{}))
 \item 
 \Hypertarget{classbullet_1_1_bullet_a175136364c6b91c821420bf91dd21de9}\label{classbullet_1_1_bullet_a175136364c6b91c821420bf91dd21de9} 
 float {\bfseries diameter} = 0.\+02
 \item 
 \Hypertarget{classbullet_1_1_bullet_a3dedef7458b02d355cc777cb2dbf7566}\label{classbullet_1_1_bullet_a3dedef7458b02d355cc777cb2dbf7566} 
-tuple {\bfseries colour} = (1, 0, 0, 1) \#
+tuple {\bfseries colour} = (1, 0, 0, 1) \+\#
 \end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
-\begin{DoxyVerb}This class models the bullets shot by the bots. It takes care of its own rendering and the detection of collission against the opponent and the arena's limits.
+\begin{DoxyVerb}Bullet class models the bullets fired by bots in the game. It manages its own rendering, movement, and collision detection with both the arena boundaries and other bots.
+
+Attributes:
+    parent_id (int): ID of the bot that fired the bullet.
+    x (float): Current x-coordinate of the bullet.
+    y (float): Current y-coordinate of the bullet.
+    rot (float): Rotation angle of the bullet in degrees.
+    step (float): Distance the bullet moves per update.
+    diameter (float): Visual diameter of the bullet (for rendering purposes).
+    colour (tuple): RGBA color of the bullet.
+
+Methods:
+    __init__(parent_id, x, y, rot):
+        Initializes a new Bullet instance with the given parent bot ID, position, and rotation.
+
+    render():
+        Renders the bullet as a circle at its current position using the specified color.
+
+    rot_rad():
+        Returns the bullet's rotation in radians.
+
+    update(bots):
+        Updates the bullet's position, checks for collisions with bots and arena boundaries.
+        Returns a tuple (alive, damaged_bot_id), where 'alive' is a boolean indicating if the bullet should remain in play, and 'damaged_bot_id' is the ID of the bot hit (if any).
+
+    segment_hits_bot(bot, p1, p2):
+        Determines if the line segment from p1 to p2 intersects with the given bot, considering shield status and shield arc.
+        Returns True if the bot is hit (and takes damage), or False if there is no hit or the hit is blocked by the shield.
 \end{DoxyVerb}
  
 
@@ -53,11 +82,18 @@ tuple {\bfseries colour} = (1, 0, 0, 1) \#
 bullet.\+Bullet.\+render (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Renders the bullet as a circle at its current position with the specified color.\end{DoxyVerb}
- \Hypertarget{classbullet_1_1_bullet_a8d2bee4b44bbffa45a6f52c95cdd8372}\index{bullet.Bullet@{bullet.Bullet}!segment\_hits\_bot@{segment\_hits\_bot}}
+ \Hypertarget{classbullet_1_1_bullet_a1a4a34fba6cd78fbee318d3c45a1ec83}\index{bullet.Bullet@{bullet.Bullet}!rot\_rad@{rot\_rad}}
+\index{rot\_rad@{rot\_rad}!bullet.Bullet@{bullet.Bullet}}
+\doxysubsubsection{\texorpdfstring{rot\_rad()}{rot\_rad()}}
+{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a1a4a34fba6cd78fbee318d3c45a1ec83} 
+bullet.\+Bullet.\+rot\+\_\+rad (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the rotation in radians.\end{DoxyVerb}
+ \Hypertarget{classbullet_1_1_bullet_a535a2f42241ed77ee67f44874a641184}\index{bullet.Bullet@{bullet.Bullet}!segment\_hits\_bot@{segment\_hits\_bot}}
 \index{segment\_hits\_bot@{segment\_hits\_bot}!bullet.Bullet@{bullet.Bullet}}
 \doxysubsubsection{\texorpdfstring{segment\_hits\_bot()}{segment\_hits\_bot()}}
-{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a8d2bee4b44bbffa45a6f52c95cdd8372} 
-bullet.\+Bullet.\+segment\+\_\+hits\+\_\+bot (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot}{, }\item[{}]{p1}{, }\item[{}]{p2}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a535a2f42241ed77ee67f44874a641184} 
+ bool bullet.\+Bullet.\+segment\+\_\+hits\+\_\+bot (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bot}{, }\item[{}]{p1}{, }\item[{}]{p2}{}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Determines if the line segment from p1 to p2 hits the bot in an unshielded area.
 
@@ -69,22 +105,23 @@ Args:
 Returns:
     _type_: True if the bot is hit (taking damage), or False if no hit or the hit is blocked by the shield
 \end{DoxyVerb}
- \Hypertarget{classbullet_1_1_bullet_a71b35dbbeed092706f1824d0c29b53a5}\index{bullet.Bullet@{bullet.Bullet}!update@{update}}
+ \Hypertarget{classbullet_1_1_bullet_a75803b4305b26da081ca8f63c7689020}\index{bullet.Bullet@{bullet.Bullet}!update@{update}}
 \index{update@{update}!bullet.Bullet@{bullet.Bullet}}
 \doxysubsubsection{\texorpdfstring{update()}{update()}}
-{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a71b35dbbeed092706f1824d0c29b53a5} 
-bullet.\+Bullet.\+update (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bots}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{classbullet_1_1_bullet_a75803b4305b26da081ca8f63c7689020} 
+ tuple\+[bool, int \texorpdfstring{$\vert$}{|} None]\+ bullet.\+Bullet.\+update (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{bots}{}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Check for out of bounds and collisions with bots.
+\begin{DoxyVerb}Check for out of bounds and collisions with bots. 
+Returns (bullet is still alive, damaged_bot_id).
 
 Args:
-    bots (_type_): all the game bots 
+    bots (_type_): all the game bots
 
 Returns:
     _type_: (alive, damaged_bot_id).
 \end{DoxyVerb}
  
 
-The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
 \item 
-/\+Users/tom/devel/ml-\/llm/llm/\+Bat\+LLM/src/game/bullet.\+py\end{DoxyCompactItemize}
+src/\+game/\+bullet.\+py\end{DoxyCompactItemize}

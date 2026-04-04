@@ -1,0 +1,33 @@
+\doxysection{game\+\_\+board Namespace Reference}
+\hypertarget{namespacegame__board}{}\label{namespacegame__board}\index{game\_board@{game\_board}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classgame__board_1_1_game_board}{Game\+Board}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}game_board.py
+===============
+
+The :mod:`game_board` module contains the :class:`~game.game_board.GameBoard`
+class, which implements BatLLM's in-game logic and user interface. It acts
+as the "world" in which bots act, and mediates communication between bots,
+the LLM via :class:`~game.ollama_connector.OllamaConnector`,
+and the :class:`~game.history_manager.HistoryManager`, which records all game
+state and chat history.
+
+Key features:
+- Maintains a list of :class:`~game.bot.Bot` instances representing the players.
+- Coordinates the flow of games, rounds and turns, and updates counters.
+- Renders the game graphics using Kivy and updates various UI labels.
+- Provides helpers to append text to scrollable history boxes in the HomeScreen.
+- Uses HistoryManager as the single source of truth for chat messages.
+- Chat messages are recorded via HistoryManager and reconstructed on demand.
+- At the end of each round, the board logs status text through the UI helper.
+
+The GameBoard drives the game loop and delegates state recording to the
+HistoryManager. UI updates are handled through a small set of helper methods.
+\end{DoxyVerb}
+ 

@@ -1,3 +1,5 @@
+"""Ollama configuration and model-management screen."""
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -42,6 +44,8 @@ REMOTE_MODEL_SIZE_RE = re.compile(r'<span x-test-size[^>]*>([^<]+)</span>')
 
 
 class OllamaConfigScreen(Screen):
+    """Manage the local Ollama service and BatLLM model selection."""
+
     status_text = StringProperty("Idle")
     status_details = StringProperty("Ollama status has not been checked yet.")
     output_log = StringProperty("")
@@ -70,6 +74,7 @@ class OllamaConfigScreen(Screen):
         Window.unbind(on_key_down=self.handle_window_key_down)
 
     def handle_window_key_down(self, _window, key, *_args):
+        """Handle Escape by dismissing the model picker or returning to Settings."""
         if key != 27:
             return False
 
@@ -131,6 +136,7 @@ class OllamaConfigScreen(Screen):
         Clock.schedule_once(lambda *_: callback(), 0)
 
     def _dismiss_model_picker(self) -> bool:
+        """Dismiss the active model picker popup, if one is open."""
         if self._model_picker_popup is None:
             return False
 
@@ -145,6 +151,7 @@ class OllamaConfigScreen(Screen):
         selected_value: str,
         on_select,
     ):
+        """Show a modal list of selectable models."""
         if self._model_picker_popup is not None:
             self._model_picker_popup.dismiss()
             self._model_picker_popup = None

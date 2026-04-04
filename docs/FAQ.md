@@ -1,55 +1,70 @@
- 
->
->  ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)** 
->
->
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
-## FAQ
+# FAQ
 
-**Q: Is BatLLM a serious LLM benchmark or inference engine?**  
-A: No: it's an *experimental education game* project themed for creative prompt interaction with LLM-powered bots.
+## Is BatLLM a general-purpose inference server?
 
-**Q: Can I use ChatGPT or a another model as the LLM?**  
-A: It is designed for local LLMs (Ollama, Llama.cpp servers etc.), but any language model with compatible API/CLI could be adapted. Check the  [User Guide](USER_GUIDE.md)  for more information on this topic.
+No. BatLLM is a local game and educational project that happens to rely on local LLM infrastructure.
 
-**Q: Can the LLM cheat or see hidden information?**  
-A: It depends on the playing mode chosen. Players can either share a single LLM or use two completely isolated ones. The current mode can be changed in the Settings screen.
+## Does BatLLM use Ollama?
 
-**Q: Can I play against an AI or fully autonomous LLM?**
-A: No, BatLLM is strictly human-vs-human; all actions are mediated by LLMs interpreting human prompts.
+Yes. The current codebase uses:
 
-**Q: Can I run this online or with more bots?**
-A: Not yet, but the codebase is designed for easy expansion to online play and more complex arenas.  
+- the Python `ollama` client for gameplay chat requests
+- the `ollama` CLI and local HTTP endpoints for the Ollama configuration screen
 
-**Q: How does prompt augmentation help?**
-A: It provides structured, explicit context to the LLM, making its command generation more reliable and interpretable.
+## What is the difference between local models and remote models?
 
-**Q: How can I improve the graphics?**
-A: The arena uses normalized coordinates and Kivy, so creative coding or graphic improvements should be quite straightforward.
+- local models are already present in your local Ollama installation
+- remote models are names discovered from `https://ollama.com/library` and are only usable after download
 
-**Q: Can I play BatLLM over the internet or do both players have to be at the same computer?**
-A: Right now, both players share one screen on a single computer, so typically you’d be in the same room taking turns typing prompts. There’s no built-in network play yet. You could use screen-sharing as a workaround, but an online mode is something for the future.
+## How do I close the model list popup?
 
-**Q: Is there a way to play single-player (against an AI)?**
-A: Not yet. When (or if) we get better at prompting, then adding autonomous AI would be immediate. 
+The local and remote model pickers close when you:
 
-**Q: The LLM sometimes outputs something like "I move forward (M)" and my bot does nothing. Why?**
-A: The game only understands the very specific command format (e.g., exactly "M" to move). If the model’s output isn’t exactly one of the commands (possibly with a parameter), the command will be ignored as unrecognized. As a player, you *will* need to tweak your prompt to get a direct answer. For example, saying something like *"Output just the command you will execute, no explanation."* may help in your prompt. 
+- press `Esc`
+- click outside the popup
+- click the popup `Close` button
 
-**Q: How does prompt augmentation actually improve gameplay?**
-A: It only does if your prompt allows the LLM to process the information and still output a valid command. With augmentation on, the model gets a structured dump of the game state every turn. This means it doesn’t have to rely on memory of previous turns (which it might not have, since each turn’s prompt is separate) or on the player describing the state, which may lead to more relevant and valid commands. Without augmentation, the model might not know where the enemy is or that its health is low, etc., unless the player explicitly writes that in the prompt. 
+## What happens if Ollama is not installed?
 
-Augmentation may make the game more about strategy (“what high-level instruction do I give the bot”) and less about manual bookkeeping. 
+If the app cannot start Ollama because the CLI is missing, the Ollama screen opens an install-guidance flow. BatLLM does not auto-install Ollama for you.
 
-Both modes of playing, with our without augmentation are exercises in prompt engineering, as you must manage the AI’s behaviour carefully and craftully.
+## What happens if the remote model list cannot be loaded?
 
-**Q: Can I modify the game to have more than 2 players or different arenas?**
-A: The code is written with some consideration to these potential paths. However, there are several places where it has been assumed that there are only two players (i.e. the GUI). In any case, they would not be anytime soon.
+The Ollama screen shows an error in its status/output area and leaves the current selection state unchanged. Typical causes are no network access or a failure reaching `https://ollama.com/library`.
 
-**Q: My model is taking a long time to respond or times out. What can I do?**
-A: Smaller or quantized models will respond faster. If using Ollama, ensure the model is running properly. The game sets a timeout of 30 seconds for the LLM response; if it’s too slow, the turn might effectively be skipped. You can increase the timeout in code (Bot.submit\_prompt\_to\_llm).
+## Does BatLLM change my real Ollama installation?
 
-*More coming soon...*
+Yes. The current Ollama screen operates on the real local Ollama service and model store configured by `llm.url` and `llm.port`.
 
+## Does deleting a model only remove BatLLM's reference?
 
+No. `Delete Selected` deletes the local Ollama model itself.
 
+## Does downloading a model only affect BatLLM?
+
+No. `Download Selected` pulls the model into the shared local Ollama installation. Other local tools that use the same Ollama store can see that model afterward.
+
+## Can BatLLM stop models that are already running?
+
+When you choose a model with `Use Selected`, BatLLM may stop the previously managed BatLLM model before warming the newly selected one. It does not claim ownership of every model that may already be running outside BatLLM.
+
+## Can I use BatLLM without the Ollama screen?
+
+Yes. If your Ollama setup is already running and reachable at the configured host, you can manage Ollama externally and simply use BatLLM for gameplay.
+
+## Why does the app ask about exit confirmation or saving?
+
+Those behaviors are controlled by the Settings screen values:
+
+- `Confirm on Exit`
+- `Prompt to Save on Exit`
+
+## Does the history screen support `Esc` to go back?
+
+Not currently. The history screen uses its explicit `Back` button.
+
+## Where should I look for setup or runtime failures?
+
+Start with [TROUBLESHOOTING.md](TROUBLESHOOTING.md).

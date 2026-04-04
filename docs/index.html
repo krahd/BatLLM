@@ -2,16 +2,167 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Redirecting…</title>
-  <!-- meta-refresh in 0 seconds -->
-  <meta http-equiv="refresh" content="0; url=https://github.com/krahd/BatLLM">
-  <link rel="canonical" href="https://github.com/krahd/BatLLM">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BatLLM Documentation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f1ea;
+      --panel: #fffdf8;
+      --text: #181716;
+      --muted: #5e5851;
+      --line: #d8d0c4;
+      --accent: #204a68;
+      --accent-soft: #d8e7f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top left, rgba(32,74,104,0.10), transparent 28rem),
+        linear-gradient(180deg, #f7f3ec 0%, var(--bg) 100%);
+      color: var(--text);
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+    header {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand img {
+      width: 56px;
+      height: 56px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      line-height: 1;
+    }
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+    .lead {
+      max-width: 52rem;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+    a.card {
+      display: block;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      color: inherit;
+      text-decoration: none;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.04);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+    a.card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: #ffffff;
+    }
+    .kicker {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .title {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="https://github.com/krahd/BatLLM">BatLLM on GitHub</a>…</p>
-  <script>
-    // JavaScript fallback
-    window.location.replace("https://github.com/krahd/BatLLM");
-  </script>
+  <main>
+    <header>
+      <div class="brand">
+        <img src="./images/logo-small.png" alt="BatLLM logo">
+        <h1>BatLLM Documentation</h1>
+      </div>
+      <p class="lead">
+        BatLLM is a local, AI-mediated battle game built around prompt-writing, model behavior,
+        and hands-on experimentation with local LLM tooling. This page is the entry point for the
+        maintained docs and the generated code reference.
+      </p>
+    </header>
+
+    <section class="grid">
+      <a class="card" href="./DOCUMENTATION.md">
+        <span class="kicker">Overview</span>
+        <span class="title">Project Documentation</span>
+        <p>High-level product overview, architecture, release snapshot, and links into the rest of the docs.</p>
+      </a>
+      <a class="card" href="./README.md">
+        <span class="kicker">Start Here</span>
+        <span class="title">README</span>
+        <p>Setup, quick start, screen summary, and the recommended in-app Ollama workflow.</p>
+      </a>
+      <a class="card" href="./USER_GUIDE.md">
+        <span class="kicker">Usage</span>
+        <span class="title">User Guide</span>
+        <p>Screen-by-screen instructions, keyboard behavior, match flow, and command reference.</p>
+      </a>
+      <a class="card" href="./CONFIGURATION.md">
+        <span class="kicker">Reference</span>
+        <span class="title">Configuration</span>
+        <p>Complete YAML key reference for the current runtime configuration.</p>
+      </a>
+      <a class="card" href="./TESTING.md">
+        <span class="kicker">Validation</span>
+        <span class="title">Testing</span>
+        <p>Smoke, headless unit, and live Ollama test flows.</p>
+      </a>
+      <a class="card" href="./TROUBLESHOOTING.md">
+        <span class="kicker">Support</span>
+        <span class="title">Troubleshooting</span>
+        <p>Common setup, runtime, and headless-testing failure cases.</p>
+      </a>
+      <a class="card" href="./CONTRIBUTING.md">
+        <span class="kicker">Development</span>
+        <span class="title">Contributing</span>
+        <p>Repo structure, architecture notes, and contributor expectations.</p>
+      </a>
+      <a class="card" href="./code/html/index.html">
+        <span class="kicker">API</span>
+        <span class="title">Generated Code Docs</span>
+        <p>Doxygen output for the Python modules and screens tracked by the repo.</p>
+      </a>
+    </section>
+
+    <footer>
+      BatLLM repository: <a href="https://github.com/krahd/BatLLM">github.com/krahd/BatLLM</a>
+    </footer>
+  </main>
 </body>
 </html>

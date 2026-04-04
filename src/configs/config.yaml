@@ -34,7 +34,6 @@ llm:
   top_p: null
   url: http://localhost
 ui:
-  ' primary_color': '#ffffff'
   confirm_on_exit: true
   font_size: 16
   frame_rate: 60

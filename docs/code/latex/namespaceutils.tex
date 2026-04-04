@@ -1,0 +1,143 @@
+\doxysection{utils Namespace Reference}
+\hypertarget{namespaceutils}{}\label{namespaceutils}\index{utils@{utils}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceutils_a0dead2551f9ed924ff4133fec0b69418}\label{namespaceutils_a0dead2551f9ed924ff4133fec0b69418} 
+{\bfseries \+\_\+maybe\+\_\+int} (v)
+\item 
+\Hypertarget{namespaceutils_a4601c055b15c456fe16ebd4b8f607fe9}\label{namespaceutils_a4601c055b15c456fe16ebd4b8f607fe9} 
+{\bfseries \+\_\+maybe\+\_\+float} (v)
+\item 
+\doxymbox{\hyperlink{namespaceutils_a3b9da19c4a2408b545c03a6e3e6cd839}{find\+\_\+id\+\_\+in\+\_\+parents}} (searcher, target\+\_\+id)
+\item 
+\doxymbox{\hyperlink{namespaceutils_ae87ba34ea08d21fc651f778bfc66a763}{tame\+\_\+color}} (color, desaturation=0.\+0, lighten=0.\+0)
+\item 
+\doxymbox{\hyperlink{namespaceutils_a43446236ee268204d2458d87807196b4}{switch\+\_\+screen}} (manager, str target, Optional\+[str]\+ direction=None)
+\item 
+\doxymbox{\hyperlink{namespaceutils_a2bcb6ec09de0b525a46dd89edcac27d3}{show\+\_\+confirmation\+\_\+dialog}} (title, message, on\+\_\+confirm, on\+\_\+cancel=None)
+\item 
+\doxymbox{\hyperlink{namespaceutils_a975f317d99aeb000539e889449fff092}{show\+\_\+fading\+\_\+alert}} (title, message, duration=1.\+5, fade\+\_\+duration=2.\+0)
+\item 
+\doxymbox{\hyperlink{namespaceutils_a5adfaed04dfc6ae7f3252199b143b9b1}{show\+\_\+text\+\_\+input\+\_\+dialog}} (on\+\_\+confirm, on\+\_\+cancel=None, title="{}"{}, message="{}"{}, default\+\_\+text="{}"{}, input\+\_\+hint="{}Enter a text"{}, confirm\+\_\+text="{}Save"{}, cancel\+\_\+text="{}Cancel"{})
+\item 
+str \doxymbox{\hyperlink{namespaceutils_a65fe51488b72be582777bed1a692d9dc}{markup}} (str text, Optional\+[int]\+ font\+\_\+size=None, color="{}\+\#000000"{}, bold=False, italic=False)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}General use utilities for BatLLM\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespaceutils_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespaceutils_a3b9da19c4a2408b545c03a6e3e6cd839}\index{utils@{utils}!find\_id\_in\_parents@{find\_id\_in\_parents}}
+\index{find\_id\_in\_parents@{find\_id\_in\_parents}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{find\_id\_in\_parents()}{find\_id\_in\_parents()}}
+{\footnotesize\ttfamily \label{namespaceutils_a3b9da19c4a2408b545c03a6e3e6cd839} 
+utils.\+find\+\_\+id\+\_\+in\+\_\+parents (\begin{DoxyParamCaption}\item[{}]{searcher}{, }\item[{}]{target\+\_\+id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Searches recursively for an element among the ancestors of a Kivy element by its id
+
+Args:
+    searcher (_type_): the object that starts the search, usually a Kivy widget.
+    target_id (_type_): the object's id to find.
+
+Returns:
+    _type_: the found object or None
+\end{DoxyVerb}
+ \Hypertarget{namespaceutils_a65fe51488b72be582777bed1a692d9dc}\index{utils@{utils}!markup@{markup}}
+\index{markup@{markup}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{markup()}{markup()}}
+{\footnotesize\ttfamily \label{namespaceutils_a65fe51488b72be582777bed1a692d9dc} 
+ str utils.\+markup (\begin{DoxyParamCaption}\item[{str}]{text}{, }\item[{Optional\+[int]\+ }]{font\+\_\+size}{ = {\ttfamily None}, }\item[{}]{color}{ = {\ttfamily "{}\+\#000000"{}}, }\item[{}]{bold}{ = {\ttfamily False}, }\item[{}]{italic}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Wraps the given text in Kivy markup tags for font size, color, bold, and italic.
+
+Args:
+    text (str): The text to be wrapped.
+    font_size (int, optional): The font size to apply. Defaults to config value "ui"/"font_size".
+    color (str, optional): The color to apply in hex format (e.g., "#ff0000"). Defaults to black ("#000000").
+    bold (bool, optional): Whether to apply bold formatting. Defaults to False.
+    italic (bool, optional): Whether to apply italic formatting. Defaults to False.
+
+Returns:
+    str: The text wrapped in Kivy markup tags.
+\end{DoxyVerb}
+ \Hypertarget{namespaceutils_a2bcb6ec09de0b525a46dd89edcac27d3}\index{utils@{utils}!show\_confirmation\_dialog@{show\_confirmation\_dialog}}
+\index{show\_confirmation\_dialog@{show\_confirmation\_dialog}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{show\_confirmation\_dialog()}{show\_confirmation\_dialog()}}
+{\footnotesize\ttfamily \label{namespaceutils_a2bcb6ec09de0b525a46dd89edcac27d3} 
+utils.\+show\+\_\+confirmation\+\_\+dialog (\begin{DoxyParamCaption}\item[{}]{title}{, }\item[{}]{message}{, }\item[{}]{on\+\_\+confirm}{, }\item[{}]{on\+\_\+cancel}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Displays a modal confirmation dialog with a title and message.
+
+Args:
+    title (_type_): the title of the dialog
+    message (_type_): the message to display in the dialog
+    on_confirm (_type_): function to call when the user confirms
+    on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
+\end{DoxyVerb}
+ \Hypertarget{namespaceutils_a975f317d99aeb000539e889449fff092}\index{utils@{utils}!show\_fading\_alert@{show\_fading\_alert}}
+\index{show\_fading\_alert@{show\_fading\_alert}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{show\_fading\_alert()}{show\_fading\_alert()}}
+{\footnotesize\ttfamily \label{namespaceutils_a975f317d99aeb000539e889449fff092} 
+utils.\+show\+\_\+fading\+\_\+alert (\begin{DoxyParamCaption}\item[{}]{title}{, }\item[{}]{message}{, }\item[{}]{duration}{ = {\ttfamily 1.5}, }\item[{}]{fade\+\_\+duration}{ = {\ttfamily 2.0}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Displays a modal alert with a title and message that fades out and closes itself.
+
+Args:
+    title (_type_): the title of the alert
+    message (_type_): the message to display in the alert
+    duration (float, optional): How long does it take for the alert to start fading out. Defaults to 1.0.
+    fade_duration (float, optional): How long does the fade out process take. Defaults to 1.0.
+\end{DoxyVerb}
+ \Hypertarget{namespaceutils_a5adfaed04dfc6ae7f3252199b143b9b1}\index{utils@{utils}!show\_text\_input\_dialog@{show\_text\_input\_dialog}}
+\index{show\_text\_input\_dialog@{show\_text\_input\_dialog}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{show\_text\_input\_dialog()}{show\_text\_input\_dialog()}}
+{\footnotesize\ttfamily \label{namespaceutils_a5adfaed04dfc6ae7f3252199b143b9b1} 
+utils.\+show\+\_\+text\+\_\+input\+\_\+dialog (\begin{DoxyParamCaption}\item[{}]{on\+\_\+confirm}{, }\item[{}]{on\+\_\+cancel}{ = {\ttfamily None}, }\item[{}]{title}{ = {\ttfamily "{}"{}}, }\item[{}]{message}{ = {\ttfamily "{}"{}}, }\item[{}]{default\+\_\+text}{ = {\ttfamily "{}"{}}, }\item[{}]{input\+\_\+hint}{ = {\ttfamily "{}Enter~a~text"{}}, }\item[{}]{confirm\+\_\+text}{ = {\ttfamily "{}Save"{}}, }\item[{}]{cancel\+\_\+text}{ = {\ttfamily "{}Cancel"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}A modal dialog for the user to enter a text input.
+
+Args:
+    on_confirm (_type_): function to call when the user confirms the filename
+    on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
+    title (str, optional): title of the dialog. Defaults to "".
+    default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
+    input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". 
+    It is only visible if the default value is empty
+    confirm_text (str, optional): label for the confirm button. Defaults to "Save".
+    cancel_text (str, optional): label for the cancel button. Defaults to "Cancel".
+\end{DoxyVerb}
+ \Hypertarget{namespaceutils_a43446236ee268204d2458d87807196b4}\index{utils@{utils}!switch\_screen@{switch\_screen}}
+\index{switch\_screen@{switch\_screen}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{switch\_screen()}{switch\_screen()}}
+{\footnotesize\ttfamily \label{namespaceutils_a43446236ee268204d2458d87807196b4} 
+utils.\+switch\+\_\+screen (\begin{DoxyParamCaption}\item[{}]{manager}{, }\item[{str}]{target}{, }\item[{Optional\+[str]\+ }]{direction}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Navigates to another screen and optionally sets the transition direction first.
+
+Args:
+    manager: ScreenManager-like object controlling the current screen.
+    target (str): Target screen name.
+    direction (Optional[str]): Transition direction such as "left" or "right".
+\end{DoxyVerb}
+ \Hypertarget{namespaceutils_ae87ba34ea08d21fc651f778bfc66a763}\index{utils@{utils}!tame\_color@{tame\_color}}
+\index{tame\_color@{tame\_color}!utils@{utils}}
+\doxysubsubsection{\texorpdfstring{tame\_color()}{tame\_color()}}
+{\footnotesize\ttfamily \label{namespaceutils_ae87ba34ea08d21fc651f778bfc66a763} 
+utils.\+tame\+\_\+color (\begin{DoxyParamCaption}\item[{}]{color}{, }\item[{}]{desaturation}{ = {\ttfamily 0.0}, }\item[{}]{lighten}{ = {\ttfamily 0.0}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Desaturates and lightens an RGB colour.
+
+Args:
+    color (tuple): A 3-tuple of RGB in range 0–1, e.g., (0.5, 0.2, 0.8)
+    desaturation (float): 0 = no change, 1 = fully desaturated (greyscale)
+    lighten (float): 0 = no change, 1 = fully white
+
+Returns:
+    tuple: Modified RGB tuple in range 0–1
+\end{DoxyVerb}
+ 

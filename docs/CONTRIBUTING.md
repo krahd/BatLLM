@@ -1,132 +1,131 @@
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
-# Contributing (aka developer guide)
->
-> ![BatLLM's logo](./images/logo-small.png) **[Readme](README.md) &mdash; [Documentation](DOCUMENTATION.md)  &mdash; [User Guide](USER_GUIDE.md)  &mdash; [Contributing](CONTRIBUTING.md)  &mdash; [FAQ](FAQ.md)  &mdash; [Credits](CREDITS.md)**
->
->
+# Contributing
 
-This document is for developers who want to understand BatLLM’s code structure or extend the game’s functionality.
+This guide is for contributors who want to change BatLLM's code, tests, or documentation.
 
-> [!note]
-> **BatLLM is very young!** Pull requests, bug reports, documentation, data analyses, and feature suggestions are most welcome!
+## Contribution Expectations
 
-## Protocol
+- keep pull requests scoped to one topic
+- use English commit messages
+- explain non-obvious behavior changes in the pull request description
+- update docs when the user-facing workflow, setup path, configuration, or tests change
 
-If you would like to contribute a new feature, a bugfix or other improvement, please do so using a pull request. However, please take care that:
-    
-- **There is one pull request per topic**. I.e.: if you would like to contribute a new feature and two bugfixes, open three pull requests.
-- **All commit messages are in English.** 
-- **Every non-obvious features or changes must be shortly explained.** This might not only include what you committed, but also why you did it (motivation, usage scenario, testsings, etc.s).
+## Local Setup
 
-## Getting Started
+### Python Environment
 
-To **access the codebase, fork the repository on GitHub** and clone it locally.
-Create a new branch for your feature or fix.
-Make your changes with clear, well-documented code. If adding a new feature, try to write a short section about it for the documentation as well.
+```bash
+git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
+python -m venv .venv_BatLLM
+source .venv_BatLLM/bin/activate
+pip install -r requirements.txt
+```
 
-Then, **if you would like to contribute to it, submit a pull request** with a clear description of your changes and the problem they solve or the improvement made.
-We *will* review the PR, suggest any changes if necessary, and merge it once it’s ready.
+### Ollama Environment
 
-Please open an issue if you find a bug or have a feature request. Even if you’re not coding it yourself, ideas and feedback are extremely helpful.
+The codebase depends on two different Ollama surfaces:
 
-When contributing, ensure that any new dependencies are necessary and cross-platform. Also, test on multiple platforms if possible, or at least alert us if a change might affect Windows/Mac/Linux differently.
+- the Python `ollama` package for gameplay chat requests
+- the `ollama` CLI for the local service-management helpers and the Ollama config screen
 
-## Source Documentation
+For non-live unit work, the CLI is not required. For live gameplay or `run_tests.sh full`, it is required.
 
-- **Doxygen-generated documentation:** [https://krahd.github.io/BatLLM/code/html](https://krahd.github.io/BatLLM/code/html)
+## Project Layout
 
-## Technical Notes
-  
-- **Arena Rendering:** We have extended Kivy's Canvas to create `NormalizedCanvas` in which all positions are floats from 0.0 (top/left) to 1.0 (bottom/right), making the graphics resolution-independent.
+Core runtime modules:
 
-- **LLM Communication:** Uses REST API (`requests.post`), sending prompts and parsing LLM responses as plain text.
+- `src/main.py`: Kivy app entrypoint
+- `src/view/`: screens and `.kv` layouts
+- `src/game/game_board.py`: match flow, rendering hooks, and UI coordination
+- `src/game/bot.py`: bot state and command execution
+- `src/game/ollama_connector.py`: chat/history request builder using the Python `ollama` client
+- `src/game/history_manager.py`: authoritative game and chat history
+- `src/configs/`: YAML config files and config loader
+- `start_ollama.sh` and `stop_ollama.sh`: local Ollama helper scripts
 
-- **Game Logic:** Modular and easy to expand for online play, more bots, or richer mechanics.
+Maintained documentation:
 
-- **Performance:** Excellent on M1 MacBook Pro; actual performance depends on LLM and hardware.
+- `docs/README.md`
+- `docs/USER_GUIDE.md`
+- `docs/CONFIGURATION.md`
+- `docs/TESTING.md`
+- `docs/TROUBLESHOOTING.md`
+- `docs/CHANGELOG.md`
 
-- **Frontend:** The UI is built entirely with the **Kivy** framework. The layout is defined declaratively in `.kv` files (`home_screen.kv`, `settings_screen.kv`), and the logic is handled in corresponding Python files.
+Generated API docs:
 
-- **Game Logic:**
-  - `game_board.py`: The main widget that manages the game loop, bots, bullets, and drawing.
-  - `bot.py`: Defines the `Bot` class, which handles state, LLM interaction, and command execution.
-  - `bullet.py`: Defines the `Bullet` class, managing its movement and collision detection logic.
-  - `history_manager.py`: Provides structured recording of games, rounds and turns. It also
-    stores all chat messages exchanged between the bots and the LLM. Bots no longer keep
-    local `chat_history` lists; instead they call `HistoryManager.record_message` to
-    record both user prompts and assistant responses. The full conversation can be
-    reconstructed via `HistoryManager.get_chat_history`, either in a shared context
-    (both bots combined) or per bot when independent models are used.
+- `docs/code/`
 
-- **State History:** The `HistoryManager` class (`history_manager.py`) uses dataclasses to create a structured record of every game, round, and turn, which can be serialized to JSON.
+## Runtime Architecture
 
-- **Architecture:** The game is built using a Model-View-Controller-like separation. The **view** (UI) is done in Kivy with a `ScreenManager`. The main game screen (`HomeScreen`) contains the interactive elements (prompt input boxes, prompt history, output log, etc.) and the `GameBoardWidget` where the arena and bots are drawn. The **model** includes the `Bot` class (tracking state and handling LLM interaction) and the simple physics for bullets. The **controller** logic is primarily in `GameBoardWidget` (managing turns, rounds, and coordinating between UI events and bot actions).
+The current gameplay stack works like this:
 
-- **Arena Rendering:** The game uses a custom `NormalizedCanvas` context, meaning all coordinates for drawing are in the range 0.0–1.0 (where (0,0) corresponds to the top-left of the arena and (1,1) the bottom-right). This makes it easy to think about positions without worrying about pixels or aspect ratio. The arena is drawn as a square within the window with some padding. Bot coordinates (`x`, `y`) are floats in \[0,1], and a bot’s size (`diameter`) is also a fraction of the arena size.
+1. `HomeScreen` owns the high-level UI and delegates game actions to `GameBoard`.
+2. `GameBoard` owns the active `Bot` instances, the prompt store, and the live round/turn flow.
+3. `Bot` instances execute movement, rotation, shield, and bullet actions.
+4. `GameBoard` uses `OllamaConnector` to send synchronous chat requests through the Python `ollama` client.
+5. `HistoryManager` records game history and chat history as the single source of truth.
 
-- **Bot Representation:** Bots are drawn as circles with a line indicating facing direction. Each bot also has a small on-screen text box attached that shows its current `x`, `y`, `rot` (rotation angle in degrees), shield status, and health. This updates in real time so players and observers can see the state without parsing logs.
+The current model-management stack works like this:
 
-- **LLM Communication:** Communication with the LLMs is done via HTTP requests. The `Bot` class uses `kivy.network.urlrequest.UrlRequest` to send a POST to the configured endpoint with a JSON payload. For Ollama, the payload looks like:
+1. `OllamaConfigScreen` checks server state using local HTTP endpoints such as `/api/version`, `/api/ps`, and `/api/tags`.
+2. It uses `start_ollama.sh` and `stop_ollama.sh` for service lifecycle actions.
+3. It uses `https://ollama.com/library` as the remote-library source for downloadable model names.
+4. It uses `/api/pull` and `/api/generate` for pull and preload operations.
 
-        ```json
-        { "model": "llama3.2:latest", "prompt": "<PROMPT_TEXT>", "stream": false }
-        ```
+## Testing
 
-  The LLM server is expected to return a JSON response containing a field (for Ollama it's `"response"`) with the model’s output. The game will take this output and parse it for a command as described above. Non-blocking requests are used, so the game doesn’t freeze while waiting for the LLM. Each bot’s LLM call runs in parallel. A callback updates the game state when the response comes in.
+See [TESTING.md](TESTING.md) for the full matrix.
 
-- **LLM Response Parsing:** The LLM’s raw text response can technically be anything, but BatLLM expects it to be a command string. The code is **defensive**: if the response is a list (some APIs return an array of choices), it takes the first element; if it’s a string, it uses it as-is. It then looks at the first character to determine the action. If the response doesn’t correspond to a valid command (or is empty), that bot simply does nothing for that turn. This design encourages players to craft prompts that yield a clear command. The prompt augmentation instructions explicitly tell the LLM to output a valid command in the correct format.
+Most contributor work should use the non-live suite in a headless Kivy environment:
 
-- **Turns and Rounds:** Internally, when both players have entered prompts, `GameBoardWidget.play_round()` is called to initialize a new round. This sets the round number, randomizes turn order, and then calls `play_turn()`. On each turn, the game sends out the LLM requests for both bots (in the chosen order) and waits for both to complete. When each bot’s response is processed, it calls back to `on_bot_llm_interaction_complete()`. Once both bots are done, that function triggers the next turn via `Clock.schedule_once(self.play_turn, 0)` (scheduling with 0 delay means “do it on the next frame”). This continues until the turn limit is reached or a bot dies.
+```bash
+KIVY_WINDOW=mock KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_HOME=/tmp/batllm-kivy PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py
+```
 
-- **Bullet Physics:** When a bullet is fired, the simulation of the bullet is done immediately in the same turn. The bullet travels in a straight line from the firing bot’s position in the direction the bot was facing. It steps forward in small increments (the bullet speed is predetermined) and checks for collision with the opponent or exiting the bounds. This is implemented in the `Bullet` class’s `update()` method using simple geometry. The shield’s effect is accounted for by checking the angle of impact relative to the bot’s facing direction (within `shield_size` arc, the bullet is considered blocked). The game draws a trail for the bullet as it moves (a fading red dot path) to make the shot visible to players. Once the bullet hits or misses, the result (hit/miss and damage) is applied instantly. The turn then resumes if the second bot hasn’t acted yet (but note, if the first bot’s bullet destroyed the second bot, the round will end before the second bot can act).
+Quick smoke coverage:
 
-- **Keyboard Controls (Debug/Alternate Input):** In addition to prompts, the game has basic keyboard controls for manual play or debugging:
+```bash
+./run_tests.sh core
+```
 
-  - Press **M** (or **Shift+M** for the other bot) to move a bot forward.
-  - **R** / **T** keys to rotate one bot clockwise/anticlockwise a small increment (with Shift for the second bot).
-  - **S** to toggle shield (Shift+S for other bot).
-  - **Spacebar** to fire a bullet (for the bot without shield up; use Shift+Space for the other bot).
-    These can be used to test mechanics without the LLM, or even allow two people to play using keyboard instead of writing prompts. When a keyboard action happens, it bypasses the LLM and immediately executes the command (this is mostly for development and isn’t the core game mode).
+Live Ollama smoke coverage:
 
-- **Performance:** On an M1 MacBook Pro (2021), BatLLM runs smoothly. The main performance factor is the LLM inference time. The UI and physics are lightweight. The game loop is set to 60 FPS, and rendering uses vector graphics for bots and bullets. Even with slower models, because the game waits for LLM responses each turn, you won’t drop frames; you’ll just have a longer pause between turns. If using a very slow model, you can reduce `turns_per_round` or simply be patient between turns.
+```bash
+./run_tests.sh full
+```
 
-- **Sound Effects:** There are minor sound effects (e.g., `shoot1.wav` for firing, `bot_hit.wav` for when a bot is hit) loaded at startup. These play during keyboard-controlled actions currently. In LLM-mediated turns, they might not all be hooked up yet (this is a minor to-do). This means you might not hear a sound for every LLM-fired bullet in the current version. In the future, these will be tied in so that a gunshot or hit sound plays on LLM actions too.
+## Documentation Maintenance
 
-- **Extensibility:** The code is structured to allow modifications. For example, you can add new commands by extending the `match` in `Bot._on_llm_response` and adding a corresponding method in Bot or GameBoard. You could add new screens (like a main menu or a post-game stats screen) via Kivy’s ScreenManager. The separation of concerns means, for instance, you could swap out the LLM communication part (to use an OpenAI API or another library) by modifying the Bot class without touching the game logic or UI. We encourage experimentation—BatLLM is as much a sandbox for AI interaction as it is a game.
+When behavior changes, update the maintained docs in the same branch. In particular, update docs when you change:
 
-## Important Files
+- UI labels
+- setup steps
+- config keys or defaults
+- test commands
+- Ollama model-management behavior
+- keyboard and exit behavior
 
-- **`home_screen.py`** is the main game UI screen containing prompt inputs, history, etc., and the game board widget. It handles most of the user interaction.
-- **`game_board.py`**  `GameBoardWidget` and implements the game world (board), mechanics, logic, and rendering.
-- **`bot.py`**  `Bot` class which models the game's bots. It stores the bot's state, implements its behaviours, while also taking care of the interaction with the LLM and rendering the bot on the game canvas.
-- **`bullet.py`** defines the `Bullet` class, which handles bullet movement and collision logic. A bullet is not a Kivy widget but a logical object; drawing the bullet is handled within the GameBoard’s canvas.
-- **`history_manager.py`** defines the HistoryManager which keeps track of what happens and is able to save this information as a JSON file.
+Regenerate the API docs when public modules or screens change:
 
-## Coding Style
+```bash
+doxygen docs/code/dox_config.properties
+```
 
-- The code is mostly straightforward, using Python 3.10+ pattern matching (`match/case`) for command parsing which is nice.
-- Use American english for the code and your preferred English flavour for documentation, comments, etc.
-- Spacing and naming: it uses snake\_case for functions and variables (PEP8 style). Some parts (like some print debugging statements) can be cleaned up or removed.
-- Comments: There are several TODOs in code. Please feel free to address these if you want.
-- Although insofar the code has only been run on MacOS, please keep cross-platform in mind: avoid using OS-specific file paths. For example, use `Path` (as seen in app\_config using pathlib).
-- When in doubt, always choose the more inclusive option.
+## Code Style
 
-## Potential Roadmap Ideas
+- use Python 3 style annotations where practical
+- keep Kivy screen logic in the screen classes and layout structure in `.kv` files
+- avoid undocumented user-facing behavior changes
+- prefer clear state transitions over hidden side effects
 
-- Extending Game Mechanics: bot actions, explore different world sizes.
-- Autonomous behaviour (NPCs, world elements).
-- Adding new methods of prompt augmentation.
-- UI improvement (graphics, interaction, etc.).
-- Network-based multiplayer
-- Augment the number of simultaneous players.
-- Analyse the saved histories, search for patterns and insights.
-- Team battles.
-- Single-Player Mode against AI-controlled LLMs or against stored prompts.
-- Shared prompt storage, ranking, and sharing.
-- Scalability and Testing.
+## Pull Request Checklist
 
-## License
+Before opening a PR:
 
-This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details. This means you’re free to use, modify, and distribute this software as long as you include the license notice. We hope you’ll contribute back any improvements!
-
-*More coming soon...*
+1. run the relevant tests
+2. update docs if the workflow or UI changed
+3. regenerate code docs if public modules or screen docs changed
+4. review the resulting diff for generated-file noise before pushing
