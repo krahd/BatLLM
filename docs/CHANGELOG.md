@@ -2,7 +2,7 @@
 
 # Changelog
 
-## 2026-04-03
+## v0.1.0 - 2026-04-03
 
 ### Documentation
 
