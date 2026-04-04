@@ -19,7 +19,7 @@ This README is the overview page for the project. It keeps the core framing of B
 
 ![BatLLM demo](./screenshots/quick_demo.gif)
 
-## What Is In The App
+## Main Functionalities
 
 BatLLM currently ships with:
 
