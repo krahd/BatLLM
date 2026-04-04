@@ -73,7 +73,7 @@ BatLLM uses both:
 - the Python `ollama` package during gameplay
 - the `ollama` CLI for the in-app start/stop/version workflow and helper scripts
 
-If the CLI is missing, the app can offer to install Ollama from the Ollama screen.
+If the CLI is missing, the app can offer to install Ollama from the Ollama screen or during app startup.
 
 ## Quick Start
 
@@ -109,7 +109,7 @@ You can install Ollama manually from the official download pages:
 
 Or you can let BatLLM launch the official platform-specific install flow from startup or from the Ollama screen.
 
-On startup, BatLLM now asks whether to install Ollama when the CLI is missing. If Ollama is installed but not running, BatLLM can either ask whether to start it or start it automatically when `Auto-Start Ollama on Launch` is enabled in `Settings`.
+On startup, BatLLM now asks whether to install Ollama when the CLI is missing. If Ollama is installed but not running, BatLLM can either ask whether to start it or start it automatically when `Start Ollama Automatically on BatLLM Launch` is enabled in `Settings`.
 
 You can also use the `Install Ollama` button in the Ollama configuration screen. It asks for confirmation first and then launches the official platform-specific install flow again if Ollama is already present.
 
@@ -202,8 +202,8 @@ The settings screen controls:
 - prompt augmentation
 - `Confirm on Exit`
 - `Prompt to Save on Exit`
-- `Auto-Start Ollama on Launch`
-- `Auto-Stop Ollama on Exit`
+- `Start Ollama Automatically on BatLLM Launch`
+- `Stop Ollama Automatically on BatLLM Quit`
 
 The button that opens the Ollama screen is labeled `Ollama Config`.
 
