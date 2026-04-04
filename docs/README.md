@@ -6,8 +6,8 @@ BatLLM is a free and libre open source research project, education tool, and, at
 
 Like every other area where AI is used, having the best strategy for the game world alone is not enough to win. By combining language, strategy, and AI-driven gameplay, BatLLM aims to offer a fun, safe, self-directed, independent, and hands-on platform for exploring the strengths and shortcomings of LLMs.
 
-*In a world increasingly shaped by AI, and marked by profound asymmetries of power, knowledge, and access, developing critical and practical AI literacy is both urgent and necessary.
-*
+*In a world increasingly shaped by AI, and marked by profound asymmetries of power, knowledge, and access, developing critical and practical AI literacy is both urgent and necessary.*
+
 The project aims to support a broader social understanding of AI by pairing intuitive play with experiential learning. It hopes to contribute to the development of AI prompting skills while highlighting the need for critical engagement with the social, political, and economic dynamics deeply embedded in generative AI systems.
 
 The project is intentionally practical: the point is not just to watch an LLM respond to prompts, but to make prompt quality, model behaviour, context design, and system configuration materially affect the outcome of play.
