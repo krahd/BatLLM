@@ -33,9 +33,9 @@ This main page focuses on the project as a whole: its motivations, aims, current
 The current application includes four primary screens:
 
 1. `HomeScreen`: prompt entry, prompt history, session save/load, round control, and the game board.
-2. `SettingsScreen`: gameplay values, context mode, prompt augmentation, and exit-flow settings.
+2. `SettingsScreen`: gameplay values, context mode, prompt augmentation, exit-flow settings, and Ollama startup/teardown toggles.
 3. `HistoryScreen`: compact per-bot prompt history plus full session history.
-4. `OllamaConfigScreen`: local Ollama service controls plus local/remote model management.
+4. `OllamaConfigScreen`: local Ollama service controls, local/remote model management, and installer launch.
 
 The repository now also includes cross-platform entrypoints and release tooling:
 
@@ -47,11 +47,19 @@ The Ollama screen is now the recommended operational workflow for most users. It
 
 1. start Ollama through BatLLM's cross-platform Python helper
 2. stop Ollama through the same helper
-3. refresh local models from `/api/tags`
-4. choose the active BatLLM model from a modal picker
-5. refresh remote models from `https://ollama.com/library`
-6. download a selected remote model with confirmation
-7. delete a selected local model with confirmation
+3. install or reinstall Ollama through the platform-specific official installer flow
+4. refresh local models from `/api/tags`
+5. choose the active BatLLM model from a modal picker
+6. refresh remote models from `https://ollama.com/library`
+7. download a selected remote model with confirmation
+8. delete a selected local model with confirmation
+
+At startup, BatLLM can now:
+
+- prompt to install Ollama when the CLI is missing
+- prompt to start Ollama when it is installed but not running
+- skip the start prompt and auto-start Ollama when the matching setting is enabled
+- warm the last BatLLM-served model when Ollama starts
 
 The model pickers are modal popups. They close when the user:
 

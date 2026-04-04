@@ -13,6 +13,7 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
+import ollama_service
 import requests
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -44,6 +45,18 @@ REMOTE_MODEL_CARD_RE = re.compile(
 REMOTE_MODEL_SIZE_RE = re.compile(r'<span x-test-size[^>]*>([^<]+)</span>')
 
 
+def build_ollama_install_command(platform_name: str | None = None) -> list[str]:
+    """Return the platform-specific Ollama install command."""
+    command, _display = ollama_service.install_command_for_current_platform(platform_name)
+    return command
+
+
+def describe_ollama_install_command(platform_name: str | None = None) -> str:
+    """Return a human-readable description of the install command."""
+    _command, display = ollama_service.install_command_for_current_platform(platform_name)
+    return display
+
+
 class OllamaConfigScreen(Screen):
     """Manage the local Ollama service and BatLLM model selection."""
 
@@ -63,7 +76,8 @@ class OllamaConfigScreen(Screen):
         self._remote_model_entries: list[dict[str, str]] = []
         self._remote_model_display_map: dict[str, str] = {}
         self._model_picker_popup = None
-        self._managed_model_name: str | None = None
+        managed_model = str(config.get("llm", "last_served_model") or "").strip()
+        self._managed_model_name: str | None = managed_model or None
 
     def on_pre_enter(self, *_args):
         Window.unbind(on_key_down=self.handle_window_key_down)
@@ -228,13 +242,32 @@ class OllamaConfigScreen(Screen):
         )
 
     def _run_ollama_command(self, *args: str) -> subprocess.CompletedProcess:
+        command = ollama_service.resolve_ollama_command()
         return subprocess.run(
-            ["ollama", *args],
+            [command, *args],
             cwd=ROOT,
             text=True,
             capture_output=True,
             check=False,
         )
+
+    def _run_ollama_install_command(self) -> subprocess.CompletedProcess:
+        return subprocess.run(
+            build_ollama_install_command(),
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+    def _remember_served_model(self, model_name: str):
+        model_name = model_name.strip()
+        if not model_name:
+            return
+        if str(config.get("llm", "last_served_model") or "").strip() == model_name:
+            return
+        config.set("llm", "last_served_model", model_name)
+        config.save()
 
     def _collect_ollama_status(self) -> dict[str, Any]:
         base_url, port = self._llm_endpoint()
@@ -333,25 +366,96 @@ class OllamaConfigScreen(Screen):
 
         self._run_in_thread(work)
 
-    def _open_install_guidance(self):
-        if sys.platform.startswith("win"):
-            suggestion = "Install Ollama for Windows from https://ollama.com/download/windows"
-        elif sys.platform == "darwin":
-            suggestion = "Install Ollama for macOS from https://ollama.com/download"
-        else:
-            suggestion = "Install Ollama for Linux from https://ollama.com/download/linux"
+    def request_install_ollama(self):
+        self._set_status("Checking Ollama installation...")
 
-        def on_path(path: str):
-            cmd = f"Install suggestion: {suggestion}\nProvided path: {path}"
-            self._append_log(cmd)
-            show_fading_alert("Ollama Install Guidance", cmd, duration=2.5, fade_duration=1.0)
+        def work():
+            snapshot = self._collect_ollama_status()
+            installed = bool(snapshot.get("found"))
+            title = "Reinstall Ollama" if installed else "Install Ollama"
+            message = (
+                "Ollama is already installed. Reinstall or update it using the official installer?"
+                if installed
+                else "Ollama is not installed. Install it now using the official Ollama installer?"
+            )
+            action_label = "Reinstalling" if installed else "Installing"
 
-        show_text_input_dialog(
-            on_confirm=on_path,
-            title="Ollama Not Found",
-            message="Ollama was not found. Provide an installer or binary path.",
-            input_hint="/path/to/ollama or installer",
-        )
+            def on_confirm():
+                self._set_status(f"{action_label} Ollama...")
+
+                def install_work():
+                    try:
+                        install_args = ["--reinstall"] if installed else []
+                        proc = self._run_ollama_helper("install", *install_args)
+                    except FileNotFoundError as exc:
+                        self._set_status("Unable to launch the Ollama installer.")
+                        self._append_log(f"Installer launch failed: {exc}")
+                        Clock.schedule_once(
+                            lambda *_: show_fading_alert(
+                                "Install Ollama",
+                                "Unable to launch the Ollama installer command.",
+                                duration=2.0,
+                                fade_duration=1.0,
+                            ),
+                            0,
+                        )
+                        return
+
+                    output = f"{proc.stdout or ''}\n{proc.stderr or ''}".strip()
+                    command_text = "python src/ollama_service.py install"
+                    if installed:
+                        command_text = f"{command_text} --reinstall"
+                    self._append_log(
+                        f"$ {command_text}\n{output or f'exit {proc.returncode}'}"
+                    )
+
+                    if proc.returncode == 0:
+                        state = ollama_service.inspect_service_state()
+                        if state.get("installed"):
+                            self._set_status("Ollama install completed.")
+                            self.refresh_ollama_status()
+                            self.refresh_local_models()
+                            return
+
+                        self._set_status("Ollama installer launched.")
+                        Clock.schedule_once(
+                            lambda *_: show_fading_alert(
+                                "Install Ollama",
+                                output
+                                or (
+                                    "Installer launched. Complete the install, then refresh "
+                                    "the Ollama screen or restart BatLLM."
+                                ),
+                                duration=3.0,
+                                fade_duration=1.0,
+                            ),
+                            0,
+                        )
+                        return
+
+                    self._set_status("Ollama installer failed to launch.")
+                    Clock.schedule_once(
+                        lambda *_: show_fading_alert(
+                            "Install Ollama",
+                            output or "The Ollama install command returned a non-zero exit status.",
+                            duration=2.5,
+                            fade_duration=1.0,
+                        ),
+                        0,
+                    )
+
+                self._run_in_thread(install_work)
+
+            def on_cancel():
+                self._set_status("Install canceled.")
+                self._append_log(f"{title} canceled.")
+
+            Clock.schedule_once(
+                lambda *_: show_confirmation_dialog(title, message, on_confirm, on_cancel),
+                0,
+            )
+
+        self._run_in_thread(work)
 
     def start_ollama(self):
         self._set_status("Starting Ollama...")
@@ -362,8 +466,11 @@ class OllamaConfigScreen(Screen):
             self._append_log(f"$ python src/ollama_service.py start\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
-                configured_model = str(config.get("llm", "model") or "").strip()
+                configured_model = str(
+                    config.get("llm", "last_served_model") or config.get("llm", "model") or ""
+                ).strip()
                 self._managed_model_name = configured_model or None
+                self._remember_served_model(configured_model)
                 self._set_status("Ollama started successfully.")
                 self.refresh_ollama_status()
                 self.refresh_local_models()
@@ -373,8 +480,13 @@ class OllamaConfigScreen(Screen):
             msg = combined or "Unknown startup error"
             show_fading_alert("Start Ollama", msg, duration=2.5, fade_duration=1.0)
 
-            if "command not found" in msg.lower() or "ollama" in msg.lower():
-                Clock.schedule_once(lambda *_: self._open_install_guidance(), 0)
+            msg_lower = msg.lower()
+            if (
+                "command not found" in msg_lower
+                or "ollama: not found" in msg_lower
+                or "not recognized as an internal or external command" in msg_lower
+            ):
+                Clock.schedule_once(lambda *_: self.request_install_ollama(), 0)
 
         self._run_in_thread(work)
 
@@ -602,6 +714,7 @@ class OllamaConfigScreen(Screen):
                     running_before.discard(previous_managed)
 
                 self._ensure_model_serving(model)
+                self._remember_served_model(model)
                 if model not in running_before or previous_managed == model:
                     self._managed_model_name = model
                 else:

@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import ollama_service
+import yaml
 from util import paths
 
 
@@ -36,10 +37,36 @@ def test_load_llm_config_reads_yaml_defaults(tmp_path: Path) -> None:
     loaded = ollama_service.load_llm_config(config_path)
 
     assert loaded == {
+        "last_served_model": "",
         "model": "qwen3:latest",
         "url": "http://localhost",
         "port": 11434,
     }
+
+
+def test_preferred_start_model_prefers_last_served_model() -> None:
+    llm = {
+        "last_served_model": "mistral-small:latest",
+        "model": "qwen3:latest",
+        "url": "http://localhost",
+        "port": 11434,
+    }
+
+    assert ollama_service.preferred_start_model(llm) == "mistral-small:latest"
+
+
+def test_save_last_served_model_updates_yaml(tmp_path: Path) -> None:
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        "llm:\n  model: qwen3:latest\n  url: http://localhost\n  port: 11434\n",
+        encoding="utf-8",
+    )
+
+    ollama_service.save_last_served_model("mistral-small:latest", config_path)
+
+    saved = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+
+    assert saved["llm"]["last_served_model"] == "mistral-small:latest"
 
 
 def test_find_ollama_listener_pids_filters_by_listen_port(monkeypatch) -> None:
@@ -64,6 +91,64 @@ def test_find_ollama_listener_pids_filters_by_listen_port(monkeypatch) -> None:
     monkeypatch.setattr(ollama_service.psutil, "net_connections", lambda kind="inet": connections)
 
     assert ollama_service.find_ollama_listener_pids(11434) == [101]
+
+
+def test_install_command_for_current_platform_is_platform_specific() -> None:
+    assert ollama_service.install_command_for_current_platform("linux") == (
+        ["/bin/sh", "-lc", "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh"],
+        "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
+    )
+    assert ollama_service.install_command_for_current_platform("darwin") == (
+        ["/bin/sh", "-lc", "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh"],
+        "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
+    )
+    assert ollama_service.install_command_for_current_platform("win32") == (
+        [
+            "powershell.exe",
+            "-NoExit",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "irm https://ollama.com/install.ps1 | iex",
+        ],
+        "irm https://ollama.com/install.ps1 | iex",
+    )
+
+
+def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_path: Path) -> None:
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        (
+            "llm:\n"
+            "  model: qwen3:latest\n"
+            "  last_served_model: mistral-small:latest\n"
+            "  url: http://localhost\n"
+            "  port: 11434\n"
+        ),
+        encoding="utf-8",
+    )
+
+    saved = {}
+    commands = []
+
+    def fake_run_ollama_command(*args: str, host: str | None = None):
+        commands.append((args, host))
+        return SimpleNamespace(returncode=0, stdout="ok", stderr="")
+
+    monkeypatch.setattr(ollama_service, "run_ollama_command", fake_run_ollama_command)
+    monkeypatch.setattr(ollama_service, "server_is_up", lambda _url, _port: False)
+    monkeypatch.setattr(ollama_service, "start_detached_ollama_serve", lambda _host: None)
+    monkeypatch.setattr(ollama_service, "wait_until_ready", lambda _url, _port: None)
+    monkeypatch.setattr(ollama_service, "preload_model", lambda _url, _port, _model: None)
+    monkeypatch.setattr(
+        ollama_service,
+        "save_last_served_model",
+        lambda model, path=ollama_service.CONFIG_PATH: saved.update({"model": model, "path": path}),
+    )
+
+    assert ollama_service.start_service(config_path) == 0
+    assert saved == {"model": "mistral-small:latest", "path": config_path}
+    assert commands[1][0] == ("pull", "mistral-small:latest")
 
 
 def test_cross_platform_launchers_compile() -> None:

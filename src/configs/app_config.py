@@ -27,6 +27,11 @@ DEFAULTS = {
         "frame_rate": 60,
         "confirm_on_exit": True,
         "prompt_save_on_exit": True,
+        "auto_start_ollama": False,
+        "stop_ollama_on_exit": False,
+    },
+    "llm": {
+        "last_served_model": "",
     },
 }
 

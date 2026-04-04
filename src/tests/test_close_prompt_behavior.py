@@ -304,6 +304,8 @@ def test_settings_update_config_persists_save_on_exit_flag(monkeypatch) -> None:
         "augmentation_checkbox": FakeField(active=True),
         "confirm_on_exit_checkbox": FakeField(active=False),
         "save_on_exit_checkbox": FakeField(active=False),
+        "auto_start_ollama_checkbox": FakeField(active=True),
+        "stop_ollama_on_exit_checkbox": FakeField(active=True),
     }
 
     monkeypatch.setattr("view.settings_screen.config.set", lambda section,
@@ -313,3 +315,5 @@ def test_settings_update_config_persists_save_on_exit_flag(monkeypatch) -> None:
 
     assert ("ui", "confirm_on_exit", False) in saved_values
     assert ("ui", "prompt_save_on_exit", False) in saved_values
+    assert ("ui", "auto_start_ollama", True) in saved_values
+    assert ("ui", "stop_ollama_on_exit", True) in saved_values

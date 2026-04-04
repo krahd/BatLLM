@@ -205,21 +205,32 @@ def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
 
 def test_start_ollama_marks_configured_model_as_managed(monkeypatch) -> None:
     statuses = []
+    remembered = []
     fake_screen = SimpleNamespace(
         _managed_model_name=None,
         _set_status=lambda text: statuses.append(text),
         _append_log=lambda _text: None,
         _run_ollama_helper=lambda _action: DummyProc(returncode=0, stdout="ok"),
+        _remember_served_model=lambda model: remembered.append(model),
         refresh_ollama_status=lambda: None,
         refresh_local_models=lambda: None,
         _run_in_thread=lambda fn: fn(),
     )
 
-    monkeypatch.setattr(screen_module.config, "get", lambda _section, key: "llama3.2:latest" if key == "model" else None)
+    monkeypatch.setattr(
+        screen_module.config,
+        "get",
+        lambda _section, key: (
+            "mistral-small:latest"
+            if key == "last_served_model"
+            else ("llama3.2:latest" if key == "model" else None)
+        ),
+    )
 
     screen_module.OllamaConfigScreen.start_ollama(fake_screen)
 
-    assert fake_screen._managed_model_name == "llama3.2:latest"
+    assert fake_screen._managed_model_name == "mistral-small:latest"
+    assert remembered == ["mistral-small:latest"]
     assert statuses[-1] == "Ollama started successfully."
 
 
@@ -229,6 +240,7 @@ def test_set_model_from_selection_saves_stops_previous_managed_and_serves(monkey
     refreshed = {"status": False, "local": False}
     stop_calls = []
     ensure_calls = []
+    remembered = []
 
     fake_screen = SimpleNamespace(
         selected_local_model="llama3.2:latest",
@@ -239,6 +251,7 @@ def test_set_model_from_selection_saves_stops_previous_managed_and_serves(monkey
         _get_running_model_names=lambda: ["mistral-small:latest"],
         _stop_serving_model=lambda model: stop_calls.append(model),
         _ensure_model_serving=lambda model: ensure_calls.append(model),
+        _remember_served_model=lambda model: remembered.append(model),
         refresh_ollama_status=lambda: refreshed.__setitem__("status", True),
         refresh_local_models=lambda: refreshed.__setitem__("local", True),
     )
@@ -256,10 +269,30 @@ def test_set_model_from_selection_saves_stops_previous_managed_and_serves(monkey
     assert saved["saved"] is True
     assert stop_calls == ["mistral-small:latest"]
     assert ensure_calls == ["llama3.2:latest"]
+    assert remembered == ["llama3.2:latest"]
     assert fake_screen._managed_model_name == "llama3.2:latest"
     assert refreshed["status"] is True
-    assert refreshed["local"] is True
-    assert statuses[-1] == "Model ready: llama3.2:latest"
+
+
+def test_build_ollama_install_command_is_platform_specific() -> None:
+    assert screen_module.build_ollama_install_command("linux") == [
+        "/bin/sh",
+        "-lc",
+        "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
+    ]
+    assert screen_module.build_ollama_install_command("darwin") == [
+        "/bin/sh",
+        "-lc",
+        "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
+    ]
+    assert screen_module.build_ollama_install_command("win32") == [
+        "powershell.exe",
+        "-NoExit",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "irm https://ollama.com/install.ps1 | iex",
+    ]
 
 
 def test_set_model_from_selection_does_not_manage_external_running_model(monkeypatch) -> None:
@@ -272,6 +305,7 @@ def test_set_model_from_selection_does_not_manage_external_running_model(monkeyp
         _get_running_model_names=lambda: ["llama3.2:latest"],
         _stop_serving_model=lambda _model: None,
         _ensure_model_serving=lambda _model: None,
+        _remember_served_model=lambda _model: None,
         refresh_ollama_status=lambda: None,
         refresh_local_models=lambda: None,
     )

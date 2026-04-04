@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
+import shlex
 import subprocess
 import sys
 import time
@@ -19,6 +21,8 @@ import yaml
 MIN_PYTHON = (3, 10)
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "src" / "configs" / "config.yaml"
+UNIX_INSTALL_URL = "https://ollama.com/install.sh"
+WINDOWS_INSTALL_URL = "https://ollama.com/install.ps1"
 
 
 def require_supported_python() -> None:
@@ -34,10 +38,176 @@ def load_llm_config(path: Path = CONFIG_PATH) -> dict[str, str | int]:
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     llm = data.get("llm") or {}
     return {
+        "last_served_model": str(llm.get("last_served_model") or "").strip(),
         "model": str(llm.get("model") or "").strip(),
         "url": str(llm.get("url") or "http://localhost").strip().rstrip("/"),
         "port": int(llm.get("port") or 11434),
     }
+
+
+def preferred_start_model(llm: dict[str, str | int]) -> str:
+    """Prefer the last BatLLM-served model, then fall back to the configured model."""
+    last_served_model = str(llm.get("last_served_model") or "").strip()
+    model = str(llm.get("model") or "").strip()
+    return last_served_model or model
+
+
+def save_last_served_model(model: str, path: Path = CONFIG_PATH) -> None:
+    """Persist the most recent BatLLM-managed Ollama model."""
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    llm = data.setdefault("llm", {})
+    llm["last_served_model"] = model.strip()
+    path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+
+
+def ollama_binary_candidates() -> list[Path]:
+    """Return CLI locations to probe when PATH lookup is not enough."""
+    candidates: list[Path] = []
+
+    discovered = shutil.which("ollama")
+    if discovered:
+        candidates.append(Path(discovered))
+
+    if os.name == "nt":
+        local_appdata = os.environ.get("LOCALAPPDATA")
+        if local_appdata:
+            candidates.append(Path(local_appdata) / "Programs" / "Ollama" / "ollama.exe")
+        candidates.append(Path.home() / "AppData" / "Local" / "Programs" / "Ollama" / "ollama.exe")
+    elif sys.platform == "darwin":
+        candidates.extend(
+            [
+                Path("/Applications/Ollama.app/Contents/Resources/ollama"),
+                Path("/Applications/Ollama.app/Contents/MacOS/Ollama"),
+                Path("/usr/local/bin/ollama"),
+                Path("/opt/homebrew/bin/ollama"),
+            ]
+        )
+    else:
+        candidates.extend(
+            [
+                Path("/usr/local/bin/ollama"),
+                Path("/usr/bin/ollama"),
+                Path("/bin/ollama"),
+            ]
+        )
+
+    unique: list[Path] = []
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        unique.append(candidate)
+    return unique
+
+
+def resolve_ollama_command() -> str:
+    """Resolve the best available Ollama CLI path for the current platform."""
+    for candidate in ollama_binary_candidates():
+        if candidate.exists():
+            return str(candidate)
+    raise FileNotFoundError("ollama")
+
+
+def ollama_installed() -> bool:
+    """Return ``True`` when an Ollama CLI installation can be resolved."""
+    try:
+        resolve_ollama_command()
+    except FileNotFoundError:
+        return False
+    return True
+
+
+def ollama_version_text(host: str | None = None) -> str:
+    """Return the current Ollama CLI version output, if available."""
+    try:
+        proc = run_ollama_command("--version", host=host)
+    except FileNotFoundError:
+        return ""
+    return (proc.stdout or proc.stderr).strip()
+
+
+def install_command_for_current_platform(platform_name: str | None = None) -> tuple[list[str], str]:
+    """Return the official Ollama install command and its display form."""
+    platform_name = platform_name or sys.platform
+
+    if platform_name.startswith("win"):
+        command = [
+            "powershell.exe",
+            "-NoExit",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            f"irm {WINDOWS_INSTALL_URL} | iex",
+        ]
+        return command, f"irm {WINDOWS_INSTALL_URL} | iex"
+
+    install_command = f"export OLLAMA_NO_START=1; curl -fsSL {shlex.quote(UNIX_INSTALL_URL)} | sh"
+    return ["/bin/sh", "-lc", install_command], install_command
+
+
+def _linux_terminal_launcher() -> list[str] | None:
+    """Return a terminal emulator suitable for interactive Linux installs."""
+    launchers = [
+        ["x-terminal-emulator", "-e"],
+        ["gnome-terminal", "--"],
+        ["konsole", "-e"],
+        ["xterm", "-e"],
+    ]
+    for launcher in launchers:
+        if shutil.which(launcher[0]):
+            return launcher
+    return None
+
+
+def install_service(reinstall: bool = False) -> tuple[int, str]:
+    """Launch the official Ollama installer for the current platform."""
+    action = "reinstall" if reinstall else "install"
+    command, display = install_command_for_current_platform()
+
+    try:
+        if os.name == "nt":
+            subprocess.Popen(command, cwd=ROOT, creationflags=subprocess.CREATE_NEW_CONSOLE)
+            return 0, f"Launched the official Ollama {action} workflow in PowerShell."
+
+        if sys.platform == "darwin":
+            script_literal = display.replace("\\", "\\\\").replace('"', '\\"')
+            proc = subprocess.run(
+                [
+                    "osascript",
+                    "-e",
+                    f'tell application "Terminal" to do script "{script_literal}"',
+                    "-e",
+                    'tell application "Terminal" to activate',
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            if proc.returncode != 0:
+                details = (proc.stderr or proc.stdout or "Unable to open Terminal.").strip()
+                return proc.returncode, details
+            return 0, f"Launched the official Ollama {action} workflow in Terminal."
+
+        terminal = _linux_terminal_launcher()
+        if terminal is not None:
+            subprocess.Popen([*terminal, *command], cwd=ROOT)
+            return 0, f"Launched the official Ollama {action} workflow in a terminal window."
+
+        proc = subprocess.run(
+            command,
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        combined = ((proc.stdout or "") + (proc.stderr or "")).strip()
+        if proc.returncode == 0:
+            return 0, combined or f"Completed the official Ollama {action} workflow."
+        return proc.returncode, combined or f"Ollama {action} failed."
+    except FileNotFoundError as exc:
+        return 1, f"Unable to launch the Ollama installer command ({display}): {exc}"
 
 
 def endpoint_url(url: str, port: int, path: str) -> str:
@@ -74,13 +244,32 @@ def server_is_up(url: str, port: int) -> bool:
         return False
 
 
+def inspect_service_state(config_path: Path = CONFIG_PATH) -> dict[str, object]:
+    """Return the install/runtime state BatLLM cares about at startup."""
+    llm = load_llm_config(config_path)
+    url = str(llm["url"])
+    port = int(llm["port"])
+    host = f"{url.removeprefix('http://').removeprefix('https://')}:{port}"
+    return {
+        "installed": ollama_installed(),
+        "version": ollama_version_text(host=host),
+        "running": server_is_up(url, port),
+        "configured_model": str(llm["model"]),
+        "last_served_model": str(llm["last_served_model"]),
+        "startup_model": preferred_start_model(llm),
+        "url": url,
+        "port": port,
+    }
+
+
 def run_ollama_command(*args: str, host: str | None = None) -> subprocess.CompletedProcess:
     """Run an Ollama CLI command and capture the result."""
     env = os.environ.copy()
     if host:
         env["OLLAMA_HOST"] = host
+    command = resolve_ollama_command()
     return subprocess.run(
-        ["ollama", *args],
+        [command, *args],
         cwd=ROOT,
         text=True,
         capture_output=True,
@@ -91,6 +280,7 @@ def run_ollama_command(*args: str, host: str | None = None) -> subprocess.Comple
 
 def start_detached_ollama_serve(host: str) -> subprocess.Popen:
     """Start ``ollama serve`` in the background for the current platform."""
+    command = resolve_ollama_command()
     kwargs: dict[str, object] = {
         "cwd": ROOT,
         "stdout": subprocess.DEVNULL,
@@ -109,7 +299,7 @@ def start_detached_ollama_serve(host: str) -> subprocess.Popen:
     else:
         kwargs["start_new_session"] = True
 
-    return subprocess.Popen(["ollama", "serve"], **kwargs)
+    return subprocess.Popen([command, "serve"], **kwargs)
 
 
 def wait_until_ready(url: str, port: int, timeout_seconds: float = 60.0) -> None:
@@ -134,7 +324,7 @@ def preload_model(url: str, port: int, model: str) -> None:
 def start_service(config_path: Path = CONFIG_PATH) -> int:
     """Start Ollama if needed, ensure the configured model is present, and warm it."""
     llm = load_llm_config(config_path)
-    model = str(llm["model"])
+    model = preferred_start_model(llm)
     url = str(llm["url"])
     port = int(llm["port"])
     host = f"{url.removeprefix('http://').removeprefix('https://')}:{port}"
@@ -169,6 +359,7 @@ def start_service(config_path: Path = CONFIG_PATH) -> int:
         return pull_proc.returncode
 
     preload_model(url, port, model)
+    save_last_served_model(model, config_path)
 
     if started:
         print(f"Completed: started ollama at {host}, pulled and warmed model '{model}'.")
@@ -263,7 +454,7 @@ def stop_service(config_path: Path = CONFIG_PATH, verbose: bool = False) -> int:
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
     parser = argparse.ArgumentParser(description="Cross-platform Ollama helper for BatLLM")
-    parser.add_argument("action", choices=("start", "stop"))
+    parser.add_argument("action", choices=("install", "start", "stop"))
     parser.add_argument(
         "-c",
         "--config",
@@ -276,6 +467,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Print verbose status when stopping the service.",
     )
+    parser.add_argument(
+        "--reinstall",
+        action="store_true",
+        help="Launch the official installer even if Ollama is already installed.",
+    )
     return parser
 
 
@@ -286,6 +482,12 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config_path = Path(args.config).resolve()
 
+    if args.action == "install":
+        code, message = install_service(reinstall=args.reinstall)
+        if message:
+            stream = sys.stderr if code else sys.stdout
+            print(message, file=stream)
+        return code
     if args.action == "start":
         return start_service(config_path)
     return stop_service(config_path, verbose=args.verbose)

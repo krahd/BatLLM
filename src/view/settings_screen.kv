@@ -369,6 +369,62 @@
                         background_checkbox_normal: "assets/images/checkbox_off.png"
                         background_checkbox_down: "assets/images/checkbox_on.png"
 
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Start Ollama Automatically on BatLLM Launch"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                AnchorLayout:
+                    size_hint_x: 0.6
+                    anchor_x: "right"
+                    anchor_y: "center"
+
+                    CheckBox:
+                        id: auto_start_ollama_checkbox
+                        active: root.auto_start_ollama
+                        size_hint: None, None
+                        size: dp(32), dp(32)
+                        background_checkbox_normal: "assets/images/checkbox_off.png"
+                        background_checkbox_down: "assets/images/checkbox_on.png"
+
+            BoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                size_hint_y: None
+                height: dp(50)
+
+                Label:
+                    text: "Stop Ollama Automatically on BatLLM Quit"
+                    font_size: sp(22)
+                    color: 0, 0, 0, 1
+                    size_hint_x: 0.4
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+
+                AnchorLayout:
+                    size_hint_x: 0.6
+                    anchor_x: "right"
+                    anchor_y: "center"
+
+                    CheckBox:
+                        id: stop_ollama_on_exit_checkbox
+                        active: root.stop_ollama_on_exit
+                        size_hint: None, None
+                        size: dp(32), dp(32)
+                        background_checkbox_normal: "assets/images/checkbox_off.png"
+                        background_checkbox_down: "assets/images/checkbox_on.png"
+
         # Buttons
         BoxLayout:
             orientation: "horizontal"

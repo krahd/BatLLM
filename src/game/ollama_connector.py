@@ -357,6 +357,11 @@ class OllamaConnector:
             typename = type(res).__name__
             raise RuntimeError(f"Empty or unparseable content from model (type={typename}).")
 
+        last_served_model = str(config.get("llm", "last_served_model") or "").strip()
+        if self.model and self.model != last_served_model:
+            config.set("llm", "last_served_model", self.model)
+            config.save()
+
         # Persist llm reply into our history
         history.append({"role": "assistant", "content": content})
 

@@ -113,7 +113,7 @@ def test_start_and_stop_call_scripts(monkeypatch) -> None:
     assert "ok" in screen.output_log
 
 
-def test_start_failure_prompts_install_guidance(monkeypatch) -> None:
+def test_start_failure_prompts_install_flow(monkeypatch) -> None:
     screen = OllamaConfigScreen()
     _run_sync(screen)
     prompted = {"value": False}
@@ -124,12 +124,123 @@ def test_start_failure_prompts_install_guidance(monkeypatch) -> None:
         stdout="",
         stderr="ollama: command not found",
     ))
-    setattr(screen, "_open_install_guidance", lambda: prompted.__setitem__("value", True))
+    setattr(screen, "request_install_ollama", lambda: prompted.__setitem__("value", True))
 
     screen.start_ollama()
 
     assert prompted["value"] is True
     assert "ollama: command not found" in screen.output_log
+
+
+def test_request_install_ollama_prompts_and_runs_install(monkeypatch) -> None:
+    screen = OllamaConfigScreen()
+    _run_sync(screen)
+    _run_clock_now(monkeypatch)
+    statuses = []
+    prompt = {"title": None, "message": None}
+    refreshed = {"status": False, "local": False}
+    helper_calls = []
+
+    monkeypatch.setattr(
+        screen,
+        "_collect_ollama_status",
+        lambda: {
+            "found": False,
+            "version": "",
+            "running": False,
+            "server_version": "",
+            "running_models": [],
+            "configured_model": "",
+            "endpoint": "http://localhost:11434",
+        },
+    )
+    monkeypatch.setattr(screen, "_set_status", lambda text: statuses.append(text))
+    monkeypatch.setattr(screen, "_append_log", lambda text: statuses.append(text))
+    monkeypatch.setattr(
+        screen,
+        "_run_ollama_helper",
+        lambda action, *args: helper_calls.append((action, args)) or DummyProc(
+            returncode=0,
+            stdout="installer launched",
+            stderr="",
+        ),
+    )
+    monkeypatch.setattr(
+        "view.ollama_config_screen.ollama_service.inspect_service_state",
+        lambda: {"installed": False},
+    )
+    monkeypatch.setattr(screen, "refresh_ollama_status", lambda: refreshed.__setitem__("status", True))
+    monkeypatch.setattr("view.ollama_config_screen.show_fading_alert", lambda *args, **kwargs: None)
+
+    def fake_confirm(title, message, on_confirm, on_cancel=None):
+        prompt["title"] = title
+        prompt["message"] = message
+        on_confirm()
+
+    monkeypatch.setattr("view.ollama_config_screen.show_confirmation_dialog", fake_confirm)
+
+    screen.request_install_ollama()
+
+    assert prompt["title"] == "Install Ollama"
+    assert "not installed" in prompt["message"]
+    assert any("Installing Ollama" in entry for entry in statuses)
+    assert any("python src/ollama_service.py install" in entry for entry in statuses)
+    assert any("installer launched" in entry for entry in statuses)
+    assert helper_calls == [("install", ())]
+    assert refreshed["status"] is False
+    assert refreshed["local"] is False
+
+
+def test_request_reinstall_ollama_uses_reinstall_prompt(monkeypatch) -> None:
+    screen = OllamaConfigScreen()
+    _run_sync(screen)
+    _run_clock_now(monkeypatch)
+    prompt = {"title": None, "message": None}
+    install_calls = []
+
+    monkeypatch.setattr(
+        screen,
+        "_collect_ollama_status",
+        lambda: {
+            "found": True,
+            "version": "ollama version is 0.18.2",
+            "running": True,
+            "server_version": "0.18.2",
+            "running_models": ["mistral-small:latest"],
+            "configured_model": "mistral-small:latest",
+            "endpoint": "http://localhost:11434",
+        },
+    )
+    monkeypatch.setattr(screen, "_set_status", lambda _text: None)
+    monkeypatch.setattr(screen, "_append_log", lambda _text: None)
+    monkeypatch.setattr(
+        screen,
+        "_run_ollama_helper",
+        lambda action, *args: install_calls.append((action, args)) or DummyProc(
+            returncode=0,
+            stdout="installer launched",
+            stderr="",
+        ),
+    )
+    monkeypatch.setattr(
+        "view.ollama_config_screen.ollama_service.inspect_service_state",
+        lambda: {"installed": False},
+    )
+    monkeypatch.setattr(screen, "refresh_ollama_status", lambda: None)
+    monkeypatch.setattr("view.ollama_config_screen.show_fading_alert", lambda *args, **kwargs: None)
+
+    def fake_confirm(title, message, on_confirm, on_cancel=None):
+        prompt["title"] = title
+        prompt["message"] = message
+        on_confirm()
+
+    monkeypatch.setattr("view.ollama_config_screen.show_confirmation_dialog", fake_confirm)
+
+    screen.request_install_ollama()
+
+    assert prompt["title"] == "Reinstall Ollama"
+    assert "already installed" in prompt["message"]
+    assert install_calls == [("install", ("--reinstall",))]
 
 
 def test_format_status_report_when_ollama_missing() -> None:
@@ -180,17 +291,18 @@ def test_refresh_status_reports_running_model(monkeypatch) -> None:
 
 def test_set_model_from_selection_persists(monkeypatch) -> None:
     screen = OllamaConfigScreen()
-    saved = {"set": None, "saved": False}
+    saved = {"sets": [], "saved": False}
     _run_sync(screen)
 
     def fake_set(section: str, key: str, value: str):
-        saved["set"] = (section, key, value)
+        saved["sets"].append((section, key, value))
 
     def fake_save():
         saved["saved"] = True
 
     monkeypatch.setattr("view.ollama_config_screen.config.set", fake_set)
     monkeypatch.setattr("view.ollama_config_screen.config.save", fake_save)
+    monkeypatch.setattr(screen, "_remember_served_model", lambda _model: None)
     monkeypatch.setattr(screen, "_get_running_model_names", lambda: [])
     monkeypatch.setattr(screen, "_ensure_model_serving", lambda _model: None)
     monkeypatch.setattr(screen, "refresh_ollama_status", lambda: None)
@@ -199,7 +311,7 @@ def test_set_model_from_selection_persists(monkeypatch) -> None:
     screen.selected_local_model = "mistral-small:latest"
     screen.set_model_from_selection()
 
-    assert saved["set"] == ("llm", "model", "mistral-small:latest")
+    assert ("llm", "model", "mistral-small:latest") in saved["sets"]
     assert saved["saved"] is True
 
 

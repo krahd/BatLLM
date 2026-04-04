@@ -33,6 +33,13 @@
             spacing: dp(10)
 
             Button:
+                text: "Install Ollama"
+                font_size: sp(20)
+                background_color: .8, .8, .8, 1
+                color: 1, 1, 1, 1
+                on_press: root.request_install_ollama()
+
+            Button:
                 text: "Start Ollama"
                 font_size: sp(20)
                 background_color: .6, .8, .9, .8

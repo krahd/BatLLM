@@ -66,7 +66,7 @@ For non-live unit work, the CLI is not required. For live gameplay or `run_tests
 python run_batllm.py
 ```
 
-If Ollama is not already installed, install it separately from the official download page for your platform:
+If Ollama is not already installed, either install it manually from the official download page for your platform or let BatLLM launch the official installer flow:
 
 - macOS: `https://ollama.com/download`
 - Linux: `https://ollama.com/download/linux`
@@ -159,6 +159,7 @@ game:
   turns_per_round: 8
 llm:
   debug_requests: false
+  last_served_model: qwen3:30b
   max_tokens: null
   model: qwen3:30b
   num_ctx: 4096
@@ -178,6 +179,8 @@ llm:
   top_p: null
   url: http://localhost
 ui:
+  auto_start_ollama: false
+  auto_stop_ollama: false
   confirm_on_exit: true
   font_size: 16
   frame_rate: 60
@@ -216,6 +219,7 @@ ui:
 | Key | Meaning |
 | --- | --- |
 | `debug_requests` | Reserved debug flag in the YAML; not a primary user control in the current UI. |
+| `last_served_model` | The last model BatLLM explicitly warmed so startup can restore it. |
 | `max_tokens` | Optional generation option forwarded when not `null`. |
 | `model` | Active model name used for gameplay and as the BatLLM-selected Ollama model. |
 | `num_ctx` | Optional Ollama context size. |
@@ -248,6 +252,8 @@ Optional advanced key supported by the current code:
 | `confirm_on_exit` | Controls whether the home screen exit flow asks for confirmation. |
 | `font_size` | Default font size used by the `markup()` helper in `util.utils`. |
 | `frame_rate` | Render/update interval for the game board. |
+| `auto_start_ollama` | When true, BatLLM can start Ollama automatically during app startup. |
+| `auto_stop_ollama` | When true, BatLLM can stop Ollama automatically during app shutdown. |
 | `primary_color` | Current theme colour value kept in config; not heavily wired into the present Kivy views. |
 | `prompt_save_on_exit` | Controls whether BatLLM asks for a save filename before exit. |
 | `title` | App window title. |
@@ -266,16 +272,21 @@ The settings screen writes these keys:
 - `game.prompt_augmentation`
 - `ui.confirm_on_exit`
 - `ui.prompt_save_on_exit`
+- `ui.auto_start_ollama`
+- `ui.auto_stop_ollama`
 
 The Ollama configuration screen writes:
 
 - `llm.model`
+- installer actions are launched from the screen, but the config file is not modified directly by that action
 
 ### Configuration Notes
 
 1. `llm.path` affects gameplay chat requests, not the model-management calls made by the Ollama configuration screen.
 2. The Ollama configuration screen assumes the configured host and port are the shared local Ollama service to manage.
 3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
+4. The Ollama startup and shutdown toggles are stored in `ui.auto_start_ollama` and `ui.auto_stop_ollama`.
+5. `llm.last_served_model` tracks the last model BatLLM explicitly warmed so startup can restore that serving state.
 
 ## Testing And Validation
 
@@ -459,7 +470,7 @@ Symptoms:
 
 - `Start Ollama` fails
 - the output log says `ollama not found`
-- the install-guidance pop-up appears
+- the install confirmation prompt appears
 
 What to check:
 

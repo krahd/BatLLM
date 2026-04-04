@@ -15,6 +15,7 @@ game:
   turns_per_round: 8
 llm:
   debug_requests: false
+  last_served_model: qwen3:30b
   max_tokens: null
   model: qwen3:30b
   num_ctx: 4096
@@ -34,6 +35,8 @@ llm:
   top_p: null
   url: http://localhost
 ui:
+  auto_start_ollama: false
+  stop_ollama_on_exit: false
   confirm_on_exit: true
   font_size: 16
   frame_rate: 60

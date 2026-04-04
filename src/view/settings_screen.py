@@ -22,6 +22,8 @@ class SettingsScreen(Screen):
     prompt_augmentation = BooleanProperty(config.get("game", "prompt_augmentation"))
     confirm_on_exit = BooleanProperty(config.get("ui", "confirm_on_exit"))
     prompt_save_on_exit = BooleanProperty(config.get("ui", "prompt_save_on_exit"))
+    auto_start_ollama = BooleanProperty(bool(config.get("ui", "auto_start_ollama")))
+    stop_ollama_on_exit = BooleanProperty(bool(config.get("ui", "stop_ollama_on_exit")))
 
     def on_pre_enter(self, *_args):
         Window.unbind(on_key_down=self.handle_window_key_down)
@@ -40,17 +42,12 @@ class SettingsScreen(Screen):
     def cancel_and_return(self):
         self.go_to_home_screen()
 
-
-
-
     def set_as_defaults(self):
         """Sets the configuration values to the default values defined in app_config.py.
         """
         self.update_config()
         config.save()
         self.go_to_home_screen()
-
-
 
     def update_config(self):
         """Updates the configuration with the values from the sliders and checkboxes.
@@ -68,8 +65,8 @@ class SettingsScreen(Screen):
         config.set("game", "prompt_augmentation", self.ids.augmentation_checkbox.active)
         config.set("ui", "confirm_on_exit", self.ids.confirm_on_exit_checkbox.active)
         config.set("ui", "prompt_save_on_exit", self.ids.save_on_exit_checkbox.active)
-
-
+        config.set("ui", "auto_start_ollama", self.ids.auto_start_ollama_checkbox.active)
+        config.set("ui", "stop_ollama_on_exit", self.ids.stop_ollama_on_exit_checkbox.active)
 
     def set_and_return(self):
         """Updates the configuration and returns to the home screen.

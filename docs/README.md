@@ -24,9 +24,9 @@ This README is the overview page for the project. It keeps the core framing of B
 BatLLM currently ships with:
 
 1. a main gameplay screen for prompt entry and round control
-2. a settings screen for gameplay and exit-flow options
+2. a settings screen for gameplay, exit-flow, and Ollama startup/teardown options
 3. a history screen for prompt and response review
-4. an Ollama configuration screen for local service and model management
+4. an Ollama configuration screen for local service, model management, and installer launch
 
 ## Documentation Map
 
@@ -73,7 +73,7 @@ BatLLM uses both:
 - the Python `ollama` package during gameplay
 - the `ollama` CLI for the in-app start/stop/version workflow and helper scripts
 
-If the CLI is missing, the app can show install guidance, but it does not install Ollama automatically.
+If the CLI is missing, the app can offer to install Ollama from the Ollama screen.
 
 ## Quick Start
 
@@ -101,11 +101,17 @@ pip install -r requirements.txt
 python run_batllm.py
 ```
 
-Install Ollama separately using the official download page for your platform:
+You can install Ollama manually from the official download pages:
 
 - macOS: `https://ollama.com/download`
 - Linux: `https://ollama.com/download/linux`
 - Windows: `https://ollama.com/download/windows`
+
+Or you can let BatLLM launch the official platform-specific install flow from startup or from the Ollama screen.
+
+On startup, BatLLM now asks whether to install Ollama when the CLI is missing. If Ollama is installed but not running, BatLLM can either ask whether to start it or start it automatically when `Auto-Start Ollama on Launch` is enabled in `Settings`.
+
+You can also use the `Install Ollama` button in the Ollama configuration screen. It asks for confirmation first and then launches the official platform-specific install flow again if Ollama is already present.
 
 ### Release Bundles
 
@@ -129,7 +135,7 @@ The default operational path is inside the app:
 1. launch BatLLM
 2. open `Settings`
 3. click `Ollama Config`
-4. use the Ollama screen to start Ollama, select a local model, and download or delete models as needed
+4. use the Ollama screen to start Ollama, install or reinstall it when needed, select a local model, and download or delete models as needed
 
 The `Local Models` and `Remote Models` controls open modal pickers. Those pickers:
 
@@ -150,6 +156,8 @@ Remote models are loaded from `https://ollama.com/library`.
 ### What `Use Selected` Does
 
 Choosing a local model and pressing `Use Selected` updates `llm.model` in `src/configs/config.yaml`. BatLLM then attempts to make that model available for gameplay. If BatLLM previously started a different model itself, it may stop that earlier managed model before warming the newly selected one.
+
+When a model is successfully warmed, BatLLM also updates `llm.last_served_model` so future starts can restore the same served model automatically.
 
 Behind the UI, BatLLM now uses a cross-platform Python helper for Ollama lifecycle management. The legacy shell scripts remain as Unix-friendly wrappers around that helper.
 
@@ -194,6 +202,8 @@ The settings screen controls:
 - prompt augmentation
 - `Confirm on Exit`
 - `Prompt to Save on Exit`
+- `Auto-Start Ollama on Launch`
+- `Auto-Stop Ollama on Exit`
 
 The button that opens the Ollama screen is labeled `Ollama Config`.
 
@@ -212,6 +222,7 @@ The Ollama screen shows:
 
 - current Ollama status
 - a multi-line output log
+- install and reinstall controls
 - local model controls
 - remote model controls
 
