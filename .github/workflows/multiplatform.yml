@@ -1,0 +1,53 @@
+name: Multiplatform Validation
+
+on:
+  push:
+    branches:
+      - main
+      - "feature/**"
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    env:
+      KIVY_WINDOW: mock
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+      PYTHONPATH: src
+      BATLLM_RUN_OLLAMA_SMOKE: "0"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Compile launchers and source
+        run: python -m compileall -q src run_batllm.py run_tests.py create_release_bundles.py
+
+      - name: Run non-live test suite
+        run: >
+          python -m pytest -q
+          src/tests/test_history_compact.py
+          src/tests/test_close_prompt_behavior.py
+          src/tests/test_utils_confirmation_dialog.py
+          src/tests/test_ollama_config_screen.py
+          src/tests/test_ollama_config_screen_logic.py
+          src/tests/test_multiplatform_support.py
+
+      - name: Build release bundles
+        run: python create_release_bundles.py --version 0.0.0-ci

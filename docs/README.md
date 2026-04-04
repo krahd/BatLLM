@@ -48,9 +48,17 @@ BatLLM currently ships with:
 
 ## Requirements
 
+### Supported Platforms
+
+BatLLM is now maintained for:
+
+- macOS
+- Linux
+- Windows
+
 ### System Requirements
 
-1. Python 3.8 or newer. Python 3.11 or 3.12 is recommended.
+1. Python 3.10 or newer. Python 3.11 or 3.12 is recommended.
 2. A local Ollama installation if you want to run BatLLM with the default workflow.
 3. Hardware capable of running the local model you choose.
 
@@ -69,22 +77,50 @@ If the CLI is missing, the app can show install guidance, but it does not instal
 
 ## Quick Start
 
-Clone the repository, create a virtual environment, install the Python dependencies, and launch the app:
+Clone the repository, create a virtual environment, install the Python dependencies, and launch the app.
+
+On macOS and Linux:
 
 ```bash
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
-python -m venv .venv_BatLLM
+python3 -m venv .venv_BatLLM
 source .venv_BatLLM/bin/activate
 pip install -r requirements.txt
-python src/main.py
+python run_batllm.py
 ```
 
-If the Ollama CLI is not already installed, install it separately. On macOS with Homebrew:
+On Windows:
+
+```powershell
+git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
+py -m venv .venv_BatLLM
+.\.venv_BatLLM\Scripts\Activate.ps1
+pip install -r requirements.txt
+python run_batllm.py
+```
+
+Install Ollama separately using the official download page for your platform:
+
+- macOS: `https://ollama.com/download`
+- Linux: `https://ollama.com/download/linux`
+- Windows: `https://ollama.com/download/windows`
+
+### Release Bundles
+
+BatLLM now ships with a cross-platform release-bundle generator:
 
 ```bash
-brew install ollama
+python create_release_bundles.py
 ```
+
+That command creates:
+
+- source-code archives
+- a Windows bundle with `.bat` install and run launchers
+- a macOS bundle with `.command` install and run launchers
+- a Linux bundle with `.sh` install and run launchers
 
 ## Recommended Ollama Workflow
 
@@ -114,6 +150,8 @@ Remote models are loaded from `https://ollama.com/library`.
 ### What `Use Selected` Does
 
 Choosing a local model and pressing `Use Selected` updates `llm.model` in `src/configs/config.yaml`. BatLLM then attempts to make that model available for gameplay. If BatLLM previously started a different model itself, it may stop that earlier managed model before warming the newly selected one.
+
+Behind the UI, BatLLM now uses a cross-platform Python helper for Ollama lifecycle management. The legacy shell scripts remain as Unix-friendly wrappers around that helper.
 
 ## Safety
 

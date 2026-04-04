@@ -1,11 +1,22 @@
 var searchData=
 [
-  ['tame_5fcolor_0',['tame_color',['../namespaceutils.html#ae87ba34ea08d21fc651f778bfc66a763',1,'utils']]],
-  ['to_1',['to',['../classnormalized__canvas_1_1_normalized_canvas.html#ad2d2b7095e6a9556e293caf8c35e92ec',1,'normalized_canvas::NormalizedCanvas']]],
-  ['to_5fcompact_5ftext_2',['to_compact_text',['../classhistory__manager_1_1_history_manager.html#ad2ca386089ae5fdf93a1f47e79236a00',1,'history_manager::HistoryManager']]],
-  ['to_5fcompact_5ftext_5ffor_5fbot_3',['to_compact_text_for_bot',['../classhistory__manager_1_1_history_manager.html#a99422f9c4ac5089cc94926bcde7d0ae0',1,'history_manager::HistoryManager']]],
-  ['to_5fstring_4',['to_string',['../classprompt__store_1_1_prompt_store.html#a5de99e4e3e1d8bd6344aac6db1269435',1,'prompt_store::PromptStore']]],
-  ['to_5ftext_5',['to_text',['../classhistory__manager_1_1_history_manager.html#ac5e5a249778eb19b370a8cae94733ece',1,'history_manager::HistoryManager']]],
-  ['toggle_5fshield_6',['toggle_shield',['../classbot_1_1_bot.html#a6c074341425cb967b736b3dca28f99f7',1,'bot::Bot']]],
-  ['touch_5fto_7',['touch_to',['../classnormalized__canvas_1_1_normalized_canvas.html#a46ae6fcbf41ef89ca0d14731b980b604',1,'normalized_canvas::NormalizedCanvas']]]
+  ['record_5fplay_0',['record_play',['../classhistory__manager_1_1_history_manager.html#a898a8b37374cf9886e2c12093b170635',1,'history_manager::HistoryManager']]],
+  ['register_5fkivy_5fresource_5fpaths_1',['register_kivy_resource_paths',['../namespacepaths.html#aaeaa235a0f676365d9257494c1139e98',1,'paths']]],
+  ['render_2',['render',['../classbot_1_1_bot.html#a57942fda65929bf805cef2aadde1e3aa',1,'bot.Bot.render()'],['../classbullet_1_1_bullet.html#afb1e383c0ef61c64c7ff0e1dd5e41c12',1,'bullet.Bullet.render()'],['../classgame__board_1_1_game_board.html#ac481c974047b4bbb17bad99f7d5e1fd0',1,'game_board.GameBoard.render()']]],
+  ['repo_5fpath_3',['repo_path',['../namespacepaths.html#a923f42eb41fd40d767e07ed15bd95a37',1,'paths']]],
+  ['require_5fsupported_5fpython_4',['require_supported_python',['../namespaceollama__service.html#a1ff3bf158e09dbf29df4ad8ff14a7375',1,'ollama_service']]],
+  ['reset_5',['reset',['../classprompt__store_1_1_prompt_store.html#a67a783d5a64f64307e69c77452da8c82',1,'prompt_store::PromptStore']]],
+  ['reset_5fhistories_6',['reset_histories',['../classollama__connector_1_1_ollama_connector.html#a2de1102a89a72ae1ef5ddc236f118a4c',1,'ollama_connector::OllamaConnector']]],
+  ['reset_5fsingletons_7',['reset_singletons',['../namespaceollama__singleton.html#a1ba40e0625694ca69a3d411a9118e6e7',1,'ollama_singleton']]],
+  ['resolve_5frepo_5frelative_8',['resolve_repo_relative',['../namespacepaths.html#a4fc102b6cc718db9225e68425080d342',1,'paths']]],
+  ['resolve_5fsaved_5fsessions_5fdir_9',['resolve_saved_sessions_dir',['../namespacepaths.html#a5629675e2e13ae8171ab155a43a94f43',1,'paths']]],
+  ['retrieve_5fprompt_5fhistory_5fselected_5ftext_10',['retrieve_prompt_history_selected_text',['../classhome__screen_1_1_home_screen.html#ad4de63357716f97124bf93f0a44981d3',1,'home_screen::HomeScreen']]],
+  ['rewind_11',['rewind',['../classprompt__store_1_1_prompt_store.html#a11c021ee489c9137e9fe97992c1ad61f',1,'prompt_store::PromptStore']]],
+  ['rewind_5fprompt_5fstore_12',['rewind_prompt_store',['../classhome__screen_1_1_home_screen.html#a19a6fbac49341ee326e3cf04a70c510f',1,'home_screen::HomeScreen']]],
+  ['rot_5frad_13',['rot_rad',['../classbot_1_1_bot.html#a671f6173ea5ac20e03f35b5f4248b51a',1,'bot.Bot.rot_rad()'],['../classbullet_1_1_bullet.html#a1a4a34fba6cd78fbee318d3c45a1ec83',1,'bullet.Bullet.rot_rad()']]],
+  ['rotate_14',['rotate',['../classbot_1_1_bot.html#a778175a6baa29ca673febf517563f219',1,'bot::Bot']]],
+  ['rotate_5finstantaneously_15',['rotate_instantaneously',['../classbot_1_1_bot.html#a673afcb7ac60a248d563ff9d02ada10e',1,'bot::Bot']]],
+  ['run_16',['run',['../classtests_1_1conversation__cli_1_1_conversation_c_l_i.html#ae22c15076dd66e09f71def5e251db3d2',1,'tests::conversation_cli::ConversationCLI']]],
+  ['run_5follama_5fcommand_17',['run_ollama_command',['../namespaceollama__service.html#a17f913b721d7bc158db74b1b1213b4d2',1,'ollama_service']]],
+  ['running_5fmodel_5fnames_18',['running_model_names',['../namespaceollama__service.html#ab045068d00305982cb4fed737929686f',1,'ollama_service']]]
 ];

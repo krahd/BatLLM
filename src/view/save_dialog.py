@@ -2,6 +2,7 @@ import os
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
 from kivy.properties import StringProperty
+from util.paths import prompt_asset_dir
 
 # Load the KV file in the same folder
 Builder.load_file(os.path.join(os.path.dirname(__file__), "save_dialog.kv"))
@@ -13,14 +14,14 @@ class SaveDialog(Popup):
     You can control the initial folder via `start_folder`.
     """
     content_to_save = StringProperty('')
-    start_folder    = StringProperty(os.getcwd())
+    start_folder    = StringProperty(str(prompt_asset_dir()))
 
     def __init__(self, *, content_to_save: str, start_folder: str = None, **kwargs):
         super().__init__(**kwargs)
         self.content_to_save = content_to_save
         if start_folder:
-            # if the folder exists, use it; otherwise fallback to cwd
-            self.start_folder = start_folder if os.path.isdir(start_folder) else os.getcwd()
+            fallback = str(prompt_asset_dir())
+            self.start_folder = start_folder if os.path.isdir(start_folder) else fallback
 
     def _save(self):
         folder = self.ids.filechooser.path

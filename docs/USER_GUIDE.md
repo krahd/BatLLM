@@ -20,13 +20,19 @@ Recommended first-run flow:
 
 1. install the Python dependencies
 2. install the Ollama CLI if it is not already available on the machine
-3. launch BatLLM with `python src/main.py`
+3. launch BatLLM with `python run_batllm.py`
 4. open `Settings`
 5. click `Ollama Config`
 6. start Ollama and choose a local model
 7. return to the home screen and begin play
 
 If Ollama is missing and the app cannot start it, BatLLM opens an install-guidance flow instead of attempting an automatic install.
+
+The release bundles also include platform-specific launchers:
+
+- Windows: `run-batllm.bat`
+- macOS: `run-batllm.command`
+- Linux: `run-batllm.sh`
 
 > [!CAUTION]
 > BatLLM's Ollama controls operate on your real local Ollama installation. Starting or stopping the service, downloading models, deleting models, or changing the selected model can affect other Ollama-based tools on the same machine.
@@ -204,8 +210,8 @@ It includes:
 
 ### Start And Stop Ollama
 
-- `Start Ollama` runs `start_ollama.sh`
-- `Stop Ollama` runs `stop_ollama.sh -v`
+- `Start Ollama` runs BatLLM's cross-platform Ollama helper
+- `Stop Ollama` runs the same helper in stop mode
 - `Refresh` reloads status plus both model lists
 
 ### Local Models

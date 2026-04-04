@@ -10,6 +10,7 @@ var searchData=
   ['faketextinput_7',['FakeTextInput',['../classtests_1_1test__close__prompt__behavior_1_1_fake_text_input.html',1,'tests::test_close_prompt_behavior']]],
   ['fakewindow_8',['FakeWindow',['../classtests_1_1test__utils__confirmation__dialog_1_1_fake_window.html',1,'tests::test_utils_confirmation_dialog']]],
   ['find_5fid_5fin_5fparents_9',['find_id_in_parents',['../namespaceutils.html#a3b9da19c4a2408b545c03a6e3e6cd839',1,'utils']]],
-  ['forward_10',['forward',['../classprompt__store_1_1_prompt_store.html#ac34a7bf3c6e1c13f2b5bc889fedb8b23',1,'prompt_store::PromptStore']]],
-  ['forward_5fprompt_5fstore_11',['forward_prompt_store',['../classhome__screen_1_1_home_screen.html#a603c95ac6fe9ed485e75f1e7af5c7422',1,'home_screen::HomeScreen']]]
+  ['find_5follama_5flistener_5fpids_10',['find_ollama_listener_pids',['../namespaceollama__service.html#a9b13f7c6f4a4e879c480fd0c293458e9',1,'ollama_service']]],
+  ['forward_11',['forward',['../classprompt__store_1_1_prompt_store.html#ac34a7bf3c6e1c13f2b5bc889fedb8b23',1,'prompt_store::PromptStore']]],
+  ['forward_5fprompt_5fstore_12',['forward_prompt_store',['../classhome__screen_1_1_home_screen.html#a603c95ac6fe9ed485e75f1e7af5c7422',1,'home_screen::HomeScreen']]]
 ];

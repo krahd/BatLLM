@@ -95,21 +95,21 @@ def test_start_and_stop_call_scripts(monkeypatch) -> None:
     _run_sync(screen)
     _run_clock_now(monkeypatch)
 
-    def fake_run_script(script_name: str, *args: str):
-        calls.append((script_name, args))
+    def fake_run_helper(action: str, *args: str):
+        calls.append((action, args))
         return DummyProc(returncode=0, stdout="ok", stderr="")
 
-    setattr(screen, "_run_script", fake_run_script)
+    setattr(screen, "_run_ollama_helper", fake_run_helper)
     monkeypatch.setattr(screen, "refresh_ollama_status", lambda: None)
     monkeypatch.setattr(screen, "refresh_local_models", lambda: None)
 
     screen.start_ollama()
     screen.stop_ollama()
 
-    assert ("start_ollama.sh", ()) in calls
-    assert ("stop_ollama.sh", ("-v",)) in calls
-    assert "./start_ollama.sh" in screen.output_log
-    assert "./stop_ollama.sh -v" in screen.output_log
+    assert ("start", ()) in calls
+    assert ("stop", ("-v",)) in calls
+    assert "python src/ollama_service.py start" in screen.output_log
+    assert "python src/ollama_service.py stop -v" in screen.output_log
     assert "ok" in screen.output_log
 
 
@@ -119,7 +119,7 @@ def test_start_failure_prompts_install_guidance(monkeypatch) -> None:
     prompted = {"value": False}
     _run_clock_now(monkeypatch)
 
-    setattr(screen, "_run_script", lambda *_args, **_kwargs: DummyProc(
+    setattr(screen, "_run_ollama_helper", lambda *_args, **_kwargs: DummyProc(
         returncode=1,
         stdout="",
         stderr="ollama: command not found",

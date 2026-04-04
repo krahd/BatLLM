@@ -37,10 +37,16 @@ The current application includes four primary screens:
 3. `HistoryScreen`: compact per-bot prompt history plus full session history.
 4. `OllamaConfigScreen`: local Ollama service controls plus local/remote model management.
 
+The repository now also includes cross-platform entrypoints and release tooling:
+
+1. `run_batllm.py`: launch BatLLM from the repository root on macOS, Linux, or Windows.
+2. `run_tests.py`: run the smoke and live test flows without relying on Bash-specific shell behaviour.
+3. `create_release_bundles.py`: generate source plus platform-specific release archives.
+
 The Ollama screen is now the recommended operational workflow for most users. It can:
 
-1. start Ollama through `start_ollama.sh`
-2. stop Ollama through `stop_ollama.sh`
+1. start Ollama through BatLLM's cross-platform Python helper
+2. stop Ollama through the same helper
 3. refresh local models from `/api/tags`
 4. choose the active BatLLM model from a modal picker
 5. refresh remote models from `https://ollama.com/library`
@@ -72,6 +78,8 @@ See [CHANGELOG.md](CHANGELOG.md) for the running release history.
 
 Highlights in the current documentation revision:
 
+- BatLLM now resolves assets and configuration paths from the repository instead of assuming a specific working directory
+- cross-platform entrypoints and release-bundle generation have been added for macOS, Linux, Windows, and source archives
 - the docs now reflect the actual `Ollama Config` workflow and labels
 - the model-picker behaviour is documented, including `Esc` and outside-click dismissal
 - developer-facing configuration, testing, and troubleshooting have been consolidated into the contributing guide

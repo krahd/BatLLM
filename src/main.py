@@ -1,25 +1,42 @@
-from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, SlideTransition
-from kivy.core.window import Window
-from kivy.properties import DictProperty
-from kivy.utils import get_color_from_hex
-from view.home_screen import HomeScreen
-from view.settings_screen import SettingsScreen
-from view.history_screen import HistoryScreen
-from view.ollama_config_screen import OllamaConfigScreen
-from configs.app_config import config
-from util.utils import show_confirmation_dialog
-import sys
-from kivymd.app import MDApp
-from kivy.config import Config
 import os
+import sys
+
+from kivy.config import Config
+from kivy.core.window import Window
+from kivy.lang import Builder
+from kivy.properties import DictProperty
+from kivy.uix.screenmanager import ScreenManager, SlideTransition
+from kivy.utils import get_color_from_hex
+from kivymd.app import MDApp
+
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
+MIN_PYTHON = (3, 10)
 
 
-Builder.load_file("view/settings_screen.kv")
-Builder.load_file("view/home_screen.kv")
-Builder.load_file("view/history_screen.kv")
-Builder.load_file("view/ollama_config_screen.kv")
+def require_supported_python() -> None:
+    """Exit early with a clear message on unsupported Python versions."""
+    if sys.version_info >= MIN_PYTHON:
+        return
+    version = ".".join(str(part) for part in sys.version_info[:3])
+    raise SystemExit(f"BatLLM requires Python 3.10 or newer. Detected Python {version}.")
+
+
+require_supported_python()
+
+from configs.app_config import config
+from util.paths import asset_path, register_kivy_resource_paths, repo_path, theme_colors_path, view_path
+from util.utils import show_confirmation_dialog
+from view.history_screen import HistoryScreen
+from view.home_screen import HomeScreen
+from view.ollama_config_screen import OllamaConfigScreen
+from view.settings_screen import SettingsScreen
+
+register_kivy_resource_paths()
+
+Builder.load_file(str(view_path("settings_screen.kv")))
+Builder.load_file(str(view_path("home_screen.kv")))
+Builder.load_file(str(view_path("history_screen.kv")))
+Builder.load_file(str(view_path("ollama_config_screen.kv")))
 
 
 class BatLLM(MDApp):
@@ -45,7 +62,14 @@ class BatLLM(MDApp):
         sm.add_widget(HistoryScreen(name="history"))
         sm.add_widget(OllamaConfigScreen(name="ollama_config"))
 
-        self.icon = "assets/images/logo_small.png"  # TODO create an icon
+        icon_candidates = (
+            asset_path("images", "logo_small.png"),
+            repo_path("docs", "images", "logo-small.png"),
+        )
+        for icon_path in icon_candidates:
+            if icon_path.exists():
+                self.icon = str(icon_path)
+                break
         self.title = config.get("ui", "title")
 
         Window.bind(on_request_close=home.on_request_close)
@@ -66,7 +90,7 @@ class BatLLM(MDApp):
             ValueError: If a line contains an invalid hex colour value.
         """
         self.theme_colors = {}
-        with open("theme_colors.properties", "r", encoding="utf-8") as f:
+        with theme_colors_path().open("r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#"):
@@ -93,10 +117,15 @@ class BatLLM(MDApp):
         return True
 
 
-if __name__ == "__main__":
-    Window.maximize()
-    # os.environ["KIVY_NO_CONSOLELOG"] = "1"
-    Config.set('kivy', 'log_level', 'error')
+def main() -> int:
+    require_supported_python()
+    Config.set("kivy", "log_level", "error")
     Config.write()
-    Window.maximize()
+    if hasattr(Window, "maximize"):
+        Window.maximize()
     BatLLM().run()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

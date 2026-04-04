@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['create_5fbullet_0',['create_bullet',['../classbot_1_1_bot.html#a0456e9a9953cf4c78f4687adf51dfa92',1,'bot::Bot']]]
+  ['build_5fparser_0',['build_parser',['../namespaceollama__service.html#a1abf0fff33daee2b7f125f8fcbe5caaf',1,'ollama_service']]]
 ];

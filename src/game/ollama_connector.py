@@ -8,9 +8,6 @@ This connector targets Ollama's /api/chat contract. It does NOT use the deprecat
 from __future__ import annotations
 
 import json
-import os
-import sys
-from pathlib import Path
 
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
@@ -22,6 +19,7 @@ if TYPE_CHECKING:
 from ollama import Client
 
 from configs.app_config import config
+from util.paths import resolve_repo_relative
 from util.utils import _maybe_float, _maybe_int
 
 Message = Dict[str, str]  # {"role": "system"|"user"|"assistant", "content": str}
@@ -388,12 +386,10 @@ class OllamaConnector:
 
         # Get the path to the augmentation header text file from the config
         filename = config.get("llm", key)
-        path = os.path.join(os.getcwd(), filename)
+        path = resolve_repo_relative(filename)
 
         try:
-
-
-            with open(path, "r", encoding="utf-8") as f:
+            with path.open("r", encoding="utf-8") as f:
                 inst = f.read()
                 return inst
 

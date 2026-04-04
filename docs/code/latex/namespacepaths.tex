@@ -1,0 +1,117 @@
+\doxysection{paths Namespace Reference}
+\hypertarget{namespacepaths}{}\label{namespacepaths}\index{paths@{paths}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a923f42eb41fd40d767e07ed15bd95a37}{repo\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a5e7cc29280a5aecc5e0695992f791302}{src\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda}{asset\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a8e442ec4d08e85c4f1674c8869a5ea80}{view\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a10427ba864e2eae34d2ec3d5af0fda90}{prompt\+\_\+asset\+\_\+dir}} ()
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a7badc5fe27458f161e15db4503cd7220}{theme\+\_\+colors\+\_\+path}} ()
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a4fc102b6cc718db9225e68425080d342}{resolve\+\_\+repo\+\_\+relative}} (str\texorpdfstring{$\vert$}{|}Path path\+\_\+like)
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a5629675e2e13ae8171ab155a43a94f43}{resolve\+\_\+saved\+\_\+sessions\+\_\+dir}} (str\texorpdfstring{$\vert$}{|}Path folder\+\_\+name)
+\item 
+None \doxymbox{\hyperlink{namespacepaths_aaeaa235a0f676365d9257494c1139e98}{register\+\_\+kivy\+\_\+resource\+\_\+paths}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacepaths_ad29b9c709704f21423b8f7ebfc611dab}\label{namespacepaths_ad29b9c709704f21423b8f7ebfc611dab} 
+{\bfseries ROOT\+\_\+\+DIR} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).resolve().parents\+[2]\+
+\item 
+\Hypertarget{namespacepaths_a426ba1dfd9c991cb4c1a1ee4afdba9fc}\label{namespacepaths_a426ba1dfd9c991cb4c1a1ee4afdba9fc} 
+str {\bfseries SRC\+\_\+\+DIR} = ROOT\+\_\+\+DIR /\+ "{}src"{}
+\item 
+\Hypertarget{namespacepaths_ad5a1d271e4115a45260a9ac8a2a23b4c}\label{namespacepaths_ad5a1d271e4115a45260a9ac8a2a23b4c} 
+str {\bfseries ASSETS\+\_\+\+DIR} = SRC\+\_\+\+DIR /\+ "{}assets"{}
+\item 
+\Hypertarget{namespacepaths_a9e70babcd2310d48d575d99d94090ba8}\label{namespacepaths_a9e70babcd2310d48d575d99d94090ba8} 
+str {\bfseries VIEW\+\_\+\+DIR} = SRC\+\_\+\+DIR /\+ "{}view"{}
+\item 
+\Hypertarget{namespacepaths_acd1a3dd5d590817b3a9e331ac59ac6b2}\label{namespacepaths_acd1a3dd5d590817b3a9e331ac59ac6b2} 
+str {\bfseries GAME\+\_\+\+DIR} = SRC\+\_\+\+DIR /\+ "{}game"{}
+\item 
+\Hypertarget{namespacepaths_ab1ee080404498a9e532043d1df919f08}\label{namespacepaths_ab1ee080404498a9e532043d1df919f08} 
+str {\bfseries DOCS\+\_\+\+DIR} = ROOT\+\_\+\+DIR /\+ "{}docs"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Filesystem path helpers for BatLLM.\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespacepaths_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda}\index{paths@{paths}!asset\_path@{asset\_path}}
+\index{asset\_path@{asset\_path}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{asset\_path()}{asset\_path()}}
+{\footnotesize\ttfamily \label{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda} 
+ Path paths.\+asset\+\_\+path (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{parts}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return an absolute path inside ``src/assets``.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a10427ba864e2eae34d2ec3d5af0fda90}\index{paths@{paths}!prompt\_asset\_dir@{prompt\_asset\_dir}}
+\index{prompt\_asset\_dir@{prompt\_asset\_dir}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{prompt\_asset\_dir()}{prompt\_asset\_dir()}}
+{\footnotesize\ttfamily \label{namespacepaths_a10427ba864e2eae34d2ec3d5af0fda90} 
+ Path paths.\+prompt\+\_\+asset\+\_\+dir (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the prompt samples directory.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_aaeaa235a0f676365d9257494c1139e98}\index{paths@{paths}!register\_kivy\_resource\_paths@{register\_kivy\_resource\_paths}}
+\index{register\_kivy\_resource\_paths@{register\_kivy\_resource\_paths}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{register\_kivy\_resource\_paths()}{register\_kivy\_resource\_paths()}}
+{\footnotesize\ttfamily \label{namespacepaths_aaeaa235a0f676365d9257494c1139e98} 
+ None paths.\+register\+\_\+kivy\+\_\+resource\+\_\+paths (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Register the app resource directories with Kivy.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a923f42eb41fd40d767e07ed15bd95a37}\index{paths@{paths}!repo\_path@{repo\_path}}
+\index{repo\_path@{repo\_path}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{repo\_path()}{repo\_path()}}
+{\footnotesize\ttfamily \label{namespacepaths_a923f42eb41fd40d767e07ed15bd95a37} 
+ Path paths.\+repo\+\_\+path (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{parts}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return an absolute path inside the repository root.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a4fc102b6cc718db9225e68425080d342}\index{paths@{paths}!resolve\_repo\_relative@{resolve\_repo\_relative}}
+\index{resolve\_repo\_relative@{resolve\_repo\_relative}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{resolve\_repo\_relative()}{resolve\_repo\_relative()}}
+{\footnotesize\ttfamily \label{namespacepaths_a4fc102b6cc718db9225e68425080d342} 
+ Path paths.\+resolve\+\_\+repo\+\_\+relative (\begin{DoxyParamCaption}\item[{str \texorpdfstring{$\vert$}{|} Path}]{path\+\_\+like}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Resolve a config or resource path relative to the repository.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a5629675e2e13ae8171ab155a43a94f43}\index{paths@{paths}!resolve\_saved\_sessions\_dir@{resolve\_saved\_sessions\_dir}}
+\index{resolve\_saved\_sessions\_dir@{resolve\_saved\_sessions\_dir}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{resolve\_saved\_sessions\_dir()}{resolve\_saved\_sessions\_dir()}}
+{\footnotesize\ttfamily \label{namespacepaths_a5629675e2e13ae8171ab155a43a94f43} 
+ Path paths.\+resolve\+\_\+saved\+\_\+sessions\+\_\+dir (\begin{DoxyParamCaption}\item[{str \texorpdfstring{$\vert$}{|} Path}]{folder\+\_\+name}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Resolve the saved-sessions folder and ensure it exists.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a5e7cc29280a5aecc5e0695992f791302}\index{paths@{paths}!src\_path@{src\_path}}
+\index{src\_path@{src\_path}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{src\_path()}{src\_path()}}
+{\footnotesize\ttfamily \label{namespacepaths_a5e7cc29280a5aecc5e0695992f791302} 
+ Path paths.\+src\+\_\+path (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{parts}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return an absolute path inside ``src``.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a7badc5fe27458f161e15db4503cd7220}\index{paths@{paths}!theme\_colors\_path@{theme\_colors\_path}}
+\index{theme\_colors\_path@{theme\_colors\_path}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{theme\_colors\_path()}{theme\_colors\_path()}}
+{\footnotesize\ttfamily \label{namespacepaths_a7badc5fe27458f161e15db4503cd7220} 
+ Path paths.\+theme\+\_\+colors\+\_\+path (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the path to the Kivy theme colour properties file.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a8e442ec4d08e85c4f1674c8869a5ea80}\index{paths@{paths}!view\_path@{view\_path}}
+\index{view\_path@{view\_path}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{view\_path()}{view\_path()}}
+{\footnotesize\ttfamily \label{namespacepaths_a8e442ec4d08e85c4f1674c8869a5ea80} 
+ Path paths.\+view\+\_\+path (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{parts}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return an absolute path inside ``src/view``.\end{DoxyVerb}
+ 

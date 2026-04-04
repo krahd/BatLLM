@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 import re
 import subprocess
+import sys
 import threading
 from pathlib import Path
 from typing import Any
@@ -216,10 +217,10 @@ class OllamaConfigScreen(Screen):
         self._model_picker_popup = popup
         popup.open()
 
-    def _run_script(self, script_name: str, *args: str) -> subprocess.CompletedProcess:
-        script = ROOT / script_name
+    def _run_ollama_helper(self, action: str, *args: str) -> subprocess.CompletedProcess:
+        helper = ROOT / "src" / "ollama_service.py"
         return subprocess.run(
-            [str(script), *args],
+            [sys.executable, str(helper), action, *args],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -333,8 +334,15 @@ class OllamaConfigScreen(Screen):
         self._run_in_thread(work)
 
     def _open_install_guidance(self):
+        if sys.platform.startswith("win"):
+            suggestion = "Install Ollama for Windows from https://ollama.com/download/windows"
+        elif sys.platform == "darwin":
+            suggestion = "Install Ollama for macOS from https://ollama.com/download"
+        else:
+            suggestion = "Install Ollama for Linux from https://ollama.com/download/linux"
+
         def on_path(path: str):
-            cmd = f"Install suggestion: brew install ollama\nProvided path: {path}"
+            cmd = f"Install suggestion: {suggestion}\nProvided path: {path}"
             self._append_log(cmd)
             show_fading_alert("Ollama Install Guidance", cmd, duration=2.5, fade_duration=1.0)
 
@@ -349,9 +357,9 @@ class OllamaConfigScreen(Screen):
         self._set_status("Starting Ollama...")
 
         def work():
-            proc = self._run_script("start_ollama.sh")
+            proc = self._run_ollama_helper("start")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ ./start_ollama.sh\n{combined or '(no output)'}")
+            self._append_log(f"$ python src/ollama_service.py start\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
                 configured_model = str(config.get("llm", "model") or "").strip()
@@ -374,9 +382,9 @@ class OllamaConfigScreen(Screen):
         self._set_status("Stopping Ollama...")
 
         def work():
-            proc = self._run_script("stop_ollama.sh", "-v")
+            proc = self._run_ollama_helper("stop", "-v")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ ./stop_ollama.sh -v\n{combined or '(no output)'}")
+            self._append_log(f"$ python src/ollama_service.py stop -v\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
                 self._managed_model_name = None
@@ -561,11 +569,13 @@ class OllamaConfigScreen(Screen):
             return self._preload_model(model_name)
         except requests.RequestException as exc:
             self._append_log(f"Preload failed for {model_name}: {exc}")
-            proc = self._run_script("start_ollama.sh")
+            proc = self._run_ollama_helper("start")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ ./start_ollama.sh\n{combined or '(no output)'}")
+            self._append_log(f"$ python src/ollama_service.py start\n{combined or '(no output)'}")
             if proc.returncode != 0:
-                raise RuntimeError(combined or f"start_ollama.sh exited {proc.returncode}") from exc
+                raise RuntimeError(
+                    combined or f"ollama_service.py start exited {proc.returncode}"
+                ) from exc
             return {"started_via_script": True}
 
     def set_model_from_selection(self):

@@ -34,8 +34,20 @@ If you are unsure whether an idea fits the project, opening an issue first is a 
 ```bash
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
-python -m venv .venv_BatLLM
+python3 -m venv .venv_BatLLM
 source .venv_BatLLM/bin/activate
+pip install -r requirements.txt
+```
+
+Use Python 3.10 or newer. Python 3.11 or 3.12 is recommended.
+
+On Windows:
+
+```powershell
+git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
+py -m venv .venv_BatLLM
+.\.venv_BatLLM\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
@@ -46,19 +58,19 @@ The codebase depends on two different Ollama surfaces:
 - the Python `ollama` package for gameplay chat requests
 - the `ollama` CLI for the local service-management helpers and the Ollama config screen
 
-For non-live unit work, the CLI is not required. For live gameplay or `run_tests.sh full`, it is required.
+For non-live unit work, the CLI is not required. For live gameplay or `run_tests.py full`, it is required.
 
 ### Running The App Locally
 
 ```bash
-python src/main.py
+python run_batllm.py
 ```
 
-If Ollama is not already installed, install it separately. On macOS with Homebrew:
+If Ollama is not already installed, install it separately from the official download page for your platform:
 
-```bash
-brew install ollama
-```
+- macOS: `https://ollama.com/download`
+- Linux: `https://ollama.com/download/linux`
+- Windows: `https://ollama.com/download/windows`
 
 ## Repository Layout
 
@@ -71,8 +83,12 @@ Core runtime modules:
 - `src/game/bullet.py`: bullet movement and collision logic
 - `src/game/ollama_connector.py`: chat/history request builder using the Python `ollama` client
 - `src/game/history_manager.py`: authoritative game and chat history
+- `src/ollama_service.py`: cross-platform Ollama lifecycle helper used by the app and test runner
 - `src/configs/`: YAML config files and config loader
-- `start_ollama.sh` and `stop_ollama.sh`: local Ollama helper scripts
+- `run_batllm.py`: repository-root launcher
+- `run_tests.py`: cross-platform test runner
+- `create_release_bundles.py`: source and platform bundle generator
+- `start_ollama.sh` and `stop_ollama.sh`: Unix wrappers around the Python Ollama helper
 
 Maintained documentation:
 
@@ -101,7 +117,7 @@ The current gameplay stack works like this:
 The current model-management stack works like this:
 
 1. `OllamaConfigScreen` checks server state using local HTTP endpoints such as `/api/version`, `/api/ps`, and `/api/tags`.
-2. It uses `start_ollama.sh` and `stop_ollama.sh` for service lifecycle actions.
+2. It uses `src/ollama_service.py` for cross-platform service lifecycle actions.
 3. It uses `https://ollama.com/library` as the remote-library source for downloadable model names.
 4. It uses `/api/pull` and `/api/generate` for pull and preload operations.
 
@@ -109,6 +125,7 @@ Important implementation notes:
 
 - `NormalizedCanvas` keeps arena drawing resolution-independent by treating positions as values in the range `0.0` to `1.0`.
 - `HistoryManager` is the single source of truth for game and chat history.
+- `util.paths` is responsible for resolving assets, prompts, config-relative files, and save folders without relying on the current working directory.
 - BatLLM is currently built around two-player AI-mediated play, and some UI assumptions still rely on that structure.
 
 ## Configuration Reference
@@ -288,7 +305,15 @@ export PYTHONPATH=src
 
 ### Quick Smoke
 
-`run_tests.sh core` currently runs only the lightweight smoke checks in `src/tests/test_history_compact.py`:
+`run_tests.py core` is the cross-platform smoke runner:
+
+```bash
+python run_tests.py core
+```
+
+`run_tests.sh core` remains available as a Unix convenience wrapper around the same flow.
+
+The quick smoke currently runs only the lightweight smoke checks in `src/tests/test_history_compact.py`:
 
 ```bash
 ./run_tests.sh core
@@ -305,7 +330,7 @@ That covers:
 This is the most useful day-to-day test command for UI and logic changes:
 
 ```bash
-KIVY_WINDOW=mock KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_HOME=/tmp/batllm-kivy PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py
+python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py src/tests/test_multiplatform_support.py
 ```
 
 That suite covers:
@@ -314,11 +339,18 @@ That suite covers:
 - confirmation and text-input pop-ups
 - Ollama config screen logic
 - model-picker behaviour
+- cross-platform launch and path handling
 - non-live smoke checks
 
 ### Live Ollama Smoke
 
-`run_tests.sh full` starts Ollama, runs the full `src/tests` suite with live Ollama smoke enabled, and then stops Ollama:
+`run_tests.py full` starts Ollama, runs the full `src/tests` suite with live Ollama smoke enabled, and then stops Ollama:
+
+```bash
+python run_tests.py full
+```
+
+`run_tests.sh full` remains available on Unix-like shells as a wrapper around the same command:
 
 ```bash
 ./run_tests.sh full
@@ -353,7 +385,7 @@ Review the generated diff under `docs/code/` before committing.
 | gameplay logic | non-live unit suite |
 | exit flow or pop-ups | non-live unit suite |
 | Ollama config screen | non-live unit suite |
-| shell scripts | `./run_tests.sh core` |
+| cross-platform smoke | `python run_tests.py core` |
 | Ollama integration path | non-live unit suite plus live smoke if possible |
 | docs only | regenerate code docs if public API docs changed |
 
@@ -374,6 +406,23 @@ When behaviour changes, update the maintained docs in the same branch. In partic
 - Ollama model-management behaviour
 - keyboard and exit behaviour
 - project-level framing, aims, or educational positioning
+
+## Release Workflow
+
+BatLLM now uses tags for versions and a repository-level `VERSION` file to track the current release number.
+
+To build release assets:
+
+```bash
+python create_release_bundles.py
+```
+
+That produces:
+
+- source archives
+- a Windows bundle with `.bat` launchers
+- a macOS bundle with `.command` launchers
+- a Linux bundle with `.sh` launchers
 
 ## Coding Conventions
 

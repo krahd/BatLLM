@@ -1,7 +1,5 @@
 import datetime
-import os
 import sys
-from pathlib import Path
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -13,6 +11,7 @@ from game.bot import Bot
 # from game.game_board import GameBoard
 from game.game_board import GameBoard
 from game.history_manager import HistoryManager
+from util.paths import prompt_asset_dir, resolve_saved_sessions_dir
 from view.load_text_dialog import LoadTextDialog
 from view.save_dialog import SaveDialog
 from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
@@ -68,7 +67,7 @@ class HomeScreen(Screen):
                 filename (_type_): The filename to save the session to.
             """
             if filename:
-                self.ids.game_board.save_session(filename)
+                self._save_session_file(filename)
             else:
                 pass
 
@@ -142,7 +141,7 @@ class HomeScreen(Screen):
             id (_type_): The bot id.
         """
 
-        start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")
+        start_folder = str(prompt_asset_dir())
         ti = self.ids.get(f"prompt_input_{bot_id}")
 
         if not ti:
@@ -337,7 +336,7 @@ class HomeScreen(Screen):
                 text_input = self.ids.get(input_id)
                 text_input.text = text
 
-        start_folder = os.path.join(os.getcwd(), "src", "assets", "prompts")
+        start_folder = str(prompt_asset_dir())
         dialog = LoadTextDialog(on_choice=file_dialog_callback, start_dir=start_folder)
 
         dialog.open()
@@ -393,7 +392,7 @@ class HomeScreen(Screen):
                 """
 
                 if filename:
-                    self.ids.game_board.save_session(filename)
+                    self._save_session_file(filename)
 
                 force_exit()
 
@@ -459,3 +458,16 @@ class HomeScreen(Screen):
         self.ids.overlay.desaturation = 0.1  # Set the initial desaturation value
         Window.unbind(on_key_down=self.handle_window_key_down)
         Window.bind(on_key_down=self.handle_window_key_down)
+
+    def _save_session_file(self, filename: str) -> None:
+        """Persist the current session into the configured save folder."""
+        if not filename:
+            return
+
+        if not filename.lower().endswith(".json"):
+            filename = f"{filename}.json"
+
+        saved_sessions_folder = config.get("data", "saved_sessions_folder") or "saved_sessions"
+        target_dir = resolve_saved_sessions_dir(saved_sessions_folder)
+        target_path = target_dir / filename
+        self.ids.game_board.history_manager.save_session(target_path)

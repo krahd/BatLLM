@@ -209,7 +209,7 @@ def test_start_ollama_marks_configured_model_as_managed(monkeypatch) -> None:
         _managed_model_name=None,
         _set_status=lambda text: statuses.append(text),
         _append_log=lambda _text: None,
-        _run_script=lambda _script_name: DummyProc(returncode=0, stdout="ok"),
+        _run_ollama_helper=lambda _action: DummyProc(returncode=0, stdout="ok"),
         refresh_ollama_status=lambda: None,
         refresh_local_models=lambda: None,
         _run_in_thread=lambda fn: fn(),

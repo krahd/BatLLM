@@ -1,8 +1,11 @@
 var searchData=
 [
-  ['main_0',['main',['../namespacemain__conversation__cli.html#ad9c4474f3239c5dee15a78e55f5ac921',1,'main_conversation_cli']]],
-  ['main_5fconversation_5fcli_1',['main_conversation_cli',['../namespacemain__conversation__cli.html',1,'']]],
-  ['markup_2',['markup',['../namespaceutils.html#a65fe51488b72be582777bed1a692d9dc',1,'utils']]],
-  ['move_3',['move',['../classbot_1_1_bot.html#a169de661126679c2314485ad1edb10a6',1,'bot::Bot']]],
-  ['move_5finstantaneously_4',['move_instantaneously',['../classbot_1_1_bot.html#a2c55b92dcfdc7babd4ed275989640f5f',1,'bot::Bot']]]
+  ['llmpanel_0',['LLMPanel',['../classconfigurator-backup-sep-30_1_1_l_l_m_panel.html',1,'configurator-backup-sep-30.LLMPanel'],['../classconfigurator_1_1_l_l_m_panel.html',1,'configurator.LLMPanel']]],
+  ['load_1',['load',['../classapp__config_1_1_app_config.html#a731b76d80ceee8c9bae9292dd5409363',1,'app_config::AppConfig']]],
+  ['load_5fllm_5fconfig_2',['load_llm_config',['../namespaceollama__service.html#a22df6127c47d6c3b584fdcc1fca818ef',1,'ollama_service']]],
+  ['load_5foptions_3',['load_options',['../classollama__connector_1_1_ollama_connector.html#a72d2087f540e608ad33d360dac1ebfb3',1,'ollama_connector::OllamaConnector']]],
+  ['load_5fprompt_4',['load_prompt',['../classhome__screen_1_1_home_screen.html#ab71a7bbb09a4c0cdab569800a781d03e',1,'home_screen::HomeScreen']]],
+  ['load_5ftheme_5fcolors_5',['load_theme_colors',['../classmain_1_1_bat_l_l_m.html#ae5b55dbf2589791e40a6a6a4ac686f8d',1,'main::BatLLM']]],
+  ['loadtextdialog_6',['LoadTextDialog',['../classload__text__dialog_1_1_load_text_dialog.html',1,'load_text_dialog']]],
+  ['localmodelspanel_7',['LocalModelsPanel',['../classconfigurator-backup-sep-30_1_1_local_models_panel.html',1,'configurator-backup-sep-30.LocalModelsPanel'],['../classconfigurator_1_1_local_models_panel.html',1,'configurator.LocalModelsPanel']]]
 ];

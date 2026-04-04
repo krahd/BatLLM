@@ -2,6 +2,23 @@
 
 # Changelog
 
+## v0.2.0 - 2026-04-03
+
+### Cross-Platform Support
+
+- added `run_batllm.py` as the repository-root launcher for macOS, Linux, and Windows
+- added `src/ollama_service.py` as a cross-platform Ollama lifecycle helper
+- moved the Ollama screen away from a Unix-only shell-script dependency
+- made resource, prompt, system-instruction, and save-session paths resolve from the repository instead of the current working directory
+- added `run_tests.py` as the cross-platform test runner and kept `run_tests.sh` as a Unix wrapper
+- added a GitHub Actions matrix to validate the non-live suite on Ubuntu, Windows, and macOS
+
+### Release Tooling
+
+- added a repository `VERSION` file
+- added `create_release_bundles.py` to generate source, Windows, macOS, and Linux release archives
+- documented the new tagged-release workflow and platform-specific launchers
+
 ## v0.1.0 - 2026-04-03
 
 ### Documentation

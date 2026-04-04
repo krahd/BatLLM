@@ -1,0 +1,171 @@
+\doxysection{ollama\+\_\+service Namespace Reference}
+\hypertarget{namespaceollama__service}{}\label{namespaceollama__service}\index{ollama\_service@{ollama\_service}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+None \doxymbox{\hyperlink{namespaceollama__service_a1ff3bf158e09dbf29df4ad8ff14a7375}{require\+\_\+supported\+\_\+python}} ()
+\item 
+dict\+[str, str\texorpdfstring{$\vert$}{|}int]\+ \doxymbox{\hyperlink{namespaceollama__service_a22df6127c47d6c3b584fdcc1fca818ef}{load\+\_\+llm\+\_\+config}} (Path path=CONFIG\+\_\+\+PATH)
+\item 
+str \doxymbox{\hyperlink{namespaceollama__service_a842d3a828446777d83f270d8791d84ff}{endpoint\+\_\+url}} (str url, int port, str path)
+\item 
+dict \doxymbox{\hyperlink{namespaceollama__service_af33a67ef3cb9594a6bbd0f0f90f7beaa}{json\+\_\+get}} (str url, float timeout=5.\+0)
+\item 
+dict \doxymbox{\hyperlink{namespaceollama__service_a0792486e345e3906f2ef3ab446173e42}{json\+\_\+post}} (str url, dict payload, float timeout=60.\+0)
+\item 
+bool \doxymbox{\hyperlink{namespaceollama__service_abffe1e2e0e7976744a59845ea62e77bc}{server\+\_\+is\+\_\+up}} (str url, int port)
+\item 
+subprocess.\+Completed\+Process \doxymbox{\hyperlink{namespaceollama__service_a17f913b721d7bc158db74b1b1213b4d2}{run\+\_\+ollama\+\_\+command}} (\texorpdfstring{$\ast$}{*}str args, str\texorpdfstring{$\vert$}{|}None host=None)
+\item 
+subprocess.\+Popen \doxymbox{\hyperlink{namespaceollama__service_ab7a4c504b907129c9fd592749e5f618f}{start\+\_\+detached\+\_\+ollama\+\_\+serve}} (str host)
+\item 
+None \doxymbox{\hyperlink{namespaceollama__service_ae972b25c7ccfca87e2ccb3e0f92f1130}{wait\+\_\+until\+\_\+ready}} (str url, int port, float timeout\+\_\+seconds=60.\+0)
+\item 
+None \doxymbox{\hyperlink{namespaceollama__service_ab592cfd0ac7b38ab55889dfc54f30f79}{preload\+\_\+model}} (str url, int port, str model)
+\item 
+int \doxymbox{\hyperlink{namespaceollama__service_a525e6024854307cea936bed4f6345ab9}{start\+\_\+service}} (Path config\+\_\+path=CONFIG\+\_\+\+PATH)
+\item 
+list\+[str]\+ \doxymbox{\hyperlink{namespaceollama__service_ab045068d00305982cb4fed737929686f}{running\+\_\+model\+\_\+names}} (str host)
+\item 
+list\+[int]\+ \doxymbox{\hyperlink{namespaceollama__service_a9b13f7c6f4a4e879c480fd0c293458e9}{find\+\_\+ollama\+\_\+listener\+\_\+pids}} (int port)
+\item 
+int \doxymbox{\hyperlink{namespaceollama__service_a06058b6387a332a20250b53f8601577d}{stop\+\_\+service}} (Path config\+\_\+path=CONFIG\+\_\+\+PATH, bool verbose=False)
+\item 
+argparse.\+Argument\+Parser \doxymbox{\hyperlink{namespaceollama__service_a1abf0fff33daee2b7f125f8fcbe5caaf}{build\+\_\+parser}} ()
+\item 
+int \doxymbox{\hyperlink{namespaceollama__service_a63d2104096f96508aba83c617cf28001}{main}} (list\+[str]\+\texorpdfstring{$\vert$}{|}None argv=None)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceollama__service_a54a61c121766e6740f3fcab6067b9e7a}\label{namespaceollama__service_a54a61c121766e6740f3fcab6067b9e7a} 
+tuple {\bfseries MIN\+\_\+\+PYTHON} = (3, 10)
+\item 
+\Hypertarget{namespaceollama__service_a9bf3c3df522e8177505849664b7d91d0}\label{namespaceollama__service_a9bf3c3df522e8177505849664b7d91d0} 
+{\bfseries ROOT} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).resolve().parents\+[1]\+
+\item 
+\Hypertarget{namespaceollama__service_a0ca641e8c77bcebfc884dd2eb20d9054}\label{namespaceollama__service_a0ca641e8c77bcebfc884dd2eb20d9054} 
+str {\bfseries CONFIG\+\_\+\+PATH} = ROOT /\+ "{}src"{} /\+ "{}configs"{} /\+ "{}config.\+yaml"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Cross-platform Ollama lifecycle helper for BatLLM.\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespaceollama__service_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespaceollama__service_a1abf0fff33daee2b7f125f8fcbe5caaf}\index{ollama\_service@{ollama\_service}!build\_parser@{build\_parser}}
+\index{build\_parser@{build\_parser}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{build\_parser()}{build\_parser()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a1abf0fff33daee2b7f125f8fcbe5caaf} 
+ argparse.\+Argument\+Parser ollama\+\_\+service.\+build\+\_\+parser (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Create the CLI argument parser.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a842d3a828446777d83f270d8791d84ff}\index{ollama\_service@{ollama\_service}!endpoint\_url@{endpoint\_url}}
+\index{endpoint\_url@{endpoint\_url}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{endpoint\_url()}{endpoint\_url()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a842d3a828446777d83f270d8791d84ff} 
+ str ollama\+\_\+service.\+endpoint\+\_\+url (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{int}]{port}{, }\item[{str}]{path}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Build a full URL for the configured Ollama endpoint.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a9b13f7c6f4a4e879c480fd0c293458e9}\index{ollama\_service@{ollama\_service}!find\_ollama\_listener\_pids@{find\_ollama\_listener\_pids}}
+\index{find\_ollama\_listener\_pids@{find\_ollama\_listener\_pids}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{find\_ollama\_listener\_pids()}{find\_ollama\_listener\_pids()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a9b13f7c6f4a4e879c480fd0c293458e9} 
+ list\+[int]\+ ollama\+\_\+service.\+find\+\_\+ollama\+\_\+listener\+\_\+pids (\begin{DoxyParamCaption}\item[{int}]{port}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return process IDs listening on the configured TCP port.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_af33a67ef3cb9594a6bbd0f0f90f7beaa}\index{ollama\_service@{ollama\_service}!json\_get@{json\_get}}
+\index{json\_get@{json\_get}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{json\_get()}{json\_get()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_af33a67ef3cb9594a6bbd0f0f90f7beaa} 
+ dict ollama\+\_\+service.\+json\+\_\+get (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{float }]{timeout}{ = {\ttfamily 5.0}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Read JSON from an HTTP GET endpoint.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a0792486e345e3906f2ef3ab446173e42}\index{ollama\_service@{ollama\_service}!json\_post@{json\_post}}
+\index{json\_post@{json\_post}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{json\_post()}{json\_post()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a0792486e345e3906f2ef3ab446173e42} 
+ dict ollama\+\_\+service.\+json\+\_\+post (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{dict}]{payload}{, }\item[{float }]{timeout}{ = {\ttfamily 60.0}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Send JSON to an HTTP POST endpoint and decode the JSON response.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a22df6127c47d6c3b584fdcc1fca818ef}\index{ollama\_service@{ollama\_service}!load\_llm\_config@{load\_llm\_config}}
+\index{load\_llm\_config@{load\_llm\_config}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{load\_llm\_config()}{load\_llm\_config()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a22df6127c47d6c3b584fdcc1fca818ef} 
+ dict\+[str, str \texorpdfstring{$\vert$}{|} int]\+ ollama\+\_\+service.\+load\+\_\+llm\+\_\+config (\begin{DoxyParamCaption}\item[{Path }]{path}{ = {\ttfamily CONFIG\+\_\+PATH}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load the LLM configuration required to manage the local Ollama service.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a63d2104096f96508aba83c617cf28001}\index{ollama\_service@{ollama\_service}!main@{main}}
+\index{main@{main}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a63d2104096f96508aba83c617cf28001} 
+ int ollama\+\_\+service.\+main (\begin{DoxyParamCaption}\item[{list\+[str]\+ \texorpdfstring{$\vert$}{|} None }]{argv}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Entry point for the Ollama helper CLI.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_ab592cfd0ac7b38ab55889dfc54f30f79}\index{ollama\_service@{ollama\_service}!preload\_model@{preload\_model}}
+\index{preload\_model@{preload\_model}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{preload\_model()}{preload\_model()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_ab592cfd0ac7b38ab55889dfc54f30f79} 
+ None ollama\+\_\+service.\+preload\+\_\+model (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{int}]{port}{, }\item[{str}]{model}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Warm the selected model through the local Ollama API.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a1ff3bf158e09dbf29df4ad8ff14a7375}\index{ollama\_service@{ollama\_service}!require\_supported\_python@{require\_supported\_python}}
+\index{require\_supported\_python@{require\_supported\_python}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{require\_supported\_python()}{require\_supported\_python()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a1ff3bf158e09dbf29df4ad8ff14a7375} 
+ None ollama\+\_\+service.\+require\+\_\+supported\+\_\+python (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Exit early with a clear message on unsupported Python versions.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a17f913b721d7bc158db74b1b1213b4d2}\index{ollama\_service@{ollama\_service}!run\_ollama\_command@{run\_ollama\_command}}
+\index{run\_ollama\_command@{run\_ollama\_command}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{run\_ollama\_command()}{run\_ollama\_command()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a17f913b721d7bc158db74b1b1213b4d2} 
+ subprocess.\+Completed\+Process ollama\+\_\+service.\+run\+\_\+ollama\+\_\+command (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{args}{, }\item[{str \texorpdfstring{$\vert$}{|} None }]{host}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Run an Ollama CLI command and capture the result.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_ab045068d00305982cb4fed737929686f}\index{ollama\_service@{ollama\_service}!running\_model\_names@{running\_model\_names}}
+\index{running\_model\_names@{running\_model\_names}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{running\_model\_names()}{running\_model\_names()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_ab045068d00305982cb4fed737929686f} 
+ list\+[str]\+ ollama\+\_\+service.\+running\+\_\+model\+\_\+names (\begin{DoxyParamCaption}\item[{str}]{host}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the names reported by ``ollama ps``.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_abffe1e2e0e7976744a59845ea62e77bc}\index{ollama\_service@{ollama\_service}!server\_is\_up@{server\_is\_up}}
+\index{server\_is\_up@{server\_is\_up}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{server\_is\_up()}{server\_is\_up()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_abffe1e2e0e7976744a59845ea62e77bc} 
+ bool ollama\+\_\+service.\+server\+\_\+is\+\_\+up (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{int}]{port}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return ``True`` when the Ollama HTTP API responds on the configured port.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_ab7a4c504b907129c9fd592749e5f618f}\index{ollama\_service@{ollama\_service}!start\_detached\_ollama\_serve@{start\_detached\_ollama\_serve}}
+\index{start\_detached\_ollama\_serve@{start\_detached\_ollama\_serve}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{start\_detached\_ollama\_serve()}{start\_detached\_ollama\_serve()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_ab7a4c504b907129c9fd592749e5f618f} 
+ subprocess.\+Popen ollama\+\_\+service.\+start\+\_\+detached\+\_\+ollama\+\_\+serve (\begin{DoxyParamCaption}\item[{str}]{host}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Start ``ollama serve`` in the background for the current platform.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a525e6024854307cea936bed4f6345ab9}\index{ollama\_service@{ollama\_service}!start\_service@{start\_service}}
+\index{start\_service@{start\_service}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{start\_service()}{start\_service()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a525e6024854307cea936bed4f6345ab9} 
+ int ollama\+\_\+service.\+start\+\_\+service (\begin{DoxyParamCaption}\item[{Path }]{config\+\_\+path}{ = {\ttfamily CONFIG\+\_\+PATH}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Start Ollama if needed, ensure the configured model is present, and warm it.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_a06058b6387a332a20250b53f8601577d}\index{ollama\_service@{ollama\_service}!stop\_service@{stop\_service}}
+\index{stop\_service@{stop\_service}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{stop\_service()}{stop\_service()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_a06058b6387a332a20250b53f8601577d} 
+ int ollama\+\_\+service.\+stop\+\_\+service (\begin{DoxyParamCaption}\item[{Path }]{config\+\_\+path}{ = {\ttfamily CONFIG\+\_\+PATH}, }\item[{bool }]{verbose}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Stop models reported by Ollama and terminate the listening server process.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__service_ae972b25c7ccfca87e2ccb3e0f92f1130}\index{ollama\_service@{ollama\_service}!wait\_until\_ready@{wait\_until\_ready}}
+\index{wait\_until\_ready@{wait\_until\_ready}!ollama\_service@{ollama\_service}}
+\doxysubsubsection{\texorpdfstring{wait\_until\_ready()}{wait\_until\_ready()}}
+{\footnotesize\ttfamily \label{namespaceollama__service_ae972b25c7ccfca87e2ccb3e0f92f1130} 
+ None ollama\+\_\+service.\+wait\+\_\+until\+\_\+ready (\begin{DoxyParamCaption}\item[{str}]{url}{, }\item[{int}]{port}{, }\item[{float }]{timeout\+\_\+seconds}{ = {\ttfamily 60.0}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Wait until the Ollama HTTP API becomes reachable.\end{DoxyVerb}
+ 

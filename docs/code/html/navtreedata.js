@@ -47,7 +47,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classtests_1_1test__close__prompt__behavior_1_1_fake_keyboard.html"
+"classtests_1_1test__close__prompt__behavior_1_1_fake_field.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

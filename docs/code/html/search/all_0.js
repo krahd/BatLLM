@@ -22,6 +22,7 @@ var searchData=
   ['_5fprompt_5fmanual_5fcommand_19',['_prompt_manual_command',['../classgame__board_1_1_game_board.html#aa7560715a6b4254695a8d8424638362a',1,'game_board::GameBoard']]],
   ['_5fredraw_20',['_redraw',['../classgame__board_1_1_game_board.html#a82486e0a1a723cb2b8e6a6285a0a80aa',1,'game_board::GameBoard']]],
   ['_5fresize_5ftabs_21',['_resize_tabs',['../classconfigurator-backup-sep-30_1_1_bat_l_l_m_config_app.html#abdf9717fa1410ed6a5b3c3d9a203b5e2',1,'configurator-backup-sep-30::BatLLMConfigApp']]],
-  ['_5fshow_5fmodel_5fpicker_22',['_show_model_picker',['../classollama__config__screen_1_1_ollama_config_screen.html#a024c7b1def6c6d93fe3de374f6a8640b',1,'ollama_config_screen::OllamaConfigScreen']]],
-  ['_5ftrim_5fhistory_5finplace_23',['_trim_history_inplace',['../classollama__connector_1_1_ollama_connector.html#aabcf3f02f09ba893606f13d635194d01',1,'ollama_connector::OllamaConnector']]]
+  ['_5fsave_5fsession_5ffile_22',['_save_session_file',['../classhome__screen_1_1_home_screen.html#a8b2773b89ced2b8718fc11b37a9e63bb',1,'home_screen::HomeScreen']]],
+  ['_5fshow_5fmodel_5fpicker_23',['_show_model_picker',['../classollama__config__screen_1_1_ollama_config_screen.html#a024c7b1def6c6d93fe3de374f6a8640b',1,'ollama_config_screen::OllamaConfigScreen']]],
+  ['_5ftrim_5fhistory_5finplace_24',['_trim_history_inplace',['../classollama__connector_1_1_ollama_connector.html#aabcf3f02f09ba893606f13d635194d01',1,'ollama_connector::OllamaConnector']]]
 ];

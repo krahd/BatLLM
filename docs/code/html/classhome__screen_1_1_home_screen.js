@@ -1,6 +1,7 @@
 var classhome__screen_1_1_home_screen =
 [
     [ "__init__", "classhome__screen_1_1_home_screen.html#a3dd05b19da94d35cdd7031978d228caa", null ],
+    [ "_save_session_file", "classhome__screen_1_1_home_screen.html#a8b2773b89ced2b8718fc11b37a9e63bb", null ],
     [ "forward_prompt_store", "classhome__screen_1_1_home_screen.html#a603c95ac6fe9ed485e75f1e7af5c7422", null ],
     [ "get_game_board", "classhome__screen_1_1_home_screen.html#a10f994eb100fe0ecbc7a8079d3b9ad20", null ],
     [ "get_prompt_gui_input_text", "classhome__screen_1_1_home_screen.html#a2b0e1a0f767172e494300855c65411e2", null ],

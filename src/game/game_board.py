@@ -43,6 +43,7 @@ from game.bot import Bot
 from game.history_manager import HistoryManager
 from game.ollama_connector import OllamaConnector  # TODO move to singleton
 from game.prompt_store import PromptStore
+from util.paths import asset_path
 from util.utils import (
     find_id_in_parents,
     markup,
@@ -79,8 +80,8 @@ class GameBoard(Widget):
         self.shuffled_bots: Optional[list[Bot]] = None
 
         # Audio
-        self.sound_shoot = SoundLoader.load("assets/sounds/shoot1.wav")
-        self.sound_bot_hit = SoundLoader.load("assets/sounds/bot_hit.wav")
+        self.sound_shoot = SoundLoader.load(str(asset_path("sounds", "shoot1.wav")))
+        self.sound_bot_hit = SoundLoader.load(str(asset_path("sounds", "bot_hit.wav")))
 
         # History + LLM connector
         self.history_manager = HistoryManager()

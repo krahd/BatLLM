@@ -5,5 +5,6 @@ var searchData=
   ['add_5ftext_5fto_5fhome_5fscreen_5fcmd_5fhistory_2',['add_text_to_home_screen_cmd_history',['../classgame__board_1_1_game_board.html#a0cc8ffe9c0adea2829022477c1468685',1,'game_board::GameBoard']]],
   ['app_5fconfig_3',['app_config',['../namespaceapp__config.html',1,'']]],
   ['appconfig_4',['AppConfig',['../classapp__config_1_1_app_config.html',1,'app_config']]],
-  ['as_5fdict_5',['as_dict',['../classapp__config_1_1_app_config.html#adb5617ceb0746bc44c67f32623e0e4a7',1,'app_config::AppConfig']]]
+  ['as_5fdict_5',['as_dict',['../classapp__config_1_1_app_config.html#adb5617ceb0746bc44c67f32623e0e4a7',1,'app_config::AppConfig']]],
+  ['asset_5fpath_6',['asset_path',['../namespacepaths.html#a4d6b97ab4202dabd4bab3cec65a1edda',1,'paths']]]
 ];

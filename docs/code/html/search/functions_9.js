@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['main_0',['main',['../namespacemain__conversation__cli.html#ad9c4474f3239c5dee15a78e55f5ac921',1,'main_conversation_cli']]],
-  ['markup_1',['markup',['../namespaceutils.html#a65fe51488b72be582777bed1a692d9dc',1,'utils']]],
-  ['move_2',['move',['../classbot_1_1_bot.html#a169de661126679c2314485ad1edb10a6',1,'bot::Bot']]],
-  ['move_5finstantaneously_3',['move_instantaneously',['../classbot_1_1_bot.html#a2c55b92dcfdc7babd4ed275989640f5f',1,'bot::Bot']]]
+  ['json_5fget_0',['json_get',['../namespaceollama__service.html#af33a67ef3cb9594a6bbd0f0f90f7beaa',1,'ollama_service']]],
+  ['json_5fpost_1',['json_post',['../namespaceollama__service.html#a0792486e345e3906f2ef3ab446173e42',1,'ollama_service']]]
 ];
