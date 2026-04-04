@@ -30,7 +30,7 @@
   <td id="projectalign">
    <div id="projectname">BatLLM<span id="projectnumber">&#160;0</span>
    </div>
-   <div id="projectbrief">BatLLM: An educational AI literacy game</div>
+   <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
  </tr>
  </tbody>
@@ -130,7 +130,7 @@ Protected Attributes</h2></td></tr>
 &#160;</td><td class="memItemRight"><b>_keyboard</b> = None</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">A modal, two-pane dialog to choose and preview .txt files.
+<div class="textblock"><pre class="fragment">A modal, two-pane pop-up to choose and preview `.txt` files.
 When the user loads or cancels, `on_choice` is called with the file's
 text (str) or None.
 </pre> </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -160,7 +160,7 @@ text (str) or None.
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">Request keyboard to capture Enter/Esc when dialog is open.</pre> 
+<pre class="fragment">Request keyboard to capture Enter/Esc when the pop-up is open.</pre> 
 </div>
 </div>
 <a id="a32389f1c076494df69a7d10f8c868e88" name="a32389f1c076494df69a7d10f8c868e88"></a>
@@ -185,7 +185,7 @@ text (str) or None.
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">User cancelled. Calls callback with None and closes.
+<pre class="fragment">User cancelled. Calls callback with None and closes the pop-up.
 </pre> 
 </div>
 </div>
@@ -215,7 +215,7 @@ text (str) or None.
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">Release keyboard when dialog closes.</pre> 
+<pre class="fragment">Release keyboard when the pop-up closes.</pre> 
 </div>
 </div>
 <a id="aba88b8a492c2bff8e8ba2b825aa5f213" name="aba88b8a492c2bff8e8ba2b825aa5f213"></a>
@@ -241,7 +241,7 @@ text (str) or None.
 </table>
 </div><div class="memdoc">
 <pre class="fragment">User confirmed loading the selected file.
-Reads the file, calls the callback, and closes the dialog.
+Reads the file, calls the callback, and closes the pop-up.
 </pre> 
 </div>
 </div>

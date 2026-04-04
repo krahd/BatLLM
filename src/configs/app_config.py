@@ -44,7 +44,7 @@ class AppConfig:
 
     def load(self, path=CONFIG_PATH):
         """Loads the configuration from the specified path.
-        If the file does not exist, it initializes with default values.
+        If the file does not exist, it initialises with default values.
         """
 
         if path.exists():
@@ -61,7 +61,7 @@ class AppConfig:
 
     def save(self, path=CONFIG_PATH):
         """Saves the current configuration to the specified path or the default path.
-        If the path is None, it uses the path set during initialization.
+        If the path is None, it uses the path set during initialisation.
         """
 
         if path is None:

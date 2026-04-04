@@ -24,13 +24,13 @@ Builder.load_file("view/ollama_config_screen.kv")
 
 class BatLLM(MDApp):
     """This is the main application class for BattLLM.
-    Using Kivy, it initializes the screen manager and sets up the application's windows
+    Using Kivy, it initialises the screen manager and sets up the application's windows
 
     Args:
         App (_type_): Kivy's base application class.
 
     Attributes:
-        theme_colors (DictProperty): A dictionary to hold theme colors loaded from a properties file.
+        theme_colors (DictProperty): A dictionary to hold theme colours loaded from a properties file.
     """
 
     theme_colors = DictProperty({})  # Expose to KV
@@ -54,16 +54,16 @@ class BatLLM(MDApp):
 
     def load_theme_colors(self):
         """
-        Loads theme color definitions from a properties file and stores them in the `theme_colors` attribute.
+        Loads theme colour definitions from a properties file and stores them in the `theme_colors` attribute.
 
         Reads the "theme_colors.properties" file line by line, ignoring empty lines and comments.
         For each valid line containing a key-value pair separated by '=', it parses the key and value,
-        converts the value from a hex color string to a color object using `get_color_from_hex`, and
+        converts the value from a hex colour string to a colour object using `get_color_from_hex`, and
         stores the result in the `theme_colors` dictionary.
 
         Raises:
             FileNotFoundError: If the "theme_colors.properties" file does not exist.
-            ValueError: If a line contains an invalid hex color value.
+            ValueError: If a line contains an invalid hex colour value.
         """
         self.theme_colors = {}
         with open("theme_colors.properties", "r", encoding="utf-8") as f:

@@ -1,14 +1,32 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # BatLLM Documentation
 
 BatLLM is a local, AI-mediated, human-vs-human battle game built with Kivy. Two human players write prompts, two bots execute model-driven commands, and the game board resolves movement, shields, bullets, rounds, and match state.
 
-This documentation set is organized for three different needs:
+BatLLM is also a free and libre open source research and education project. It uses a deliberately simple game form to make prompting, strategic thinking, model limitations, and human-AI mediation concrete rather than abstract. Players do not directly control the bots; instead, they must work through AI systems that know nothing about the game and must be guided through language.
 
-- product overview and setup: [README.md](README.md)
-- how to run and use the application: [USER_GUIDE.md](USER_GUIDE.md)
-- configuration, testing, and development details: [CONFIGURATION.md](CONFIGURATION.md), [TESTING.md](TESTING.md), and [CONTRIBUTING.md](CONTRIBUTING.md)
+## Project Aims
+
+BatLLM is intended to do more than provide a toy interface for local models. The project aims to:
+
+- support practical and critical AI literacy through hands-on, self-directed play
+- make prompt-writing a situated strategic activity rather than an isolated exercise
+- expose both the capabilities and the shortcomings of LLM-mediated interaction
+- encourage broader social understanding of AI, including the power, access, political, and economic asymmetries that shape generative AI systems
+
+In that sense, BatLLM treats play as a research and teaching method. It is a game, but also a framework for learning how AI systems behave, where they fail, and how people adapt to those limits.
+
+This documentation set is now split by audience:
+
+- project overview and entry point: [README.md](README.md)
+- user-facing guidance: [USER_GUIDE.md](USER_GUIDE.md) and [FAQ.md](FAQ.md)
+- developer-facing guidance: [CONTRIBUTING.md](CONTRIBUTING.md)
+- project history and attribution: [CHANGELOG.md](CHANGELOG.md) and [CREDITS.md](CREDITS.md)
+
+## Documentation Scope
+
+This main page focuses on the project as a whole: its motivations, aims, current product shape, and the relationship between the maintained guides. The README remains the overview page for both users and contributors, the user guide stays user-facing, and the contributing guide now consolidates configuration, testing, troubleshooting, and development workflow.
 
 ## Current Product Snapshot
 
@@ -37,7 +55,7 @@ The model pickers are modal popups. They close when the user:
 
 ## Runtime Architecture
 
-At runtime, BatLLM is organized around a small set of cooperating components:
+At runtime, BatLLM is organised around a small set of cooperating components:
 
 - `HomeScreen` and the `.kv` layouts own the main user interface.
 - `GameBoard` owns the live game world and turn/round flow.
@@ -55,8 +73,8 @@ See [CHANGELOG.md](CHANGELOG.md) for the running release history.
 Highlights in the current documentation revision:
 
 - the docs now reflect the actual `Ollama Config` workflow and labels
-- the model-picker behavior is documented, including `Esc` and outside-click dismissal
-- configuration, testing, and troubleshooting now have dedicated reference pages
+- the model-picker behaviour is documented, including `Esc` and outside-click dismissal
+- developer-facing configuration, testing, and troubleshooting have been consolidated into the contributing guide
 - the install docs now match the Python dependency set used by the codebase
 - the documentation homepage no longer needs to redirect to the repository root
 

@@ -1,5 +1,5 @@
 """
-This module defines the `Bot` class, a Kivy Widget subclass that encapsulates the state and behavior of a game bot,
+This module defines the `Bot` class, a Kivy Widget subclass that encapsulates the state and behaviour of a game bot,
 including graphical rendering, action execution, prompt history management, and LLM communication.
 """
 
@@ -170,7 +170,7 @@ class Bot(Widget):
 
     def move(self, distance: float = None, duration: float = 0.48, easing: str = "out_quad", on_complete=None):
         """ 
-        Move forward in the facing direction (self.rot) by 'distance' (normalized units),
+        Move forward in the facing direction (self.rot) by 'distance' (normalised units),
         animated over 'duration' seconds.
         """
 
@@ -238,7 +238,7 @@ class Bot(Widget):
             angle (float): The angle in degrees to rotate the object.
             Positive values rotate clockwise, negative values rotate counterclockwise.
 
-        The rotation is normalized to stay within the range [0, 360) degrees.
+        The rotation is normalised to stay within the range [0, 360) degrees.
         """
         self.rot = (self.rot + angle) % 360
 
@@ -266,7 +266,7 @@ class Bot(Widget):
         A bot's way of shooting is to create a bullet and give it to the world to deal with.
 
         Returns:
-            Bullet: A new Bullet instance initialized with the bot's id, position (x, y), and rotation (rot) if the shield is inactive.
+            Bullet: A new Bullet instance initialised with the bot's id, position (x, y), and rotation (rot) if the shield is inactive.
             None: If the shield is active, no bullet is created and None is returned.
         """
 

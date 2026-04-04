@@ -9,7 +9,7 @@ Builder.load_file(os.path.join(os.path.dirname(__file__), "load_text_dialog.kv")
 
 class LoadTextDialog(Popup):
     """
-    A modal, two-pane dialog to choose and preview .txt files.
+    A modal, two-pane pop-up to choose and preview `.txt` files.
     When the user loads or cancels, `on_choice` is called with the file's
     text (str) or None.
     """
@@ -29,13 +29,13 @@ class LoadTextDialog(Popup):
             self.bind(on_open=lambda *a: setattr(self.ids.filechooser, "path", start_dir))
 
     def _attach_keyboard(self, *args):
-        """Request keyboard to capture Enter/Esc when dialog is open."""
+        """Request keyboard to capture Enter/Esc when the pop-up is open."""
         self._keyboard = Window.request_keyboard(self._on_keyboard_closed, self)
         if self._keyboard:
             self._keyboard.bind(on_key_down=self._on_key_down)
 
     def _detach_keyboard(self, *args):
-        """Release keyboard when dialog closes."""
+        """Release keyboard when the pop-up closes."""
         if self._keyboard:
             self._keyboard.unbind(on_key_down=self._on_key_down)
             self._keyboard = None
@@ -74,7 +74,7 @@ class LoadTextDialog(Popup):
     def _load_selected(self):
         """
         User confirmed loading the selected file.
-        Reads the file, calls the callback, and closes the dialog.
+        Reads the file, calls the callback, and closes the pop-up.
         """
         sel = self.ids.filechooser.selection
         if not sel:
@@ -100,7 +100,7 @@ class LoadTextDialog(Popup):
 
     def _cancel(self):
         """
-        User cancelled. Calls callback with None and closes.
+        User cancelled. Calls callback with None and closes the pop-up.
         """
         try:
             self.on_choice(None)

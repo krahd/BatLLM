@@ -30,7 +30,7 @@
   <td id="projectalign">
    <div id="projectname">BatLLM<span id="projectnumber">&#160;0</span>
    </div>
-   <div id="projectbrief">BatLLM: An educational AI literacy game</div>
+   <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
  </tr>
  </tbody>
@@ -120,7 +120,7 @@ Protected Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">A context manager that unifies coordinate systems for Kivy widgets. 
-It normalizes the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
+It normalises the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
 It is used to draw on the canvas of a widget, allowing for consistent rendering across different screen sizes and resolutions.
 It also handles padding and scaling to ensure that the drawing area is consistent regardless of the widget's size.
 Top-left corner of the widget is (0, 0) and bottom-right corner is (1, 1).
@@ -144,9 +144,9 @@ It can be used in a `with` statement to automatically handle the canvas transfor
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Initializes the NormalizedCanvas with a widget.
+<pre class="fragment">Initialises the NormalizedCanvas with a widget.
 Args:
-    widget (_type_): The Kivy widget whose canvas will be normalized.
+    widget (_type_): The Kivy widget whose canvas will be normalised.
 </pre> 
 </div>
 </div>
@@ -167,7 +167,7 @@ Args:
 </div><div class="memdoc">
 <pre class="fragment">Enters the context manager, setting up the canvas transformations.
 This is called when the `with` block is entered, ensuring that the canvas is prepared for drawing.
-It applies translations and scaling to normalize the coordinates to the widget's dimensions.
+It applies translations and scaling to normalise the coordinates to the widget's dimensions.
 Returns:
     _type_: The canvas context, allowing for drawing operations within the `with` block.
 </pre> 
@@ -237,14 +237,14 @@ This is called when the `with` block is exited, ensuring that the canvas transfo
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">Converts absolute coordinates (x, y) to normalized coordinates within the widget.
-The coordinates are normalized to the range [0, 1] based on the widget's size.
+<pre class="fragment">Converts absolute coordinates (x, y) to normalised coordinates within the widget.
+The coordinates are normalised to the range [0, 1] based on the widget's size.
 Args:
     widget (_type_): The Kivy widget to which the coordinates are relative.
-    x (float): The x-coordinate to normalize.       
-    y (float): The y-coordinate to normalize.
+    x (float): The x-coordinate to normalise.       
+    y (float): The y-coordinate to normalise.
 Returns:
-    tuple: A tuple containing the normalized x and y coordinates.   
+    tuple: A tuple containing the normalised x and y coordinates.   
 </pre> 
 </div>
 </div>
@@ -274,12 +274,12 @@ Returns:
   </tr>
 </table>
 </div><div class="memdoc">
-<pre class="fragment">Converts a touch event's coordinates to normalized coordinates within the widget.
+<pre class="fragment">Converts a touch event's coordinates to normalised coordinates within the widget.
 Args:
     widget (_type_): The Kivy widget to which the touch coordinates are relative.
     touch (_type_): The touch event containing x and y coordinates. 
 Returns:
-    tuple: A tuple containing the normalized x and y coordinates of the touch event.    
+    tuple: A tuple containing the normalised x and y coordinates of the touch event.    
 </pre> 
 </div>
 </div>

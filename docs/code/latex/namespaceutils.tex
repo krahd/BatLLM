@@ -53,12 +53,12 @@ Returns:
 {\footnotesize\ttfamily \label{namespaceutils_a65fe51488b72be582777bed1a692d9dc} 
  str utils.\+markup (\begin{DoxyParamCaption}\item[{str}]{text}{, }\item[{Optional\+[int]\+ }]{font\+\_\+size}{ = {\ttfamily None}, }\item[{}]{color}{ = {\ttfamily "{}\+\#000000"{}}, }\item[{}]{bold}{ = {\ttfamily False}, }\item[{}]{italic}{ = {\ttfamily False}}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Wraps the given text in Kivy markup tags for font size, color, bold, and italic.
+\begin{DoxyVerb}Wraps the given text in Kivy markup tags for font size, colour, bold, and italic.
 
 Args:
     text (str): The text to be wrapped.
     font_size (int, optional): The font size to apply. Defaults to config value "ui"/"font_size".
-    color (str, optional): The color to apply in hex format (e.g., "#ff0000"). Defaults to black ("#000000").
+    color (str, optional): The colour to apply in hex format (e.g., "#ff0000"). Defaults to black ("#000000").
     bold (bool, optional): Whether to apply bold formatting. Defaults to False.
     italic (bool, optional): Whether to apply italic formatting. Defaults to False.
 
@@ -71,11 +71,11 @@ Returns:
 {\footnotesize\ttfamily \label{namespaceutils_a2bcb6ec09de0b525a46dd89edcac27d3} 
 utils.\+show\+\_\+confirmation\+\_\+dialog (\begin{DoxyParamCaption}\item[{}]{title}{, }\item[{}]{message}{, }\item[{}]{on\+\_\+confirm}{, }\item[{}]{on\+\_\+cancel}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Displays a modal confirmation dialog with a title and message.
+\begin{DoxyVerb}Displays a modal confirmation pop-up with a title and message.
 
 Args:
-    title (_type_): the title of the dialog
-    message (_type_): the message to display in the dialog
+    title (_type_): the title of the pop-up
+    message (_type_): the message to display in the pop-up
     on_confirm (_type_): function to call when the user confirms
     on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
 \end{DoxyVerb}
@@ -85,7 +85,7 @@ Args:
 {\footnotesize\ttfamily \label{namespaceutils_a975f317d99aeb000539e889449fff092} 
 utils.\+show\+\_\+fading\+\_\+alert (\begin{DoxyParamCaption}\item[{}]{title}{, }\item[{}]{message}{, }\item[{}]{duration}{ = {\ttfamily 1.5}, }\item[{}]{fade\+\_\+duration}{ = {\ttfamily 2.0}}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Displays a modal alert with a title and message that fades out and closes itself.
+\begin{DoxyVerb}Displays a modal alert pop-up with a title and message that fades out and closes itself.
 
 Args:
     title (_type_): the title of the alert
@@ -99,12 +99,12 @@ Args:
 {\footnotesize\ttfamily \label{namespaceutils_a5adfaed04dfc6ae7f3252199b143b9b1} 
 utils.\+show\+\_\+text\+\_\+input\+\_\+dialog (\begin{DoxyParamCaption}\item[{}]{on\+\_\+confirm}{, }\item[{}]{on\+\_\+cancel}{ = {\ttfamily None}, }\item[{}]{title}{ = {\ttfamily "{}"{}}, }\item[{}]{message}{ = {\ttfamily "{}"{}}, }\item[{}]{default\+\_\+text}{ = {\ttfamily "{}"{}}, }\item[{}]{input\+\_\+hint}{ = {\ttfamily "{}Enter~a~text"{}}, }\item[{}]{confirm\+\_\+text}{ = {\ttfamily "{}Save"{}}, }\item[{}]{cancel\+\_\+text}{ = {\ttfamily "{}Cancel"{}}}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}A modal dialog for the user to enter a text input.
+\begin{DoxyVerb}A modal pop-up for the user to enter text input.
 
 Args:
     on_confirm (_type_): function to call when the user confirms the filename
     on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
-    title (str, optional): title of the dialog. Defaults to "".
+    title (str, optional): title of the pop-up. Defaults to "".
     default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
     input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". 
     It is only visible if the default value is empty
@@ -133,7 +133,7 @@ utils.\+tame\+\_\+color (\begin{DoxyParamCaption}\item[{}]{color}{, }\item[{}]{d
 \begin{DoxyVerb}Desaturates and lightens an RGB colour.
 
 Args:
-    color (tuple): A 3-tuple of RGB in range 0–1, e.g., (0.5, 0.2, 0.8)
+    color (tuple): A 3-tuple representing an RGB colour in range 0–1, e.g., (0.5, 0.2, 0.8)
     desaturation (float): 0 = no change, 1 = fully desaturated (greyscale)
     lighten (float): 0 = no change, 1 = fully white
 

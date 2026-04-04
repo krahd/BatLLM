@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # Changelog
 
@@ -8,10 +8,15 @@
 
 - replaced the placeholder main documentation page with a current project overview
 - rewrote the README, user guide, contributor guide, and FAQ to match the current codebase
-- added dedicated configuration, testing, and troubleshooting guides
 - added an actual documentation landing page in `docs/index.html`
 - added Ollama workflow diagrams for the control screen and model pickers
 - aligned the docs with the current UI labels, including the `Ollama Config` button
+- normalised the maintained documentation set to British English
+- consolidated the developer-facing configuration, testing, and troubleshooting material into `CONTRIBUTING.md`
+- rewrote `USER_GUIDE.md` as a game manual and restored the screen recording
+- rewrote `CONTRIBUTING.md` as a standard developer and contribution manual
+- removed the obsolete standalone `CONFIGURATION.md`, `TESTING.md`, and `TROUBLESHOOTING.md` pages
+- added `DOCUMENTATION_CHANGE_REPORT.md` to summarise the documentation restructure
 
 ### Ollama UX
 

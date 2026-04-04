@@ -84,14 +84,14 @@ Attributes:
     current_turn (dict or None): The currently active turn's history.
 
 Methods:
-    start_game(game_board): Begin a new game and initialize its history.
-    end_game(game, force=False): Finalize the current game, recording end time and winner.
+    start_game(game_board): Begin a new game and initialise its history.
+    end_game(game, force=False): Finalise the current game, recording end time and winner.
 
     start_round(game, first_round=False): Begin a new round within the current game.
-    end_round(game): Finalize the current round.
+    end_round(game): Finalise the current round.
 
     start_turn(game): Begin a new turn within the current round.
-    end_turn(game): Finalize the current turn.
+    end_turn(game): Finalise the current turn.
 
     record_play(bot): Record a play for the bot in the current turn.
 
@@ -115,7 +115,7 @@ Methods:
 {\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a48320b99270d84c2ab07dc03618fa5d2} 
 history\+\_\+manager.\+History\+Manager.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Initialize a new HistoryManager with no active game.\end{DoxyVerb}
+\begin{DoxyVerb}Initialise a new HistoryManager with no active game.\end{DoxyVerb}
  
 
 \label{doc-func-members}
@@ -152,7 +152,7 @@ history\+\_\+manager.\+History\+Manager.\+\_\+now\+\_\+iso (\begin{DoxyParamCapt
 history\+\_\+manager.\+History\+Manager.\+end\+\_\+game (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game}{}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}End the current game. This can be called at any time (e.g., normal game end or aborted mid-round).
-It finalizes any ongoing round/turn and records the end time and final outcome.
+It finalises any ongoing round/turn and records the end time and final outcome.
 \end{DoxyVerb}
  \Hypertarget{classhistory__manager_1_1_history_manager_a73970bd3a3b977ed8b98c2a43f4867ba}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!end\_round@{end\_round}}
 \index{end\_round@{end\_round}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
@@ -203,7 +203,7 @@ This will include all games played in this session.
 {\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_abdc8dd17011d473212a835a7e6a3f1b6} 
 history\+\_\+manager.\+History\+Manager.\+start\+\_\+game (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{game\+\_\+board}{}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Start a new game. Initialize the game log with start time and initial bot states.
+\begin{DoxyVerb}Start a new game. Initialise the game log with start time and initial bot states.
 `game_board` is the BoardGameWidget
 \end{DoxyVerb}
  \Hypertarget{classhistory__manager_1_1_history_manager_ae40d97816a81571357c27f2a84ef73bd}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!start\_round@{start\_round}}

@@ -15,14 +15,14 @@ class Bullet:
         rot (float): Rotation angle of the bullet in degrees.
         step (float): Distance the bullet moves per update.
         diameter (float): Visual diameter of the bullet (for rendering purposes).
-        colour (tuple): RGBA color of the bullet.
+        colour (tuple): RGBA colour of the bullet.
 
     Methods:
         __init__(parent_id, x, y, rot):
-            Initializes a new Bullet instance with the given parent bot ID, position, and rotation.
+            Initialises a new Bullet instance with the given parent bot ID, position, and rotation.
 
         render():
-            Renders the bullet as a circle at its current position using the specified color.
+            Renders the bullet as a circle at its current position using the specified colour.
 
         rot_rad():
             Returns the bullet's rotation in radians.
@@ -53,7 +53,7 @@ class Bullet:
 
 
     def render(self):
-        """Renders the bullet as a circle at its current position with the specified color."""
+        """Renders the bullet as a circle at its current position with the specified colour."""
         # TODO improve the rendering, at least a little bit.
 
         PushMatrix()

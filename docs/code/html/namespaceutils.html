@@ -30,7 +30,7 @@
   <td id="projectalign">
    <div id="projectname">BatLLM<span id="projectnumber">&#160;0</span>
    </div>
-   <div id="projectbrief">BatLLM: An educational AI literacy game</div>
+   <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
  </tr>
  </tbody>
@@ -173,12 +173,12 @@ Returns:
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Wraps the given text in Kivy markup tags for font size, color, bold, and italic.
+<pre class="fragment">Wraps the given text in Kivy markup tags for font size, colour, bold, and italic.
 
 Args:
     text (str): The text to be wrapped.
     font_size (int, optional): The font size to apply. Defaults to config value "ui"/"font_size".
-    color (str, optional): The color to apply in hex format (e.g., "#ff0000"). Defaults to black ("#000000").
+    color (str, optional): The colour to apply in hex format (e.g., "#ff0000"). Defaults to black ("#000000").
     bold (bool, optional): Whether to apply bold formatting. Defaults to False.
     italic (bool, optional): Whether to apply italic formatting. Defaults to False.
 
@@ -215,11 +215,11 @@ Returns:
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Displays a modal confirmation dialog with a title and message.
+<pre class="fragment">Displays a modal confirmation pop-up with a title and message.
 
 Args:
-    title (_type_): the title of the dialog
-    message (_type_): the message to display in the dialog
+    title (_type_): the title of the pop-up
+    message (_type_): the message to display in the pop-up
     on_confirm (_type_): function to call when the user confirms
     on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
 </pre> 
@@ -253,7 +253,7 @@ Args:
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Displays a modal alert with a title and message that fades out and closes itself.
+<pre class="fragment">Displays a modal alert pop-up with a title and message that fades out and closes itself.
 
 Args:
     title (_type_): the title of the alert
@@ -311,12 +311,12 @@ Args:
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">A modal dialog for the user to enter a text input.
+<pre class="fragment">A modal pop-up for the user to enter text input.
 
 Args:
     on_confirm (_type_): function to call when the user confirms the filename
     on_cancel (_type_, optional): function to call when the user cancels. Defaults to None.
-    title (str, optional): title of the dialog. Defaults to "".
+    title (str, optional): title of the pop-up. Defaults to "".
     default_text (str, optional): default (pre-set) value for the text field). Defaults to "".
     input_hint (str, optional): hint text for the input field. Defaults to "Enter a text". 
     It is only visible if the default value is empty
@@ -383,7 +383,7 @@ Args:
 <pre class="fragment">Desaturates and lightens an RGB colour.
 
 Args:
-    color (tuple): A 3-tuple of RGB in range 0–1, e.g., (0.5, 0.2, 0.8)
+    color (tuple): A 3-tuple representing an RGB colour in range 0–1, e.g., (0.5, 0.2, 0.8)
     desaturation (float): 0 = no change, 1 = fully desaturated (greyscale)
     lighten (float): 0 = no change, 1 = fully white
 

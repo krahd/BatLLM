@@ -48,14 +48,14 @@ class HistoryManager:
         current_turn (dict or None): The currently active turn's history.
 
     Methods:
-        start_game(game_board): Begin a new game and initialize its history.
-        end_game(game, force=False): Finalize the current game, recording end time and winner.
+        start_game(game_board): Begin a new game and initialise its history.
+        end_game(game, force=False): Finalise the current game, recording end time and winner.
 
         start_round(game, first_round=False): Begin a new round within the current game.
-        end_round(game): Finalize the current round.
+        end_round(game): Finalise the current round.
 
         start_turn(game): Begin a new turn within the current round.
-        end_turn(game): Finalize the current turn.
+        end_turn(game): Finalise the current turn.
 
         record_play(bot): Record a play for the bot in the current turn.
 
@@ -72,7 +72,7 @@ class HistoryManager:
 
 
     def __init__(self):
-        """Initialize a new HistoryManager with no active game."""
+        """Initialise a new HistoryManager with no active game."""
         self.games = []  # List of games played in this session (BotLLM run)
         self.current_game = None  # Dictionary for the current game's history
         self.current_round = None  # Dictionary for the current round's history
@@ -97,7 +97,7 @@ class HistoryManager:
 
     def start_game(self, game_board):
         """
-        Start a new game. Initialize the game log with start time and initial bot states.
+        Start a new game. Initialise the game log with start time and initial bot states.
         `game_board` is the BoardGameWidget
         """
 
@@ -136,7 +136,7 @@ class HistoryManager:
     def end_game(self, game):
         """
         End the current game. This can be called at any time (e.g., normal game end or aborted mid-round).
-        It finalizes any ongoing round/turn and records the end time and final outcome.
+        It finalises any ongoing round/turn and records the end time and final outcome.
         """
 
         if not self.current_game:

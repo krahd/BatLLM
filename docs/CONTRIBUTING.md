@@ -1,17 +1,33 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # Contributing
 
-This guide is for contributors who want to change BatLLM's code, tests, or documentation.
+This is BatLLM's developer and contribution manual. It covers how to set up the project locally, how the codebase is organised, how to validate changes, and what is expected when contributing code or documentation.
 
-## Contribution Expectations
+BatLLM is both a software project and a research and education project. When contributing, preserve the practical software quality of the repository and the project's framing around AI literacy, human-AI mediation, and hands-on learning.
+
+## Ways To Contribute
+
+Contributions are welcome in several forms:
+
+- bug fixes
+- new features
+- documentation improvements
+- testing improvements
+- design, UX, and workflow clean-up
+- analysis of recorded game histories and model behaviour
+
+If you are unsure whether an idea fits the project, opening an issue first is a good default.
+
+## Contribution Rules
 
 - keep pull requests scoped to one topic
 - use English commit messages
-- explain non-obvious behavior changes in the pull request description
-- update docs when the user-facing workflow, setup path, configuration, or tests change
+- explain non-obvious changes in the pull request description
+- update documentation when the workflow, UI, setup, configuration, or tests change
+- keep cross-platform impact in mind when changing scripts, paths, or dependencies
 
-## Local Setup
+## Development Setup
 
 ### Python Environment
 
@@ -32,7 +48,19 @@ The codebase depends on two different Ollama surfaces:
 
 For non-live unit work, the CLI is not required. For live gameplay or `run_tests.sh full`, it is required.
 
-## Project Layout
+### Running The App Locally
+
+```bash
+python src/main.py
+```
+
+If Ollama is not already installed, install it separately. On macOS with Homebrew:
+
+```bash
+brew install ollama
+```
+
+## Repository Layout
 
 Core runtime modules:
 
@@ -40,6 +68,7 @@ Core runtime modules:
 - `src/view/`: screens and `.kv` layouts
 - `src/game/game_board.py`: match flow, rendering hooks, and UI coordination
 - `src/game/bot.py`: bot state and command execution
+- `src/game/bullet.py`: bullet movement and collision logic
 - `src/game/ollama_connector.py`: chat/history request builder using the Python `ollama` client
 - `src/game/history_manager.py`: authoritative game and chat history
 - `src/configs/`: YAML config files and config loader
@@ -47,18 +76,19 @@ Core runtime modules:
 
 Maintained documentation:
 
+- `docs/DOCUMENTATION.md`
 - `docs/README.md`
 - `docs/USER_GUIDE.md`
-- `docs/CONFIGURATION.md`
-- `docs/TESTING.md`
-- `docs/TROUBLESHOOTING.md`
+- `docs/CONTRIBUTING.md`
+- `docs/FAQ.md`
 - `docs/CHANGELOG.md`
+- `docs/CREDITS.md`
 
 Generated API docs:
 
 - `docs/code/`
 
-## Runtime Architecture
+## Architecture Overview
 
 The current gameplay stack works like this:
 
@@ -75,53 +105,295 @@ The current model-management stack works like this:
 3. It uses `https://ollama.com/library` as the remote-library source for downloadable model names.
 4. It uses `/api/pull` and `/api/generate` for pull and preload operations.
 
-## Testing
+Important implementation notes:
 
-See [TESTING.md](TESTING.md) for the full matrix.
+- `NormalizedCanvas` keeps arena drawing resolution-independent by treating positions as values in the range `0.0` to `1.0`.
+- `HistoryManager` is the single source of truth for game and chat history.
+- BatLLM is currently built around two-player AI-mediated play, and some UI assumptions still rely on that structure.
 
-Most contributor work should use the non-live suite in a headless Kivy environment:
+## Configuration Reference
 
-```bash
-KIVY_WINDOW=mock KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_HOME=/tmp/batllm-kivy PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py
+BatLLM reads its runtime configuration from `src/configs/config.yaml`.
+
+### File Locations
+
+- primary runtime config: `src/configs/config.yaml`
+- loader: `src/configs/app_config.py`
+
+BatLLM writes updated values back to `src/configs/config.yaml` when the app saves configuration.
+
+### Current Default File
+
+```yaml
+data:
+  saved_sessions_folder: saved_sessions
+game:
+  bot_diameter: 0.1
+  bot_step_length: 0.03
+  bullet_damage: 5
+  bullet_diameter: 0.2
+  bullet_step_length: 0.01
+  independent_contexts: true
+  initial_health: 30
+  prompt_augmentation: true
+  shield_initial_state: true
+  shield_size: 70
+  total_rounds: 2
+  turns_per_round: 8
+llm:
+  debug_requests: false
+  max_tokens: null
+  model: qwen3:30b
+  num_ctx: 4096
+  num_predict: null
+  num_thread: null
+  path: /api/chat
+  port: 11434
+  seed: null
+  stop: null
+  system_instructions_augmented_independent: src/assets/system_instructions/augmented_independent_1.txt
+  system_instructions_augmented_shared: src/assets/system_instructions/augmented_shared_1.txt
+  system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
+  system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
+  temperature: null
+  timeout: null
+  top_k: null
+  top_p: null
+  url: http://localhost
+ui:
+  confirm_on_exit: true
+  font_size: 16
+  frame_rate: 60
+  primary_color: '#0b0b0b'
+  prompt_save_on_exit: false
+  title: BatLLM
 ```
 
-Quick smoke coverage:
+### Section Reference
+
+#### `data`
+
+| Key | Meaning |
+| --- | --- |
+| `saved_sessions_folder` | Default folder for saved sessions. |
+
+#### `game`
+
+| Key | Meaning |
+| --- | --- |
+| `bot_diameter` | Normalised bot diameter used by the renderer. |
+| `bot_step_length` | Default movement step used by `M` and manual movement. |
+| `bullet_damage` | Health removed by a successful hit. |
+| `bullet_diameter` | Normalised bullet render size. |
+| `bullet_step_length` | Bullet movement step size. |
+| `independent_contexts` | `true` means each bot keeps separate chat history; `false` means both bots share one history. |
+| `initial_health` | Starting health per bot. |
+| `prompt_augmentation` | `true` means BatLLM prepends structured game-state data to the player prompt. |
+| `shield_initial_state` | Starting shield state for new bots. |
+| `shield_size` | Shield arc width in degrees. |
+| `total_rounds` | Maximum number of rounds in a game. |
+| `turns_per_round` | Maximum number of turns per round. |
+
+#### `llm`
+
+| Key | Meaning |
+| --- | --- |
+| `debug_requests` | Reserved debug flag in the YAML; not a primary user control in the current UI. |
+| `max_tokens` | Optional generation option forwarded when not `null`. |
+| `model` | Active model name used for gameplay and as the BatLLM-selected Ollama model. |
+| `num_ctx` | Optional Ollama context size. |
+| `num_predict` | Optional generation limit. |
+| `num_thread` | Optional thread-count override. |
+| `path` | Chat path used by BatLLM gameplay requests. Current default is `/api/chat`. |
+| `port` | Ollama service port. |
+| `seed` | Optional generation seed. |
+| `stop` | Optional stop sequence setting. |
+| `system_instructions_augmented_independent` | File used when prompt augmentation is on and contexts are independent. |
+| `system_instructions_augmented_shared` | File used when prompt augmentation is on and context is shared. |
+| `system_instructions_not_augmented_independent` | File used when prompt augmentation is off and contexts are independent. |
+| `system_instructions_not_augmented_shared` | File used when prompt augmentation is off and context is shared. |
+| `temperature` | Optional generation temperature. |
+| `timeout` | Optional timeout; if unset, `OllamaConnector` currently falls back to `55`. |
+| `top_k` | Optional top-k sampling value. |
+| `top_p` | Optional top-p sampling value. |
+| `url` | Ollama base URL, usually `http://localhost`. |
+
+Optional advanced key supported by the current code:
+
+| Key | Meaning |
+| --- | --- |
+| `max_history_messages` | If present, limits the number of retained chat messages. If absent, BatLLM defaults to `turns_per_round * 2`. |
+
+#### `ui`
+
+| Key | Meaning |
+| --- | --- |
+| `confirm_on_exit` | Controls whether the home screen exit flow asks for confirmation. |
+| `font_size` | Default font size used by the `markup()` helper in `util.utils`. |
+| `frame_rate` | Render/update interval for the game board. |
+| `primary_color` | Current theme colour value kept in config; not heavily wired into the present Kivy views. |
+| `prompt_save_on_exit` | Controls whether BatLLM asks for a save filename before exit. |
+| `title` | App window title. |
+
+### Screen Mappings
+
+The settings screen writes these keys:
+
+- `game.total_rounds`
+- `game.turns_per_round`
+- `game.initial_health`
+- `game.bullet_damage`
+- `game.shield_size`
+- `game.bot_step_length`
+- `game.independent_contexts`
+- `game.prompt_augmentation`
+- `ui.confirm_on_exit`
+- `ui.prompt_save_on_exit`
+
+The Ollama configuration screen writes:
+
+- `llm.model`
+
+### Configuration Notes
+
+1. `llm.path` affects gameplay chat requests, not the model-management calls made by the Ollama configuration screen.
+2. The Ollama configuration screen assumes the configured host and port are the shared local Ollama service to manage.
+3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
+
+## Testing And Validation
+
+BatLLM has three practical test tiers:
+
+1. shell/config smoke checks
+2. headless non-live unit tests
+3. live Ollama smoke tests
+
+### Environment
+
+Use the project virtual environment:
+
+```bash
+source .venv_BatLLM/bin/activate
+```
+
+For terminal-only environments, run Kivy tests headlessly:
+
+```bash
+export KIVY_WINDOW=mock
+export KIVY_NO_ARGS=1
+export KIVY_NO_CONSOLELOG=1
+export KIVY_HOME=/tmp/batllm-kivy
+export PYTHONPATH=src
+```
+
+### Quick Smoke
+
+`run_tests.sh core` currently runs only the lightweight smoke checks in `src/tests/test_history_compact.py`:
 
 ```bash
 ./run_tests.sh core
 ```
 
-Live Ollama smoke coverage:
+That covers:
+
+- config shape
+- shell-script syntax
+- source compilation
+
+### Recommended Non-Live Unit Suite
+
+This is the most useful day-to-day test command for UI and logic changes:
+
+```bash
+KIVY_WINDOW=mock KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_HOME=/tmp/batllm-kivy PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py
+```
+
+That suite covers:
+
+- exit-flow behaviour
+- confirmation and text-input pop-ups
+- Ollama config screen logic
+- model-picker behaviour
+- non-live smoke checks
+
+### Live Ollama Smoke
+
+`run_tests.sh full` starts Ollama, runs the full `src/tests` suite with live Ollama smoke enabled, and then stops Ollama:
 
 ```bash
 ./run_tests.sh full
 ```
 
-## Documentation Maintenance
+Equivalent environment toggle for the live smoke tests:
 
-When behavior changes, update the maintained docs in the same branch. In particular, update docs when you change:
+```bash
+BATLLM_RUN_OLLAMA_SMOKE=1 PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests
+```
 
-- UI labels
-- setup steps
-- config keys or defaults
-- test commands
-- Ollama model-management behavior
-- keyboard and exit behavior
+Use this only when:
 
-Regenerate the API docs when public modules or screens change:
+- the Ollama CLI is installed
+- the configured host and port are available
+- you are comfortable with BatLLM starting and stopping the configured local Ollama service
+
+### Documentation Validation
+
+When docs or API surface change:
 
 ```bash
 doxygen docs/code/dox_config.properties
 ```
 
-## Code Style
+Review the generated diff under `docs/code/` before committing.
+
+### What To Run For Common Changes
+
+| Change type | Minimum recommended validation |
+| --- | --- |
+| gameplay logic | non-live unit suite |
+| exit flow or pop-ups | non-live unit suite |
+| Ollama config screen | non-live unit suite |
+| shell scripts | `./run_tests.sh core` |
+| Ollama integration path | non-live unit suite plus live smoke if possible |
+| docs only | regenerate code docs if public API docs changed |
+
+## Documentation Workflow
+
+BatLLM's docs are split by audience:
+
+- `README.md`: project framing plus the high-level map for users and contributors
+- `USER_GUIDE.md`: user-facing game manual
+- `CONTRIBUTING.md`: developer-facing setup, architecture, configuration, testing, and troubleshooting
+
+When behaviour changes, update the maintained docs in the same branch. In particular, update docs when you change:
+
+- UI labels
+- setup steps
+- config keys or defaults
+- test commands
+- Ollama model-management behaviour
+- keyboard and exit behaviour
+- project-level framing, aims, or educational positioning
+
+## Coding Conventions
 
 - use Python 3 style annotations where practical
 - keep Kivy screen logic in the screen classes and layout structure in `.kv` files
-- avoid undocumented user-facing behavior changes
+- avoid undocumented user-facing behaviour changes
 - prefer clear state transitions over hidden side effects
+- use British English in maintained documentation
+- keep identifiers, API names, and other code-level naming consistent with the existing codebase
 
-## Pull Request Checklist
+## Pull Request Workflow
+
+Recommended contribution flow:
+
+1. fork the repository and clone it locally
+2. create a branch for one topic only
+3. make the change with relevant tests or validation
+4. update docs if the workflow, UI, or developer process changed
+5. review the resulting diff, including generated documentation noise
+6. open a pull request with a clear description of what changed and why
 
 Before opening a PR:
 
@@ -129,3 +401,64 @@ Before opening a PR:
 2. update docs if the workflow or UI changed
 3. regenerate code docs if public modules or screen docs changed
 4. review the resulting diff for generated-file noise before pushing
+
+## Developer Troubleshooting
+
+### The App Cannot Start Ollama
+
+Symptoms:
+
+- `Start Ollama` fails
+- the output log says `ollama not found`
+- the install-guidance pop-up appears
+
+What to check:
+
+1. confirm the `ollama` CLI is installed and available on your `PATH`
+2. run `ollama --version` in a terminal
+3. verify `llm.url` and `llm.port` in `src/configs/config.yaml`
+
+### Gameplay Fails To Talk To The Model
+
+BatLLM gameplay uses the Python `ollama` package plus the configured chat endpoint.
+
+Check:
+
+1. `pip install -r requirements.txt` completed successfully
+2. the virtual environment contains the `ollama` Python package
+3. `llm.path` is correct for the server you are using
+4. the configured model name in `llm.model` exists locally
+
+### The Remote Model List Will Not Load
+
+The remote picker fetches model names from `https://ollama.com/library`.
+
+If refresh fails:
+
+1. verify the machine has outbound network access
+2. retry from the Ollama screen
+3. check the Ollama screen output log for the captured error
+
+Existing local selections are preserved if the remote refresh fails.
+
+### The Local Model List Is Empty
+
+The local picker loads from `/api/tags` on the configured Ollama host.
+
+Check:
+
+1. Ollama is actually running on `llm.url:llm.port`
+2. `ollama list` shows models in the same installation
+3. the configured host and port point to the intended local service
+
+### Doxygen Output Is Stale
+
+Regenerate the code docs from the repository root:
+
+```bash
+doxygen docs/code/dox_config.properties
+```
+
+### `run_tests.sh core` Does Not Cover My UI Change
+
+That is expected. `core` only runs the lightweight smoke checks. Use the non-live unit suite above for screen and pop-up changes.

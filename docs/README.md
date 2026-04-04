@@ -1,10 +1,21 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Configuration](CONFIGURATION.md) · [Testing](TESTING.md) · [Troubleshooting](TROUBLESHOOTING.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # BatLLM
 
-BatLLM is a free and libre local game for learning with LLMs. Two human players write prompts, two model-backed bots interpret those prompts, and the bots fight inside a simple turn-based arena.
+BatLLM is a free and libre open source research project, education tool, and, at its core, a game: a simple, human-vs-human, turn-based battle game. The game does not expose direct interaction mechanisms for play. Instead, players must utilise AI systems to act on their behalf. Those AIs, think of ChatGPT-like systems running locally, do not know anything about the game. Deploying effective gaming strategies through AI-mediated interaction is the players' task.
 
-The project is intentionally practical: the point is not just to watch an LLM answer text prompts, but to make prompt quality, model behavior, context design, and system configuration materially affect the outcome of play.
+Like every other area where AI is used, having the best strategy for the game world alone is not enough to win. By combining language, strategy, and AI-driven gameplay, BatLLM aims to offer a fun, safe, self-directed, independent, and hands-on platform for exploring the strengths and shortcomings of LLMs.
+
+In a world increasingly shaped by AI, and marked by profound asymmetries of power, knowledge, and access, developing critical and practical AI literacy is both urgent and necessary.
+
+The project aims to support a broader social understanding of AI by pairing intuitive play with experiential learning. It hopes to contribute to the development of AI prompting skills while highlighting the need for critical engagement with the social, political, and economic dynamics deeply embedded in generative AI systems.
+
+The project is intentionally practical: the point is not just to watch an LLM respond to prompts, but to make prompt quality, model behaviour, context design, and system configuration materially affect the outcome of play.
+
+This README is the overview page for the project. It keeps the core framing of BatLLM, gives a brief getting-started path, and points both users and contributors to the right documentation.
+
+> [!IMPORTANT]
+> BatLLM began as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
 
 ![BatLLM demo](./screenshots/quick_demo.gif)
 
@@ -16,6 +27,24 @@ BatLLM currently ships with:
 2. a settings screen for gameplay and exit-flow options
 3. a history screen for prompt and response review
 4. an Ollama configuration screen for local service and model management
+
+## Documentation Map
+
+### User-Facing
+
+- [USER_GUIDE.md](USER_GUIDE.md): the game manual, including rules, match flow, screens, modes, commands, and Ollama usage
+- [FAQ.md](FAQ.md): short answers to common practical questions
+
+### Developer-Facing
+
+- [CONTRIBUTING.md](CONTRIBUTING.md): the developer and contribution manual, including setup, architecture, configuration, testing, and troubleshooting
+
+### Project-Level
+
+- [DOCUMENTATION.md](DOCUMENTATION.md): project aims, motivations, and documentation structure
+- [CHANGELOG.md](CHANGELOG.md): notable documentation and release changes
+- [CREDITS.md](CREDITS.md): project attribution and support context
+- [code/html/index.html](code/html/index.html): generated API reference
 
 ## Requirements
 
@@ -94,7 +123,7 @@ Choosing a local model and pressing `Use Selected` updates `llm.model` in `src/c
 > [!CAUTION]
 > If other tools use the same Ollama installation, BatLLM can affect them by starting or stopping the server, downloading models, deleting models, or switching the model BatLLM itself uses.
 
-Destructive or expensive actions are guarded by confirmation dialogs where implemented, but the effects are still real:
+Destructive or expensive actions are guarded by confirmation prompts where implemented, but the effects are still real:
 
 - `Download Selected` downloads a local Ollama model
 - `Delete Selected` deletes a local Ollama model
@@ -154,24 +183,6 @@ Illustrated references:
 ![Local model picker diagram](./images/local-model-picker.svg)
 ![Remote model picker diagram](./images/remote-model-picker.svg)
 
-## Testing
+## For Contributors
 
-See [TESTING.md](TESTING.md) for the full testing guide.
-
-Common commands:
-
-```bash
-./run_tests.sh core
-```
-
-```bash
-KIVY_WINDOW=mock KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_HOME=/tmp/batllm-kivy PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py
-```
-
-## More Documentation
-
-- usage and screen-by-screen instructions: [USER_GUIDE.md](USER_GUIDE.md)
-- configuration reference: [CONFIGURATION.md](CONFIGURATION.md)
-- troubleshooting: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
-- contributor guide: [CONTRIBUTING.md](CONTRIBUTING.md)
-- release notes: [CHANGELOG.md](CHANGELOG.md)
+If you are working on the codebase rather than using the app, start with [CONTRIBUTING.md](CONTRIBUTING.md). That guide now consolidates the developer-facing material that used to be split across configuration, testing, and troubleshooting pages.

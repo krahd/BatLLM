@@ -48,7 +48,7 @@ Inheritance diagram for load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog:\+\begin
 
 
 \doxysubsection{Detailed Description}
-\begin{DoxyVerb}A modal, two-pane dialog to choose and preview .txt files.
+\begin{DoxyVerb}A modal, two-pane pop-up to choose and preview `.txt` files.
 When the user loads or cancels, `on_choice` is called with the file's
 text (str) or None.
 \end{DoxyVerb}
@@ -63,14 +63,14 @@ text (str) or None.
 {\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_ae29ccb0b68308757bc9da7ceda6ce72c} 
 load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+attach\+\_\+keyboard (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
-\begin{DoxyVerb}Request keyboard to capture Enter/Esc when dialog is open.\end{DoxyVerb}
+\begin{DoxyVerb}Request keyboard to capture Enter/Esc when the pop-up is open.\end{DoxyVerb}
  \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a32389f1c076494df69a7d10f8c868e88}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_cancel@{\_cancel}}
 \index{\_cancel@{\_cancel}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
 \doxysubsubsection{\texorpdfstring{\_cancel()}{\_cancel()}}
 {\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_a32389f1c076494df69a7d10f8c868e88} 
 load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+cancel (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
-\begin{DoxyVerb}User cancelled. Calls callback with None and closes.
+\begin{DoxyVerb}User cancelled. Calls callback with None and closes the pop-up.
 \end{DoxyVerb}
  \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a924d91717792a50c28bdd52f985a6cf4}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_detach\_keyboard@{\_detach\_keyboard}}
 \index{\_detach\_keyboard@{\_detach\_keyboard}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
@@ -78,7 +78,7 @@ load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+cancel (\begin{DoxyParamCa
 {\footnotesize\ttfamily \label{classload__text__dialog_1_1_load_text_dialog_a924d91717792a50c28bdd52f985a6cf4} 
 load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+detach\+\_\+keyboard (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
-\begin{DoxyVerb}Release keyboard when dialog closes.\end{DoxyVerb}
+\begin{DoxyVerb}Release keyboard when the pop-up closes.\end{DoxyVerb}
  \Hypertarget{classload__text__dialog_1_1_load_text_dialog_aba88b8a492c2bff8e8ba2b825aa5f213}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_load\_selected@{\_load\_selected}}
 \index{\_load\_selected@{\_load\_selected}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}
 \doxysubsubsection{\texorpdfstring{\_load\_selected()}{\_load\_selected()}}
@@ -86,7 +86,7 @@ load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+detach\+\_\+keyboard (\beg
 load\+\_\+text\+\_\+dialog.\+Load\+Text\+Dialog.\+\_\+load\+\_\+selected (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
 \begin{DoxyVerb}User confirmed loading the selected file.
-Reads the file, calls the callback, and closes the dialog.
+Reads the file, calls the callback, and closes the pop-up.
 \end{DoxyVerb}
  \Hypertarget{classload__text__dialog_1_1_load_text_dialog_a236f8813ec9eac061d5360bb66e0d9d9}\index{load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}!\_on\_file\_select@{\_on\_file\_select}}
 \index{\_on\_file\_select@{\_on\_file\_select}!load\_text\_dialog.LoadTextDialog@{load\_text\_dialog.LoadTextDialog}}

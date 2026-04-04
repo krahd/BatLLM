@@ -2,7 +2,7 @@ from kivy.graphics import PushMatrix, PopMatrix, Translate, Scale
 
 class NormalizedCanvas:
     """A context manager that unifies coordinate systems for Kivy widgets. 
-    It normalizes the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
+    It normalises the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
     It is used to draw on the canvas of a widget, allowing for consistent rendering across different screen sizes and resolutions.
     It also handles padding and scaling to ensure that the drawing area is consistent regardless of the widget's size.
     Top-left corner of the widget is (0, 0) and bottom-right corner is (1, 1).
@@ -10,9 +10,9 @@ class NormalizedCanvas:
     """
 
     def __init__(self, widget):
-        """Initializes the NormalizedCanvas with a widget.
+        """Initialises the NormalizedCanvas with a widget.
         Args:
-            widget (_type_): The Kivy widget whose canvas will be normalized.
+            widget (_type_): The Kivy widget whose canvas will be normalised.
         """
         self.widget = widget
         self.canvas = widget.canvas
@@ -20,7 +20,7 @@ class NormalizedCanvas:
     def __enter__(self):
         """Enters the context manager, setting up the canvas transformations.
         This is called when the `with` block is entered, ensuring that the canvas is prepared for drawing.
-        It applies translations and scaling to normalize the coordinates to the widget's dimensions.
+        It applies translations and scaling to normalise the coordinates to the widget's dimensions.
         Returns:
             _type_: The canvas context, allowing for drawing operations within the `with` block.
         """
@@ -72,14 +72,14 @@ class NormalizedCanvas:
 
     @staticmethod
     def to(widget, x, y):
-        """Converts absolute coordinates (x, y) to normalized coordinates within the widget.
-        The coordinates are normalized to the range [0, 1] based on the widget's size.
+        """Converts absolute coordinates (x, y) to normalised coordinates within the widget.
+        The coordinates are normalised to the range [0, 1] based on the widget's size.
         Args:
             widget (_type_): The Kivy widget to which the coordinates are relative.
-            x (float): The x-coordinate to normalize.       
-            y (float): The y-coordinate to normalize.
+            x (float): The x-coordinate to normalise.       
+            y (float): The y-coordinate to normalise.
         Returns:
-            tuple: A tuple containing the normalized x and y coordinates.   
+            tuple: A tuple containing the normalised x and y coordinates.   
         """
         if widget.width == 0 or widget.height == 0:
             return 0.0, 0.0
@@ -94,11 +94,11 @@ class NormalizedCanvas:
 
     @staticmethod
     def touch_to(widget, touch):
-        """Converts a touch event's coordinates to normalized coordinates within the widget.
+        """Converts a touch event's coordinates to normalised coordinates within the widget.
         Args:
             widget (_type_): The Kivy widget to which the touch coordinates are relative.
             touch (_type_): The touch event containing x and y coordinates. 
         Returns:
-            tuple: A tuple containing the normalized x and y coordinates of the touch event.    
+            tuple: A tuple containing the normalised x and y coordinates of the touch event.    
         """
         return NormalizedCanvas.normalize_point(widget, touch.x, touch.y)

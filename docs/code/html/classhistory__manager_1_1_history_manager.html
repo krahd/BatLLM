@@ -30,7 +30,7 @@
   <td id="projectalign">
    <div id="projectname">BatLLM<span id="projectnumber">&#160;0</span>
    </div>
-   <div id="projectbrief">BatLLM: An educational AI literacy game</div>
+   <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
  </tr>
  </tbody>
@@ -157,14 +157,14 @@ Attributes:
     current_turn (dict or None): The currently active turn's history.
 
 Methods:
-    start_game(game_board): Begin a new game and initialize its history.
-    end_game(game, force=False): Finalize the current game, recording end time and winner.
+    start_game(game_board): Begin a new game and initialise its history.
+    end_game(game, force=False): Finalise the current game, recording end time and winner.
 
     start_round(game, first_round=False): Begin a new round within the current game.
-    end_round(game): Finalize the current round.
+    end_round(game): Finalise the current round.
 
     start_turn(game): Begin a new turn within the current round.
-    end_turn(game): Finalize the current turn.
+    end_turn(game): Finalise the current turn.
 
     record_play(bot): Record a play for the bot in the current turn.
 
@@ -191,7 +191,7 @@ Methods:
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Initialize a new HistoryManager with no active game.</pre> 
+<pre class="fragment">Initialise a new HistoryManager with no active game.</pre> 
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -300,7 +300,7 @@ Returns a dictionary of bot states (keyed by bot name or id).
       </table>
 </div><div class="memdoc">
 <pre class="fragment">End the current game. This can be called at any time (e.g., normal game end or aborted mid-round).
-It finalizes any ongoing round/turn and records the end time and final outcome.
+It finalises any ongoing round/turn and records the end time and final outcome.
 </pre> 
 </div>
 </div>
@@ -436,7 +436,7 @@ This will include all games played in this session.
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Start a new game. Initialize the game log with start time and initial bot states.
+<pre class="fragment">Start a new game. Initialise the game log with start time and initial bot states.
 `game_board` is the BoardGameWidget
 </pre> 
 </div>

@@ -127,7 +127,7 @@ bot.\+Bot.\+create\+\_\+bullet (\begin{DoxyParamCaption}\item[{}]{self}{}\end{Do
 \begin{DoxyVerb}A bot's way of shooting is to create a bullet and give it to the world to deal with.
 
 Returns:
-    Bullet: A new Bullet instance initialized with the bot's id, position (x, y), and rotation (rot) if the shield is inactive.
+    Bullet: A new Bullet instance initialised with the bot's id, position (x, y), and rotation (rot) if the shield is inactive.
     None: If the shield is active, no bullet is created and None is returned.
 \end{DoxyVerb}
  \Hypertarget{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8}\index{bot.Bot@{bot.Bot}!damage@{damage}}
@@ -144,7 +144,7 @@ bot.\+Bot.\+damage (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCapti
 {\footnotesize\ttfamily \label{classbot_1_1_bot_a169de661126679c2314485ad1edb10a6} 
 bot.\+Bot.\+move (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{float }]{distance}{ = {\ttfamily None}, }\item[{float }]{duration}{ = {\ttfamily 0.48}, }\item[{str }]{easing}{ = {\ttfamily "{}out\+\_\+quad"{}}, }\item[{}]{on\+\_\+complete}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Move forward in the facing direction (self.rot) by 'distance' (normalized units),
+\begin{DoxyVerb}Move forward in the facing direction (self.rot) by 'distance' (normalised units),
 animated over 'duration' seconds.
 \end{DoxyVerb}
  \Hypertarget{classbot_1_1_bot_a2c55b92dcfdc7babd4ed275989640f5f}\index{bot.Bot@{bot.Bot}!move\_instantaneously@{move\_instantaneously}}
@@ -218,7 +218,7 @@ Args:
     angle (float): The angle in degrees to rotate the object.
     Positive values rotate clockwise, negative values rotate counterclockwise.
 
-The rotation is normalized to stay within the range [0, 360) degrees.
+The rotation is normalised to stay within the range [0, 360) degrees.
 \end{DoxyVerb}
  \Hypertarget{classbot_1_1_bot_a39d07914c7de45253e02da373dc6d6d7}\index{bot.Bot@{bot.Bot}!shield\_range@{shield\_range}}
 \index{shield\_range@{shield\_range}!bot.Bot@{bot.Bot}}

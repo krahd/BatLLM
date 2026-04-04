@@ -30,7 +30,7 @@ class HomeScreen(Screen):
     def __init__(self, **kwargs):
         """
         Constructor for the HomeScreen class.
-        Initializes the screen and sets up the history manager.
+        Initialises the screen and sets up the history manager.
         """
         super().__init__(**kwargs)
         self._exit_confirmation_popup = None
@@ -38,7 +38,7 @@ class HomeScreen(Screen):
 
     def save_session(self):
         """
-        Presents a confirmation dialog to the user to save the current game session.
+        Presents a confirmation prompt to the user to save the current game session.
         If the user confirms, it saves the session to a file.
         If the user cancels, it does nothing.
         """
@@ -74,7 +74,7 @@ class HomeScreen(Screen):
 
         def _on_saving_cancelled():
             """
-            Do nothing if the user cancels the saving dialog.
+            Do nothing if the user cancels the save prompt.
             """
             pass
 
@@ -88,7 +88,7 @@ class HomeScreen(Screen):
 
     def start_new_game(self, force=False):
         """
-        Presents a confirmation dialog to the user to start a new game.
+        Presents a confirmation prompt to the user to start a new game.
         If the user confirms, it asks the GameBoard to start a new game.
         If the user cancels, it does nothing.
         """
@@ -364,7 +364,7 @@ class HomeScreen(Screen):
     def on_request_close(self, *args, **kwargs):
         """
         Handles the request to close the application.
-        Shows a confirmation dialog before closing.
+        Shows a confirmation prompt before closing.
         If the user confirms it offers to save the session to a file
         """
 
@@ -388,7 +388,7 @@ class HomeScreen(Screen):
 
             def _on_filename_confirmed(filename):
                 """
-                Callback for the saving confirmation dialog.
+                Callback for the save confirmation prompt.
                 If the user confirms, it offers to save the session to a file.
                 """
 
@@ -418,7 +418,7 @@ class HomeScreen(Screen):
 
         def _on_exit_cancelled():
             """
-            Callback for the exit cancellation dialog.
+            Callback for the exit cancellation prompt.
             If the user cancels, it does nothing.
             """
             self._exit_confirmation_popup = None
@@ -426,7 +426,7 @@ class HomeScreen(Screen):
 
         def _on_exit_confirmed():
             """
-            Callback for the exit confirmation dialog.
+            Callback for the exit confirmation prompt.
             If the user confirms, it continues with the configured exit flow.
             """
             self._exit_confirmation_popup = None
@@ -452,7 +452,7 @@ class HomeScreen(Screen):
     def on_enter(self):
         """
         Called when the screen is entered.
-        It initializes the GameBoard and Bot instances.
+        It initialises the GameBoard and Bot instances.
         """
 
         self.ids.overlay.darken = 0.2  # Set the initial overlay alpha value

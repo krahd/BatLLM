@@ -35,7 +35,7 @@
 
 \doxysubsection{Detailed Description}
 \begin{DoxyVerb}A context manager that unifies coordinate systems for Kivy widgets. 
-It normalizes the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
+It normalises the coordinates to a range of 0 to 1, making it easier to work with different widget sizes and positions.
 It is used to draw on the canvas of a widget, allowing for consistent rendering across different screen sizes and resolutions.
 It also handles padding and scaling to ensure that the drawing area is consistent regardless of the widget's size.
 Top-left corner of the widget is (0, 0) and bottom-right corner is (1, 1).
@@ -52,9 +52,9 @@ It can be used in a `with` statement to automatically handle the canvas transfor
 {\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_a97b602079e22f04401d134f9249ec1a3} 
 normalized\+\_\+canvas.\+Normalized\+Canvas.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{widget}{}\end{DoxyParamCaption})}
 
-\begin{DoxyVerb}Initializes the NormalizedCanvas with a widget.
+\begin{DoxyVerb}Initialises the NormalizedCanvas with a widget.
 Args:
-    widget (_type_): The Kivy widget whose canvas will be normalized.
+    widget (_type_): The Kivy widget whose canvas will be normalised.
 \end{DoxyVerb}
  
 
@@ -69,7 +69,7 @@ normalized\+\_\+canvas.\+Normalized\+Canvas.\+\_\+\+\_\+enter\+\_\+\+\_\+ (\begi
 
 \begin{DoxyVerb}Enters the context manager, setting up the canvas transformations.
 This is called when the `with` block is entered, ensuring that the canvas is prepared for drawing.
-It applies translations and scaling to normalize the coordinates to the widget's dimensions.
+It applies translations and scaling to normalise the coordinates to the widget's dimensions.
 Returns:
     _type_: The canvas context, allowing for drawing operations within the `with` block.
 \end{DoxyVerb}
@@ -88,14 +88,14 @@ This is called when the `with` block is exited, ensuring that the canvas transfo
 {\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_ad2d2b7095e6a9556e293caf8c35e92ec} 
 normalized\+\_\+canvas.\+Normalized\+Canvas.\+to (\begin{DoxyParamCaption}\item[{}]{widget}{, }\item[{}]{x}{, }\item[{}]{y}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
-\begin{DoxyVerb}Converts absolute coordinates (x, y) to normalized coordinates within the widget.
-The coordinates are normalized to the range [0, 1] based on the widget's size.
+\begin{DoxyVerb}Converts absolute coordinates (x, y) to normalised coordinates within the widget.
+The coordinates are normalised to the range [0, 1] based on the widget's size.
 Args:
     widget (_type_): The Kivy widget to which the coordinates are relative.
-    x (float): The x-coordinate to normalize.       
-    y (float): The y-coordinate to normalize.
+    x (float): The x-coordinate to normalise.       
+    y (float): The y-coordinate to normalise.
 Returns:
-    tuple: A tuple containing the normalized x and y coordinates.   
+    tuple: A tuple containing the normalised x and y coordinates.   
 \end{DoxyVerb}
  \Hypertarget{classnormalized__canvas_1_1_normalized_canvas_a46ae6fcbf41ef89ca0d14731b980b604}\index{normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}!touch\_to@{touch\_to}}
 \index{touch\_to@{touch\_to}!normalized\_canvas.NormalizedCanvas@{normalized\_canvas.NormalizedCanvas}}
@@ -103,12 +103,12 @@ Returns:
 {\footnotesize\ttfamily \label{classnormalized__canvas_1_1_normalized_canvas_a46ae6fcbf41ef89ca0d14731b980b604} 
 normalized\+\_\+canvas.\+Normalized\+Canvas.\+touch\+\_\+to (\begin{DoxyParamCaption}\item[{}]{widget}{, }\item[{}]{touch}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
 
-\begin{DoxyVerb}Converts a touch event's coordinates to normalized coordinates within the widget.
+\begin{DoxyVerb}Converts a touch event's coordinates to normalised coordinates within the widget.
 Args:
     widget (_type_): The Kivy widget to which the touch coordinates are relative.
     touch (_type_): The touch event containing x and y coordinates. 
 Returns:
-    tuple: A tuple containing the normalized x and y coordinates of the touch event.    
+    tuple: A tuple containing the normalised x and y coordinates of the touch event.    
 \end{DoxyVerb}
  
 

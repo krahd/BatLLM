@@ -30,7 +30,7 @@
   <td id="projectalign">
    <div id="projectname">BatLLM<span id="projectnumber">&#160;0</span>
    </div>
-   <div id="projectbrief">BatLLM: An educational AI literacy game</div>
+   <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
  </tr>
  </tbody>
@@ -122,13 +122,13 @@ dict&#160;</td><td class="memItemRight"><b>theme_colors</b> = DictProperty({})</
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">This is the main application class for BattLLM.
-Using Kivy, it initializes the screen manager and sets up the application's windows
+Using Kivy, it initialises the screen manager and sets up the application's windows
 
 Args:
     App (_type_): Kivy's base application class.
 
 Attributes:
-    theme_colors (DictProperty): A dictionary to hold theme colors loaded from a properties file.
+    theme_colors (DictProperty): A dictionary to hold theme colours loaded from a properties file.
 </pre> </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="ae5b55dbf2589791e40a6a6a4ac686f8d" name="ae5b55dbf2589791e40a6a6a4ac686f8d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae5b55dbf2589791e40a6a6a4ac686f8d">&#9670;&#160;</a></span>load_theme_colors()</h2>
@@ -144,16 +144,16 @@ Attributes:
         </tr>
       </table>
 </div><div class="memdoc">
-<pre class="fragment">Loads theme color definitions from a properties file and stores them in the `theme_colors` attribute.
+<pre class="fragment">Loads theme colour definitions from a properties file and stores them in the `theme_colors` attribute.
 
 Reads the "theme_colors.properties" file line by line, ignoring empty lines and comments.
 For each valid line containing a key-value pair separated by '=', it parses the key and value,
-converts the value from a hex color string to a color object using `get_color_from_hex`, and
+converts the value from a hex colour string to a colour object using `get_color_from_hex`, and
 stores the result in the `theme_colors` dictionary.
 
 Raises:
     FileNotFoundError: If the "theme_colors.properties" file does not exist.
-    ValueError: If a line contains an invalid hex color value.
+    ValueError: If a line contains an invalid hex colour value.
 </pre> 
 </div>
 </div>
