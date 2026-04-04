@@ -19,14 +19,14 @@ Prompts can be loaded and saved to disk, and the history screen can be used to i
 Recommended first-run flow:
 
 1. install the Python dependencies
-2. install the Ollama CLI if it is not already available on the machine
+2. install the Ollama CLI if it is not already available on the machine, or let BatLLM launch the official installer for you
 3. launch BatLLM with `python run_batllm.py`
 4. open `Settings`
 5. click `Ollama Config`
 6. start Ollama and choose a local model
 7. return to the home screen and begin play
 
-If Ollama is missing and the app cannot start it, BatLLM opens an install-guidance flow instead of attempting an automatic install.
+If Ollama is missing, BatLLM asks whether you want to launch the official install flow. If Ollama is installed but stopped, BatLLM asks whether you want to start it unless `Auto-Start Ollama on Launch` is enabled.
 
 The release bundles also include platform-specific launchers:
 
@@ -171,6 +171,8 @@ The settings screen controls the main gameplay values:
 - `Prompt Augmentation`
 - `Confirm on Exit`
 - `Prompt to Save on Exit`
+- `Auto-Start Ollama on Launch`
+- `Auto-Stop Ollama on Exit`
 
 Buttons on this screen:
 
@@ -210,6 +212,7 @@ It includes:
 
 ### Start And Stop Ollama
 
+- `Install Ollama` launches the official install or reinstall flow after confirmation
 - `Start Ollama` runs BatLLM's cross-platform Ollama helper
 - `Stop Ollama` runs the same helper in stop mode
 - `Refresh` reloads status plus both model lists
@@ -236,6 +239,7 @@ After choosing a local model:
 
 - `Use Selected` saves the selected model into `llm.model`
 - BatLLM then attempts to make that model ready for gameplay
+- successful warm-up also updates `llm.last_served_model`
 - if BatLLM previously managed a different model itself, it may stop that earlier managed model first
 
 `Delete Selected` asks for confirmation and then removes the selected local Ollama model.

@@ -2,6 +2,20 @@
 
 # Changelog
 
+## Unreleased - 2026-04-04
+
+### Ollama Lifecycle UX
+
+- added startup prompts to install Ollama when the CLI is missing
+- added startup prompts and settings-backed auto-start behaviour for Ollama when it is installed but not running
+- added automatic Ollama shutdown on app exit when `Auto-Stop Ollama on Exit` is enabled
+- added `Install Ollama` to the Ollama control screen with install vs reinstall confirmation
+- persisted `llm.last_served_model` so BatLLM can warm the same model when it starts Ollama again
+
+### Documentation
+
+- updated the README, user guide, and contributor guide to reflect the install flow, startup prompts, new settings, and `last_served_model`
+
 ## v0.2.1 - 2026-04-03
 
 ### Packaging Fixes
