@@ -2,6 +2,8 @@
 
 # BatLLM
 
+[Releases](https://github.com/krahd/BatLLM/releases)
+
 BatLLM is a free and libre open source research project, education tool, and, at its core, a game: a simple, human-vs-human, turn-based battle game. The game does not expose direct interaction mechanisms for play. Instead, players must utilise AI systems to act on their behalf. Those AIs, think of ChatGPT-like systems running locally, do not know anything about the game. Deploying effective gaming strategies through AI-mediated interaction is the players' task.
 
 Like every other area where AI is used, having the best strategy for the game world alone is not enough to win. By combining language, strategy, and AI-driven gameplay, BatLLM aims to offer a fun, safe, self-directed, independent, and hands-on platform for exploring the strengths and shortcomings of LLMs.
