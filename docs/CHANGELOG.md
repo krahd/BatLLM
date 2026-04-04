@@ -2,6 +2,13 @@
 
 # Changelog
 
+## v0.2.1 - 2026-04-03
+
+### Packaging Fixes
+
+- replaced the non-installable `kivymd==2.0.1.dev0` requirement with the stable PyPI release `kivymd==1.2.0`
+- aligned fresh-install behaviour with the dependency set used in multiplatform CI and release bundles
+
 ## v0.2.0 - 2026-04-03
 
 ### Cross-Platform Support
