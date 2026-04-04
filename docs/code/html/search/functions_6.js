@@ -1,15 +1,21 @@
 var searchData=
 [
-  ['game_5fis_5fover_0',['game_is_over',['../classgame__board_1_1_game_board.html#a927b19607c06d1b758df4d6ba8ab4200',1,'game_board::GameBoard']]],
-  ['get_1',['get',['../classapp__config_1_1_app_config.html#a1316a1bb845044a3be3b9fcc29551983',1,'app_config::AppConfig']]],
-  ['get_5fbot_5fby_5fid_2',['get_bot_by_id',['../classgame__board_1_1_game_board.html#a9b0f6db2407af73213b4be13eb1e6187',1,'game_board::GameBoard']]],
-  ['get_5fcurrent_5fprompt_3',['get_current_prompt',['../classbot_1_1_bot.html#ab4337822ae12c23b3e571c2e8269b964',1,'bot::Bot']]],
-  ['get_5fcurrent_5fprompt_5ffrom_5fhistory_4',['get_current_prompt_from_history',['../classbot_1_1_bot.html#a20a2946cec5f2ee452751d881735f601',1,'bot::Bot']]],
-  ['get_5fprompt_5',['get_prompt',['../classbot_1_1_bot.html#abc25cb5d2fafc75487fb525155764afa',1,'bot::Bot']]],
-  ['get_5fprompt_5fhistory_5fselected_5ftext_6',['get_prompt_history_selected_text',['../classhome__screen_1_1_home_screen.html#ab730b178cf168433bc675ffae45e2957',1,'home_screen::HomeScreen']]],
-  ['get_5fprompt_5finput_5ftext_7',['get_prompt_input_text',['../classhome__screen_1_1_home_screen.html#a1961aab0d0347d5c43b9aacdc4b702e2',1,'home_screen::HomeScreen']]],
-  ['getlog_8',['getLog',['../classbot_1_1_bot.html#a09c7467a6521c11c6fe78635b0e30b69',1,'bot::Bot']]],
-  ['go_5fto_5fhistory_5fscreen_9',['go_to_history_screen',['../classhome__screen_1_1_home_screen.html#a22736b774db0b127860e92313731a942',1,'home_screen::HomeScreen']]],
-  ['go_5fto_5fhome_5fscreen_10',['go_to_home_screen',['../classsettings__screen_1_1_settings_screen.html#a344be2c1b4f58762c1252847448b7631',1,'settings_screen::SettingsScreen']]],
-  ['go_5fto_5fsettings_5fscreen_11',['go_to_settings_screen',['../classhome__screen_1_1_home_screen.html#a6e73d393bc35b428e053555c5526ad52',1,'home_screen::HomeScreen']]]
+  ['game_5fis_5fover_0',['game_is_over',['../classgame__board_1_1_game_board.html#aa07aa100656489273ee13c700cd8a627',1,'game_board::GameBoard']]],
+  ['gen_5foptions_1',['gen_options',['../classollama__connector_1_1_ollama_connector.html#ac99b51bfc3b52f75e81c11b88262cb4d',1,'ollama_connector::OllamaConnector']]],
+  ['get_2',['get',['../classapp__config_1_1_app_config.html#a1316a1bb845044a3be3b9fcc29551983',1,'app_config::AppConfig']]],
+  ['get_5fbot_5fby_5fid_3',['get_bot_by_id',['../classgame__board_1_1_game_board.html#ab090e4283ee87787237b074b60a487af',1,'game_board::GameBoard']]],
+  ['get_5fchat_5fhistory_4',['get_chat_history',['../classhistory__manager_1_1_history_manager.html#ad624ac93ed544d658629716b37ef85d9',1,'history_manager::HistoryManager']]],
+  ['get_5fconnector_5',['get_connector',['../namespaceollama__singleton.html#a3a812754557973a792594ff63f89b725',1,'ollama_singleton']]],
+  ['get_5fcurrent_5fprompt_6',['get_current_prompt',['../classprompt__store_1_1_prompt_store.html#a78d85d44381c640b33370e0153b3b9f1',1,'prompt_store::PromptStore']]],
+  ['get_5fexecutor_7',['get_executor',['../namespaceollama__singleton.html#a11e920cd683ba6d893edbceb31a8ede3',1,'ollama_singleton']]],
+  ['get_5fgame_5fboard_8',['get_game_board',['../classhome__screen_1_1_home_screen.html#a10f994eb100fe0ecbc7a8079d3b9ad20',1,'home_screen::HomeScreen']]],
+  ['get_5fgame_5fstate_9',['get_game_state',['../classgame__board_1_1_game_board.html#a856a4340506265b76c887626e4ff8d19',1,'game_board::GameBoard']]],
+  ['get_5findex_10',['get_index',['../classprompt__store_1_1_prompt_store.html#aa379c465b3530e456ef98d12f6c67aab',1,'prompt_store::PromptStore']]],
+  ['get_5fprompt_5fgui_5finput_5ftext_11',['get_prompt_gui_input_text',['../classhome__screen_1_1_home_screen.html#a2b0e1a0f767172e494300855c65411e2',1,'home_screen::HomeScreen']]],
+  ['get_5fprompt_5fhistory_5fselected_5ftext_12',['get_prompt_history_selected_text',['../classhome__screen_1_1_home_screen.html#ac1beec0734abf74ba9bece181b718362',1,'home_screen::HomeScreen']]],
+  ['go_5fback_5fhome_13',['go_back_home',['../classhistory__screen_1_1_history_screen.html#acd4029a3f2148c0c78861e9eafea98e4',1,'history_screen::HistoryScreen']]],
+  ['go_5fto_5fhistory_5fscreen_14',['go_to_history_screen',['../classhome__screen_1_1_home_screen.html#a22736b774db0b127860e92313731a942',1,'home_screen::HomeScreen']]],
+  ['go_5fto_5fhome_5fscreen_15',['go_to_home_screen',['../classsettings__screen_1_1_settings_screen.html#a344be2c1b4f58762c1252847448b7631',1,'settings_screen::SettingsScreen']]],
+  ['go_5fto_5follama_5fconfig_5fscreen_16',['go_to_ollama_config_screen',['../classsettings__screen_1_1_settings_screen.html#a40c76b7bc67254c28e70374f6735a425',1,'settings_screen::SettingsScreen']]],
+  ['go_5fto_5fsettings_5fscreen_17',['go_to_settings_screen',['../classhome__screen_1_1_home_screen.html#a6e73d393bc35b428e053555c5526ad52',1,'home_screen::HomeScreen']]]
 ];

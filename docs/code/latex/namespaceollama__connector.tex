@@ -1,0 +1,22 @@
+\doxysection{ollama\+\_\+connector Namespace Reference}
+\hypertarget{namespaceollama__connector}{}\label{namespaceollama__connector}\index{ollama\_connector@{ollama\_connector}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector}{Ollama\+Connector}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceollama__connector_a830f0556a93e8d6c55986fb65deb5f36}\label{namespaceollama__connector_a830f0556a93e8d6c55986fb65deb5f36} 
+{\bfseries Message} = Dict\+[str, str]\+
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Ollama connector: manages chat requests and per-bot/shared message histories.
+
+This connector targets Ollama's /api/chat contract. It does NOT use the deprecated
+`context` field. Instead, it sends the whole `messages` list each call.
+\end{DoxyVerb}
+ 

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['normalizedcanvas_0',['NormalizedCanvas',['../classnormalized__canvas_1_1_normalized_canvas.html',1,'normalized_canvas']]]
+  ['gameboard_0',['GameBoard',['../classgame__board_1_1_game_board.html',1,'game_board']]]
 ];

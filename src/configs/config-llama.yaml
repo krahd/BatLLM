@@ -25,7 +25,6 @@ llm:
   system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
   url: http://localhost
 ui:
-  ' primary_color': '#ffffff'
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'

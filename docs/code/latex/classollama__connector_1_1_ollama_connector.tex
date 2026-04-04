@@ -1,0 +1,215 @@
+\doxysection{ollama\+\_\+connector.\+Ollama\+Connector Class Reference}
+\hypertarget{classollama__connector_1_1_ollama_connector}{}\label{classollama__connector_1_1_ollama_connector}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_aeafe210721db24983d600af15e387829}\label{classollama__connector_1_1_ollama_connector_aeafe210721db24983d600af15e387829} 
+None {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self)
+\item 
+None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a2de1102a89a72ae1ef5ddc236f118a4c}{reset\+\_\+histories}} (self)
+\item 
+None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a72d2087f540e608ad33d360dac1ebfb3}{load\+\_\+options}} (self, bool force=False)
+\item 
+None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a01803e9aebb48547a87cf86e3ebb4c4e}{process\+\_\+settings}} (self, int bot\+\_\+id, \texorpdfstring{$\ast$}{*}, Optional\+[bool]\+ augmenting\+\_\+prompt=None, Optional\+[bool]\+ independent\+\_\+contexts=None, bool reset\+\_\+histories\+\_\+on\+\_\+mode\+\_\+change=True)
+\item 
+Dict\+[str, Any]\+ \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_ac99b51bfc3b52f75e81c11b88262cb4d}{gen\+\_\+options}} (self)
+\item 
+str \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_adb7636b402461a21dacf23e7684f9209}{send\+\_\+prompt\+\_\+to\+\_\+llm\+\_\+sync}} (self, int bot\+\_\+id, \texorpdfstring{$\ast$}{*}, str user\+\_\+text, dict\+[str, Any]\+ game\+\_\+state, bool reset=False, Optional\+[bool]\+ new\+\_\+augmenting\+\_\+prompt=None, Optional\+[bool]\+ new\+\_\+independent\+\_\+contexts=None)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_af59b833fc6888d6fd714773b07f9e34f}\label{classollama__connector_1_1_ollama_connector_af59b833fc6888d6fd714773b07f9e34f} 
+bool {\bfseries independent\+\_\+contexts} = False
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a3324e10ae460d067be4850b725b3d236}\label{classollama__connector_1_1_ollama_connector_a3324e10ae460d067be4850b725b3d236} 
+bool {\bfseries augmenting\+\_\+prompt} = False
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a32a918fe237954111de1ae88c37baffd}\label{classollama__connector_1_1_ollama_connector_a32a918fe237954111de1ae88c37baffd} 
+int\texorpdfstring{$\vert$}{|}float\texorpdfstring{$\vert$}{|}None {\bfseries temperature} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_abbffb9c4d8fb6c22dd6905187cd3dcdc}\label{classollama__connector_1_1_ollama_connector_abbffb9c4d8fb6c22dd6905187cd3dcdc} 
+float\texorpdfstring{$\vert$}{|}None {\bfseries top\+\_\+p} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_aaf2a249f5762b2ba23486f98391c4629}\label{classollama__connector_1_1_ollama_connector_aaf2a249f5762b2ba23486f98391c4629} 
+int\texorpdfstring{$\vert$}{|}None {\bfseries top\+\_\+k} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_ac71e3ff32027ed2a25f2bb13fad8ed13}\label{classollama__connector_1_1_ollama_connector_ac71e3ff32027ed2a25f2bb13fad8ed13} 
+float\texorpdfstring{$\vert$}{|}None {\bfseries timeout} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a14e48e937676b26f098f410f9cdad186}\label{classollama__connector_1_1_ollama_connector_a14e48e937676b26f098f410f9cdad186} 
+int\texorpdfstring{$\vert$}{|}None {\bfseries max\+\_\+tokens} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a8a22bcd40c0808fe69fa996ab7bf7500}\label{classollama__connector_1_1_ollama_connector_a8a22bcd40c0808fe69fa996ab7bf7500} 
+list\+[str]\+\texorpdfstring{$\vert$}{|}None {\bfseries stop} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_aa49fb0623c36b23856c3a2372f0bb5b8}\label{classollama__connector_1_1_ollama_connector_aa49fb0623c36b23856c3a2372f0bb5b8} 
+int\texorpdfstring{$\vert$}{|}None {\bfseries seed} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_ab867159fa37289b39fb0e5f690353c91}\label{classollama__connector_1_1_ollama_connector_ab867159fa37289b39fb0e5f690353c91} 
+int\texorpdfstring{$\vert$}{|}None {\bfseries num\+\_\+thread} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_ab0d0097a0615ed269e466562bd572e51}\label{classollama__connector_1_1_ollama_connector_ab0d0097a0615ed269e466562bd572e51} 
+str {\bfseries model} = "{}"{}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a48e2363d0fadedb0ba6f8b7c77e6c483}\label{classollama__connector_1_1_ollama_connector_a48e2363d0fadedb0ba6f8b7c77e6c483} 
+int\texorpdfstring{$\vert$}{|}None {\bfseries num\+\_\+ctx} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a6382611b007e3ec2991c7ed51280db46}\label{classollama__connector_1_1_ollama_connector_a6382611b007e3ec2991c7ed51280db46} 
+int\texorpdfstring{$\vert$}{|}None {\bfseries num\+\_\+predict} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_aed2fa44e944c8f389cdc256be52153ab}\label{classollama__connector_1_1_ollama_connector_aed2fa44e944c8f389cdc256be52153ab} 
+{\bfseries client} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a86faf89ea10fd9a7725e39fec42db61a}\label{classollama__connector_1_1_ollama_connector_a86faf89ea10fd9a7725e39fec42db61a} 
+str {\bfseries endpoint} = f"{}\{url\}:\+\{port\}\{path\}"{}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a020949666f500a53d851e4be133412c7}{\+\_\+ensure\+\_\+system\+\_\+message}} (self, history)
+\item 
+Message \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a3c9c85d4def9ea14fa3d2bb578dfe321}{\+\_\+build\+\_\+user\+\_\+message}} (self, \texorpdfstring{$\ast$}{*}, Dict\+[str, Any]\+ game\+\_\+state, str player\+\_\+text)
+\item 
+List\+[Message]\+ \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_aa0c10475e55bead97d9c55162313e689}{\+\_\+get\+\_\+history\+\_\+ref}} (self, int bot\+\_\+id)
+\item 
+None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_aabcf3f02f09ba893606f13d635194d01}{\+\_\+trim\+\_\+history\+\_\+inplace}} (self, List\+[Message]\+ history)
+\item 
+str \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a4cf0f211cdc2e541fae64991e39b873c}{\+\_\+get\+\_\+system\+\_\+instructions\+\_\+text}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a899cb3709b42b0e7f164cbaa8bcf7475}\label{classollama__connector_1_1_ollama_connector_a899cb3709b42b0e7f164cbaa8bcf7475} 
+str {\bfseries \+\_\+system\+\_\+instructions} = "{}"{}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_aed0ac850eb6db15b4b401e711aaeea7d}\label{classollama__connector_1_1_ollama_connector_aed0ac850eb6db15b4b401e711aaeea7d} 
+dict {\bfseries \+\_\+history\+\_\+by\+\_\+bot} = \{\}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a5f98f8a77d1d46a750231fc26679732d}\label{classollama__connector_1_1_ollama_connector_a5f98f8a77d1d46a750231fc26679732d} 
+list {\bfseries \+\_\+history\+\_\+shared} = \+[$\,$]\+
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_aad058cb7c2468b21887e1e595f17e86c}\label{classollama__connector_1_1_ollama_connector_aad058cb7c2468b21887e1e595f17e86c} 
+int {\bfseries \+\_\+max\+\_\+history\+\_\+messages} = int(max\+\_\+hist\+\_\+cfg or (int(turns\+\_\+per\+\_\+round) \texorpdfstring{$\ast$}{*} 2))
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Lean sync connector for Ollama.
+- Reuses one HTTP session
+- Tracks context per-bot or shared
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classollama__connector_1_1_ollama_connector_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classollama__connector_1_1_ollama_connector_a3c9c85d4def9ea14fa3d2bb578dfe321}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_build\_user\_message@{\_build\_user\_message}}
+\index{\_build\_user\_message@{\_build\_user\_message}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{\_build\_user\_message()}{\_build\_user\_message()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_a3c9c85d4def9ea14fa3d2bb578dfe321} 
+ Message ollama\+\_\+connector.\+Ollama\+Connector.\+\_\+build\+\_\+user\+\_\+message (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{Dict\+[str, Any]\+}]{game\+\_\+state}{, }\item[{str}]{player\+\_\+text}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Build the user message content for the game mode
+
+Args:
+    game_state (Dict[str, Any]): The state of the game as a dict
+    player_text (str): The user prompt
+
+Returns:
+    Message: The user message to send to the llm
+\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_a020949666f500a53d851e4be133412c7}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_ensure\_system\_message@{\_ensure\_system\_message}}
+\index{\_ensure\_system\_message@{\_ensure\_system\_message}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{\_ensure\_system\_message()}{\_ensure\_system\_message()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_a020949666f500a53d851e4be133412c7} 
+ None ollama\+\_\+connector.\+Ollama\+Connector.\+\_\+ensure\+\_\+system\+\_\+message (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{history}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Ensure the system header (if any) is at messages[0].\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_aa0c10475e55bead97d9c55162313e689}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_get\_history\_ref@{\_get\_history\_ref}}
+\index{\_get\_history\_ref@{\_get\_history\_ref}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{\_get\_history\_ref()}{\_get\_history\_ref()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_aa0c10475e55bead97d9c55162313e689} 
+ List\+[Message]\+ ollama\+\_\+connector.\+Ollama\+Connector.\+\_\+get\+\_\+history\+\_\+ref (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{bot\+\_\+id}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Return a reference to the current history (a messages[] list), taking into account if the
+context is shared or not\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_a4cf0f211cdc2e541fae64991e39b873c}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_get\_system\_instructions\_text@{\_get\_system\_instructions\_text}}
+\index{\_get\_system\_instructions\_text@{\_get\_system\_instructions\_text}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{\_get\_system\_instructions\_text()}{\_get\_system\_instructions\_text()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_a4cf0f211cdc2e541fae64991e39b873c} 
+ str ollama\+\_\+connector.\+Ollama\+Connector.\+\_\+get\+\_\+system\+\_\+instructions\+\_\+text (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Loads from assets/headers the header (system prompt) text for the LLM request based on the mode.
+
+Returns:
+    str: _description_
+\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_aabcf3f02f09ba893606f13d635194d01}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_trim\_history\_inplace@{\_trim\_history\_inplace}}
+\index{\_trim\_history\_inplace@{\_trim\_history\_inplace}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{\_trim\_history\_inplace()}{\_trim\_history\_inplace()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_aabcf3f02f09ba893606f13d635194d01} 
+ None ollama\+\_\+connector.\+Ollama\+Connector.\+\_\+trim\+\_\+history\+\_\+inplace (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{List\+[Message]\+}]{history}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Enforme maximum length of the history list in place.
+
+Policy:
+  - Keep at most `_max_history_messages` entries.
+  - ensure_system_message()
+\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_ac99b51bfc3b52f75e81c11b88262cb4d}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!gen\_options@{gen\_options}}
+\index{gen\_options@{gen\_options}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{gen\_options()}{gen\_options()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_ac99b51bfc3b52f75e81c11b88262cb4d} 
+ Dict\+[str, Any]\+ ollama\+\_\+connector.\+Ollama\+Connector.\+gen\+\_\+options (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Refresh connector options and return generation options for chat.\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_a72d2087f540e608ad33d360dac1ebfb3}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!load\_options@{load\_options}}
+\index{load\_options@{load\_options}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{load\_options()}{load\_options()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_a72d2087f540e608ad33d360dac1ebfb3} 
+ None ollama\+\_\+connector.\+Ollama\+Connector.\+load\+\_\+options (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{bool }]{force}{ = {\ttfamily False}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load configuration and ensure client and contexts are consistent.\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_a01803e9aebb48547a87cf86e3ebb4c4e}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!process\_settings@{process\_settings}}
+\index{process\_settings@{process\_settings}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{process\_settings()}{process\_settings()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_a01803e9aebb48547a87cf86e3ebb4c4e} 
+ None ollama\+\_\+connector.\+Ollama\+Connector.\+process\+\_\+settings (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{bot\+\_\+id}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{Optional\+[bool]\+ }]{augmenting\+\_\+prompt}{ = {\ttfamily None}, }\item[{Optional\+[bool]\+ }]{independent\+\_\+contexts}{ = {\ttfamily None}, }\item[{bool }]{reset\+\_\+histories\+\_\+on\+\_\+mode\+\_\+change}{ = {\ttfamily True}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}updates the game options that are exposed to the user by the UI (settings), which are
+passed as optional parameters to this method.
+
+if reset_histories_on_mode_change and the settings have changed then histories are reset
+\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_a2de1102a89a72ae1ef5ddc236f118a4c}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!reset\_histories@{reset\_histories}}
+\index{reset\_histories@{reset\_histories}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{reset\_histories()}{reset\_histories()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_a2de1102a89a72ae1ef5ddc236f118a4c} 
+ None ollama\+\_\+connector.\+Ollama\+Connector.\+reset\+\_\+histories (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Drop all accumulated message histories.\end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_adb7636b402461a21dacf23e7684f9209}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!send\_prompt\_to\_llm\_sync@{send\_prompt\_to\_llm\_sync}}
+\index{send\_prompt\_to\_llm\_sync@{send\_prompt\_to\_llm\_sync}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{send\_prompt\_to\_llm\_sync()}{send\_prompt\_to\_llm\_sync()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_adb7636b402461a21dacf23e7684f9209} 
+ str ollama\+\_\+connector.\+Ollama\+Connector.\+send\+\_\+prompt\+\_\+to\+\_\+llm\+\_\+sync (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{bot\+\_\+id}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{str}]{user\+\_\+text}{, }\item[{dict\+[str, Any]\+}]{game\+\_\+state}{, }\item[{bool }]{reset}{ = {\ttfamily False}, }\item[{Optional\+[bool]\+ }]{new\+\_\+augmenting\+\_\+prompt}{ = {\ttfamily None}, }\item[{Optional\+[bool]\+ }]{new\+\_\+independent\+\_\+contexts}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Send a synchronous chat request using message histories.
+
+Args:
+    bot_id: The numeric ID of the bot (stable id).
+    user_text: The *player* prompt
+    game_state: JSON w/ current state
+    reset: If True, reset the context (clear history) before sending.
+    new_augmenting_prompt: If provided, update mode and reset history.
+    new_independent_contexts:  If provided, update mode and reset history.
+
+Returns:
+    The assistant's text content (single command if your header/player prompt enforces it).
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+game/\+ollama\+\_\+connector.\+py\end{DoxyCompactItemize}

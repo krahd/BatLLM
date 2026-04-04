@@ -1,18 +1,15 @@
 var searchData=
 [
-  ['save_0',['save',['../classapp__config_1_1_app_config.html#a641289ff8ed0eb13420babe8a872126d',1,'app_config::AppConfig']]],
-  ['save_5fprompt_1',['save_prompt',['../classhome__screen_1_1_home_screen.html#a49a6bed706a69356a4b6cb0d7cbedbb8',1,'home_screen::HomeScreen']]],
-  ['save_5fsession_2',['save_session',['../classgame__board_1_1_game_board.html#a20d27aeab4fbbb2bd330b7a816727288',1,'game_board.GameBoard.save_session()'],['../classhistory__manager_1_1_history_manager.html#aacc071fca8b56e8531b089f671bd204a',1,'history_manager.HistoryManager.save_session()'],['../classhome__screen_1_1_home_screen.html#aa98bf3a0cf96ea4cccd439c0864a7d1b',1,'home_screen.HomeScreen.save_session()']]],
-  ['segment_5fhits_5fbot_3',['segment_hits_bot',['../classbullet_1_1_bullet.html#a8d2bee4b44bbffa45a6f52c95cdd8372',1,'bullet::Bullet']]],
-  ['set_4',['set',['../classapp__config_1_1_app_config.html#aba866c6cec58c4cc8e40c990df2ef269',1,'app_config::AppConfig']]],
-  ['set_5fand_5freturn_5',['set_and_return',['../classsettings__screen_1_1_settings_screen.html#a1311009d343ddd43881f616297c17b5c',1,'settings_screen::SettingsScreen']]],
-  ['set_5fas_5fdefaults_6',['set_as_defaults',['../classsettings__screen_1_1_settings_screen.html#a7f1ed6e5b5949e1945adb67f33edb7fb',1,'settings_screen::SettingsScreen']]],
-  ['set_5fprompt_5finput_5ftext_7',['set_prompt_input_text',['../classhome__screen_1_1_home_screen.html#a9fa0102c202c057712b89ff610ead6f9',1,'home_screen::HomeScreen']]],
-  ['shoot_8',['shoot',['../classgame__board_1_1_game_board.html#ad8bfe2fe2654e7e4ad707c54c694d936',1,'game_board::GameBoard']]],
-  ['start_5fgame_9',['start_game',['../classhistory__manager_1_1_history_manager.html#abdc8dd17011d473212a835a7e6a3f1b6',1,'history_manager::HistoryManager']]],
-  ['start_5fnew_5fgame_10',['start_new_game',['../classgame__board_1_1_game_board.html#a4078bc775001ac8e11df8d12dad49a04',1,'game_board.GameBoard.start_new_game()'],['../classhome__screen_1_1_home_screen.html#a7f1d8babcc6c8b9c0d3432e46d53d49d',1,'home_screen.HomeScreen.start_new_game()']]],
-  ['start_5fround_11',['start_round',['../classhistory__manager_1_1_history_manager.html#ae40d97816a81571357c27f2a84ef73bd',1,'history_manager::HistoryManager']]],
-  ['start_5fturn_12',['start_turn',['../classhistory__manager_1_1_history_manager.html#a2b51546288d5c667f5a9cc2e8b8f90ca',1,'history_manager::HistoryManager']]],
-  ['submit_5fprompt_13',['submit_prompt',['../classgame__board_1_1_game_board.html#a1e0ce29210ef088eecb71b6c218bf354',1,'game_board.GameBoard.submit_prompt()'],['../classhome__screen_1_1_home_screen.html#a41e83ad2497f44f7b3d7cf4940d958e4',1,'home_screen.HomeScreen.submit_prompt()']]],
-  ['submit_5fprompt_5fto_5fllm_14',['submit_prompt_to_llm',['../classbot_1_1_bot.html#abf066120a179dd15d7ce9be1b9c55cd4',1,'bot::Bot']]]
+  ['record_5fplay_0',['record_play',['../classhistory__manager_1_1_history_manager.html#a898a8b37374cf9886e2c12093b170635',1,'history_manager::HistoryManager']]],
+  ['render_1',['render',['../classbot_1_1_bot.html#a57942fda65929bf805cef2aadde1e3aa',1,'bot.Bot.render()'],['../classbullet_1_1_bullet.html#afb1e383c0ef61c64c7ff0e1dd5e41c12',1,'bullet.Bullet.render()'],['../classgame__board_1_1_game_board.html#ac481c974047b4bbb17bad99f7d5e1fd0',1,'game_board.GameBoard.render()']]],
+  ['reset_2',['reset',['../classprompt__store_1_1_prompt_store.html#a67a783d5a64f64307e69c77452da8c82',1,'prompt_store::PromptStore']]],
+  ['reset_5fhistories_3',['reset_histories',['../classollama__connector_1_1_ollama_connector.html#a2de1102a89a72ae1ef5ddc236f118a4c',1,'ollama_connector::OllamaConnector']]],
+  ['reset_5fsingletons_4',['reset_singletons',['../namespaceollama__singleton.html#a1ba40e0625694ca69a3d411a9118e6e7',1,'ollama_singleton']]],
+  ['retrieve_5fprompt_5fhistory_5fselected_5ftext_5',['retrieve_prompt_history_selected_text',['../classhome__screen_1_1_home_screen.html#ad4de63357716f97124bf93f0a44981d3',1,'home_screen::HomeScreen']]],
+  ['rewind_6',['rewind',['../classprompt__store_1_1_prompt_store.html#a11c021ee489c9137e9fe97992c1ad61f',1,'prompt_store::PromptStore']]],
+  ['rewind_5fprompt_5fstore_7',['rewind_prompt_store',['../classhome__screen_1_1_home_screen.html#a19a6fbac49341ee326e3cf04a70c510f',1,'home_screen::HomeScreen']]],
+  ['rot_5frad_8',['rot_rad',['../classbot_1_1_bot.html#a671f6173ea5ac20e03f35b5f4248b51a',1,'bot.Bot.rot_rad()'],['../classbullet_1_1_bullet.html#a1a4a34fba6cd78fbee318d3c45a1ec83',1,'bullet.Bullet.rot_rad()']]],
+  ['rotate_9',['rotate',['../classbot_1_1_bot.html#a778175a6baa29ca673febf517563f219',1,'bot::Bot']]],
+  ['rotate_5finstantaneously_10',['rotate_instantaneously',['../classbot_1_1_bot.html#a673afcb7ac60a248d563ff9d02ada10e',1,'bot::Bot']]],
+  ['run_11',['run',['../classtests_1_1conversation__cli_1_1_conversation_c_l_i.html#ae22c15076dd66e09f71def5e251db3d2',1,'tests::conversation_cli::ConversationCLI']]]
 ];

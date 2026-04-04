@@ -2,6 +2,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 from kivy.properties import NumericProperty, BooleanProperty
 from configs.app_config import config
+from util.utils import switch_screen
 
 
 class SettingsScreen(Screen):
@@ -80,8 +81,8 @@ class SettingsScreen(Screen):
     def go_to_home_screen(self):
         """Switches the current screen to the home screen.
         """
-        self.manager.current = "home"
+        switch_screen(self.manager, "home", direction="right")
 
     def go_to_ollama_config_screen(self):
         """Switches to the Ollama configuration screen."""
-        self.manager.current = "ollama_config"
+        switch_screen(self.manager, "ollama_config", direction="left")

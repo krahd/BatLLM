@@ -1,0 +1,52 @@
+\doxysection{configurator.\+Ollama\+Client Class Reference}
+\hypertarget{classconfigurator_1_1_ollama_client}{}\label{classconfigurator_1_1_ollama_client}\index{configurator.OllamaClient@{configurator.OllamaClient}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_ab6f8006267a95e75330bc3101d0b3c80}\label{classconfigurator_1_1_ollama_client_ab6f8006267a95e75330bc3101d0b3c80} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, str base\+\_\+url=\textquotesingle{}http:\+/\+/\+localhost\textquotesingle{}, int port=11434, float timeout=10.\+0)
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_a8dbc979df6f2a3297c8ae6be7fd31b78}\label{classconfigurator_1_1_ollama_client_a8dbc979df6f2a3297c8ae6be7fd31b78} 
+List\+[Dict\+[str, Any]\+]\+ {\bfseries list\+\_\+local\+\_\+models} (self)
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_a0407dcc275b8acc6a0fb392d501b8d8b}\label{classconfigurator_1_1_ollama_client_a0407dcc275b8acc6a0fb392d501b8d8b} 
+str {\bfseries run\+\_\+once} (self, str model, str prompt=\textquotesingle{}test\textquotesingle{}, Optional\+[int]\+ num\+\_\+predict=8)
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_ab5768f142dab892cebc0690d05fe1af7}\label{classconfigurator_1_1_ollama_client_ab5768f142dab892cebc0690d05fe1af7} 
+Dict\+[str, Any]\+ {\bfseries stop} (self, Optional\+[str]\+ model=None)
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_a9050b8bc5cd04ed29d9e863fe684140c}\label{classconfigurator_1_1_ollama_client_a9050b8bc5cd04ed29d9e863fe684140c} 
+Dict\+[str, Any]\+ {\bfseries delete\+\_\+model} (self, str name)
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_a033c402bf93944fda39bea1b75361454}\label{classconfigurator_1_1_ollama_client_a033c402bf93944fda39bea1b75361454} 
+Dict\+[str, Any]\+ {\bfseries pull\+\_\+model} (self, str name, stream\+\_\+callback=None)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_afff54025596a1bfc846367dfed93f2e6}\label{classconfigurator_1_1_ollama_client_afff54025596a1bfc846367dfed93f2e6} 
+List\+[Dict\+[str, Any]\+]\+ {\bfseries list\+\_\+remote\+\_\+models} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_a656a354779c5de505cc665639bbccbf4}\label{classconfigurator_1_1_ollama_client_a656a354779c5de505cc665639bbccbf4} 
+{\bfseries base\+\_\+url} = base\+\_\+url.\+rstrip(\textquotesingle{}/\+\textquotesingle{})
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_ad2dee51ecb31a379bce475c0e0bc7aa9}\label{classconfigurator_1_1_ollama_client_ad2dee51ecb31a379bce475c0e0bc7aa9} 
+{\bfseries port} = port
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_a51c181caaf697b9768611aeedb059731}\label{classconfigurator_1_1_ollama_client_a51c181caaf697b9768611aeedb059731} 
+{\bfseries timeout} = timeout
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_ollama_client_af0db2707d4aed4b4b97dbc15327f0ee5}\label{classconfigurator_1_1_ollama_client_af0db2707d4aed4b4b97dbc15327f0ee5} 
+str {\bfseries \+\_\+u} (self, str path)
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+configs/\+configurator.\+py\end{DoxyCompactItemize}

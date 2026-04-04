@@ -1,0 +1,130 @@
+\doxysection{configurator Namespace Reference}
+\hypertarget{namespaceconfigurator}{}\label{namespaceconfigurator}\index{configurator@{configurator}}
+
+
+-\/backup-\/sep-\/30  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_config_manager}{Config\+Manager}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_ollama_client}{Ollama\+Client}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_other_settings_panel}{Other\+Settings\+Panel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_l_l_m_panel}{LLMPanel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_raw_y_a_m_l_panel}{Raw\+YAMLPanel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_snapshot_panel}{Snapshot\+Panel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_local_models_panel}{Local\+Models\+Panel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_remote_models_panel}{Remote\+Models\+Panel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_console_panel}{Console\+Panel}}
+\item 
+class \doxymbox{\hyperlink{classconfigurator_1_1_bat_l_l_m_config_app}{Bat\+LLMConfig\+App}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceconfigurator_ac7370690974ddd32f0da3e2c5fff08fd}\label{namespaceconfigurator_ac7370690974ddd32f0da3e2c5fff08fd} 
+{\bfseries info\+\_\+popup} (str title, str msg)
+\item 
+\Hypertarget{namespaceconfigurator_a21ae3611d49c57c4d6787d8226511383}\label{namespaceconfigurator_a21ae3611d49c57c4d6787d8226511383} 
+{\bfseries ensure\+\_\+dir} (str p)
+\item 
+\Hypertarget{namespaceconfigurator_a1175f430e4dde65000eeecf716c97e64}\label{namespaceconfigurator_a1175f430e4dde65000eeecf716c97e64} 
+Optional\+[float]\+ {\bfseries safe\+\_\+float} (str v)
+\item 
+\Hypertarget{namespaceconfigurator_aa990682a9fbb913ac2af30b1b356d000}\label{namespaceconfigurator_aa990682a9fbb913ac2af30b1b356d000} 
+Optional\+[int]\+ {\bfseries safe\+\_\+int} (str v)
+\item 
+\Hypertarget{namespaceconfigurator_a777e9c7e81261e8027688f4ff0eb7a2e}\label{namespaceconfigurator_a777e9c7e81261e8027688f4ff0eb7a2e} 
+Optional\+[Any]\+ {\bfseries safe\+\_\+any} (str v)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceconfigurator_a8d203d9171efc42482f9d8fac7db4611}\label{namespaceconfigurator_a8d203d9171efc42482f9d8fac7db4611} 
+int {\bfseries FONT\+\_\+\+BASE} = 38
+\item 
+\Hypertarget{namespaceconfigurator_ae5d22dfaf8c60fabbb68dd063bb4a310}\label{namespaceconfigurator_ae5d22dfaf8c60fabbb68dd063bb4a310} 
+int {\bfseries FONT\+\_\+\+SMALL} = 32
+\item 
+\Hypertarget{namespaceconfigurator_a0fbb42cbbcab487aed674e2448214055}\label{namespaceconfigurator_a0fbb42cbbcab487aed674e2448214055} 
+int {\bfseries ROW\+\_\+\+HEIGHT} = 90
+\item 
+\Hypertarget{namespaceconfigurator_a4907f7a3b8ac40cdf8d4b297d58f8a83}\label{namespaceconfigurator_a4907f7a3b8ac40cdf8d4b297d58f8a83} 
+int {\bfseries PAD\+\_\+X} = 40
+\item 
+\Hypertarget{namespaceconfigurator_aadba7600c7fe3cd5a5c2a0c4fe0f1d8f}\label{namespaceconfigurator_aadba7600c7fe3cd5a5c2a0c4fe0f1d8f} 
+int {\bfseries PAD\+\_\+Y} = 30
+\item 
+\Hypertarget{namespaceconfigurator_ade4a47acd7be5a965ae2bf4dbe54db14}\label{namespaceconfigurator_ade4a47acd7be5a965ae2bf4dbe54db14} 
+{\bfseries minimum\+\_\+width}
+\item 
+\Hypertarget{namespaceconfigurator_a742586be14ea9785f3ad422ff55afc03}\label{namespaceconfigurator_a742586be14ea9785f3ad422ff55afc03} 
+{\bfseries minimum\+\_\+height}
+\item 
+tuple \doxymbox{\hyperlink{namespaceconfigurator_a6706a679027fcd8e7536dda6dc0df412}{SNAPSHOT\+\_\+\+HTML\+\_\+\+TMPL}}
+\item 
+list \doxymbox{\hyperlink{namespaceconfigurator_ae65430e528cb741ee7fa78dbd96d8a4b}{LLM\+\_\+\+FIELDS}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+-\/backup-\/sep-\/30 
+
+\begin{DoxyVerb}BatLLM Configuration GUI (Kivy) – Enhanced Usability Version.
+
+Improvements:
+  - Larger, consistent fonts & spacing.
+  - Added llm.url and llm.port to editable core fields.
+  - Graceful handling when Ollama is not running (no crashes; status + popup).
+  - Central connection test button + live status.
+  - Scrollable Raw YAML & Snapshot preview.
+  - Connection auto‑refresh after saving LLM settings.
+  - Unified error capture (no free variable lambda issues).
+  - Friendlier instructions banner.
+\end{DoxyVerb}
+ 
+
+\label{doc-var-members}
+\Hypertarget{namespaceconfigurator_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespaceconfigurator_ae65430e528cb741ee7fa78dbd96d8a4b}\index{configurator@{configurator}!LLM\_FIELDS@{LLM\_FIELDS}}
+\index{LLM\_FIELDS@{LLM\_FIELDS}!configurator@{configurator}}
+\doxysubsubsection{\texorpdfstring{LLM\_FIELDS}{LLM\_FIELDS}}
+{\footnotesize\ttfamily \label{namespaceconfigurator_ae65430e528cb741ee7fa78dbd96d8a4b} 
+list configurator.\+LLM\+\_\+\+FIELDS}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ [}
+\DoxyCodeLine{00002\ \ \ \ \ (\textcolor{stringliteral}{'url'},\ str),\ (\textcolor{stringliteral}{'port'},\ int),\ (\textcolor{stringliteral}{'model'},\ str),}
+\DoxyCodeLine{00003\ \ \ \ \ (\textcolor{stringliteral}{'temperature'},\ float),\ (\textcolor{stringliteral}{'top\_p'},\ float),\ (\textcolor{stringliteral}{'top\_k'},\ int),}
+\DoxyCodeLine{00004\ \ \ \ \ (\textcolor{stringliteral}{'timeout'},\ float),\ (\textcolor{stringliteral}{'max\_tokens'},\ int),\ (\textcolor{stringliteral}{'stop'},\ Any),\ (\textcolor{stringliteral}{'seed'},\ int),}
+\DoxyCodeLine{00005\ \ \ \ \ (\textcolor{stringliteral}{'num\_thread'},\ int),\ (\textcolor{stringliteral}{'num\_ctx'},\ int),\ (\textcolor{stringliteral}{'num\_predict'},\ int),}
+\DoxyCodeLine{00006\ ]}
+
+\end{DoxyCode}
+\Hypertarget{namespaceconfigurator_a6706a679027fcd8e7536dda6dc0df412}\index{configurator@{configurator}!SNAPSHOT\_HTML\_TMPL@{SNAPSHOT\_HTML\_TMPL}}
+\index{SNAPSHOT\_HTML\_TMPL@{SNAPSHOT\_HTML\_TMPL}!configurator@{configurator}}
+\doxysubsubsection{\texorpdfstring{SNAPSHOT\_HTML\_TMPL}{SNAPSHOT\_HTML\_TMPL}}
+{\footnotesize\ttfamily \label{namespaceconfigurator_a6706a679027fcd8e7536dda6dc0df412} 
+tuple configurator.\+SNAPSHOT\+\_\+\+HTML\+\_\+\+TMPL}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ (}
+\DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{"{}<!doctype\ html><html><head><meta\ charset='utf-\/8'><title>BatLLM\ Config\ Snapshot:\ \{name\}</title>"{}}}
+\DoxyCodeLine{00003\ \ \ \ \ \textcolor{stringliteral}{"{}</head><body><h1>BatLLM\ Config\ Snapshot:\ \{name\}</h1><hr>"{}}}
+\DoxyCodeLine{00004\ \ \ \ \ \textcolor{stringliteral}{"{}<!-\/-\/\ CONFIG\_SNAPSHOT\_START\ -\/-\/><pre>\{yaml\_text\}</pre><!-\/-\/\ CONFIG\_SNAPSHOT\_END\ -\/-\/>"{}}}
+\DoxyCodeLine{00005\ \ \ \ \ \textcolor{stringliteral}{"{}</body></html>"{}}}
+\DoxyCodeLine{00006\ )}
+
+\end{DoxyCode}

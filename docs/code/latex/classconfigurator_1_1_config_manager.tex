@@ -1,0 +1,46 @@
+\doxysection{configurator.\+Config\+Manager Class Reference}
+\hypertarget{classconfigurator_1_1_config_manager}{}\label{classconfigurator_1_1_config_manager}\index{configurator.ConfigManager@{configurator.ConfigManager}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a58225076b7659d531481b97ef27c5714}\label{classconfigurator_1_1_config_manager_a58225076b7659d531481b97ef27c5714} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, str path)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a28eec00aafda0f24e8139e8e85c75861}\label{classconfigurator_1_1_config_manager_a28eec00aafda0f24e8139e8e85c75861} 
+Dict\+[str, Any]\+ {\bfseries load} (self)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_aa388cf24bb7c62a0cc12f11afe65d92b}\label{classconfigurator_1_1_config_manager_aa388cf24bb7c62a0cc12f11afe65d92b} 
+{\bfseries save} (self, Dict\+[str, Any]\+ data)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a1502fae8832a6a13b4d8c7690087e298}\label{classconfigurator_1_1_config_manager_a1502fae8832a6a13b4d8c7690087e298} 
+{\bfseries backup} (self)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a11cf7769479e0c30a62ef1c6ead255d0}\label{classconfigurator_1_1_config_manager_a11cf7769479e0c30a62ef1c6ead255d0} 
+{\bfseries undo} (self)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_ad9bf7267b76d371fb8d924929d6378b5}\label{classconfigurator_1_1_config_manager_ad9bf7267b76d371fb8d924929d6378b5} 
+str {\bfseries save\+\_\+snapshot\+\_\+html} (self, str name, Dict\+[str, Any]\+ data, str directory)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a9777990864c7a3b9437665ed1b687a7f}\label{classconfigurator_1_1_config_manager_a9777990864c7a3b9437665ed1b687a7f} 
+List\+[str]\+ {\bfseries list\+\_\+snapshots} (self, str directory)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a443df868288bf8d9fcb62c63fb36d8cd}\label{classconfigurator_1_1_config_manager_a443df868288bf8d9fcb62c63fb36d8cd} 
+Dict\+[str, Any]\+ {\bfseries load\+\_\+snapshot\+\_\+yaml\+\_\+from\+\_\+html} (self, str path)
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a2b16fd923b823dae58ae2e01a18b0c35}\label{classconfigurator_1_1_config_manager_a2b16fd923b823dae58ae2e01a18b0c35} 
+{\bfseries activate\+\_\+snapshot} (self, str path)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a956bc6cc85901fa4fcd685d7391fcafb}\label{classconfigurator_1_1_config_manager_a956bc6cc85901fa4fcd685d7391fcafb} 
+{\bfseries path} = path
+\item 
+\Hypertarget{classconfigurator_1_1_config_manager_a30fea62b9985286c49b49db95d96e507}\label{classconfigurator_1_1_config_manager_a30fea62b9985286c49b49db95d96e507} 
+{\bfseries backup\+\_\+path} = os.\+path.\+join(os.\+path.\+dirname(path), \textquotesingle{}config.\+yaml.\+bak\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+configs/\+configurator.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,118 @@
+\doxysection{prompt\+\_\+store.\+Prompt\+Store Class Reference}
+\hypertarget{classprompt__store_1_1_prompt_store}{}\label{classprompt__store_1_1_prompt_store}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classprompt__store_1_1_prompt_store_afc2b7bab2ac176f4ec65cbfc8def9ce5}\label{classprompt__store_1_1_prompt_store_afc2b7bab2ac176f4ec65cbfc8def9ce5} 
+None {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self)
+\item 
+int \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_a1c8970c8a578ff16417758c666f40948}{add\+\_\+prompt}} (self, int id, str prompt)
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_a11c021ee489c9137e9fe97992c1ad61f}{rewind}} (self, int id)
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_ac34a7bf3c6e1c13f2b5bc889fedb8b23}{forward}} (self, int id)
+\item 
+None \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_a67a783d5a64f64307e69c77452da8c82}{reset}} (self, Optional\+[int]\+ id=None)
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_a78d85d44381c640b33370e0153b3b9f1}{get\+\_\+current\+\_\+prompt}} (self, int id)
+\item 
+int \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_aa379c465b3530e456ef98d12f6c67aab}{get\+\_\+index}} (self, int id)
+\item 
+str \doxymbox{\hyperlink{classprompt__store_1_1_prompt_store_a5de99e4e3e1d8bd6344aac6db1269435}{to\+\_\+string}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classprompt__store_1_1_prompt_store_a30eb4ed98ab2db5b05c82fb4ecd7aa9f}\label{classprompt__store_1_1_prompt_store_a30eb4ed98ab2db5b05c82fb4ecd7aa9f} 
+None {\bfseries \+\_\+self\+\_\+test} (cls)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classprompt__store_1_1_prompt_store_a55b2a40b15ad161933c0c4b073a74780}\label{classprompt__store_1_1_prompt_store_a55b2a40b15ad161933c0c4b073a74780} 
+dict {\bfseries \+\_\+data} = \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Store prompts per bot (identified by integer bot_id) plus a movable index
+pointing at the 'current' prompt for each bot.
+
+Internal record per bot_id:
+    {"prompts": List[str], "index": int}
+  - index starts at -1 (no current prompt)
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classprompt__store_1_1_prompt_store_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classprompt__store_1_1_prompt_store_a1c8970c8a578ff16417758c666f40948}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!add\_prompt@{add\_prompt}}
+\index{add\_prompt@{add\_prompt}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{add\_prompt()}{add\_prompt()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_a1c8970c8a578ff16417758c666f40948} 
+ int prompt\+\_\+store.\+Prompt\+Store.\+add\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{id}{, }\item[{str}]{prompt}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Add `prompt` to bot `id`'s list and set index to the new prompt.
+Creates the record if it doesn't exist.
+Returns the new index.
+\end{DoxyVerb}
+ \Hypertarget{classprompt__store_1_1_prompt_store_ac34a7bf3c6e1c13f2b5bc889fedb8b23}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!forward@{forward}}
+\index{forward@{forward}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{forward()}{forward()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_ac34a7bf3c6e1c13f2b5bc889fedb8b23} 
+ Optional\+[str]\+ prompt\+\_\+store.\+Prompt\+Store.\+forward (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Move the index one step forward for bot `id`, if possible.
+Returns the new current prompt, or None if not possible (end or no data).
+\end{DoxyVerb}
+ \Hypertarget{classprompt__store_1_1_prompt_store_a78d85d44381c640b33370e0153b3b9f1}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!get\_current\_prompt@{get\_current\_prompt}}
+\index{get\_current\_prompt@{get\_current\_prompt}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{get\_current\_prompt()}{get\_current\_prompt()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_a78d85d44381c640b33370e0153b3b9f1} 
+ Optional\+[str]\+ prompt\+\_\+store.\+Prompt\+Store.\+get\+\_\+current\+\_\+prompt (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the prompt currently pointed by the index for bot `id`,
+or None if there is no current prompt.
+\end{DoxyVerb}
+ \Hypertarget{classprompt__store_1_1_prompt_store_aa379c465b3530e456ef98d12f6c67aab}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!get\_index@{get\_index}}
+\index{get\_index@{get\_index}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{get\_index()}{get\_index()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_aa379c465b3530e456ef98d12f6c67aab} 
+ int prompt\+\_\+store.\+Prompt\+Store.\+get\+\_\+index (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the current index for bot `id`.
+Returns -1 if the bot has no prompts or doesn't exist.
+\end{DoxyVerb}
+ \Hypertarget{classprompt__store_1_1_prompt_store_a67a783d5a64f64307e69c77452da8c82}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!reset@{reset}}
+\index{reset@{reset}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_a67a783d5a64f64307e69c77452da8c82} 
+ None prompt\+\_\+store.\+Prompt\+Store.\+reset (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Optional\+[int]\+ }]{id}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Reset prompts.
+- reset(id): delete all prompts for that bot and set index = -1
+- reset():   delete all prompts for all bots
+\end{DoxyVerb}
+ \Hypertarget{classprompt__store_1_1_prompt_store_a11c021ee489c9137e9fe97992c1ad61f}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!rewind@{rewind}}
+\index{rewind@{rewind}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{rewind()}{rewind()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_a11c021ee489c9137e9fe97992c1ad61f} 
+ Optional\+[str]\+ prompt\+\_\+store.\+Prompt\+Store.\+rewind (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int}]{id}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Move the index one step back for bot `id`, if possible.
+Returns the new current prompt, or None if not possible (start or no data).
+\end{DoxyVerb}
+ \Hypertarget{classprompt__store_1_1_prompt_store_a5de99e4e3e1d8bd6344aac6db1269435}\index{prompt\_store.PromptStore@{prompt\_store.PromptStore}!to\_string@{to\_string}}
+\index{to\_string@{to\_string}!prompt\_store.PromptStore@{prompt\_store.PromptStore}}
+\doxysubsubsection{\texorpdfstring{to\_string()}{to\_string()}}
+{\footnotesize\ttfamily \label{classprompt__store_1_1_prompt_store_a5de99e4e3e1d8bd6344aac6db1269435} 
+ str prompt\+\_\+store.\+Prompt\+Store.\+to\+\_\+string (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a human-readable multi-line string summarizing all stored prompts.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+game/\+prompt\+\_\+store.\+py\end{DoxyCompactItemize}

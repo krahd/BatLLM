@@ -1,7 +1,10 @@
+"""Ollama configuration and model-management screen."""
+
 from __future__ import annotations
 
 from datetime import datetime
 import json
+import re
 import subprocess
 import threading
 from pathlib import Path
@@ -12,17 +15,37 @@ from urllib.request import urlopen
 import requests
 from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.metrics import dp
 from kivy.properties import ListProperty, StringProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
 
 from configs.app_config import config
-from util.utils import show_confirmation_dialog, show_fading_alert, show_text_input_dialog
+from util.utils import (
+    show_confirmation_dialog,
+    show_fading_alert,
+    show_text_input_dialog,
+    switch_screen,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
+REMOTE_LIBRARY_URL = "https://ollama.com/library"
+REMOTE_MODEL_CARD_RE = re.compile(
+    r'<a href="/library/([^"/:?#]+)"\s+class="group w-full space-y-5">(.*?)</a>',
+    re.S,
+)
+REMOTE_MODEL_SIZE_RE = re.compile(r'<span x-test-size[^>]*>([^<]+)</span>')
 
 
 class OllamaConfigScreen(Screen):
+    """Manage the local Ollama service and BatLLM model selection."""
+
     status_text = StringProperty("Idle")
     status_details = StringProperty("Ollama status has not been checked yet.")
     output_log = StringProperty("")
@@ -30,6 +53,16 @@ class OllamaConfigScreen(Screen):
     remote_models = ListProperty([])
     selected_local_model = StringProperty("")
     selected_remote_model = StringProperty("")
+    selected_local_model_label = StringProperty("Select local model")
+    selected_remote_model_label = StringProperty("Select remote model")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._local_model_entries: list[dict[str, str]] = []
+        self._remote_model_entries: list[dict[str, str]] = []
+        self._remote_model_display_map: dict[str, str] = {}
+        self._model_picker_popup = None
+        self._managed_model_name: str | None = None
 
     def on_pre_enter(self, *_args):
         Window.unbind(on_key_down=self.handle_window_key_down)
@@ -41,14 +74,18 @@ class OllamaConfigScreen(Screen):
         Window.unbind(on_key_down=self.handle_window_key_down)
 
     def handle_window_key_down(self, _window, key, *_args):
+        """Handle Escape by dismissing the model picker or returning to Settings."""
         if key != 27:
             return False
+
+        if self._dismiss_model_picker():
+            return True
 
         self.go_to_settings_screen()
         return True
 
     def go_to_settings_screen(self):
-        self.manager.current = "settings"
+        switch_screen(self.manager, "settings", direction="right")
 
     def _llm_endpoint(self) -> tuple[str, int]:
         url = str(config.get("llm", "url") or "http://localhost").rstrip("/")
@@ -57,6 +94,18 @@ class OllamaConfigScreen(Screen):
 
     def _chat_path(self) -> str:
         return str(config.get("llm", "path") or "/api/chat")
+
+    def _set_local_selection(self, model_name: str):
+        model_name = model_name.strip()
+        self.selected_local_model = model_name
+        self.selected_local_model_label = model_name or "Select local model"
+
+    def _set_remote_selection(self, model_name: str):
+        model_name = model_name.strip()
+        self.selected_remote_model = model_name
+        self.selected_remote_model_label = (
+            self._remote_model_display_map.get(model_name, model_name) or "Select remote model"
+        )
 
     def _set_status(self, text: str):
         Clock.schedule_once(lambda *_: setattr(self, "status_text", text), 0)
@@ -79,6 +128,93 @@ class OllamaConfigScreen(Screen):
 
     def _run_in_thread(self, fn):
         threading.Thread(target=fn, daemon=True).start()
+
+    def _schedule_ui_callback(self, callback):
+        if callback is None:
+            return
+
+        Clock.schedule_once(lambda *_: callback(), 0)
+
+    def _dismiss_model_picker(self) -> bool:
+        """Dismiss the active model picker popup, if one is open."""
+        if self._model_picker_popup is None:
+            return False
+
+        self._model_picker_popup.dismiss()
+        return True
+
+    def _show_model_picker(
+        self,
+        *,
+        title: str,
+        entries: list[dict[str, str]],
+        selected_value: str,
+        on_select,
+    ):
+        """Show a modal list of selectable models."""
+        if self._model_picker_popup is not None:
+            self._model_picker_popup.dismiss()
+            self._model_picker_popup = None
+
+        if not entries:
+            show_fading_alert(title, "No models available.", duration=1.5, fade_duration=1.0)
+            return
+
+        layout = BoxLayout(orientation="vertical", spacing=dp(10), padding=dp(12))
+        scroll = ScrollView(
+            do_scroll_x=False,
+            scroll_type=["bars", "content"],
+            bar_width=dp(10),
+        )
+        items = GridLayout(cols=1, spacing=0, size_hint_y=None)
+        items.bind(minimum_height=items.setter("height"))
+
+        popup = Popup(
+            title=title,
+            content=layout,
+            size_hint=(0.82, 0.82),
+            auto_dismiss=True,
+        )
+
+        def choose(model_name: str):
+            popup.dismiss()
+            on_select(model_name)
+
+        for entry in entries:
+            button = Button(
+                text=entry["display"],
+                size_hint_y=None,
+                height=dp(46),
+                halign="left",
+                valign="middle",
+                background_normal="",
+                background_down="",
+                shorten=True,
+                background_color=(0.22, 0.38, 0.56, 1)
+                if entry["name"] == selected_value
+                else (0.12, 0.12, 0.12, 1),
+                color=(1, 1, 1, 1),
+            )
+            button.bind(size=lambda inst, *_: setattr(inst, "text_size", (inst.width - dp(16), None)))
+            button.bind(on_release=lambda *_args, value=entry["name"]: choose(value))
+            items.add_widget(button)
+
+        scroll.add_widget(items)
+        layout.add_widget(scroll)
+
+        close_button = Button(
+            text="Close",
+            size_hint_y=None,
+            height=dp(44),
+            background_color=(0.85, 0.85, 0.85, 1),
+            color=(0, 0, 0, 1),
+        )
+        close_button.bind(on_release=lambda *_: popup.dismiss())
+        layout.add_widget(close_button)
+
+        popup.bind(on_dismiss=lambda *_: setattr(self, "_model_picker_popup", None))
+        self._model_picker_popup = popup
+        popup.open()
 
     def _run_script(self, script_name: str, *args: str) -> subprocess.CompletedProcess:
         script = ROOT / script_name
@@ -218,6 +354,8 @@ class OllamaConfigScreen(Screen):
             self._append_log(f"$ ./start_ollama.sh\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
+                configured_model = str(config.get("llm", "model") or "").strip()
+                self._managed_model_name = configured_model or None
                 self._set_status("Ollama started successfully.")
                 self.refresh_ollama_status()
                 self.refresh_local_models()
@@ -241,6 +379,7 @@ class OllamaConfigScreen(Screen):
             self._append_log(f"$ ./stop_ollama.sh -v\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
+                self._managed_model_name = None
                 self._set_status("Ollama stopped.")
                 self.refresh_ollama_status()
                 return
@@ -256,7 +395,48 @@ class OllamaConfigScreen(Screen):
             body = response.read().decode("utf-8")
             return json.loads(body) if body else {}
 
-    def refresh_local_models(self):
+    def _current_model_entries(self, entries: list[dict[str, str]], model_names: list[str]):
+        return entries if entries else [{"name": name, "display": name} for name in model_names]
+
+    def _select_local_model(self, model_name: str):
+        self._set_local_selection(model_name)
+        self._append_log(f"Selected local model: {model_name}")
+
+    def _select_remote_model(self, model_name: str):
+        self._set_remote_selection(model_name)
+        self._append_log(f"Selected remote model: {self.selected_remote_model_label}")
+
+    def refresh_all(self):
+        self._append_log("Refreshing...")
+        self.refresh_ollama_status()
+        self.refresh_local_models()
+        self.refresh_remote_models()
+
+    def open_local_model_selector(self):
+        self._append_log("Refreshing local models...")
+
+        self.refresh_local_models(
+            on_complete=lambda: self._show_model_picker(
+                title="Local Models",
+                entries=self._current_model_entries(self._local_model_entries, self.local_models),
+                selected_value=self.selected_local_model,
+                on_select=self._select_local_model,
+            )
+        )
+
+    def open_remote_model_selector(self):
+        self._append_log("Refreshing remote models...")
+
+        self.refresh_remote_models(
+            on_complete=lambda: self._show_model_picker(
+                title="Remote Models",
+                entries=self._current_model_entries(self._remote_model_entries, self.remote_models),
+                selected_value=self.selected_remote_model,
+                on_select=self._select_remote_model,
+            )
+        )
+
+    def refresh_local_models(self, on_complete=None):
         self._set_status("Refreshing local models...")
 
         def work():
@@ -268,54 +448,125 @@ class OllamaConfigScreen(Screen):
                 names = [m.get("name", "") for m in models if isinstance(m, dict) and m.get("name")]
 
                 def update(*_):
+                    self._local_model_entries = [{"name": name, "display": name} for name in names]
                     self.local_models = names
-                    current = str(config.get("llm", "model") or "")
-                    self.selected_local_model = current if current in names else (
-                        names[0] if names else "")
+                    current = self.selected_local_model.strip() or str(config.get("llm", "model") or "")
+                    self._set_local_selection(current if current in names else (names[0] if names else ""))
                     self._set_status(f"Loaded {len(names)} local model(s).")
                     models_text = ", ".join(names) if names else "none"
                     self._append_log(f"GET {tags_url}\nLoaded local models: {models_text}")
+                    self._schedule_ui_callback(on_complete)
 
                 Clock.schedule_once(update, 0)
             except (URLError, HTTPError, ValueError) as exc:
                 self._set_status(f"Unable to list local models: {exc}")
                 self._append_log(f"GET {tags_url}\n{exc}")
+                self._schedule_ui_callback(on_complete)
 
         self._run_in_thread(work)
 
-    def refresh_remote_models(self):
+    def _parse_remote_models_html(self, html: str) -> list[dict[str, str]]:
+        seen = set()
+        entries: list[dict[str, str]] = []
+
+        for name, block in REMOTE_MODEL_CARD_RE.findall(html):
+            name = name.strip()
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            size_match = REMOTE_MODEL_SIZE_RE.search(block)
+            size = size_match.group(1).strip() if size_match else ""
+            display = f"{name} ({size})" if size else name
+            entries.append({"name": name, "display": display, "size": size})
+
+        return entries
+
+    def refresh_remote_models(self, on_complete=None):
         self._set_status("Refreshing remote model list...")
 
         def work():
             try:
-                resp = requests.get("https://ollamadb.dev/api/v1/models", timeout=12)
+                resp = requests.get(REMOTE_LIBRARY_URL, timeout=12)
                 resp.raise_for_status()
-                data = resp.json()
-                rows = data.get("data", []) if isinstance(data, dict) else []
-                names = []
-                for row in rows:
-                    if not isinstance(row, dict):
-                        continue
-                    name = row.get("name") or row.get("model") or row.get("slug")
-                    if name:
-                        names.append(str(name))
-
-                names = sorted(set(names))
+                entries = self._parse_remote_models_html(resp.text)
+                names = [entry["name"] for entry in entries]
 
                 def update(*_):
+                    self._remote_model_entries = entries
+                    self._remote_model_display_map = {
+                        entry["name"]: entry["display"] for entry in entries
+                    }
                     self.remote_models = names
-                    self.selected_remote_model = names[0] if names else ""
+                    selected = self.selected_remote_model if self.selected_remote_model in names else (
+                        names[0] if names else ""
+                    )
+                    self._set_remote_selection(selected)
                     self._set_status(f"Loaded {len(names)} remote model(s).")
                     self._append_log(
-                        f"GET https://ollamadb.dev/api/v1/models\nLoaded {len(names)} remote models"
+                        f"GET {REMOTE_LIBRARY_URL}\nLoaded {len(names)} remote models"
                     )
+                    self._schedule_ui_callback(on_complete)
 
                 Clock.schedule_once(update, 0)
             except requests.RequestException as exc:
                 self._set_status(f"Unable to load remote models: {exc}")
-                self._append_log(f"GET https://ollamadb.dev/api/v1/models\n{exc}")
+                self._append_log(f"GET {REMOTE_LIBRARY_URL}\n{exc}")
+                self._schedule_ui_callback(on_complete)
 
         self._run_in_thread(work)
+
+    def _get_running_model_names(self) -> list[str]:
+        base_url, port = self._llm_endpoint()
+        ps_url = f"{base_url}:{port}/api/ps"
+        try:
+            payload = self._json_get(ps_url, timeout=5)
+        except (URLError, HTTPError, ValueError):
+            return []
+
+        models = payload.get("models", []) if isinstance(payload, dict) else []
+        return [
+            model.get("name", "")
+            for model in models
+            if isinstance(model, dict) and model.get("name")
+        ]
+
+    def _preload_model(self, model_name: str):
+        base_url, port = self._llm_endpoint()
+        url = f"{base_url}:{port}/api/generate"
+        resp = requests.post(
+            url,
+            json={"model": model_name, "keep_alive": "30m"},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        payload = resp.json() if resp.content else {}
+        self._append_log(f"POST {url}\n{json.dumps(payload)}")
+        return payload
+
+    def _stop_serving_model(self, model_name: str):
+        base_url, port = self._llm_endpoint()
+        url = f"{base_url}:{port}/api/generate"
+        resp = requests.post(
+            url,
+            json={"model": model_name, "keep_alive": 0},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        payload = resp.json() if resp.content else {}
+        self._append_log(f"POST {url}\n{json.dumps(payload)}")
+        return payload
+
+    def _ensure_model_serving(self, model_name: str):
+        try:
+            return self._preload_model(model_name)
+        except requests.RequestException as exc:
+            self._append_log(f"Preload failed for {model_name}: {exc}")
+            proc = self._run_script("start_ollama.sh")
+            combined = f"{proc.stdout}\n{proc.stderr}".strip()
+            self._append_log(f"$ ./start_ollama.sh\n{combined or '(no output)'}")
+            if proc.returncode != 0:
+                raise RuntimeError(combined or f"start_ollama.sh exited {proc.returncode}") from exc
+            return {"started_via_script": True}
 
     def set_model_from_selection(self):
         model = self.selected_local_model.strip()
@@ -326,9 +577,43 @@ class OllamaConfigScreen(Screen):
 
         config.set("llm", "model", model)
         config.save()
-        self._set_status(f"Selected model saved: {model}")
+        self._set_status(f"Loading model: {model}")
         self._append_log(f"Configured BatLLM model: {model}")
-        self.refresh_ollama_status()
+
+        def work():
+            try:
+                running_before = set(self._get_running_model_names())
+                previous_managed = self._managed_model_name
+
+                if previous_managed and previous_managed != model and previous_managed in running_before:
+                    self._set_status(f"Stopping previous BatLLM model: {previous_managed}")
+                    self._append_log(f"Stopping previous BatLLM model: {previous_managed}")
+                    self._stop_serving_model(previous_managed)
+                    running_before.discard(previous_managed)
+
+                self._ensure_model_serving(model)
+                if model not in running_before or previous_managed == model:
+                    self._managed_model_name = model
+                else:
+                    self._managed_model_name = None
+                self._set_status(f"Model ready: {model}")
+                self._append_log(f"Model ready: {model}")
+                self.refresh_ollama_status()
+                self.refresh_local_models()
+            except RuntimeError as exc:
+                self._set_status(f"Failed to serve model: {model}")
+                self._append_log(f"Failed to serve model {model}: {exc}")
+                Clock.schedule_once(
+                    lambda *_: show_fading_alert(
+                        "Use Selected",
+                        str(exc),
+                        duration=2.0,
+                        fade_duration=1.0,
+                    ),
+                    0,
+                )
+
+        self._run_in_thread(work)
 
     def _pull_model(self, model_name: str):
         base_url, port = self._llm_endpoint()
@@ -398,6 +683,8 @@ class OllamaConfigScreen(Screen):
 
             def work():
                 try:
+                    if model == self._managed_model_name:
+                        self._managed_model_name = None
                     self._delete_model(model)
                     self._set_status(f"Model deleted: {model}")
                     self._append_log(f"Model deleted: {model}")

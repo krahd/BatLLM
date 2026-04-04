@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['savedialog_0',['SaveDialog',['../classsave__dialog_1_1_save_dialog.html',1,'save_dialog']]],
-  ['settingsscreen_1',['SettingsScreen',['../classsettings__screen_1_1_settings_screen.html',1,'settings_screen']]]
+  ['historymanager_0',['HistoryManager',['../classhistory__manager_1_1_history_manager.html',1,'history_manager']]],
+  ['historyscreen_1',['HistoryScreen',['../classhistory__screen_1_1_history_screen.html',1,'history_screen']]],
+  ['homescreen_2',['HomeScreen',['../classhome__screen_1_1_home_screen.html',1,'home_screen']]]
 ];

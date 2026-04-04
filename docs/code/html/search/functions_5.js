@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['forward_5fprompt_5fhistory_0',['forward_prompt_history',['../classbot_1_1_bot.html#a7b768a0522007c1e60326e2bda411045',1,'bot.Bot.forward_prompt_history()'],['../classhome__screen_1_1_home_screen.html#a8f918c1a0ee39296576fedeaece0a163',1,'home_screen.HomeScreen.forward_prompt_history()']]]
+  ['find_5fid_5fin_5fparents_0',['find_id_in_parents',['../namespaceutils.html#a3b9da19c4a2408b545c03a6e3e6cd839',1,'utils']]],
+  ['forward_1',['forward',['../classprompt__store_1_1_prompt_store.html#ac34a7bf3c6e1c13f2b5bc889fedb8b23',1,'prompt_store::PromptStore']]],
+  ['forward_5fprompt_5fstore_2',['forward_prompt_store',['../classhome__screen_1_1_home_screen.html#a603c95ac6fe9ed485e75f1e7af5c7422',1,'home_screen::HomeScreen']]]
 ];

@@ -1,0 +1,91 @@
+\doxysection{configurator.\+Console\+Panel Class Reference}
+\hypertarget{classconfigurator_1_1_console_panel}{}\label{classconfigurator_1_1_console_panel}\index{configurator.ConsolePanel@{configurator.ConsolePanel}}
+Inheritance diagram for configurator.\+Console\+Panel:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classconfigurator_1_1_console_panel}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_a76fe9590c63282db98a669866d1152bf}\label{classconfigurator_1_1_console_panel_a76fe9590c63282db98a669866d1152bf} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, \textquotesingle{}\doxymbox{\hyperlink{classconfigurator_1_1_bat_l_l_m_config_app}{Bat\+LLMConfig\+App}}\textquotesingle{} app\+\_\+ref, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kw)
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_aef77854a2ea064fcd397ca66a7c9f09e}\label{classconfigurator_1_1_console_panel_aef77854a2ea064fcd397ca66a7c9f09e} 
+{\bfseries refresh\+\_\+models} (self)
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_a7243b982a7f6dfa6be33af7217b11e6b}\label{classconfigurator_1_1_console_panel_a7243b982a7f6dfa6be33af7217b11e6b} 
+{\bfseries stop} (self)
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_ababd59064721a2c9b074a9090d1b78e5}\label{classconfigurator_1_1_console_panel_ababd59064721a2c9b074a9090d1b78e5} 
+{\bfseries generate} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_af04076309b2632598887f676bca1160c}\label{classconfigurator_1_1_console_panel_af04076309b2632598887f676bca1160c} 
+{\bfseries app\+\_\+ref} = app\+\_\+ref
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_ac3c10a66f92d8787d0c2830c30646314}\label{classconfigurator_1_1_console_panel_ac3c10a66f92d8787d0c2830c30646314} 
+str {\bfseries orientation} = \textquotesingle{}vertical\textquotesingle{}
+\item 
+\doxymbox{\hyperlink{classconfigurator_1_1_console_panel_a04a823f9af11a2b604a4c157a74a87e8}{model\+\_\+spinner}}
+\item 
+\doxymbox{\hyperlink{classconfigurator_1_1_console_panel_a12f263114766f783183b6c109c6805eb}{prompt}}
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_aabbee4acda45189b56d37a3dc6a7db36}\label{classconfigurator_1_1_console_panel_aabbee4acda45189b56d37a3dc6a7db36} 
+{\bfseries output} = Text\+Input(text=\textquotesingle{}\textquotesingle{}, readonly=True, font\+\_\+size=FONT\+\_\+\+SMALL)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_a2d939a6a945c2054032c234751be6ed0}\label{classconfigurator_1_1_console_panel_a2d939a6a945c2054032c234751be6ed0} 
+{\bfseries \+\_\+set\+\_\+models} (self, List\+[str]\+ names)
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_a22006f41e1a996928acbdf29a2622234}\label{classconfigurator_1_1_console_panel_a22006f41e1a996928acbdf29a2622234} 
+{\bfseries \+\_\+append} (self, str text)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_ae61eae492593f04e6d1600cafc168fd6}\label{classconfigurator_1_1_console_panel_ae61eae492593f04e6d1600cafc168fd6} 
+{\bfseries \+\_\+gen\+\_\+thread} = None
+\item 
+\Hypertarget{classconfigurator_1_1_console_panel_af055e94513f601b11d8dfa7b0ebc3c41}\label{classconfigurator_1_1_console_panel_af055e94513f601b11d8dfa7b0ebc3c41} 
+bool {\bfseries \+\_\+stop\+\_\+flag} = False
+\end{DoxyCompactItemize}
+
+
+\label{doc-variable-members}
+\Hypertarget{classconfigurator_1_1_console_panel_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classconfigurator_1_1_console_panel_a04a823f9af11a2b604a4c157a74a87e8}\index{configurator.ConsolePanel@{configurator.ConsolePanel}!model\_spinner@{model\_spinner}}
+\index{model\_spinner@{model\_spinner}!configurator.ConsolePanel@{configurator.ConsolePanel}}
+\doxysubsubsection{\texorpdfstring{model\_spinner}{model\_spinner}}
+{\footnotesize\ttfamily \label{classconfigurator_1_1_console_panel_a04a823f9af11a2b604a4c157a74a87e8} 
+configurator.\+Console\+Panel.\+model\+\_\+spinner}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ Spinner(text=\textcolor{stringliteral}{'(models)'},\ values=[],}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ size\_hint\_x=0.35,\ font\_size=FONT\_SMALL)}
+
+\end{DoxyCode}
+\Hypertarget{classconfigurator_1_1_console_panel_a12f263114766f783183b6c109c6805eb}\index{configurator.ConsolePanel@{configurator.ConsolePanel}!prompt@{prompt}}
+\index{prompt@{prompt}!configurator.ConsolePanel@{configurator.ConsolePanel}}
+\doxysubsubsection{\texorpdfstring{prompt}{prompt}}
+{\footnotesize\ttfamily \label{classconfigurator_1_1_console_panel_a12f263114766f783183b6c109c6805eb} 
+configurator.\+Console\+Panel.\+prompt}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ TextInput(hint\_text=\textcolor{stringliteral}{'Enter\ prompt'},\ multiline=\textcolor{keyword}{True},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ size\_hint\_y=0.38,\ font\_size=FONT\_SMALL)}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+configs/\+configurator.\+py\end{DoxyCompactItemize}

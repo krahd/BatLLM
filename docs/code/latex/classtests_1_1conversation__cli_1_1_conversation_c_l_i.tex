@@ -1,0 +1,109 @@
+\doxysection{tests.\+conversation\+\_\+cli.\+Conversation\+CLI Class Reference}
+\hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i}{}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_af9d47e51b96315ef8496d5c244c0e42e}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_af9d47e51b96315ef8496d5c244c0e42e} 
+None {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self)
+\item 
+Optional\+[str]\+ \doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a5dfa0f328259d0c911b78d2cdc285921}{send\+\_\+prompt\+\_\+to\+\_\+llm}} (self, str user\+\_\+input)
+\item 
+None \doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i_abb3eef9e6a6ca15339152b94168df0de}{set\+\_\+history}} (self, List\+[Dict\+[str, str]\+]\+ history)
+\item 
+str \doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8994424a43b86e5971c542f11827a633}{print\+\_\+help}} (self)
+\item 
+None \doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i_ae22c15076dd66e09f71def5e251db3d2}{run}} (self)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a2ef98851a31f8c8989e19885b9747332}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a2ef98851a31f8c8989e19885b9747332} 
+str {\bfseries model} = str(config.\+get("{}llm"{}, "{}model"{}))
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a4e537c28514d42e87035f47369be5833}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a4e537c28514d42e87035f47369be5833} 
+int {\bfseries num\+\_\+ctx} = int(config.\+get("{}llm"{}, "{}num\+\_\+ctx"{}))
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a2c801f6cfd2372cdee3a0683a194a328}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a2c801f6cfd2372cdee3a0683a194a328} 
+str {\bfseries endpoint} = f"{}\{base\}:\+\{port\}\{path\}"{}
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a194b4e8089847ed5a10314d63fb500b4}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a194b4e8089847ed5a10314d63fb500b4} 
+list {\bfseries history} = \+[$\,$]\+
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8c05cd07669afee5ffc28ed9521b8381}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8c05cd07669afee5ffc28ed9521b8381} 
+Dict\+[str, Any]\+ {\bfseries \+\_\+post} (self, Dict\+[str, Any]\+ payload)
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_acbd4e6d2e6dd20d55c246183f0aff695}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_acbd4e6d2e6dd20d55c246183f0aff695} 
+None {\bfseries \+\_\+ensure\+\_\+system\+\_\+message} (self, Optional\+[str]\+ text)
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a0f688eaf07479010cfb15ab4ca933ef3}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a0f688eaf07479010cfb15ab4ca933ef3} 
+Dict\+[str, Any]\+ {\bfseries \+\_\+build\+\_\+payload} (self)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Minimal interactive chat client for the configured Ollama model.
+
+- Uses llm.url, llm.port, llm.path, llm.model, and llm.num_ctx from config.yaml
+- Maintains message history so the chat has context
+- Commands:
+    /exit  -> quit
+    /reset -> clear history
+    /sys <text> -> set/replace a system prompt as the first message
+    /history -> display current conversation history
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8994424a43b86e5971c542f11827a633}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}!print\_help@{print\_help}}
+\index{print\_help@{print\_help}!tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection{\texorpdfstring{print\_help()}{print\_help()}}
+{\footnotesize\ttfamily \label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8994424a43b86e5971c542f11827a633} 
+ str tests.\+conversation\+\_\+cli.\+Conversation\+CLI.\+print\+\_\+help (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper for help
+Returns:
+    str: a string with the available commands
+\end{DoxyVerb}
+ \Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_ae22c15076dd66e09f71def5e251db3d2}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}!run@{run}}
+\index{run@{run}!tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily \label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_ae22c15076dd66e09f71def5e251db3d2} 
+ None tests.\+conversation\+\_\+cli.\+Conversation\+CLI.\+run (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Main loop (chat)
+\end{DoxyVerb}
+ \Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a5dfa0f328259d0c911b78d2cdc285921}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}!send\_prompt\_to\_llm@{send\_prompt\_to\_llm}}
+\index{send\_prompt\_to\_llm@{send\_prompt\_to\_llm}!tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection{\texorpdfstring{send\_prompt\_to\_llm()}{send\_prompt\_to\_llm()}}
+{\footnotesize\ttfamily \label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a5dfa0f328259d0c911b78d2cdc285921} 
+ Optional\+[str]\+ tests.\+conversation\+\_\+cli.\+Conversation\+CLI.\+send\+\_\+prompt\+\_\+to\+\_\+llm (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{user\+\_\+input}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Send a request
+
+Args:
+    user_input (str): the prompt
+
+Returns:
+    Optional[str]: the response
+\end{DoxyVerb}
+ \Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_abb3eef9e6a6ca15339152b94168df0de}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}!set\_history@{set\_history}}
+\index{set\_history@{set\_history}!tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection{\texorpdfstring{set\_history()}{set\_history()}}
+{\footnotesize\ttfamily \label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_abb3eef9e6a6ca15339152b94168df0de} 
+ None tests.\+conversation\+\_\+cli.\+Conversation\+CLI.\+set\+\_\+history (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{List\+[Dict\+[str, str]\+]\+}]{history}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Set the conversation history to a new list of messages.
+
+Args:
+    history (List[Dict[str, str]]): List of message dictionaries with 'role' and 'content'.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+tests/\+conversation\+\_\+cli.\+py\end{DoxyCompactItemize}

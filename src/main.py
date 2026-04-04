@@ -1,5 +1,5 @@
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.core.window import Window
 from kivy.properties import DictProperty
 from kivy.utils import get_color_from_hex
@@ -36,7 +36,7 @@ class BatLLM(MDApp):
     theme_colors = DictProperty({})  # Expose to KV
 
     def build(self):
-        sm = ScreenManager()
+        sm = ScreenManager(transition=SlideTransition(direction="left"))
 
         home = HomeScreen(name="home")
 

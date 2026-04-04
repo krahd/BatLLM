@@ -15,7 +15,7 @@ from game.game_board import GameBoard
 from game.history_manager import HistoryManager
 from view.load_text_dialog import LoadTextDialog
 from view.save_dialog import SaveDialog
-from util.utils import show_confirmation_dialog, show_text_input_dialog
+from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
 
 
 class HomeScreen(Screen):
@@ -33,6 +33,7 @@ class HomeScreen(Screen):
         Initializes the screen and sets up the history manager.
         """
         super().__init__(**kwargs)
+        self._exit_confirmation_popup = None
 
 
     def save_session(self):
@@ -115,7 +116,7 @@ class HomeScreen(Screen):
         Handler for the settings button.
         Switches the current screen to the settings screen.
         """
-        self.manager.current = "settings"
+        switch_screen(self.manager, "settings", direction="left")
 
 
     def go_to_history_screen(self, bot_id):
@@ -130,7 +131,7 @@ class HomeScreen(Screen):
         # Right pane: full detailed text for the whole game
         full_text = gbw.history_manager.to_text()
         history_screen.update(bot_id, compact, full_text)
-        self.manager.current = "history"
+        switch_screen(self.manager, "history", direction="left")
 
 
     def save_prompt(self, bot_id):
@@ -348,6 +349,16 @@ class HomeScreen(Screen):
         if key != 27:
             return False
 
+        popup = getattr(self, "_exit_confirmation_popup", None)
+        if popup is not None:
+            self._exit_confirmation_popup = None
+            cancel_action = getattr(popup, "cancel_action", None)
+            if callable(cancel_action):
+                cancel_action()
+            else:
+                popup.dismiss()
+            return True
+
         return self.on_request_close()
 
     def on_request_close(self, *args, **kwargs):
@@ -410,6 +421,7 @@ class HomeScreen(Screen):
             Callback for the exit cancellation dialog.
             If the user cancels, it does nothing.
             """
+            self._exit_confirmation_popup = None
             pass
 
         def _on_exit_confirmed():
@@ -417,14 +429,14 @@ class HomeScreen(Screen):
             Callback for the exit confirmation dialog.
             If the user confirms, it continues with the configured exit flow.
             """
-
+            self._exit_confirmation_popup = None
             return _continue_exit_flow()
 
         if not config.get("ui", "confirm_on_exit"):
             _continue_exit_flow()
             return True
 
-        show_confirmation_dialog(
+        self._exit_confirmation_popup = show_confirmation_dialog(
             title="Exit",
             message="Are you sure that you want to exit?",
             on_confirm=_on_exit_confirmed,

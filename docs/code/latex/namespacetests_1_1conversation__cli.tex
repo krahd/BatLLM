@@ -1,0 +1,31 @@
+\doxysection{tests.\+conversation\+\_\+cli Namespace Reference}
+\hypertarget{namespacetests_1_1conversation__cli}{}\label{namespacetests_1_1conversation__cli}\index{tests.conversation\_cli@{tests.conversation\_cli}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i}{Conversation\+CLI}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}conversation_cli.py
+====================
+
+This module provides a minimal interactive command-line chat client for the BatLLM model,
+configured via `config.yaml`. It enables users to interact with an Ollama-compatible LLM
+endpoint, maintaining conversation history for context and supporting basic commands.
+
+Classes:
+    ConversationCLI:
+        - Simple conversation with the LLM.
+        - Commands_
+            /exit  -> quit
+            /reset -> clear history
+            /sys [<text>] -> print, set, or replace the system prompt
+            /history -> display current history
+
+    set_history(history: List[Dict[str, str]]) -> None:
+        - Set the conversation history to a new list of messages. This wwould allow players to
+        chat with the model at any point of the game.
+\end{DoxyVerb}
+ 

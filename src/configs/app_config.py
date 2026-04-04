@@ -23,7 +23,6 @@ DEFAULTS = {
         "shield_size": 20,
     },
     "ui": {
-        " primary_color": "#ffffff",
         "font_size": 14,
         "frame_rate": 60,
         "confirm_on_exit": True,
