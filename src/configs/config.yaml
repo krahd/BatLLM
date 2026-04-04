@@ -16,7 +16,7 @@ game:
 llm:
   debug_requests: false
   max_tokens: null
-  model: mistral-small:latest
+  model: qwen3:30b
   num_ctx: 4096
   num_predict: null
   num_thread: null
@@ -35,7 +35,7 @@ llm:
   url: http://localhost
 ui:
   ' primary_color': '#ffffff'
-  confirm_on_exit: false
+  confirm_on_exit: true
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'
