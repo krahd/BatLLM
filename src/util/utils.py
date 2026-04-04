@@ -118,18 +118,46 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel=None):
 
     w = 400 + 20 * max(len(line) for line in message.splitlines())
     h = 400 + 20 * len(message.splitlines())
+    keyboard = {"instance": None}
+    completed = {"value": False}
+
+    def finish(callback=None):
+        if completed["value"]:
+            return
+
+        completed["value"] = True
+        popup.dismiss()
+        if callback:
+            callback()
 
     def confirm(*args):
-        print("dos ")
-        if on_confirm:
-            print("tres")
-            on_confirm()
-        popup.dismiss()
+        finish(on_confirm)
 
     def cancel(*args):
-        if on_cancel:
-            on_cancel()
-        popup.dismiss()
+        finish(on_cancel)
+
+    def on_keyboard_closed():
+        keyboard["instance"] = None
+
+    def on_key_down(_keyboard, keycode, _text, _modifiers):
+        key = keycode[1]
+        if key in ("enter", "numpadenter"):
+            confirm()
+            return True
+        if key == "escape":
+            cancel()
+            return True
+        return False
+
+    def attach_keyboard(*_args):
+        keyboard["instance"] = Window.request_keyboard(on_keyboard_closed, popup)
+        if keyboard["instance"]:
+            keyboard["instance"].bind(on_key_down=on_key_down)
+
+    def detach_keyboard(*_args):
+        if keyboard["instance"]:
+            keyboard["instance"].unbind(on_key_down=on_key_down)
+            keyboard["instance"] = None
 
     popup = Popup(
         title=title,
@@ -141,8 +169,12 @@ def show_confirmation_dialog(title, message, on_confirm, on_cancel=None):
 
     yes_button.bind(on_release=confirm)
     no_button.bind(on_release=cancel)
+    popup.bind(on_open=attach_keyboard, on_dismiss=detach_keyboard)
+    popup.confirm_action = confirm
+    popup.cancel_action = cancel
 
     popup.open()
+    return popup
 
 
 def show_fading_alert(title, message, duration=1.5, fade_duration=2.0):
