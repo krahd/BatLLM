@@ -73,6 +73,9 @@ class OllamaConfigScreen(Screen):
         if key != 27:
             return False
 
+        if self._dismiss_model_picker():
+            return True
+
         self.go_to_settings_screen()
         return True
 
@@ -127,6 +130,13 @@ class OllamaConfigScreen(Screen):
 
         Clock.schedule_once(lambda *_: callback(), 0)
 
+    def _dismiss_model_picker(self) -> bool:
+        if self._model_picker_popup is None:
+            return False
+
+        self._model_picker_popup.dismiss()
+        return True
+
     def _show_model_picker(
         self,
         *,
@@ -149,7 +159,7 @@ class OllamaConfigScreen(Screen):
             scroll_type=["bars", "content"],
             bar_width=dp(10),
         )
-        items = GridLayout(cols=1, spacing=dp(6), size_hint_y=None)
+        items = GridLayout(cols=1, spacing=0, size_hint_y=None)
         items.bind(minimum_height=items.setter("height"))
 
         popup = Popup(
@@ -170,11 +180,13 @@ class OllamaConfigScreen(Screen):
                 height=dp(46),
                 halign="left",
                 valign="middle",
+                background_normal="",
+                background_down="",
                 shorten=True,
-                background_color=(0.75, 0.88, 0.98, 1)
+                background_color=(0.22, 0.38, 0.56, 1)
                 if entry["name"] == selected_value
-                else (0.95, 0.95, 0.95, 1),
-                color=(0, 0, 0, 1),
+                else (0.12, 0.12, 0.12, 1),
+                color=(1, 1, 1, 1),
             )
             button.bind(size=lambda inst, *_: setattr(inst, "text_size", (inst.width - dp(16), None)))
             button.bind(on_release=lambda *_args, value=entry["name"]: choose(value))
