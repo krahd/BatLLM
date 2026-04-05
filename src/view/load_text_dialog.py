@@ -1,8 +1,10 @@
 import os
-from kivy.lang import Builder
-from kivy.uix.popup import Popup
-from kivy.properties import ObjectProperty
+
+from kivy.clock import Clock
 from kivy.core.window import Window
+from kivy.lang import Builder
+from kivy.properties import ObjectProperty
+from kivy.uix.popup import Popup
 
 # Load the KV definition (assumes load_text_dialog.kv is alongside this file)
 Builder.load_file(os.path.join(os.path.dirname(__file__), "load_text_dialog.kv"))
@@ -23,10 +25,44 @@ class LoadTextDialog(Popup):
 
         # Attach/detach keyboard events for Enter/Esc
         self.bind(on_open=self._attach_keyboard, on_dismiss=self._detach_keyboard)
+        self.bind(on_open=lambda *_args: Clock.schedule_once(self._initialize_selection, 0))
 
         # If a start_dir is provided and exists, set it when the popup opens
         if start_dir and os.path.isdir(start_dir):
             self.bind(on_open=lambda *a: setattr(self.ids.filechooser, "path", start_dir))
+
+    def _initialize_selection(self, *_args):
+        """Select the first visible text file so arrow keys and Enter work immediately."""
+        chooser = self.ids.filechooser
+        if hasattr(chooser, "focus"):
+            chooser.focus = True
+        if chooser.selection:
+            self._on_file_select(chooser.selection)
+            return
+        files = self._visible_text_files()
+        if files:
+            chooser.selection = [files[0]]
+            self._on_file_select(chooser.selection)
+
+    def _visible_text_files(self):
+        chooser = self.ids.filechooser
+        return [path for path in (getattr(chooser, "files", []) or []) if path.lower().endswith(".txt")]
+
+    def _move_selection(self, step: int):
+        chooser = self.ids.filechooser
+        files = self._visible_text_files()
+        if not files:
+            return
+
+        current = chooser.selection[0] if chooser.selection else None
+        if current in files:
+            new_index = files.index(current) + step
+        else:
+            new_index = 0 if step >= 0 else len(files) - 1
+
+        new_index = max(0, min(new_index, len(files) - 1))
+        chooser.selection = [files[new_index]]
+        self._on_file_select(chooser.selection)
 
     def _attach_keyboard(self, *args):
         """Request keyboard to capture Enter/Esc when the pop-up is open."""
@@ -47,6 +83,12 @@ class LoadTextDialog(Popup):
         key = keycode[1]
         if key in ("enter", "numpadenter"):
             self._load_selected()
+            return True
+        if key == "up":
+            self._move_selection(-1)
+            return True
+        if key == "down":
+            self._move_selection(1)
             return True
         if key == "escape":
             self._cancel()
@@ -81,7 +123,6 @@ class LoadTextDialog(Popup):
             return
 
         path = sel[0]
-        print(f"XXX Loading file: {path}")
         if not path.lower().endswith(".txt"):
             return
 

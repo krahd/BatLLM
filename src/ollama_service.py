@@ -40,9 +40,20 @@ def load_llm_config(path: Path = CONFIG_PATH) -> dict[str, str | int]:
     return {
         "last_served_model": str(llm.get("last_served_model") or "").strip(),
         "model": str(llm.get("model") or "").strip(),
+        "timeout": llm.get("timeout"),
         "url": str(llm.get("url") or "http://localhost").strip().rstrip("/"),
         "port": int(llm.get("port") or 11434),
     }
+
+
+def resolve_request_timeout(llm: dict[str, str | int | float | None], default: float = 120.0) -> float:
+    """Resolve the configured Ollama request timeout or fall back to a large-model default."""
+    raw_timeout = llm.get("timeout")
+    try:
+        timeout = float(raw_timeout)
+    except (TypeError, ValueError):
+        return default
+    return timeout if timeout > 0 else default
 
 
 def preferred_start_model(llm: dict[str, str | int]) -> str:
@@ -312,12 +323,12 @@ def wait_until_ready(url: str, port: int, timeout_seconds: float = 60.0) -> None
     raise RuntimeError(f"ollama serve did not become ready at {url}:{port}/api/version")
 
 
-def preload_model(url: str, port: int, model: str) -> None:
+def preload_model(url: str, port: int, model: str, timeout: float = 120.0) -> None:
     """Warm the selected model through the local Ollama API."""
     json_post(
         endpoint_url(url, port, "/api/generate"),
         {"model": model, "keep_alive": "30m"},
-        timeout=60.0,
+        timeout=timeout,
     )
 
 
@@ -325,6 +336,7 @@ def start_service(config_path: Path = CONFIG_PATH) -> int:
     """Start Ollama if needed, ensure the configured model is present, and warm it."""
     llm = load_llm_config(config_path)
     model = preferred_start_model(llm)
+    timeout = resolve_request_timeout(llm)
     url = str(llm["url"])
     port = int(llm["port"])
     host = f"{url.removeprefix('http://').removeprefix('https://')}:{port}"
@@ -358,7 +370,7 @@ def start_service(config_path: Path = CONFIG_PATH) -> int:
         sys.stderr.write((pull_proc.stdout or "") + (pull_proc.stderr or ""))
         return pull_proc.returncode
 
-    preload_model(url, port, model)
+    preload_model(url, port, model, timeout=timeout)
     save_last_served_model(model, config_path)
 
     if started:

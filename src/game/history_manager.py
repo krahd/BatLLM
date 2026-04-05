@@ -203,7 +203,8 @@ class HistoryManager:
 
         # Snapshot the state at round start
         self.current_round["initial_state"] = self._get_bots_state(game)
-        rules = getattr(game, "current_round_settings", None) or GameplaySettingsSnapshot.from_config()
+        rules = getattr(game, "current_round_settings",
+                        None) or GameplaySettingsSnapshot.from_config()
         self.current_round["gameplay_settings_snapshot"] = rules.to_dict()
 
         # Append the round to the game's list of rounds
@@ -258,6 +259,40 @@ class HistoryManager:
         # After ending the round, clear current_round (still stored in session rounds list)
         self.current_round = None
         self.current_turn = None
+
+    def cancel_round(self, reason: str, *, cancelled_by_bot_id: int | None = None):
+        """Abort the active round while keeping a cancelled-round record in history."""
+
+        if not self.current_round:
+            raise ValueError(
+                "There is no active round to cancel. Call start_round first."
+            )
+
+        end_time = self._now_iso()
+        initial_state = dict(self.current_round.get("initial_state", {}))
+        cancelled_turn_number = len(self.current_round.get("turns", [])) or 1
+
+        cancelled_turn = {
+            "turn": cancelled_turn_number,
+            "start_time": self.current_turn.get("start_time", end_time) if self.current_turn else end_time,
+            "end_time": end_time,
+            "pre_state": dict(initial_state),
+            "plays": [],
+            "cmd": "",
+            "post_state": dict(initial_state),
+            "status": "cancelled",
+            "cancel_reason": reason,
+        }
+
+        self.current_round["turns"] = [cancelled_turn]
+        self.current_round["status"] = "cancelled"
+        self.current_round["cancel_reason"] = reason
+        if cancelled_by_bot_id is not None:
+            self.current_round["cancelled_by_bot_id"] = cancelled_by_bot_id
+        self.current_round["end_time"] = end_time
+
+        self.current_turn = None
+        self.current_round = None
 
 
 

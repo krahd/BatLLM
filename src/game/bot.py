@@ -28,6 +28,7 @@ from kivy.uix.widget import Widget
 
 from configs.app_config import config
 from game.bullet import Bullet
+from game.ollama_connector import LLMTimeoutError
 from game.replay_engine import GameplaySettingsSnapshot, compute_move_target, parse_model_response
 from util.utils import markup
 
@@ -175,7 +176,8 @@ class Bot(Widget):
         animated over 'duration' seconds.
         """
 
-        rules = getattr(self.board_widget, "current_round_settings", None) or GameplaySettingsSnapshot.from_config()
+        rules = getattr(self.board_widget, "current_round_settings",
+                        None) or GameplaySettingsSnapshot.from_config()
         self.default_step = rules.bot_step_length
         nx, ny = compute_move_target(
             {"x": self.x, "y": self.y, "rot": self.rot},
@@ -245,7 +247,8 @@ class Bot(Widget):
         Bot hit by a bullet, loses health.
         """
         if amount is None:
-            rules = getattr(self.board_widget, "current_round_settings", None) or GameplaySettingsSnapshot.from_config()
+            rules = getattr(self.board_widget, "current_round_settings",
+                            None) or GameplaySettingsSnapshot.from_config()
             amount = rules.bullet_damage
         self.health -= int(amount)
         self.health = max(self.health, 0)
@@ -311,10 +314,14 @@ class Bot(Widget):
     def submit_prompt_to_llm(self):
         """Submits the prompt and sends the response for processing."""
 
-        res = self.board_widget.ollama_connector.send_prompt_to_llm_sync(
-            self.id, game_state=self.get_game_state(),
-            user_text=self.get_current_prompt()
-        )
+        try:
+            res = self.board_widget.ollama_connector.send_prompt_to_llm_sync(
+                self.id, game_state=self.get_game_state(),
+                user_text=self.get_current_prompt()
+            )
+        except LLMTimeoutError as exc:
+            self.board_widget.handle_bot_llm_timeout(self, exc)
+            return
 
         self.process_llm_response(res)
 
@@ -379,4 +386,15 @@ class Bot(Widget):
 
         self.ready_for_next_turn = True
         # Finish Play, let the board know we ready for the next turn.
+        self.board_widget.on_bot_llm_interaction_complete(self)
+
+    def finish_turn_with_error(self, raw_response: str, command: str = "ERR"):
+        """Finish a turn without executing gameplay when the model could not return a usable command."""
+        self.last_llm_response = raw_response
+        self.last_cmd = command
+        self.board_widget.add_cmd_to_home_screen_cmd_history(
+            self.id,
+            markup(self.last_cmd, color="#FF0000", bold=True),
+        )
+        self.ready_for_next_turn = True
         self.board_widget.on_bot_llm_interaction_complete(self)

@@ -2,6 +2,25 @@
 
 # Changelog
 
+## v0.2.4 - 2026-04-05
+
+### Prompt and Keyboard UX
+
+- made the prompt-load dialog support immediate keyboard navigation with `Up`, `Down`, and `Enter`, and made `Esc` follow the same path as `Cancel`
+- initialised the first visible prompt automatically when the dialog opens so keyboard-only prompt loading works without a prior mouse click
+
+### Ollama Timeout Recovery
+
+- raised the default Ollama request-timeout fallback from 55 seconds to 120 seconds for large local models
+- retried timed-out Ollama chat requests once before surfacing a structured timeout error to the game board
+- added round-level timeout recovery with `ERR` versus `Cancel Round` choices and a per-round "remember this choice" option
+- preserved cancelled rounds in session history and rolled live gameplay state back to the round-start snapshot when a timeout cancels the round
+
+### Live Ollama Tooling and Tests
+
+- aligned the live smoke test and Ollama warmup helper with the same large-model timeout expectations as the runtime connector
+- added regression coverage for prompt-dialog keyboard handling, timeout helper logic, startup timeout resolution, and round-timeout recovery
+
 ## v0.2.3 - 2026-04-05
 
 ### Game Analyzer

@@ -40,9 +40,21 @@ def test_load_llm_config_reads_yaml_defaults(tmp_path: Path) -> None:
     assert loaded == {
         "last_served_model": "",
         "model": "qwen3:latest",
+        "timeout": None,
         "url": "http://localhost",
         "port": 11434,
     }
+
+
+def test_resolve_request_timeout_uses_configured_value() -> None:
+    assert ollama_service.resolve_request_timeout({"timeout": 75}) == 75.0
+    assert ollama_service.resolve_request_timeout({"timeout": "90"}) == 90.0
+
+
+def test_resolve_request_timeout_falls_back_to_default() -> None:
+    assert ollama_service.resolve_request_timeout({"timeout": None}) == 120.0
+    assert ollama_service.resolve_request_timeout({"timeout": 0}) == 120.0
+    assert ollama_service.resolve_request_timeout({"timeout": "invalid"}) == 120.0
 
 
 def test_preferred_start_model_prefers_last_served_model() -> None:
@@ -105,6 +117,7 @@ def test_find_ollama_listener_pids_falls_back_when_net_connections_denied(monkey
             return self.info["name"]
 
         def net_connections(self, kind="inet"):
+            _ = kind
             return self._connections
 
     monkeypatch.setattr(
@@ -173,6 +186,7 @@ def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_p
             "llm:\n"
             "  model: qwen3:latest\n"
             "  last_served_model: mistral-small:latest\n"
+            "  timeout: 180\n"
             "  url: http://localhost\n"
             "  port: 11434\n"
         ),
@@ -181,6 +195,7 @@ def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_p
 
     saved = {}
     commands = []
+    preload = {}
 
     def fake_run_ollama_command(*args: str, host: str | None = None):
         commands.append((args, host))
@@ -190,7 +205,12 @@ def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_p
     monkeypatch.setattr(ollama_service, "server_is_up", lambda _url, _port: False)
     monkeypatch.setattr(ollama_service, "start_detached_ollama_serve", lambda _host: None)
     monkeypatch.setattr(ollama_service, "wait_until_ready", lambda _url, _port: None)
-    monkeypatch.setattr(ollama_service, "preload_model", lambda _url, _port, _model: None)
+    monkeypatch.setattr(
+        ollama_service,
+        "preload_model",
+        lambda _url, _port, _model, timeout=120.0: preload.update(
+            {"timeout": timeout, "model": _model}),
+    )
     monkeypatch.setattr(
         ollama_service,
         "save_last_served_model",
@@ -199,6 +219,7 @@ def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_p
 
     assert ollama_service.start_service(config_path) == 0
     assert saved == {"model": "mistral-small:latest", "path": config_path}
+    assert preload == {"timeout": 180.0, "model": "mistral-small:latest"}
     assert commands[1][0] == ("pull", "mistral-small:latest")
 
 

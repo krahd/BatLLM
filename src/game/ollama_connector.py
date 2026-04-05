@@ -12,6 +12,16 @@ import json
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
+try:
+    import httpcore
+except ImportError:  # pragma: no cover - dependency is normally present via ollama/httpx
+    httpcore = None
+
+try:
+    import httpx
+except ImportError:  # pragma: no cover - dependency is normally present via ollama/httpx
+    httpx = None
+
 if TYPE_CHECKING:
     # Only imported for type checking; won't run at runtime.
     from ollama._types import ChatResponse
@@ -23,6 +33,34 @@ from util.paths import resolve_repo_relative
 from util.utils import _maybe_float, _maybe_int
 
 Message = Dict[str, str]  # {"role": "system"|"user"|"assistant", "content": str}
+
+
+TIMEOUT_EXCEPTIONS: tuple[type[BaseException], ...] = (TimeoutError,)
+if httpx is not None:
+    TIMEOUT_EXCEPTIONS += (httpx.TimeoutException,)
+if httpcore is not None:
+    TIMEOUT_EXCEPTIONS += (httpcore.TimeoutException,)
+
+
+class LLMTimeoutError(RuntimeError):
+    """Raised when Ollama times out even after a retry."""
+
+    def __init__(
+        self,
+        *,
+        model: str,
+        timeout: float | None,
+        attempts: int,
+        original_exception: BaseException,
+    ) -> None:
+        self.model = model
+        self.timeout = timeout
+        self.attempts = attempts
+        self.original_exception = original_exception
+        timeout_suffix = f" after {timeout:g}s" if timeout is not None else ""
+        super().__init__(
+            f"Ollama model '{model or 'unknown'}' timed out{timeout_suffix} after {attempts} attempts."
+        )
 
 
 class OllamaConnector:
@@ -160,6 +198,13 @@ class OllamaConnector:
         self._ensure_system_message(history)  # ensure system message is at index 0
         # TODO verify this works OK
 
+    def _remove_message_instance(self, history: List[Message], message: Message) -> None:
+        """Remove a specific message object from a history list if it is still present."""
+        for index in range(len(history) - 1, -1, -1):
+            if history[index] is message:
+                del history[index]
+                break
+
 
 
     def load_options(self, force: bool = False) -> None:
@@ -171,7 +216,7 @@ class OllamaConnector:
         self.top_p = _maybe_float(config.get("llm", "top_p"))
         self.top_k = _maybe_int(config.get("llm", "top_k"))
 
-        self.timeout = config.get("llm", "timeout") or 55
+        self.timeout = config.get("llm", "timeout") or 120
 
         self.num_thread = _maybe_int(config.get("llm", "num_thread"))
         self.seed = _maybe_int(config.get("llm", "seed"))
@@ -321,17 +366,36 @@ class OllamaConnector:
 
 
         history = self._get_history_ref(bot_id)
-        history.append(self._build_user_message(game_state=game_state, player_text=user_text))
+        user_message = self._build_user_message(game_state=game_state, player_text=user_text)
+        history.append(user_message)
         self._ensure_system_message(history)
         self._trim_history_inplace(history)
 
-        # send the request
-        res: "ChatResponse" = self.client.chat(
-            model=self.model,
-            messages=history,
-            options=self.gen_options(),
-            stream=False,
-        )
+        options = self.gen_options()
+        res: "ChatResponse" | dict[str, Any]
+        last_timeout: BaseException | None = None
+
+        for attempt in range(1, 3):
+            try:
+                res = self.client.chat(
+                    model=self.model,
+                    messages=history,
+                    options=options,
+                    stream=False,
+                )
+                break
+            except TIMEOUT_EXCEPTIONS as exc:
+                last_timeout = exc
+                if attempt == 2:
+                    self._remove_message_instance(history, user_message)
+                    raise LLMTimeoutError(
+                        model=self.model,
+                        timeout=self.timeout,
+                        attempts=attempt,
+                        original_exception=exc,
+                    ) from exc
+        else:  # pragma: no cover - loop always exits via break/raise
+            raise AssertionError("Unreachable Ollama retry state.")
 
         # ---- Extract assistant text ----
         content = ""

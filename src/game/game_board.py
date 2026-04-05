@@ -34,6 +34,9 @@ from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.graphics import Color, Ellipse, Line, Rectangle
 from kivy.properties import NumericProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.checkbox import CheckBox
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
@@ -41,7 +44,7 @@ from kivy.uix.widget import Widget
 from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
-from game.ollama_connector import OllamaConnector  # TODO move to singleton
+from game.ollama_connector import LLMTimeoutError, OllamaConnector  # TODO move to singleton
 from game.prompt_store import PromptStore
 from game.replay_engine import GameplaySettingsSnapshot, resolve_shot
 from util.paths import asset_path
@@ -80,6 +83,10 @@ class GameBoard(Widget):
         self.bullet = None
         self.shuffled_bots: Optional[list[Bot]] = None
         self.current_round_settings: Optional[GameplaySettingsSnapshot] = None
+        self._turn_submission_queue: list[Bot] = []
+        self._turn_submission_index: int = 0
+        self._round_timeout_action: str | None = None
+        self._timeout_popup: Optional[Popup] = None
 
         # Audio
         self.sound_shoot = SoundLoader.load(str(asset_path("sounds", "shoot1.wav")))
@@ -131,6 +138,10 @@ class GameBoard(Widget):
         self.current_round = 0
         self.shuffled_bots = None
         self.current_round_settings = None
+        self._turn_submission_queue = []
+        self._turn_submission_index = 0
+        self._round_timeout_action = None
+        self._timeout_popup = None
 
         # Create two bots with reference to this GameBoard
         self.bots = [Bot(bot_id=i, board_widget=self) for i in range(1, 3)]
@@ -406,7 +417,11 @@ class GameBoard(Widget):
 
         self.current_round += 1
         self.current_turn = 0  # reset per-round turn counter
-        first_round_of_game = bool(self.history_manager.current_game) and not self.history_manager.current_game.get("rounds")
+        self._turn_submission_queue = []
+        self._turn_submission_index = 0
+        self._round_timeout_action = None
+        first_round_of_game = bool(
+            self.history_manager.current_game) and not self.history_manager.current_game.get("rounds")
         self.current_round_settings = GameplaySettingsSnapshot.from_config()
         self._apply_round_settings_to_live_bots(
             self.current_round_settings,
@@ -452,6 +467,9 @@ class GameBoard(Widget):
 
         if not self.current_turn < turns_per_round:
             # Round ended
+            self._turn_submission_queue = []
+            self._turn_submission_index = 0
+            self._round_timeout_action = None
             self.history_manager.end_round()
             # Insert visual separation and summary
             for b in self.bots:
@@ -487,8 +505,9 @@ class GameBoard(Widget):
             b.ready_for_next_turn = False
 
         # Submission goes in the shuffled order
-        for b in (self.shuffled_bots or self.bots):
-            b.submit_prompt_to_llm()
+        self._turn_submission_queue = list(self.shuffled_bots or self.bots)
+        self._turn_submission_index = 0
+        self._submit_next_bot_for_turn()
 
 
 
@@ -506,6 +525,208 @@ class GameBoard(Widget):
             self.current_turn += 1
             self.history_manager.end_turn(self)
             Clock.schedule_once(self.play_turn)
+            return
+
+        self._submit_next_bot_for_turn()
+
+    def _submit_next_bot_for_turn(self):
+        """Submit the next bot in the current turn order, if any remain."""
+        if self._turn_submission_index >= len(self._turn_submission_queue):
+            return
+        bot = self._turn_submission_queue[self._turn_submission_index]
+        self._turn_submission_index += 1
+        bot.submit_prompt_to_llm()
+
+    def _clear_timeout_popup(self, *_args):
+        self._timeout_popup = None
+
+    def _dismiss_timeout_popup_and_resolve(
+        self,
+        bot: Bot,
+        exc: LLMTimeoutError,
+        *,
+        action: str,
+        remember_for_round: bool,
+    ):
+        popup = self._timeout_popup
+        if popup is not None:
+            popup.dismiss()
+        self._resolve_bot_timeout(
+            bot,
+            exc,
+            action=action,
+            remember_for_round=remember_for_round,
+        )
+
+    def _format_timeout_message(self, bot: Bot, exc: LLMTimeoutError) -> str:
+        timeout_suffix = f" after {exc.timeout:g}s" if exc.timeout is not None else ""
+        model_name = exc.model or self.ollama_connector.model or "the selected model"
+        return (
+            f"Bot {bot.id} timed out waiting for {model_name}{timeout_suffix}. "
+            f"BatLLM already retried once."
+        )
+
+    def handle_bot_llm_timeout(self, bot: Bot, exc: LLMTimeoutError):
+        """Resolve an LLM timeout using the round policy or a user choice popup."""
+        if self._round_timeout_action == "err":
+            self._resolve_bot_timeout(bot, exc, action="err", remember_for_round=False)
+            return
+
+        if self._round_timeout_action == "cancel":
+            self._resolve_bot_timeout(bot, exc, action="cancel", remember_for_round=False)
+            return
+
+        self._show_timeout_resolution_popup(bot, exc)
+
+    def _resolve_bot_timeout(
+        self,
+        bot: Bot,
+        exc: LLMTimeoutError,
+        *,
+        action: str,
+        remember_for_round: bool,
+    ):
+        """Apply the user's timeout choice to the current round."""
+        if remember_for_round:
+            self._round_timeout_action = action
+
+        timeout_message = self._format_timeout_message(bot, exc)
+
+        if action == "err":
+            self.add_text_to_home_screen_cmd_history(
+                bot.id,
+                markup("Timeout after retry -> ERR\n", color="#a00000", bold=True),
+            )
+            bot.finish_turn_with_error(timeout_message)
+            return
+
+        if action == "cancel":
+            self.cancel_current_round(bot, timeout_message)
+            return
+
+        raise ValueError(f"Unknown timeout action: {action}")
+
+    def _show_timeout_resolution_popup(self, bot: Bot, exc: LLMTimeoutError):
+        """Ask the user whether a timed out bot should resolve as ERR or cancel the round."""
+        if self._timeout_popup is not None:
+            self._timeout_popup.dismiss()
+
+        remember_checkbox = CheckBox(active=False, size_hint=(None, None), size=(36, 36))
+        message_label = Label(
+            text=self._format_timeout_message(
+                bot, exc) + "\n\nChoose how BatLLM should resolve this timeout.",
+            halign="left",
+            valign="middle",
+        )
+        message_label.bind(size=lambda instance, size: setattr(
+            instance, "text_size", (size[0], None)))
+
+        remember_label = Label(
+            text="Use this choice for the rest of the round",
+            halign="left",
+            valign="middle",
+        )
+        remember_label.bind(size=lambda instance, size: setattr(
+            instance, "text_size", (size[0], None)))
+
+        checkbox_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=44, spacing=10)
+        checkbox_row.add_widget(remember_checkbox)
+        checkbox_row.add_widget(remember_label)
+
+        button_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=48, spacing=10)
+        err_button = Button(text="Use ERR")
+        cancel_button = Button(text="Cancel Round")
+        button_row.add_widget(err_button)
+        button_row.add_widget(cancel_button)
+
+        content = BoxLayout(orientation="vertical", padding=12, spacing=12)
+        content.add_widget(message_label)
+        content.add_widget(checkbox_row)
+        content.add_widget(button_row)
+
+        popup = Popup(
+            title="Ollama Timeout",
+            content=content,
+            size_hint=(None, None),
+            size=(560, 320),
+            auto_dismiss=False,
+        )
+        popup.bind(on_dismiss=self._clear_timeout_popup)
+
+        err_button.bind(
+            on_release=lambda *_args: self._dismiss_timeout_popup_and_resolve(
+                bot,
+                exc,
+                action="err",
+                remember_for_round=bool(remember_checkbox.active),
+            )
+        )
+        cancel_button.bind(
+            on_release=lambda *_args: self._dismiss_timeout_popup_and_resolve(
+                bot,
+                exc,
+                action="cancel",
+                remember_for_round=bool(remember_checkbox.active),
+            )
+        )
+
+        self._timeout_popup = popup
+        popup.open()
+
+    def _restore_round_initial_state(self):
+        """Roll back live bot state to the round-start snapshot."""
+        if not self.history_manager.current_round:
+            return
+
+        initial_state = self.history_manager.current_round.get("initial_state", {})
+        for bot in self.bots:
+            bot_state = initial_state.get(bot.id)
+            if not bot_state:
+                continue
+            bot.health = bot_state.get("health", bot.health)
+            bot.x = bot_state.get("x", bot.x)
+            bot.y = bot_state.get("y", bot.y)
+            bot.rot = bot_state.get("rot", bot.rot)
+            bot.shield = bot_state.get("shield", bot.shield)
+            bot.current_prompt = bot_state.get("current_prompt", bot.current_prompt)
+            bot.last_llm_response = bot_state.get("last_llm_response")
+
+        self.bullet = None
+        self.bullet_trace.clear()
+        self.bullet_alpha = 1.0
+
+    def cancel_current_round(self, bot: Bot, reason: str):
+        """Cancel the active round, roll back state, and keep a cancelled-round history entry."""
+        round_number = self.current_round
+        self._restore_round_initial_state()
+        self.history_manager.cancel_round(reason, cancelled_by_bot_id=bot.id)
+        self._turn_submission_queue = []
+        self._turn_submission_index = 0
+        self._round_timeout_action = None
+        self.current_turn = 0
+        self.current_round_settings = None
+
+        for current_bot in self.bots:
+            current_bot.ready_for_next_round = False
+            current_bot.ready_for_next_turn = False
+            self.add_text_to_home_screen_cmd_history(current_bot.id, "\n")
+            self.add_text_to_home_screen_cmd_history(
+                current_bot.id,
+                markup(f"Round {round_number} cancelled.", color="#a00000", bold=True),
+            )
+            self.add_text_to_home_screen_cmd_history(current_bot.id, "\n")
+
+        if self.game_is_over():
+            self.end_game()
+            self.start_new_game()
+            return
+
+        show_fading_alert(
+            f"Round {round_number} cancelled",
+            reason,
+            duration=1.4,
+            fade_duration=1.0,
+        )
 
 
 

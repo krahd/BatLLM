@@ -5,10 +5,12 @@ import math
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from configs.app_config import config
 from game.bot import Bot
 from game.game_board import GameBoard
-from game.ollama_connector import OllamaConnector
+from game.ollama_connector import LLMTimeoutError, OllamaConnector
 from game.prompt_store import PromptStore
 from view.home_screen import HomeScreen
 
@@ -30,9 +32,18 @@ class _FakePopup:
     def __init__(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
+        self._bindings = {}
+
+    def bind(self, **kwargs):
+        self._bindings.update(kwargs)
 
     def open(self) -> None:
         return None
+
+    def dismiss(self) -> None:
+        on_dismiss = self._bindings.get("on_dismiss")
+        if on_dismiss is not None:
+            on_dismiss(self)
 
 
 def _instant_move(self, distance=None, duration: float = 0.48, easing: str = "out_quad", on_complete=None):
@@ -133,6 +144,56 @@ def test_ollama_connector_ensure_system_message_inserts_header_once(monkeypatch)
     assert [msg["role"] for msg in history].count("system") == 1
 
 
+def test_ollama_connector_retries_once_after_timeout(monkeypatch) -> None:
+    calls = {"count": 0}
+
+    def fake_chat(**_kwargs):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise TimeoutError("slow model")
+        return SimpleNamespace(message=SimpleNamespace(content="M"))
+
+    monkeypatch.setattr(
+        "game.ollama_connector.Client",
+        lambda *args, **kwargs: SimpleNamespace(chat=fake_chat),
+    )
+
+    connector = OllamaConnector()
+
+    response = connector.send_prompt_to_llm_sync(
+        1,
+        user_text="Reply with exactly M",
+        game_state={},
+    )
+
+    assert response == "M"
+    assert calls["count"] == 2
+    history = connector._get_history_ref(1)
+    assert [message["role"] for message in history].count("user") == 1
+    assert history[-1] == {"role": "assistant", "content": "M"}
+
+
+def test_ollama_connector_timeout_raises_typed_error_and_rolls_back_prompt(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "game.ollama_connector.Client",
+        lambda *args, **kwargs: SimpleNamespace(chat=lambda **
+                                                _kwargs: (_ for _ in ()).throw(TimeoutError("slow model"))),
+    )
+
+    connector = OllamaConnector()
+
+    with pytest.raises(LLMTimeoutError) as exc_info:
+        connector.send_prompt_to_llm_sync(
+            1,
+            user_text="Reply with exactly M",
+            game_state={},
+        )
+
+    assert exc_info.value.attempts == 2
+    history = connector._get_history_ref(1)
+    assert all(message["role"] != "user" for message in history)
+
+
 def test_submit_prompt_to_bot_waits_for_both_players(monkeypatch) -> None:
     board, scheduled_once, _history_log = _build_board(monkeypatch)
 
@@ -186,6 +247,117 @@ def test_play_turn_records_valid_and_invalid_commands(monkeypatch) -> None:
     assert len(scheduled_once) == 1
 
 
+def test_timeout_resolution_can_be_remembered_for_round(monkeypatch) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    bot = board.get_bot_by_id(1)
+    timeout_error = LLMTimeoutError(
+        model="qwen3:30b",
+        timeout=120,
+        attempts=2,
+        original_exception=TimeoutError("slow model"),
+    )
+    captured = []
+
+    monkeypatch.setattr(bot, "finish_turn_with_error", lambda raw_response,
+                        command="ERR": captured.append((raw_response, command)))
+
+    board._resolve_bot_timeout(bot, timeout_error, action="err", remember_for_round=True)
+
+    assert board._round_timeout_action == "err"
+    assert captured and captured[0][1] == "ERR"
+
+
+def test_play_turn_timeout_can_resolve_as_err(monkeypatch) -> None:
+    board, scheduled_once, history_log = _build_board(monkeypatch, overrides={
+        ("game", "turns_per_round"): 1,
+    })
+    monkeypatch.setattr("game.game_board.random.sample", lambda seq, _n: list(seq))
+
+    responses = {
+        1: LLMTimeoutError(
+            model="qwen3:30b",
+            timeout=120,
+            attempts=2,
+            original_exception=TimeoutError("slow model"),
+        ),
+        2: "M",
+    }
+
+    def fake_send(bot_id, **_kwargs):
+        value = responses[bot_id]
+        if isinstance(value, Exception):
+            raise value
+        return value
+
+    monkeypatch.setattr(board.ollama_connector, "send_prompt_to_llm_sync", fake_send)
+
+    board.submit_prompt_to_bot(1, "Reply slowly")
+    board.submit_prompt_to_bot(2, "Reply with exactly M")
+    board._round_timeout_action = "err"
+
+    scheduled_once.pop(0)(0)
+    scheduled_once.pop(0)(0)
+
+    round_entry = board.history_manager.games[0]["rounds"][0]
+    plays = round_entry["turns"][0]["plays"]
+    by_bot = {play["bot_id"]: play["cmd"] for play in plays}
+
+    assert by_bot == {1: "ERR", 2: "M"}
+    assert "timed out" in next(play["llm_response"] for play in plays if play["bot_id"] == 1)
+    assert board.history_manager.current_round is None
+    assert any("Timeout after retry -> ERR" in text for _bot_id, text in history_log)
+
+
+def test_play_turn_timeout_can_cancel_round_and_roll_back_state(monkeypatch) -> None:
+    board, scheduled_once, _history_log = _build_board(monkeypatch, overrides={
+        ("game", "turns_per_round"): 2,
+        ("game", "total_rounds"): 3,
+    })
+    monkeypatch.setattr("game.game_board.random.sample", lambda seq, _n: list(seq))
+
+    bot_one = board.get_bot_by_id(1)
+    bot_two = board.get_bot_by_id(2)
+    bot_one.x, bot_one.y, bot_one.rot = 0.2, 0.2, 0
+    bot_two.x, bot_two.y, bot_two.rot = 0.8, 0.8, 180
+
+    responses = {
+        1: "M",
+        2: LLMTimeoutError(
+            model="qwen3:30b",
+            timeout=120,
+            attempts=2,
+            original_exception=TimeoutError("slow model"),
+        ),
+    }
+
+    def fake_send(bot_id, **_kwargs):
+        value = responses[bot_id]
+        if isinstance(value, Exception):
+            raise value
+        return value
+
+    monkeypatch.setattr(board.ollama_connector, "send_prompt_to_llm_sync", fake_send)
+
+    board.submit_prompt_to_bot(1, "Reply with exactly M")
+    board.submit_prompt_to_bot(2, "Reply slowly")
+    board._round_timeout_action = "cancel"
+
+    scheduled_once.pop(0)(0)
+
+    round_entry = board.history_manager.games[0]["rounds"][0]
+    cancelled_turn = round_entry["turns"][0]
+
+    assert round_entry["status"] == "cancelled"
+    assert round_entry["cancelled_by_bot_id"] == 2
+    assert cancelled_turn["status"] == "cancelled"
+    assert cancelled_turn["plays"] == []
+    assert math.isclose(bot_one.x, 0.2)
+    assert math.isclose(bot_one.y, 0.2)
+    assert board.current_turn == 0
+    assert board.history_manager.current_round is None
+    assert scheduled_once == []
+
+
 def test_shoot_damages_unshielded_target(monkeypatch) -> None:
     board, _scheduled_once, _history_log = _build_board(monkeypatch)
 
@@ -217,7 +389,8 @@ def test_bot_process_llm_response_supports_canonical_commands(monkeypatch) -> No
 
     completed = []
     shots = []
-    monkeypatch.setattr(board, "on_bot_llm_interaction_complete", lambda current_bot: completed.append(current_bot.id))
+    monkeypatch.setattr(board, "on_bot_llm_interaction_complete",
+                        lambda current_bot: completed.append(current_bot.id))
     monkeypatch.setattr(board, "shoot", lambda bot_id: shots.append(bot_id))
 
     bot.process_llm_response("M0.3")

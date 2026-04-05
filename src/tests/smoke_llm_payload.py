@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from pathlib import Path
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import pytest
@@ -12,6 +14,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "src/configs/config.yaml"
 RUN_OLLAMA_SMOKE = os.getenv("BATLLM_RUN_OLLAMA_SMOKE") == "1"
+DEFAULT_CHAT_TIMEOUT = 120.0
 
 pytestmark = pytest.mark.skipif(
     not RUN_OLLAMA_SMOKE,
@@ -24,16 +27,39 @@ def _load_llm_config() -> dict:
     return config.get("llm") or {}
 
 
-def _post_json(url: str, payload: dict) -> dict:
+def _resolve_chat_timeout(llm: dict) -> float:
+    raw_timeout = llm.get("timeout")
+    try:
+        timeout = float(raw_timeout)
+    except (TypeError, ValueError):
+        return DEFAULT_CHAT_TIMEOUT
+    return timeout if timeout > 0 else DEFAULT_CHAT_TIMEOUT
+
+
+def _post_json(url: str, payload: dict, *, timeout: float, description: str) -> dict:
     req = Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with urlopen(req, timeout=60) as response:
-        body = response.read().decode("utf-8")
-        return json.loads(body) if body else {}
+    started = time.monotonic()
+    try:
+        with urlopen(req, timeout=timeout) as response:
+            body = response.read().decode("utf-8")
+            return json.loads(body) if body else {}
+    except TimeoutError as exc:
+        elapsed = time.monotonic() - started
+        raise AssertionError(
+            f"Ollama {description} timed out after {elapsed:.1f}s (timeout={timeout:.1f}s)."
+        ) from exc
+    except URLError as exc:
+        if isinstance(exc.reason, TimeoutError):
+            elapsed = time.monotonic() - started
+            raise AssertionError(
+                f"Ollama {description} timed out after {elapsed:.1f}s (timeout={timeout:.1f}s)."
+            ) from exc
+        raise
 
 
 def test_ollama_health_endpoint_responds() -> None:
@@ -51,13 +77,19 @@ def test_ollama_health_endpoint_responds() -> None:
 def test_ollama_chat_returns_non_empty_content() -> None:
     llm = _load_llm_config()
     endpoint = f"{str(llm['url']).rstrip('/')}:{llm['port']}{llm['path']}"
+    timeout = _resolve_chat_timeout(llm)
 
     payload = {
         "model": llm["model"],
         "messages": [{"role": "user", "content": "Reply with exactly OK"}],
         "stream": False,
     }
-    res = _post_json(endpoint, payload)
+    res = _post_json(
+        endpoint,
+        payload,
+        timeout=timeout,
+        description=f"chat request for model '{llm['model']}'",
+    )
 
     content = ""
     if isinstance(res.get("message"), dict):
