@@ -2,7 +2,7 @@
 
 # Changelog
 
-## Unreleased - 2026-04-04
+## v0.2.3 - 2026-04-05
 
 ### Game Analyzer
 
@@ -19,6 +19,12 @@
 - added automatic Ollama shutdown on app exit when `Stop Ollama Automatically on BatLLM Quit` is enabled
 - added `Install Ollama` to the Ollama control screen with install vs reinstall confirmation
 - persisted `llm.last_served_model` so BatLLM can warm the same model when it starts Ollama again
+- made Ollama shutdown more resilient on macOS when process socket inspection is permission-limited
+
+### Input and Navigation
+
+- made `Esc` on the Game Analyzer load and review screens behave like the `Back` button
+- made `Esc` on the save-session confirmation behave like pressing `No`
 
 ### Documentation
 
@@ -30,6 +36,7 @@
 - added a compact compatibility matrix, glossary, and release-bundle troubleshooting appendix to the README
 - added a lightweight documentation review checklist to the PR workflow in the contributor guide
 - reordered the shared documentation navigation so `README` is the first item and removed the obsolete SVG interface diagrams from the repository
+- added a dedicated roadmap document and linked it from the contributor guide
 
 ## v0.2.1 - 2026-04-03
 

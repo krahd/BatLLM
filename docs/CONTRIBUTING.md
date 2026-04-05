@@ -6,6 +6,10 @@ This is BatLLM's developer and contribution manual. It covers how to set up the 
 
 BatLLM is both a software project and a research and education project. When contributing, preserve the practical software quality of the repository and the project's framing around AI literacy, human-AI mediation, and hands-on learning.
 
+## Roadmap
+
+Features wishlist: [ROADMAP.md](ROADMAP.md)
+
 ## Ways To Contribute
 
 Contributions are welcome in several forms:

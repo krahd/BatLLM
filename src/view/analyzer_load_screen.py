@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.properties import ListProperty, StringProperty
 from kivy.uix.screenmanager import Screen
 
@@ -31,13 +32,28 @@ class AnalyzerLoadScreen(Screen):
             self.ids.filechooser.path = str(saved_dir)
         self.refresh_recent_sessions()
 
+    def on_enter(self, *_args) -> None:
+        Window.unbind(on_key_down=self.handle_window_key_down)
+        Window.bind(on_key_down=self.handle_window_key_down)
+
+    def on_leave(self, *_args) -> None:
+        Window.unbind(on_key_down=self.handle_window_key_down)
+
+    def handle_window_key_down(self, _window, key, *_args) -> bool:
+        if key != 27:
+            return False
+
+        self.go_back()
+        return True
+
     def default_saved_sessions_dir(self) -> Path:
         folder_name = config.get("data", "saved_sessions_folder") or "saved_sessions"
         return resolve_saved_sessions_dir(folder_name)
 
     def refresh_recent_sessions(self) -> None:
         saved_dir = self.default_saved_sessions_dir()
-        sessions = sorted(saved_dir.glob("*.json"), key=lambda path: path.stat().st_mtime, reverse=True)
+        sessions = sorted(saved_dir.glob("*.json"),
+                          key=lambda path: path.stat().st_mtime, reverse=True)
         self._populate_recent_buttons(sessions[:12])
         if sessions:
             lines = [f"{index + 1}. {path.name}" for index, path in enumerate(sessions[:6])]
@@ -82,7 +98,8 @@ class AnalyzerLoadScreen(Screen):
             button.text_size = (button.width - dp(20), None)
             button.shorten = True
             button.shorten_from = "right"
-            button.bind(width=lambda inst, _value: setattr(inst, "text_size", (inst.width - dp(20), None)))
+            button.bind(width=lambda inst, _value: setattr(
+                inst, "text_size", (inst.width - dp(20), None)))
             button.bind(on_release=lambda _button, value=path: self.open_recent_session(value))
             container.add_widget(button)
 

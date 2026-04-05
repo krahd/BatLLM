@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from kivy.clock import Clock
+from kivy.core.window import Window
 from kivy.metrics import dp
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.uix.button import Button
@@ -34,8 +35,20 @@ class AnalyzerReviewScreen(Screen):
         self._updating_slider = False
         self._active_tree_filters: set[str] = set()
 
+    def on_enter(self, *_args) -> None:
+        Window.unbind(on_key_down=self.handle_window_key_down)
+        Window.bind(on_key_down=self.handle_window_key_down)
+
     def on_leave(self, *_args) -> None:
+        Window.unbind(on_key_down=self.handle_window_key_down)
         self.stop_playback()
+
+    def handle_window_key_down(self, _window, key, *_args) -> bool:
+        if key != 27:
+            return False
+
+        self.go_back()
+        return True
 
     def load_session(self, model: AnalyzerSessionModel) -> None:
         self.stop_playback()
@@ -301,7 +314,8 @@ class AnalyzerReviewScreen(Screen):
                     valign="middle",
                     **analyzer_theme.label_kwargs(),
                 )
-                widget.bind(width=lambda inst, _value: setattr(inst, "text_size", (inst.width, None)))
+                widget.bind(width=lambda inst, _value: setattr(
+                    inst, "text_size", (inst.width, None)))
                 container.add_widget(widget)
                 continue
 
@@ -323,8 +337,10 @@ class AnalyzerReviewScreen(Screen):
                     badge_tokens=row.badge_tokens,
                 ),
             )
-            button.bind(size=lambda inst, _value: setattr(inst, "text_size", (inst.width - dp(16), None)))
-            button.bind(on_release=lambda _button, current_row=row: self.jump_to_tree_row(current_row))
+            button.bind(size=lambda inst, _value: setattr(
+                inst, "text_size", (inst.width - dp(16), None)))
+            button.bind(on_release=lambda _button,
+                        current_row=row: self.jump_to_tree_row(current_row))
             container.add_widget(button)
 
     def _sync_filter_buttons(self) -> None:

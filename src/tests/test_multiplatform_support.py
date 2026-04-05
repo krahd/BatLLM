@@ -94,6 +94,56 @@ def test_find_ollama_listener_pids_filters_by_listen_port(monkeypatch) -> None:
     assert ollama_service.find_ollama_listener_pids(11434) == [101]
 
 
+def test_find_ollama_listener_pids_falls_back_when_net_connections_denied(monkeypatch) -> None:
+    class FakeProcess:
+        def __init__(self, pid: int, name: str, connections):
+            self.pid = pid
+            self.info = {"pid": pid, "name": name}
+            self._connections = connections
+
+        def name(self):
+            return self.info["name"]
+
+        def net_connections(self, kind="inet"):
+            return self._connections
+
+    monkeypatch.setattr(
+        ollama_service.psutil,
+        "net_connections",
+        lambda kind="inet": (_ for _ in ()).throw(ollama_service.psutil.AccessDenied()),
+    )
+    monkeypatch.setattr(
+        ollama_service.psutil,
+        "process_iter",
+        lambda _attrs=None: [
+            FakeProcess(
+                101,
+                "ollama",
+                [
+                    SimpleNamespace(
+                        status=ollama_service.psutil.CONN_LISTEN,
+                        laddr=SimpleNamespace(port=11434),
+                        pid=None,
+                    )
+                ],
+            ),
+            FakeProcess(
+                202,
+                "python",
+                [
+                    SimpleNamespace(
+                        status=ollama_service.psutil.CONN_LISTEN,
+                        laddr=SimpleNamespace(port=11434),
+                        pid=202,
+                    )
+                ],
+            ),
+        ],
+    )
+
+    assert ollama_service.find_ollama_listener_pids(11434) == [101]
+
+
 def test_install_command_for_current_platform_is_platform_specific() -> None:
     assert ollama_service.install_command_for_current_platform("linux") == (
         ["/bin/sh", "-lc", "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh"],

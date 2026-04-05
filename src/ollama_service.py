@@ -383,15 +383,48 @@ def running_model_names(host: str) -> list[str]:
     return names
 
 
-def find_ollama_listener_pids(port: int) -> list[int]:
-    """Return process IDs listening on the configured TCP port."""
+def _listener_pids_from_connections(connections, port: int) -> list[int]:
+    """Extract listener process IDs for the configured TCP port."""
     pids: set[int] = set()
-    for conn in psutil.net_connections(kind="inet"):
+    for conn in connections:
         if conn.status != psutil.CONN_LISTEN or not conn.laddr:
             continue
         if conn.laddr.port != port or conn.pid is None:
             continue
         pids.add(conn.pid)
+    return sorted(pids)
+
+
+def find_ollama_listener_pids(port: int) -> list[int]:
+    """Return process IDs listening on the configured TCP port.
+
+    On macOS, ``psutil.net_connections(kind="inet")`` may raise ``AccessDenied``
+    while scanning unrelated processes. Fall back to inspecting only processes with
+    ``ollama`` in the name so BatLLM can still stop the local server it started.
+    """
+    try:
+        return _listener_pids_from_connections(psutil.net_connections(kind="inet"), port)
+    except psutil.AccessDenied:
+        pass
+
+    pids: set[int] = set()
+    for proc in psutil.process_iter(["pid", "name"]):
+        try:
+            name = str((proc.info or {}).get("name") or proc.name()).lower()
+        except psutil.Error:
+            continue
+        if "ollama" not in name:
+            continue
+        try:
+            connections = proc.net_connections(kind="inet")
+        except psutil.Error:
+            continue
+        for conn in connections:
+            if conn.status != psutil.CONN_LISTEN or not conn.laddr:
+                continue
+            if conn.laddr.port != port:
+                continue
+            pids.add(getattr(conn, "pid", None) or proc.pid)
     return sorted(pids)
 
 
@@ -433,7 +466,7 @@ def stop_service(config_path: Path = CONFIG_PATH, verbose: bool = False) -> int:
         proc.terminate()
         killed = True
 
-    gone, alive = psutil.wait_procs(
+    _gone, alive = psutil.wait_procs(
         [psutil.Process(pid) for pid in pids if psutil.pid_exists(pid)],
         timeout=3.0,
     )

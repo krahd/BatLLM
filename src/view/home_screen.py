@@ -32,7 +32,28 @@ class HomeScreen(Screen):
         Initialises the screen and sets up the history manager.
         """
         super().__init__(**kwargs)
+        self._active_confirmation_popup = None
         self._exit_confirmation_popup = None
+
+    def _clear_confirmation_popup(self, popup=None):
+        """Clear tracked confirmation popups, optionally only the provided popup."""
+        if popup is None or self._active_confirmation_popup is popup:
+            self._active_confirmation_popup = None
+        if popup is None or self._exit_confirmation_popup is popup:
+            self._exit_confirmation_popup = None
+
+    def _show_confirmation_popup(self, *args, track_exit=False, **kwargs):
+        """Show a confirmation dialog and track it for Esc handling."""
+        popup = show_confirmation_dialog(*args, **kwargs)
+        self._active_confirmation_popup = popup
+        if track_exit:
+            self._exit_confirmation_popup = popup
+
+        if hasattr(popup, "bind"):
+            popup.bind(on_dismiss=lambda *_args: self._clear_confirmation_popup(popup))
+        else:
+            self._clear_confirmation_popup(popup)
+        return popup
 
 
     def save_session(self):
@@ -49,6 +70,7 @@ class HomeScreen(Screen):
             Returns:
                 _type_: _description_
             """
+            self._clear_confirmation_popup()
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
             show_text_input_dialog(
@@ -75,9 +97,9 @@ class HomeScreen(Screen):
             """
             Do nothing if the user cancels the save prompt.
             """
-            pass
+            self._clear_confirmation_popup()
 
-        show_confirmation_dialog(
+        self._show_confirmation_popup(
             "Save Session",
             "Are you sure you want to save the session?",
             _on_saving_confirmed,
@@ -96,7 +118,7 @@ class HomeScreen(Screen):
             self.get_game_board().start_new_game()
 
         if not force:
-            show_confirmation_dialog(
+            self._show_confirmation_popup(
                 "New Game", "Abandon current game and start a new one?", _start_new_game
             )
         else:
@@ -349,9 +371,9 @@ class HomeScreen(Screen):
         if key != 27:
             return False
 
-        popup = getattr(self, "_exit_confirmation_popup", None)
+        popup = getattr(self, "_active_confirmation_popup", None)
         if popup is not None:
-            self._exit_confirmation_popup = None
+            self._clear_confirmation_popup(popup)
             cancel_action = getattr(popup, "cancel_action", None)
             if callable(cancel_action):
                 cancel_action()
@@ -421,26 +443,26 @@ class HomeScreen(Screen):
             Callback for the exit cancellation prompt.
             If the user cancels, it does nothing.
             """
-            self._exit_confirmation_popup = None
-            pass
+            self._clear_confirmation_popup()
 
         def _on_exit_confirmed():
             """
             Callback for the exit confirmation prompt.
             If the user confirms, it continues with the configured exit flow.
             """
-            self._exit_confirmation_popup = None
+            self._clear_confirmation_popup()
             return _continue_exit_flow()
 
         if not config.get("ui", "confirm_on_exit"):
             _continue_exit_flow()
             return True
 
-        self._exit_confirmation_popup = show_confirmation_dialog(
+        self._exit_confirmation_popup = self._show_confirmation_popup(
             title="Exit",
             message="Are you sure that you want to exit?",
             on_confirm=_on_exit_confirmed,
             on_cancel=_on_exit_cancelled,
+            track_exit=True,
         )
         return True
 

@@ -173,6 +173,55 @@ def test_home_screen_escape_uses_close_flow(monkeypatch) -> None:
     assert close_called["value"] is True
 
 
+def test_home_screen_escape_cancels_save_session_confirmation(monkeypatch) -> None:
+    screen = HomeScreen()
+    close_called = {"value": False}
+    filename_dialog_called = {"value": False}
+
+    class FakeConfirmationPopup:
+        def __init__(self, cancel_action):
+            self.cancel_action = cancel_action
+            self._on_dismiss = None
+
+        def bind(self, on_dismiss=None, **_kwargs):
+            if on_dismiss is not None:
+                self._on_dismiss = on_dismiss
+
+        def dismiss(self):
+            if self._on_dismiss is not None:
+                self._on_dismiss(self)
+
+    def fake_show_confirmation_dialog(_title, _message, _on_confirm, on_cancel=None):
+        popup = None
+
+        def cancel_action(*_args):
+            popup.dismiss()
+            if on_cancel is not None:
+                on_cancel()
+
+        popup = FakeConfirmationPopup(cancel_action)
+        return popup
+
+    monkeypatch.setattr("view.home_screen.show_confirmation_dialog", fake_show_confirmation_dialog)
+    monkeypatch.setattr(
+        "view.home_screen.show_text_input_dialog",
+        lambda **_kwargs: filename_dialog_called.__setitem__("value", True),
+    )
+    monkeypatch.setattr(
+        screen,
+        "on_request_close",
+        lambda *args, **kwargs: close_called.__setitem__("value", True) or True,
+    )
+
+    screen.save_session()
+
+    assert getattr(screen, "_active_confirmation_popup", None) is not None
+    assert screen.handle_window_key_down(None, 27) is True
+    assert close_called["value"] is False
+    assert filename_dialog_called["value"] is False
+    assert getattr(screen, "_active_confirmation_popup", None) is None
+
+
 
 def test_home_screen_close_skips_save_prompt_when_disabled(monkeypatch) -> None:
     screen = HomeScreen()

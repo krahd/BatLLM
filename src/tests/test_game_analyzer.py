@@ -19,6 +19,7 @@ from game.session_schema import (
 )
 from util.version import current_app_version
 from view.analyzer_load_screen import AnalyzerLoadScreen
+from view.analyzer_review_screen import AnalyzerReviewScreen
 
 
 def _sample_payload() -> dict:
@@ -180,6 +181,34 @@ def test_analyzer_load_screen_opens_valid_session(tmp_path: Path) -> None:
     assert manager.current == "analyzer_review"
     assert review_screen.model is not None
     assert review_screen.model.source_name == "session.json"
+
+
+def test_analyzer_load_screen_escape_goes_back(monkeypatch) -> None:
+    screen = AnalyzerLoadScreen()
+    go_back_called = {"value": False}
+
+    monkeypatch.setattr(
+        screen,
+        "go_back",
+        lambda: go_back_called.__setitem__("value", True),
+    )
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert go_back_called["value"] is True
+
+
+def test_analyzer_review_screen_escape_goes_back(monkeypatch) -> None:
+    screen = AnalyzerReviewScreen()
+    go_back_called = {"value": False}
+
+    monkeypatch.setattr(
+        screen,
+        "go_back",
+        lambda: go_back_called.__setitem__("value", True),
+    )
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert go_back_called["value"] is True
 
 
 def test_main_app_build_includes_analyzer_screens(monkeypatch) -> None:
