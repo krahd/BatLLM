@@ -171,9 +171,9 @@ def test_release_bundle_wrappers_include_game_analyzer_launchers() -> None:
         windows_wrapper_contents,
     )
 
-    assert "run-game-analyzer.bat" in windows_wrapper_contents("0.2.2")
-    assert "run-game-analyzer.command" in macos_wrapper_contents("0.2.2")
-    assert "run-game-analyzer.sh" in linux_wrapper_contents("0.2.2")
+    assert "run-game-analyzer.bat" in windows_wrapper_contents("0.2.3")
+    assert "run-game-analyzer.command" in macos_wrapper_contents("0.2.3")
+    assert "run-game-analyzer.sh" in linux_wrapper_contents("0.2.3")
 
 
 def test_app_config_defaults_match_shipped_config_for_fallback_keys() -> None:

@@ -89,7 +89,7 @@ If the CLI is missing, the app can offer to install Ollama from the Ollama scree
 | Topic | Current expectation | Notes |
 | --- | --- | --- |
 | Python | `3.10+` | `3.11` or `3.12` is recommended for normal development and usage. |
-| BatLLM | `0.2.2` | Matches the current repository `VERSION` file and release line. |
+| BatLLM | `0.2.3` | Matches the current repository `VERSION` file and release line. |
 | Ollama workflow | local Ollama install with the CLI available | The recommended path is to manage install, start, stop, and model selection through `Ollama Config`. BatLLM can prompt to install/start Ollama and restore `llm.last_served_model`. |
 
 ## Quick Start
