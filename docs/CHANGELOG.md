@@ -4,6 +4,14 @@
 
 ## Unreleased - 2026-04-04
 
+### Game Analyzer
+
+- added a new read-only `Game Analyzer` mode, available both from the home screen and through `run_game_analyzer.py`
+- added analyzer-compatible v2 session exports with `schema_version`, `session_type`, `saved_at`, and per-round `gameplay_settings_snapshot`
+- added a shared Kivy-free replay engine so saved sessions are replayed against the original round rules instead of the current config
+- added analyzer navigation for multi-game sessions, per-round replay, prompts, plays, state diffs, round settings, and replay insights
+- added platform release-bundle launchers for the standalone analyzer
+
 ### Ollama Lifecycle UX
 
 - added startup prompts to install Ollama when the CLI is missing

@@ -1,0 +1,286 @@
+#:kivy 2.3.1
+#:import dp kivy.metrics.dp
+#:import theme view.analyzer_theme
+
+<AnalyzerFileChooserListLayout@FileChooserListLayout>:
+    _ENTRY_TEMPLATE: "AnalyzerFileListEntry"
+    canvas.before:
+        Color:
+            rgba: theme.NEUTRAL_BG
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(8)]
+    BoxLayout:
+        pos: root.pos
+        size: root.size
+        size_hint: None, None
+        orientation: "vertical"
+        BoxLayout:
+            size_hint_y: None
+            height: dp(30)
+            orientation: "horizontal"
+            padding: dp(10), 0
+            spacing: dp(8)
+            Label:
+                text: "Name"
+                text_size: self.size
+                halign: "left"
+                bold: True
+                color: theme.TEXT_SECONDARY
+            Label:
+                text: "Size"
+                text_size: self.size
+                size_hint_x: None
+                width: dp(110)
+                halign: "right"
+                bold: True
+                color: theme.TEXT_SECONDARY
+        ScrollView:
+            id: scrollview
+            do_scroll_x: False
+            bar_width: dp(8)
+            Scatter:
+                do_rotation: False
+                do_scale: False
+                do_translation: False
+                size: treeview.size
+                size_hint_y: None
+                TreeView:
+                    id: treeview
+                    hide_root: True
+                    size_hint_y: None
+                    width: scrollview.width
+                    height: self.minimum_height
+                    on_node_expand: root.controller.entry_subselect(args[1])
+                    on_node_collapse: root.controller.close_subselection(args[1])
+
+[AnalyzerFileListEntry@FloatLayout+TreeViewNode]:
+    locked: False
+    entries: []
+    path: ctx.path
+    is_selected: self.path in ctx.controller().selection
+    orientation: "horizontal"
+    size_hint_y: None
+    height: "48dp" if dp(1) > 1 else "24dp"
+    is_leaf: not ctx.isdir or ctx.name.endswith(".." + ctx.sep) or self.locked
+    on_touch_down: self.collide_point(*args[1].pos) and ctx.controller().entry_touched(self, args[1])
+    on_touch_up: self.collide_point(*args[1].pos) and ctx.controller().entry_released(self, args[1])
+    canvas.before:
+        Color:
+            rgba: theme.SECONDARY_BG if self.is_selected else theme.PANEL_BG
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        pos: root.pos
+        size_hint_x: None
+        width: root.width - dp(10)
+        padding: dp(8), 0
+        spacing: dp(8)
+        Label:
+            id: filename
+            text_size: self.width, None
+            halign: "left"
+            shorten: True
+            text: ctx.name
+            font_name: ctx.controller().font_name
+            color: theme.TEXT_PRIMARY
+        Label:
+            text_size: self.width, None
+            size_hint_x: None
+            width: dp(110)
+            halign: "right"
+            text: "{}".format(ctx.get_nice_size())
+            font_name: ctx.controller().font_name
+            color: theme.TEXT_SECONDARY
+
+<AnalyzerFileChooserListView@FileChooserListView>:
+    _ENTRY_TEMPLATE: "AnalyzerFileListEntry"
+    layout: layout
+    AnalyzerFileChooserListLayout:
+        id: layout
+        controller: root
+
+<AnalyzerSectionTitle@Label>:
+    markup: True
+    size_hint_y: None
+    height: dp(32)
+    halign: "left"
+    valign: "middle"
+    text_size: self.size
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerSecondaryButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.SECONDARY_BG
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerNeutralButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.NEUTRAL_BG
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerPrimaryButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.PRIMARY_BG
+    color: theme.TEXT_INVERSE
+
+<AnalyzerLoadScreen>:
+    canvas.before:
+        Color:
+            rgba: theme.SCREEN_BG
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: dp(8)
+        padding: dp(12)
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(46)
+            spacing: dp(10)
+
+            Label:
+                text: "[b]Game Analyzer[/b]"
+                markup: True
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                color: theme.TEXT_PRIMARY
+
+            AnalyzerPrimaryButton:
+                text: "Refresh"
+                size_hint_x: None
+                width: dp(120)
+                on_press: root.refresh_recent_sessions()
+
+            AnalyzerSecondaryButton:
+                text: "Back"
+                size_hint_x: None
+                width: dp(120)
+                on_press: root.go_back()
+
+        BoxLayout:
+            spacing: dp(12)
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.3
+                spacing: dp(8)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme.PANEL_MUTED_BG
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(10)]
+
+                AnalyzerSectionTitle:
+                    text: "[b]Recent Sessions[/b]"
+
+                ScrollView:
+                    bar_width: dp(8)
+
+                    GridLayout:
+                        id: recent_sessions_box
+                        cols: 1
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(6)
+
+                Label:
+                    text: root.recent_sessions_text
+                    size_hint_y: None
+                    height: dp(120)
+                    halign: "left"
+                    valign: "top"
+                    text_size: self.width, None
+                    color: theme.TEXT_SECONDARY
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.7
+                spacing: dp(8)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme.PANEL_BG
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(10)]
+
+                AnalyzerSectionTitle:
+                    text: "[b]Open Saved Session[/b]"
+
+                AnalyzerFileChooserListView:
+                    id: filechooser
+                    path: "."
+                    filters: ["*.json"]
+                    dirselect: False
+                    on_selection: root.on_file_selection(self.selection)
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(152)
+                    spacing: dp(12)
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(8)
+                        padding: dp(10)
+                        canvas.before:
+                            Color:
+                                rgba: theme.PANEL_MUTED_BG
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [dp(8)]
+
+                        AnalyzerSectionTitle:
+                            text: "[b]Selected File[/b]"
+                            height: dp(24)
+
+                        Label:
+                            text: root.summary_text
+                            halign: "left"
+                            valign: "top"
+                            text_size: self.width, None
+                            color: theme.TEXT_PRIMARY
+
+                    BoxLayout:
+                        orientation: "vertical"
+                        size_hint_x: None
+                        width: dp(240)
+                        spacing: dp(8)
+                        padding: dp(10)
+                        canvas.before:
+                            Color:
+                                rgba: theme.PANEL_ALT_BG
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [dp(8)]
+
+                        Label:
+                            text: root.status_text
+                            halign: "left"
+                            valign: "top"
+                            text_size: self.width, None
+                            color: root.status_color
+
+                        Widget:
+
+                        AnalyzerPrimaryButton:
+                            text: "Open Analyzer"
+                            size_hint_y: None
+                            height: dp(42)
+                            on_press: root.open_selected_session()

@@ -41,6 +41,12 @@ Yes. Starting or stopping the service, downloading models, deleting models, and 
 
 `Use Selected` writes the chosen model to `llm.model`, attempts to warm it for gameplay, and records it in `llm.last_served_model` after a successful warm-up. That saved value lets BatLLM restore the same served model the next time it starts Ollama.
 
+## Can I review saved games later inside BatLLM?
+
+Yes. Current `Save Session` exports are analyzer-compatible JSON files. You can open them from the in-app `Game Analyzer` button or from the standalone launcher `python run_game_analyzer.py`.
+
+The analyzer replays game logic using the saved prompts, ordered plays, and the per-round `gameplay_settings_snapshot` embedded in the session file. Legacy top-level list exports are not replay-supported there.
+
 ## Can I manage Ollama outside BatLLM?
 
 Yes. If Ollama is already installed, running, and reachable at the configured host and port, BatLLM can use it without the in-app control screen. The screen is recommended, not mandatory.

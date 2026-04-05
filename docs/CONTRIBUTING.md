@@ -67,6 +67,12 @@ For non-live unit work, the CLI is not required. For live gameplay or `run_tests
 python run_batllm.py
 ```
 
+For the standalone analyzer:
+
+```bash
+python run_game_analyzer.py
+```
+
 If Ollama is not already installed, either install it manually from the official download page for your platform or let BatLLM launch the official installer flow:
 
 - macOS: `https://ollama.com/download`
@@ -84,9 +90,14 @@ Core runtime modules:
 - `src/game/bullet.py`: bullet movement and collision logic
 - `src/game/ollama_connector.py`: chat/history request builder using the Python `ollama` client
 - `src/game/history_manager.py`: authoritative game and chat history
+- `src/game/replay_engine.py`: Kivy-free replay and rules helpers shared by gameplay and the analyzer
+- `src/game/session_schema.py`: saved-session schema validation and v2 envelope helpers
 - `src/ollama_service.py`: cross-platform Ollama lifecycle helper used by the app and test runner
+- `src/analyzer_main.py`: standalone Game Analyzer app entrypoint
+- `src/analyzer_model.py`: session navigation and replay-step model for the analyzer UI
 - `src/configs/`: YAML config files and config loader
 - `run_batllm.py`: repository-root launcher
+- `run_game_analyzer.py`: repository-root standalone analyzer launcher
 - `run_tests.py`: cross-platform test runner
 - `create_release_bundles.py`: source and platform bundle generator
 - `start_ollama.sh` and `stop_ollama.sh`: Unix wrappers around the Python Ollama helper
@@ -114,6 +125,14 @@ The current gameplay stack works like this:
 3. `Bot` instances execute movement, rotation, shield, and bullet actions.
 4. `GameBoard` uses `OllamaConnector` to send synchronous chat requests through the Python `ollama` client.
 5. `HistoryManager` records game history and chat history as the single source of truth.
+
+The current replay/analyzer stack works like this:
+
+1. `HistoryManager.save_session()` exports the v2 saved-session envelope.
+2. Each round records a frozen `gameplay_settings_snapshot`.
+3. `replay_engine.py` replays ordered plays against the saved round snapshot instead of the live config.
+4. `AnalyzerSessionModel` turns those replay results into timeline steps, state diffs, and inspector text.
+5. `AnalyzerLoadScreen` and `AnalyzerReviewScreen` expose the replay in-app and through `run_game_analyzer.py`.
 
 The current model-management stack works like this:
 
@@ -197,6 +216,8 @@ ui:
 | Key | Meaning |
 | --- | --- |
 | `saved_sessions_folder` | Default folder for saved sessions. |
+
+Saved sessions exported from the current app use the v2 BatLLM envelope. The analyzer depends on that format and rejects legacy top-level list exports.
 
 #### `game`
 

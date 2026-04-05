@@ -291,8 +291,10 @@ def test_round_completion_and_session_save(monkeypatch, tmp_path: Path) -> None:
     board.history_manager.save_session(session_path)
     saved = json.loads(session_path.read_text(encoding="utf-8"))
 
-    assert isinstance(saved, list)
-    assert saved[0]["rounds"][0]["turns"][0]["plays"]
+    assert saved["schema_version"] == 2
+    assert saved["session_type"] == "batllm_saved_session"
+    assert saved["games"][0]["rounds"][0]["turns"][0]["plays"]
+    assert saved["games"][0]["rounds"][0]["gameplay_settings_snapshot"]["turns_per_round"] == 1
 
 
 def test_history_manager_exports_roundtrip_and_views(monkeypatch, tmp_path: Path) -> None:
@@ -336,7 +338,7 @@ def test_history_manager_exports_roundtrip_and_views(monkeypatch, tmp_path: Path
     board.history_manager.save_session(session_path)
     saved = json.loads(session_path.read_text(encoding="utf-8"))
     normalized_games = json.loads(json.dumps(board.history_manager.games))
-    assert saved == normalized_games
+    assert saved["games"] == normalized_games
 
 
 def test_home_screen_save_session_file_uses_configured_folder(monkeypatch, tmp_path: Path) -> None:
@@ -369,4 +371,42 @@ def test_home_screen_save_session_file_uses_configured_folder(monkeypatch, tmp_p
     exported = tmp_path / "saved-sessions" / "history-export.json"
     assert exported.exists()
     saved = json.loads(exported.read_text(encoding="utf-8"))
-    assert saved[0]["rounds"][0]["prompts"][0]["prompt"] == "Reply with exactly S1"
+    assert saved["games"][0]["rounds"][0]["prompts"][0]["prompt"] == "Reply with exactly S1"
+
+
+def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:
+    overrides = {
+        ("game", "turns_per_round"): 1,
+        ("game", "total_rounds"): 2,
+        ("game", "bullet_damage"): 5,
+        ("game", "shield_size"): 70,
+    }
+    board, scheduled_once, _history_log = _build_board(monkeypatch, overrides=overrides)
+    monkeypatch.setattr(
+        board.ollama_connector,
+        "send_prompt_to_llm_sync",
+        lambda _bot_id, **_kwargs: "S0",
+    )
+
+    board.submit_prompt_to_bot(1, "Reply with exactly S0")
+    board.submit_prompt_to_bot(2, "Reply with exactly S0")
+
+    first_snapshot = board.history_manager.current_round["gameplay_settings_snapshot"]
+    assert first_snapshot["bullet_damage"] == 5
+    assert first_snapshot["shield_size"] == 70
+
+    overrides[("game", "bullet_damage")] = 9
+    overrides[("game", "shield_size")] = 33
+
+    assert board.current_round_settings.bullet_damage == 5
+    assert board.current_round_settings.shield_size == 70
+
+    scheduled_once.pop(0)(0)
+    scheduled_once.pop(0)(0)
+
+    board.submit_prompt_to_bot(1, "Reply with exactly S0")
+    board.submit_prompt_to_bot(2, "Reply with exactly S0")
+
+    second_snapshot = board.history_manager.current_round["gameplay_settings_snapshot"]
+    assert second_snapshot["bullet_damage"] == 9
+    assert second_snapshot["shield_size"] == 33

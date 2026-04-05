@@ -28,6 +28,7 @@ from kivy.uix.widget import Widget
 
 from configs.app_config import config
 from game.bullet import Bullet
+from game.replay_engine import GameplaySettingsSnapshot, compute_move_target, parse_model_response
 from util.utils import markup
 
 
@@ -174,19 +175,13 @@ class Bot(Widget):
         animated over 'duration' seconds.
         """
 
-        # update step from config in case it changed in the settings
-        self.default_step = float(config.get("game", "bot_step_length"))
-
-        if distance is None:
-            distance = self.default_step
-
-
-
-        # compute target
-        rad = math.radians(self.rot)
-        nx = self.x + math.cos(rad) * distance
-        ny = self.y + math.sin(rad) * distance
-       # nx, ny = self._clamp_to_bounds(nx, ny)
+        rules = getattr(self.board_widget, "current_round_settings", None) or GameplaySettingsSnapshot.from_config()
+        self.default_step = rules.bot_step_length
+        nx, ny = compute_move_target(
+            {"x": self.x, "y": self.y, "rot": self.rot},
+            rules,
+            distance if distance is not None else self.default_step,
+        )
 
         # cancel any in-flight move to avoid stacking
         Animation.cancel_all(self, 'x', 'y')
@@ -245,11 +240,14 @@ class Bot(Widget):
 
 
 
-    def damage(self):
+    def damage(self, amount: int | None = None):
         """
         Bot hit by a bullet, loses health.
         """
-        self.health -= int(config.get("game", "bullet_damage"))
+        if amount is None:
+            rules = getattr(self.board_widget, "current_round_settings", None) or GameplaySettingsSnapshot.from_config()
+            amount = rules.bullet_damage
+        self.health -= int(amount)
         self.health = max(self.health, 0)
 
 
@@ -346,63 +344,27 @@ class Bot(Widget):
 
         """
         self.last_llm_response = res
-        self.last_cmd = "Res not parsed, error"
-        command_ok = True
+        parsed = parse_model_response(res)
+        self.last_cmd = parsed.normalized_cmd
+        command_ok = parsed.valid
 
-        try:
-            match res[0]:
-                case "M":
-                    if len(res) == 1:
-                        self.last_cmd = "M"
-                        self.move()
-
-                    else:
-                        # if Mx, assume a step follows and tries to parse it as a float
-                        step = float(res[1:])
-                        self.last_cmd = f"M{step}"
-                        self.move(step)
-
-                case "C":
-                    # if C, assume an angle follows and tries to parse it as a float
-                    angle = float(res[1:])
-                    self.last_cmd = f"C{angle}"
-                    self.rotate(angle)
-
-                case "A":
-                    angle = float(res[1:])
-                    self.last_cmd = f"A{angle}"
-                    self.rotate(-angle)
-
-                case "B":
+        if parsed.valid:
+            match parsed.kind:
+                case "move":
+                    self.move(parsed.value)
+                case "rotate_cw":
+                    self.rotate(parsed.value or 0.0)
+                case "rotate_ccw":
+                    self.rotate(-(parsed.value or 0.0))
+                case "shoot":
                     self.board_widget.shoot(self.id)
-                    self.last_cmd = "B"
-
-                case "S":
-                    if len(res) == 1:
-                        self.last_cmd = "S"
-                        self.toggle_shield()
-
-                    else:
-                        if res[1] == "1":
-                            self.last_cmd = "S1"
-                            self.shield = True
-
-                        elif res[1] == "0":
-                            self.last_cmd = "S0"
-                            self.shield = False
-
-                        else:
-                            command_ok = False
-                            self.last_cmd = "ERR"
-
+                case "shield_toggle":
+                    self.toggle_shield()
+                case "shield_set":
+                    self.shield = bool(parsed.value)
                 case _:
                     command_ok = False
                     self.last_cmd = "ERR"
-
-        # TODO check this except block scope
-        except Exception as e:
-            command_ok = False
-            self.last_cmd = "ERR"
 
         if not command_ok:
             color = "#FF0000"

@@ -43,6 +43,7 @@ from game.bot import Bot
 from game.history_manager import HistoryManager
 from game.ollama_connector import OllamaConnector  # TODO move to singleton
 from game.prompt_store import PromptStore
+from game.replay_engine import GameplaySettingsSnapshot, resolve_shot
 from util.paths import asset_path
 from util.utils import (
     find_id_in_parents,
@@ -78,6 +79,7 @@ class GameBoard(Widget):
         self.bullet_alpha: float = 1.0  # only one bullet can be shot at a time
         self.bullet = None
         self.shuffled_bots: Optional[list[Bot]] = None
+        self.current_round_settings: Optional[GameplaySettingsSnapshot] = None
 
         # Audio
         self.sound_shoot = SoundLoader.load(str(asset_path("sounds", "shoot1.wav")))
@@ -128,6 +130,7 @@ class GameBoard(Widget):
         self.current_turn = 0
         self.current_round = 0
         self.shuffled_bots = None
+        self.current_round_settings = None
 
         # Create two bots with reference to this GameBoard
         self.bots = [Bot(bot_id=i, board_widget=self) for i in range(1, 3)]
@@ -169,7 +172,8 @@ class GameBoard(Widget):
             if b.health <= 0:
                 return True
 
-        total_rounds = int(config.get("game", "total_rounds"))
+        rules = self.current_round_settings or GameplaySettingsSnapshot.from_config()
+        total_rounds = int(rules.total_rounds)
         if self.current_round >= total_rounds:
             return True
 
@@ -402,6 +406,12 @@ class GameBoard(Widget):
 
         self.current_round += 1
         self.current_turn = 0  # reset per-round turn counter
+        first_round_of_game = bool(self.history_manager.current_game) and not self.history_manager.current_game.get("rounds")
+        self.current_round_settings = GameplaySettingsSnapshot.from_config()
+        self._apply_round_settings_to_live_bots(
+            self.current_round_settings,
+            reset_for_new_game=first_round_of_game,
+        )
 
         # Announce round start and reset per-bot flags
         for b in self.bots:
@@ -418,11 +428,27 @@ class GameBoard(Widget):
         self.history_manager.start_round(self)
         Clock.schedule_once(self.play_turn)
 
+    def _apply_round_settings_to_live_bots(
+        self,
+        rules: GameplaySettingsSnapshot,
+        *,
+        reset_for_new_game: bool,
+    ) -> None:
+        """Freeze round-level gameplay settings onto the live bot widgets."""
+        for bot in self.bots:
+            bot.diameter = rules.bot_diameter
+            bot.default_step = rules.bot_step_length
+            bot.shield_range_deg = rules.shield_size
+            if reset_for_new_game:
+                bot.health = rules.initial_health
+                bot.shield = rules.shield_initial_state
+
 
 
     def play_turn(self, dt):
         """Executes one turn. Game logic advances frame-by-frame via Kivy's Clock. TODO: does it?"""
-        turns_per_round = int(config.get("game", "turns_per_round"))
+        rules = self.current_round_settings or GameplaySettingsSnapshot.from_config()
+        turns_per_round = int(rules.turns_per_round)
 
         if not self.current_turn < turns_per_round:
             # Round ended
@@ -497,52 +523,27 @@ class GameBoard(Widget):
             print(f"ERROR: bot {bot_id} not found")
             return
 
-        self.bullet = bot.create_bullet()
         self.bullet_alpha = 1.0
-        if self.bullet:
-            if self.sound_shoot:
-                self.sound_shoot.play()
-        else:
+        rules = self.current_round_settings or GameplaySettingsSnapshot.from_config()
+        shot = resolve_shot(self.snapshot(), bot_id, rules)
+        if shot.reason == "no_shot":
             return
 
-        def _step(dt):
-            # Update bullet
-            alive, damaged_bot_id = self.bullet.update(self.bots)
+        self.bullet = None
+        self.bullet_trace = list(shot.path)
 
-            # Only draw the bullet when it is outside the bot that fires it
-            dist = ((self.bullet.x - bot.x) ** 2 + (self.bullet.y - bot.y) ** 2) ** 0.5
-            if dist * 0.97 > bot.diameter / 2 and self.bullet.x > 0 and self.bullet.x < 1 and self.bullet.y > 0 and self.bullet.y < 1:
+        if self.sound_shoot and shot.path:
+            self.sound_shoot.play()
 
-                self.bullet_trace.append((self.bullet.x, self.bullet.y))
-
-            if not alive:
-                self.bullet = None
-
-                if damaged_bot_id is not None:
-                    if self.sound_bot_hit:
-                        self.sound_bot_hit.play()
-
-                    target = self.get_bot_by_id(damaged_bot_id)
-
-                    if target:
-                        target.damage()
-
-                    if self.game_is_over():
-                        self.end_game()
-                        self.start_new_game()
-
-                return False  # unschedule
-
-            return True  # keep scheduling
-
-        # Run bullet update 3 times per frame (sub-steps for smoother motion)
-        def _step_wrapper(dt):
-            for _ in range(6):
-                if not _step(dt / 3 if dt else 0):
-                    return False  # unschedule if bullet finished
-            return True
-
-        Clock.schedule_interval(_step_wrapper, 0)
+        if shot.damaged_bot_id is not None:
+            if self.sound_bot_hit:
+                self.sound_bot_hit.play()
+            target = self.get_bot_by_id(shot.damaged_bot_id)
+            if target:
+                target.damage(amount=rules.bullet_damage)
+            if self.game_is_over():
+                self.end_game()
+                self.start_new_game()
 
 
 

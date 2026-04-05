@@ -1,0 +1,398 @@
+#:kivy 2.3.1
+#:import dp kivy.metrics.dp
+#:import theme view.analyzer_theme
+
+<AnalyzerSecondaryButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.SECONDARY_BG
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerNeutralButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.NEUTRAL_BG
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerTransportButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.NEUTRAL_BG
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerFilterButton@ToggleButton>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.PRIMARY_BG if self.state == "down" else theme.NEUTRAL_BG
+    color: theme.TEXT_INVERSE if self.state == "down" else theme.TEXT_PRIMARY
+
+<AnalyzerSpinnerOption@SpinnerOption>:
+    background_normal: ""
+    background_color: theme.PANEL_BG
+    color: theme.TEXT_PRIMARY
+
+<AnalyzerChoiceSpinner@Spinner>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.NEUTRAL_BG
+    color: theme.TEXT_PRIMARY
+    option_cls: "AnalyzerSpinnerOption"
+
+<AnalyzerInspectorTab@TabbedPanelItem>:
+    background_normal: ""
+    background_down: ""
+    background_color: theme.PRIMARY_BG if self.state == "down" else theme.PANEL_MUTED_BG
+    color: theme.TEXT_INVERSE if self.state == "down" else theme.TEXT_PRIMARY
+
+<AnalyzerPanelLabel@Label>:
+    markup: True
+    halign: "left"
+    valign: "top"
+    text_size: self.width, None
+    size_hint_y: None
+    padding: dp(10), dp(10)
+    height: max(self.texture_size[1] + dp(20), dp(48))
+    color: theme.TEXT_PRIMARY
+    canvas.before:
+        Color:
+            rgba: theme.PANEL_BG
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(8)]
+
+<AnalyzerReviewScreen>:
+    canvas.before:
+        Color:
+            rgba: theme.SCREEN_BG
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: dp(8)
+        padding: dp(12)
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(48)
+            spacing: dp(8)
+
+            Label:
+                text: root.session_title
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                color: theme.TEXT_PRIMARY
+
+            AnalyzerChoiceSpinner:
+                id: game_spinner
+                text: "Game 1"
+                size_hint_x: None
+                width: dp(130)
+                on_text: root.on_game_selected(self.text)
+
+            AnalyzerChoiceSpinner:
+                id: round_spinner
+                text: "Round 1"
+                size_hint_x: None
+                width: dp(140)
+                on_text: root.on_round_selected(self.text)
+
+            AnalyzerChoiceSpinner:
+                id: bot_filter_spinner
+                text: "Both"
+                size_hint_x: None
+                width: dp(110)
+                on_text: root.on_bot_filter_selected(self.text)
+
+            AnalyzerSecondaryButton:
+                text: "Reload"
+                size_hint_x: None
+                width: dp(110)
+                on_press: root.reload_current_session()
+
+            AnalyzerNeutralButton:
+                text: "Back"
+                size_hint_x: None
+                width: dp(110)
+                on_press: root.go_back()
+
+        BoxLayout:
+            spacing: dp(10)
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.22
+                spacing: dp(8)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme.PANEL_MUTED_BG
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(10)]
+
+                Label:
+                    text: "[b]Session Tree[/b]"
+                    markup: True
+                    size_hint_y: None
+                    height: dp(28)
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                    color: theme.TEXT_PRIMARY
+
+                ScrollView:
+                    bar_width: dp(8)
+
+                    GridLayout:
+                        id: tree_container
+                        cols: 1
+                        spacing: dp(4)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+                Label:
+                    text: "[b]Turn Filters[/b]"
+                    markup: True
+                    size_hint_y: None
+                    height: dp(24)
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                    color: theme.TEXT_PRIMARY
+
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    height: dp(88)
+                    spacing: dp(6)
+
+                    AnalyzerFilterButton:
+                        id: errors_filter
+                        text: "Errors"
+                        on_state: root.set_tree_filter("errors", self.state == "down")
+
+                    AnalyzerFilterButton:
+                        id: damage_filter
+                        text: "Damage"
+                        on_state: root.set_tree_filter("damage", self.state == "down")
+
+                    AnalyzerFilterButton:
+                        id: shield_filter
+                        text: "Shield"
+                        on_state: root.set_tree_filter("shield", self.state == "down")
+
+                    AnalyzerFilterButton:
+                        id: mismatch_filter
+                        text: "Mismatch"
+                        on_state: root.set_tree_filter("mismatch", self.state == "down")
+
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.45
+                spacing: dp(8)
+                padding: dp(10)
+                canvas.before:
+                    Color:
+                        rgba: theme.PANEL_BG
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(10)]
+
+                Label:
+                    id: file_name_label
+                    text: root.current_file
+                    size_hint_y: None
+                    height: dp(28)
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                    color: theme.TEXT_PRIMARY
+
+                AnalyzerBoard:
+                    id: analyzer_board
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(132)
+                    spacing: dp(8)
+
+                    Label:
+                        id: bot_1_hud
+                        markup: True
+                        text: "[b]Bot 1[/b]"
+                        halign: "left"
+                        valign: "top"
+                        text_size: self.size
+                        color: theme.TEXT_PRIMARY
+                        canvas.before:
+                            Color:
+                                rgba: 0.88, 0.93, 1, 1
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [dp(8)]
+
+                    Label:
+                        id: bot_2_hud
+                        markup: True
+                        text: "[b]Bot 2[/b]"
+                        halign: "left"
+                        valign: "top"
+                        text_size: self.size
+                        color: theme.TEXT_PRIMARY
+                        canvas.before:
+                            Color:
+                                rgba: 0.98, 0.90, 0.97, 1
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [dp(8)]
+
+                Label:
+                    id: event_ribbon
+                    text: root.event_ribbon_text
+                    size_hint_y: None
+                    height: dp(58)
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                    color: theme.TEXT_INVERSE
+                    canvas.before:
+                        Color:
+                            rgba: theme.PRIMARY_BG
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [dp(8)]
+
+            TabbedPanel:
+                do_default_tab: False
+                size_hint_x: 0.33
+                tab_height: dp(34)
+                background_color: theme.PANEL_BG
+                content_color: theme.PANEL_BG
+                tab_width: dp(112)
+                canvas.before:
+                    Color:
+                        rgba: theme.PANEL_MUTED_BG
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(10)]
+
+                AnalyzerInspectorTab:
+                    text: "Prompts"
+                    ScrollView:
+                        bar_width: dp(8)
+                        AnalyzerPanelLabel:
+                            id: prompts_text
+                            text: "No prompts loaded."
+
+                AnalyzerInspectorTab:
+                    text: "Plays"
+                    ScrollView:
+                        bar_width: dp(8)
+                        AnalyzerPanelLabel:
+                            id: plays_text
+                            text: "No plays loaded."
+
+                AnalyzerInspectorTab:
+                    text: "State Diff"
+                    ScrollView:
+                        bar_width: dp(8)
+                        AnalyzerPanelLabel:
+                            id: state_diff_text
+                            text: "No diff loaded."
+
+                AnalyzerInspectorTab:
+                    text: "Round Settings"
+                    ScrollView:
+                        bar_width: dp(8)
+                        AnalyzerPanelLabel:
+                            id: round_settings_text
+                            text: "No round settings loaded."
+
+                AnalyzerInspectorTab:
+                    text: "Insights"
+                    ScrollView:
+                        bar_width: dp(8)
+                        AnalyzerPanelLabel:
+                            id: insights_text
+                            text: "No insights loaded."
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None
+            height: dp(112)
+            spacing: dp(8)
+
+            BoxLayout:
+                size_hint_y: None
+                height: dp(40)
+                spacing: dp(8)
+
+                AnalyzerTransportButton:
+                    text: "|<"
+                    size_hint_x: None
+                    width: dp(72)
+                    on_press: root.first_step()
+
+                AnalyzerTransportButton:
+                    text: "<"
+                    size_hint_x: None
+                    width: dp(72)
+                    on_press: root.previous_step()
+
+                AnalyzerSecondaryButton:
+                    id: play_pause_button
+                    text: "Play"
+                    size_hint_x: None
+                    width: dp(96)
+                    on_press: root.toggle_playback()
+
+                AnalyzerTransportButton:
+                    text: ">"
+                    size_hint_x: None
+                    width: dp(72)
+                    on_press: root.next_step()
+
+                AnalyzerTransportButton:
+                    text: ">|"
+                    size_hint_x: None
+                    width: dp(72)
+                    on_press: root.last_step()
+
+                AnalyzerChoiceSpinner:
+                    text: "1x"
+                    values: ["0.5x", "1x", "2x"]
+                    size_hint_x: None
+                    width: dp(110)
+                    on_text: root.set_playback_rate(self.text)
+
+                Widget:
+
+            Slider:
+                id: timeline_slider
+                min: 0
+                max: 0
+                step: 1
+                value: 0
+                value_track: True
+                value_track_color: theme.PRIMARY_BG
+                on_value: root.on_timeline_value(self.value)
+
+            Label:
+                id: timeline_summary
+                text: root.timeline_caption
+                size_hint_y: None
+                height: dp(28)
+                halign: "left"
+                valign: "middle"
+                text_size: self.size
+                color: theme.TEXT_PRIMARY

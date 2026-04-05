@@ -29,7 +29,8 @@ BatLLM currently ships with:
 1. a main gameplay screen for prompt entry and round control
 2. a settings screen for gameplay, exit-flow, and Ollama startup/teardown options
 3. a history screen for prompt and response review
-4. an Ollama configuration screen for local service, model management, and installer launch
+4. a game analyzer mode for loading saved sessions and replaying the game logic turn by turn
+5. an Ollama configuration screen for local service, model management, and installer launch
 
 ## Documentation Map
 
@@ -117,6 +118,12 @@ pip install -r requirements.txt
 python run_batllm.py
 ```
 
+To launch the standalone analyzer directly:
+
+```bash
+python run_game_analyzer.py
+```
+
 You can install Ollama manually from the official download pages:
 
 - macOS: `https://ollama.com/download`
@@ -143,6 +150,12 @@ That command creates:
 - a Windows bundle with `.bat` install and run launchers
 - a macOS bundle with `.command` install and run launchers
 - a Linux bundle with `.sh` install and run launchers
+
+Each platform bundle now includes both the main app launcher and a dedicated analyzer launcher:
+
+- Windows: `run-batllm.bat` and `run-game-analyzer.bat`
+- macOS: `run-batllm.command` and `run-game-analyzer.command`
+- Linux: `run-batllm.sh` and `run-game-analyzer.sh`
 
 #### Release Bundle Troubleshooting
 
@@ -219,7 +232,7 @@ The home screen is where players:
 - browse prompt history
 - load and save prompt text
 - start new games
-- open settings and history
+- open settings, history, and the analyzer
 
 Pressing `Esc` on the home screen enters the configured exit flow. Depending on the settings, BatLLM may:
 
@@ -248,9 +261,26 @@ The history screen shows:
 - a compact, per-bot history pane
 - a full session history pane
 
-`Save Session` exports the current session as JSON in the configured `saved_sessions_folder`. The export can be used later outside the app; BatLLM does not currently import saved sessions back into the UI.
+`Save Session` exports the current session as analyzer-compatible JSON in the configured `saved_sessions_folder`. New exports use the BatLLM v2 session envelope and include a per-round `gameplay_settings_snapshot`, so the analyzer can replay the same game logic later even if the current config has changed.
 
 It currently uses an explicit `Back` button to return to the home screen.
+
+### Game Analyzer
+
+The analyzer is available in two ways:
+
+- inside BatLLM through the `Game Analyzer` button on the home screen
+- as a standalone launcher with `python run_game_analyzer.py`
+
+The analyzer is read-only. It lets you:
+
+- load one saved session JSON at a time
+- select a game and round from multi-game session files
+- step forward and backward through turn starts and individual plays
+- replay the board state using the saved prompts, ordered plays, and per-round gameplay settings snapshot
+- inspect prompts, raw LLM responses, parsed commands, state diffs, round settings, and replay insights
+
+The analyzer intentionally targets new v2 saved sessions only. Legacy top-level list exports are rejected with a compatibility message instead of being replayed approximately.
 
 ### Ollama Config
 

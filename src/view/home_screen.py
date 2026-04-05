@@ -132,6 +132,10 @@ class HomeScreen(Screen):
         history_screen.update(bot_id, compact, full_text)
         switch_screen(self.manager, "history", direction="left")
 
+    def go_to_analyzer_load_screen(self):
+        """Open the shared Game Analyzer load screen."""
+        switch_screen(self.manager, "analyzer_load", direction="left")
+
 
     def save_prompt(self, bot_id):
         """

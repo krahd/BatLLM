@@ -3,9 +3,12 @@ from datetime import datetime
 
 from kivy.utils import escape_markup
 
+from game.replay_engine import GameplaySettingsSnapshot
+from game.session_schema import build_session_payload
 from configs.app_config import config
 from game.bot import Bot
 import codecs
+from util.version import current_app_version
 
 """
 Events
@@ -193,12 +196,15 @@ class HistoryManager:
             "round": round_number,
             "start_time": self._now_iso(),
             "initial_state": {},
+            "gameplay_settings_snapshot": {},
             "prompts": [],
             "turns": [],
         }
 
         # Snapshot the state at round start
         self.current_round["initial_state"] = self._get_bots_state(game)
+        rules = getattr(game, "current_round_settings", None) or GameplaySettingsSnapshot.from_config()
+        self.current_round["gameplay_settings_snapshot"] = rules.to_dict()
 
         # Append the round to the game's list of rounds
         self.current_game["rounds"].append(self.current_round)
@@ -436,11 +442,15 @@ class HistoryManager:
         Save the entire session history to a JSON file.
         This will include all games played in this session.
         """
-
+        payload = build_session_payload(
+            games=self.games,
+            app_version=current_app_version(),
+            saved_at=self._now_iso(),
+        )
         with open(
             filepath, "w", encoding="utf-8"
         ) as f:  # JSON spec requires UTF-8 support by decoders.
-            json.dump(self.games, f, indent=4, ensure_ascii=False)
+            json.dump(payload, f, indent=4, ensure_ascii=False)
 
 
     # Get the full session history as a human - readable string.

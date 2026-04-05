@@ -8,7 +8,7 @@ BatLLM is strictly human-vs-human in the current version. There are no NPC bots,
 
 The screen recording below shows the basic flow: players enter prompts, submit them, and trigger a round once both bots are ready.
 
-Prompts can be loaded and saved to disk, and the history screen can be used to inspect what each model received and returned.
+Prompts can be loaded and saved to disk, the history screen can be used to inspect what each model received and returned, and the Game Analyzer can replay saved sessions later for study.
 
 ![BatLLM demo](./screenshots/quick_demo.gif)
 
@@ -31,6 +31,12 @@ The release bundles also include platform-specific launchers:
 - Windows: `run-batllm.bat`
 - macOS: `run-batllm.command`
 - Linux: `run-batllm.sh`
+
+They also include the standalone analyzer launchers:
+
+- Windows: `run-game-analyzer.bat`
+- macOS: `run-game-analyzer.command`
+- Linux: `run-game-analyzer.sh`
 
 > [!CAUTION]
 > BatLLM's Ollama controls operate on your real local Ollama installation. Starting or stopping the service, downloading models, deleting models, or changing the selected model can affect other Ollama-based tools on the same machine.
@@ -143,7 +149,7 @@ The home screen is the main play surface. It contains:
 - one prompt history area and one editable prompt area per player
 - `Submit`, `Load`, and `Save` buttons for each player
 - the game board and live state labels
-- `Settings`, `History`, and `Save Session` controls
+- `Settings`, `History`, `Game Analyzer`, and `Save Session` controls
 
 This is where most play happens. Write prompts, submit them, and watch the arena.
 
@@ -194,9 +200,27 @@ The history screen shows two synchronised views:
 
 This is the best place to inspect what each model saw, what it returned, and how your prompt strategy is evolving across rounds.
 
-Use `Save Session` on the home screen to export the current session as a JSON file in `saved_sessions_folder`. That export is intended for later inspection or tooling; BatLLM does not currently reload saved sessions back into the UI.
+Use `Save Session` on the home screen to export the current session as a JSON file in `saved_sessions_folder`. Current exports use the BatLLM v2 session format and include a `gameplay_settings_snapshot` for every round so the Game Analyzer can replay the same rules later.
 
 The current implementation uses the explicit `Back` button to return home.
+
+### Game Analyzer
+
+The Game Analyzer is a read-only review mode for saved sessions. You can open it either from the home screen or through the standalone launcher:
+
+```bash
+python run_game_analyzer.py
+```
+
+The analyzer lets you:
+
+- load a saved session JSON
+- choose a game and round inside that session
+- move backward and forward across turn starts and individual plays
+- replay the board using the saved prompts, ordered plays, and that round's frozen gameplay settings snapshot
+- inspect prompts, raw model responses, parsed commands, state diffs, round settings, and mismatch warnings
+
+Legacy saved sessions that predate the v2 schema are not replay-supported in the analyzer. Save a new session from the current app if you want to study it there.
 
 ### Ollama Config Screen
 

@@ -157,10 +157,23 @@ def test_cross_platform_launchers_compile() -> None:
 
     for script in (
         root / "run_batllm.py",
+        root / "run_game_analyzer.py",
         root / "run_tests.py",
         root / "create_release_bundles.py",
     ):
         py_compile.compile(str(script), doraise=True)
+
+
+def test_release_bundle_wrappers_include_game_analyzer_launchers() -> None:
+    from create_release_bundles import (
+        linux_wrapper_contents,
+        macos_wrapper_contents,
+        windows_wrapper_contents,
+    )
+
+    assert "run-game-analyzer.bat" in windows_wrapper_contents("0.2.2")
+    assert "run-game-analyzer.command" in macos_wrapper_contents("0.2.2")
+    assert "run-game-analyzer.sh" in linux_wrapper_contents("0.2.2")
 
 
 def test_app_config_defaults_match_shipped_config_for_fallback_keys() -> None:

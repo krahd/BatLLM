@@ -638,7 +638,7 @@
                     size_hint_x: 2
 
                 Label:
-                    text: "BatLLM 0.0.1"
+                    text: "BatLLM " + app.app_version
                     font_size: "16sp"
                     color: 1, 1, 1, 1
                     halign: "left"
@@ -654,6 +654,11 @@
                     text: "New Game"
                     font_size: "16sp"
                     on_press: root.start_new_game()
+
+                Button:
+                    text: "Game Analyzer"
+                    font_size: "16sp"
+                    on_press: root.go_to_analyzer_load_screen()
 
                 Button:
                     text: "Save Session"

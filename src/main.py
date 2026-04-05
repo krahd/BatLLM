@@ -6,7 +6,7 @@ from kivy.config import Config
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.lang import Builder
-from kivy.properties import DictProperty
+from kivy.properties import DictProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.utils import get_color_from_hex
 from kivymd.app import MDApp
@@ -30,6 +30,9 @@ require_supported_python()
 from configs.app_config import config
 from util.paths import asset_path, register_kivy_resource_paths, repo_path, theme_colors_path, view_path
 from util.utils import show_confirmation_dialog, show_fading_alert
+from util.version import current_app_version
+from view.analyzer_load_screen import AnalyzerLoadScreen
+from view.analyzer_review_screen import AnalyzerReviewScreen
 from view.history_screen import HistoryScreen
 from view.home_screen import HomeScreen
 from view.ollama_config_screen import OllamaConfigScreen
@@ -41,6 +44,8 @@ Builder.load_file(str(view_path("settings_screen.kv")))
 Builder.load_file(str(view_path("home_screen.kv")))
 Builder.load_file(str(view_path("history_screen.kv")))
 Builder.load_file(str(view_path("ollama_config_screen.kv")))
+Builder.load_file(str(view_path("analyzer_load_screen.kv")))
+Builder.load_file(str(view_path("analyzer_review_screen.kv")))
 
 
 class BatLLM(MDApp):
@@ -55,6 +60,7 @@ class BatLLM(MDApp):
     """
 
     theme_colors = DictProperty({})  # Expose to KV
+    app_version = StringProperty(current_app_version())
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -69,6 +75,8 @@ class BatLLM(MDApp):
         sm.add_widget(SettingsScreen(name="settings"))
         sm.add_widget(HistoryScreen(name="history"))
         sm.add_widget(OllamaConfigScreen(name="ollama_config"))
+        sm.add_widget(AnalyzerLoadScreen(name="analyzer_load"))
+        sm.add_widget(AnalyzerReviewScreen(name="analyzer_review"))
 
         icon_candidates = (
             asset_path("images", "logo_small.png"),

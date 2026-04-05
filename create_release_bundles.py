@@ -71,6 +71,16 @@ def windows_wrapper_contents(version: str) -> dict[str, str]:
             "  python run_batllm.py %*\r\n"
             ")\r\n"
         ),
+        "run-game-analyzer.bat": (
+            "@echo off\r\n"
+            "setlocal\r\n"
+            "cd /d %~dp0\r\n"
+            "if exist .\\.venv_BatLLM\\Scripts\\python.exe (\r\n"
+            "  .\\.venv_BatLLM\\Scripts\\python.exe run_game_analyzer.py %*\r\n"
+            ") else (\r\n"
+            "  python run_game_analyzer.py %*\r\n"
+            ")\r\n"
+        ),
         "WINDOWS_RELEASE_NOTES.txt": platform_note(
             version,
             "Windows",
@@ -99,6 +109,15 @@ def macos_wrapper_contents(version: str) -> dict[str, str]:
             "fi\n"
             "exec python3 run_batllm.py \"$@\"\n"
         ),
+        "run-game-analyzer.command": (
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            "cd \"$(dirname \"$0\")\"\n"
+            "if [[ -x ./.venv_BatLLM/bin/python ]]; then\n"
+            "  exec ./.venv_BatLLM/bin/python run_game_analyzer.py \"$@\"\n"
+            "fi\n"
+            "exec python3 run_game_analyzer.py \"$@\"\n"
+        ),
         "MACOS_RELEASE_NOTES.txt": platform_note(
             version,
             "macOS",
@@ -126,6 +145,15 @@ def linux_wrapper_contents(version: str) -> dict[str, str]:
             "  exec ./.venv_BatLLM/bin/python run_batllm.py \"$@\"\n"
             "fi\n"
             "exec python3 run_batllm.py \"$@\"\n"
+        ),
+        "run-game-analyzer.sh": (
+            "#!/usr/bin/env bash\n"
+            "set -euo pipefail\n"
+            "cd \"$(dirname \"$0\")\"\n"
+            "if [[ -x ./.venv_BatLLM/bin/python ]]; then\n"
+            "  exec ./.venv_BatLLM/bin/python run_game_analyzer.py \"$@\"\n"
+            "fi\n"
+            "exec python3 run_game_analyzer.py \"$@\"\n"
         ),
         "LINUX_RELEASE_NOTES.txt": platform_note(
             version,
