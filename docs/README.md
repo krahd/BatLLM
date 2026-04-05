@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
 # BatLLM
 
@@ -32,9 +32,11 @@ BatLLM currently ships with:
 
 ## Documentation Map
 
+README is the canonical overview and start-here page. The rest of the maintained documentation is split by use:
+
 ### User-Facing
 
-- [USER_GUIDE.md](USER_GUIDE.md): the game manual, including rules, match flow, screens, modes, commands, and Ollama usage
+- [USER_GUIDE.md](USER_GUIDE.md): the usage manual, including rules, match flow, screens, modes, commands, and Ollama usage
 
 ### Shared Reference
 
@@ -42,12 +44,11 @@ BatLLM currently ships with:
 
 ### Developer-Facing
 
-- [CONTRIBUTING.md](CONTRIBUTING.md): the developer and contribution manual, including setup, architecture, configuration, testing, and troubleshooting
+- [CONTRIBUTING.md](CONTRIBUTING.md): the technical and contribution guide, including setup, architecture, configuration, testing, and troubleshooting
 
 ### Project-Level
 
-- [DOCUMENTATION.md](DOCUMENTATION.md): project aims, motivations, and documentation structure
-- [CHANGELOG.md](CHANGELOG.md): notable documentation and release changes
+- [CHANGELOG.md](CHANGELOG.md): release history and notable documentation changes
 - [CREDITS.md](CREDITS.md): project attribution and support context
 - [code/html/index.html](code/html/index.html): generated API reference
 

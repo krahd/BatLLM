@@ -16,7 +16,7 @@ This revision tightened the FAQ, aligned the rest of the maintained documentatio
 
 - `README.md`: reclassified the FAQ as a shared reference and removed the obsolete illustrated interface references while keeping the animated gameplay demo
 - `USER_GUIDE.md`: aligned the Ollama setting labels with the current UI wording and reframed the FAQ link as a cross-audience reference
-- `DOCUMENTATION.md`: clarified the documentation split so the FAQ sits between the user guide and contributor guide instead of being treated as a purely user-facing page
+- the overview docs: clarified the documentation split so the FAQ sits between the user guide and contributor guide instead of being treated as a purely user-facing page
 - `CONTRIBUTING.md`: corrected the documented shutdown key to `stop_ollama_on_exit`, documented the legacy `auto_stop_ollama` fallback accurately, and added guidance on what belongs in the FAQ
 - `docs/index.html`: updated the FAQ card description to match the new scope
 - `CHANGELOG.md`: recorded the FAQ consolidation and README cleanup

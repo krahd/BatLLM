@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
 # Changelog
 
@@ -25,6 +25,7 @@
 - updated the README, user guide, and contributor guide to reflect the install flow, startup prompts, new settings, and `last_served_model`
 - replaced the user-only FAQ with a shared user/developer FAQ focused on recurring non-trivial questions
 - aligned the overview docs and docs index with the new FAQ scope
+- removed `DOCUMENTATION.md` and kept `README.md` as the sole overview and documentation entry point
 - removed outdated interface illustration references from the README while keeping the animated gameplay demo
 - added a compact compatibility matrix, glossary, and release-bundle troubleshooting appendix to the README
 - added a lightweight documentation review checklist to the PR workflow in the contributor guide
