@@ -4,6 +4,7 @@ import py_compile
 from pathlib import Path
 from types import SimpleNamespace
 
+from configs.app_config import DEFAULTS
 import ollama_service
 import yaml
 from util import paths
@@ -160,3 +161,13 @@ def test_cross_platform_launchers_compile() -> None:
         root / "create_release_bundles.py",
     ):
         py_compile.compile(str(script), doraise=True)
+
+
+def test_app_config_defaults_match_shipped_config_for_fallback_keys() -> None:
+    config_path = Path(__file__).resolve().parents[1] / "configs" / "config.yaml"
+    shipped = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+
+    for section in ("game", "ui"):
+        values = DEFAULTS[section]
+        for key, value in values.items():
+            assert shipped[section][key] == value

@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # Contributing
 
@@ -25,6 +25,7 @@ If you are unsure whether an idea fits the project, opening an issue first is a 
 - use English commit messages
 - explain non-obvious changes in the pull request description
 - update documentation when the workflow, UI, setup, configuration, or tests change
+- keep the FAQ focused on recurring non-trivial questions; routine walkthrough material belongs in the user guide
 - keep cross-platform impact in mind when changing scripts, paths, or dependencies
 
 ## Development Setup
@@ -180,7 +181,7 @@ llm:
   url: http://localhost
 ui:
   auto_start_ollama: false
-  auto_stop_ollama: false
+  stop_ollama_on_exit: false
   confirm_on_exit: true
   font_size: 16
   frame_rate: 60
@@ -253,7 +254,7 @@ Optional advanced key supported by the current code:
 | `font_size` | Default font size used by the `markup()` helper in `util.utils`. |
 | `frame_rate` | Render/update interval for the game board. |
 | `auto_start_ollama` | When true, BatLLM can start Ollama automatically during app startup. |
-| `auto_stop_ollama` | When true, BatLLM can stop Ollama automatically during app shutdown. |
+| `stop_ollama_on_exit` | When true, BatLLM can stop Ollama automatically during app shutdown. |
 | `primary_color` | Current theme colour value kept in config; not heavily wired into the present Kivy views. |
 | `prompt_save_on_exit` | Controls whether BatLLM asks for a save filename before exit. |
 | `title` | App window title. |
@@ -273,7 +274,7 @@ The settings screen writes these keys:
 - `ui.confirm_on_exit`
 - `ui.prompt_save_on_exit`
 - `ui.auto_start_ollama`
-- `ui.auto_stop_ollama`
+- `ui.stop_ollama_on_exit`
 
 The Ollama configuration screen writes:
 
@@ -285,7 +286,7 @@ The Ollama configuration screen writes:
 1. `llm.path` affects gameplay chat requests, not the model-management calls made by the Ollama configuration screen.
 2. The Ollama configuration screen assumes the configured host and port are the shared local Ollama service to manage.
 3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
-4. The Ollama startup and shutdown toggles are stored in `ui.auto_start_ollama` and `ui.auto_stop_ollama`.
+4. The current Ollama lifecycle toggles are stored in `ui.auto_start_ollama` and `ui.stop_ollama_on_exit`. `main.py` still accepts the legacy `ui.auto_stop_ollama` key as a backward-compatible fallback for older configs.
 5. `llm.last_served_model` tracks the last model BatLLM explicitly warmed so startup can restore that serving state.
 
 ## Testing And Validation
@@ -402,10 +403,11 @@ Review the generated diff under `docs/code/` before committing.
 
 ## Documentation Workflow
 
-BatLLM's docs are split by audience:
+BatLLM's docs are split by role:
 
 - `README.md`: project framing plus the high-level map for users and contributors
 - `USER_GUIDE.md`: user-facing game manual
+- `FAQ.md`: shared high-signal reference for recurring user and contributor questions
 - `CONTRIBUTING.md`: developer-facing setup, architecture, configuration, testing, and troubleshooting
 
 When behaviour changes, update the maintained docs in the same branch. In particular, update docs when you change:
@@ -417,6 +419,8 @@ When behaviour changes, update the maintained docs in the same branch. In partic
 - Ollama model-management behaviour
 - keyboard and exit behaviour
 - project-level framing, aims, or educational positioning
+
+Do not use the FAQ for trivial click-path questions unless the behaviour is surprising, high-risk, or easy to misinterpret. Keep the FAQ focused on questions whose answers help users compete more effectively or help contributors reason about the codebase.
 
 ## Release Workflow
 
@@ -461,6 +465,14 @@ Before opening a PR:
 2. update docs if the workflow or UI changed
 3. regenerate code docs if public modules or screen docs changed
 4. review the resulting diff for generated-file noise before pushing
+
+### Documentation Review Checklist
+
+- confirm visible UI labels in the docs match the current Kivy labels and button text
+- confirm config keys and defaults mentioned in docs match `src/configs/config.yaml` and `src/configs/app_config.py`
+- confirm compatibility and version references still match `VERSION`, current platform support, and release naming
+- confirm screenshots, diagrams, and screen descriptions still match the current interface, or remove them if they no longer do
+- confirm cross-links, setup commands, and platform-specific launcher notes still point to maintained files and workflows
 
 ## Developer Troubleshooting
 

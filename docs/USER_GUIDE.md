@@ -1,12 +1,10 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # User Guide
 
 BatLLM is a local, AI-mediated, human-vs-human battle game. Two human players write prompts, two model-backed bots interpret those prompts, and the bots act inside the arena. Players do not directly move the bots. The challenge is to guide them through language.
 
 BatLLM is strictly human-vs-human in the current version. There are no NPC bots, autonomous opponents, or single-player campaign modes.
-
-## Mini Demo
 
 The screen recording below shows the basic flow: players enter prompts, submit them, and trigger a round once both bots are ready.
 
@@ -26,7 +24,7 @@ Recommended first-run flow:
 6. start Ollama and choose a local model
 7. return to the home screen and begin play
 
-If Ollama is missing, BatLLM asks whether you want to launch the official install flow. If Ollama is installed but stopped, BatLLM asks whether you want to start it unless `Auto-Start Ollama on Launch` is enabled.
+If Ollama is missing, BatLLM asks whether you want to launch the official install flow. If Ollama is installed but stopped, BatLLM asks whether you want to start it unless `Start Ollama Automatically on BatLLM Launch` is enabled.
 
 The release bundles also include platform-specific launchers:
 
@@ -171,8 +169,8 @@ The settings screen controls the main gameplay values:
 - `Prompt Augmentation`
 - `Confirm on Exit`
 - `Prompt to Save on Exit`
-- `Auto-Start Ollama on Launch`
-- `Auto-Stop Ollama on Exit`
+- `Start Ollama Automatically on BatLLM Launch`
+- `Stop Ollama Automatically on BatLLM Quit`
 
 Buttons on this screen:
 
@@ -195,6 +193,8 @@ The history screen shows two synchronised views:
 - the full session history panel from `HistoryManager`
 
 This is the best place to inspect what each model saw, what it returned, and how your prompt strategy is evolving across rounds.
+
+Use `Save Session` on the home screen to export the current session as a JSON file in `saved_sessions_folder`. That export is intended for later inspection or tooling; BatLLM does not currently reload saved sessions back into the UI.
 
 The current implementation uses the explicit `Back` button to return home.
 
@@ -286,5 +286,5 @@ Treat BatLLM like a game of strategy played through imperfect intermediaries. Sh
 ## Where To Go Next
 
 - project overview and entry point: [README.md](README.md)
-- short practical answers: [FAQ.md](FAQ.md)
+- recurring non-trivial questions for both players and contributors: [FAQ.md](FAQ.md)
 - contributor and developer material: [CONTRIBUTING.md](CONTRIBUTING.md)

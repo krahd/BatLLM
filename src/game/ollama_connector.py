@@ -74,7 +74,7 @@ class OllamaConnector:
         if len(history) == 0:
             history.insert(0, {"role": "system", "content": self._system_instructions})
 
-        elif not history[0].get("role") != "system":
+        elif history[0].get("role") != "system":
             history.insert(0, {"role": "system", "content": self._system_instructions})
 
         elif history[0].get("content") != self._system_instructions:

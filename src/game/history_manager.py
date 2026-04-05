@@ -39,7 +39,8 @@ class HistoryManager:
     - Instantiate once per session/run.
     - Call start_game(), start_round(), start_turn(), and their corresponding end_* methods at appropriate times.
     - Use record_play()
-    - Retrieve history for display, debugging, or saving via to_json(), to_text(), to_compact_text(), etc.
+    - Retrieve history for display, debugging, or saving via save_session(), to_text(),
+      to_compact_text(), etc.
 
     Attributes:
         games (list): List of all games played in the session.
@@ -63,7 +64,6 @@ class HistoryManager:
 
         save_session(filepath): Save the session history to a JSON file.
 
-        to_json(): Get the full session history as a JSON string.
         to_text(): Get the full session history as a human-readable string.
         to_compact_text(): Get a compact, UI-friendly summary of the session history.
         to_compact_text_for_bot(bot_id): Get a compact, per-bot summary of the session history.

@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # BatLLM Documentation
 
@@ -17,16 +17,19 @@ BatLLM is intended to do more than provide a toy interface for local models. The
 
 In that sense, BatLLM treats play as a research and teaching method. It is a game, but also a framework for learning how AI systems behave, where they fail, and how people adapt to those limits.
 
-This documentation set is now split by audience:
+This documentation set is now split by role:
 
 - project overview and entry point: [README.md](README.md)
-- user-facing guidance: [USER_GUIDE.md](USER_GUIDE.md) and [FAQ.md](FAQ.md)
+- user-facing manual: [USER_GUIDE.md](USER_GUIDE.md)
+- shared reference for recurring non-trivial questions: [FAQ.md](FAQ.md)
 - developer-facing guidance: [CONTRIBUTING.md](CONTRIBUTING.md)
 - project history and attribution: [CHANGELOG.md](CHANGELOG.md) and [CREDITS.md](CREDITS.md)
 
+The FAQ is intentionally mixed-audience. It covers questions that are relevant to both advanced users and contributors, while routine walkthrough material stays in the user guide and implementation procedure stays in the contributing guide.
+
 ## Documentation Scope
 
-This main page focuses on the project as a whole: its motivations, aims, current product shape, and the relationship between the maintained guides. The README remains the overview page for both users and contributors, the user guide stays user-facing, and the contributing guide now consolidates configuration, testing, troubleshooting, and development workflow.
+This main page focuses on the project as a whole: its motivations, aims, current product shape, and the relationship between the maintained guides. The README remains the overview page for both users and contributors, the user guide stays task-oriented, the FAQ handles shared high-signal questions, and the contributing guide consolidates configuration, testing, troubleshooting, and development workflow.
 
 ## Current Product Snapshot
 
@@ -89,6 +92,7 @@ Highlights in the current documentation revision:
 - BatLLM now resolves assets and configuration paths from the repository instead of assuming a specific working directory
 - cross-platform entrypoints and release-bundle generation have been added for macOS, Linux, Windows, and source archives
 - the docs now reflect the actual `Ollama Config` workflow and labels
+- the FAQ now combines relevant user and contributor questions instead of trivial UI mechanics
 - the model-picker behaviour is documented, including `Esc` and outside-click dismissal
 - developer-facing configuration, testing, and troubleshooting have been consolidated into the contributing guide
 - the install docs now match the Python dependency set used by the codebase

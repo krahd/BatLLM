@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # BatLLM
 
@@ -18,6 +18,7 @@ This README is the overview page for the project. It keeps the core framing of B
 
 > [!IMPORTANT]
 > BatLLM began as part of a project supported by the [2024 Arts & Humanities Grant Program](https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and) of the [Research & Innovation Office](https://www.colorado.edu/researchinnovation/) at the University of Colorado Boulder.
+> BatLLM has also received a [CHA Small Grant](https://www.colorado.edu/cha/funding-and-resources/faculty-opportunities/cha-small-grants), from the [Center for the Humanities & the Arts](https://www.colorado.edu/cha/) at the University of Colorado Boulder.
 
 ![BatLLM demo](./screenshots/quick_demo.gif)
 
@@ -35,7 +36,10 @@ BatLLM currently ships with:
 ### User-Facing
 
 - [USER_GUIDE.md](USER_GUIDE.md): the game manual, including rules, match flow, screens, modes, commands, and Ollama usage
-- [FAQ.md](FAQ.md): short answers to common practical questions
+
+### Shared Reference
+
+- [FAQ.md](FAQ.md): high-signal answers to recurring user and contributor questions
 
 ### Developer-Facing
 
@@ -47,6 +51,8 @@ BatLLM currently ships with:
 - [CHANGELOG.md](CHANGELOG.md): notable documentation and release changes
 - [CREDITS.md](CREDITS.md): project attribution and support context
 - [code/html/index.html](code/html/index.html): generated API reference
+
+The FAQ is intentionally a mixed-audience page. Routine screen instructions stay in the user guide, while recurring non-trivial questions that matter to both players and contributors live in the FAQ.
 
 ## Requirements
 
@@ -76,6 +82,14 @@ BatLLM uses both:
 - the `ollama` CLI for the in-app start/stop/version workflow and helper scripts
 
 If the CLI is missing, the app can offer to install Ollama from the Ollama screen or during app startup.
+
+## Compatibility Matrix
+
+| Topic | Current expectation | Notes |
+| --- | --- | --- |
+| Python | `3.10+` | `3.11` or `3.12` is recommended for normal development and usage. |
+| BatLLM | `0.2.2` | Matches the current repository `VERSION` file and release line. |
+| Ollama workflow | local Ollama install with the CLI available | The recommended path is to manage install, start, stop, and model selection through `Ollama Config`. BatLLM can prompt to install/start Ollama and restore `llm.last_served_model`. |
 
 ## Quick Start
 
@@ -129,6 +143,24 @@ That command creates:
 - a Windows bundle with `.bat` install and run launchers
 - a macOS bundle with `.command` install and run launchers
 - a Linux bundle with `.sh` install and run launchers
+
+#### Release Bundle Troubleshooting
+
+- macOS: if a `.command` launcher is blocked or closes immediately, open it from Terminal so the error stays visible and allow it in macOS security settings if prompted.
+- Linux: if a `.sh` launcher does not start, make it executable with `chmod +x` and run it from a terminal to inspect dependency or path errors.
+- Windows: if a `.bat` launcher closes immediately, run it from `cmd.exe` so the output remains visible. If shell policy or activation steps interfere, fall back to `python run_batllm.py`.
+- Any platform: if the app starts but cannot manage models, verify `ollama --version` and confirm the configured service is reachable at `llm.url:llm.port`.
+
+## Glossary
+
+| Term | Meaning |
+| --- | --- |
+| `prompt augmentation` | BatLLM prepends structured game-state context to the player's prompt before sending it to the model. |
+| `independent contexts` | Each bot keeps its own chat history and model context. |
+| `shared context` | Both bots use one shared chat history, which can cause strategy leakage or interference. |
+| `local model` | A model that already exists in the local Ollama installation and can be selected immediately. |
+| `remote model` | A model name discovered from the Ollama library that is not playable until it is pulled locally. |
+| `last_served_model` | The config value BatLLM uses to remember which model it last warmed so startup can restore the same serving state. |
 
 ## Recommended Ollama Workflow
 
@@ -216,6 +248,8 @@ The history screen shows:
 - a compact, per-bot history pane
 - a full session history pane
 
+`Save Session` exports the current session as JSON in the configured `saved_sessions_folder`. The export can be used later outside the app; BatLLM does not currently import saved sessions back into the UI.
+
 It currently uses an explicit `Back` button to return to the home screen.
 
 ### Ollama Config
@@ -227,12 +261,6 @@ The Ollama screen shows:
 - install and reinstall controls
 - local model controls
 - remote model controls
-
-Illustrated references:
-
-![Ollama control screen diagram](./images/ollama-control-screen.svg)
-![Local model picker diagram](./images/local-model-picker.svg)
-![Remote model picker diagram](./images/remote-model-picker.svg)
 
 ## For Contributors
 

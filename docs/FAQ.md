@@ -1,78 +1,64 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # FAQ
 
+This FAQ is shared between advanced users and contributors. It focuses on recurring, non-trivial questions. Step-by-step screen walkthroughs live in [USER_GUIDE.md](USER_GUIDE.md), while setup, architecture, testing, and troubleshooting procedures live in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## What is BatLLM actually for?
+
+BatLLM is a local, AI-mediated, human-vs-human battle game and a research/education project. It is meant to make prompting, model behaviour, strategy, and failure modes concrete through play rather than to act as a generic chat shell.
+
 ## Is BatLLM a general-purpose inference server?
 
-No. BatLLM is a local game and educational project that happens to rely on local LLM infrastructure.
+No. BatLLM depends on local LLM infrastructure, but it does not try to replace Ollama or provide a standalone inference platform.
 
 ## Is BatLLM strictly human-vs-human?
 
-Yes. The current game is designed around two human players whose actions are mediated through LLMs. BatLLM does not currently include NPC bots or a single-player mode.
+Yes. The current design assumes two human players, two bots, and no NPC opponent or single-player campaign mode.
 
-## Does BatLLM use Ollama?
+## Why can a good strategy still fail in play?
 
-Yes. The current codebase uses:
+The model has to translate the player's intent into BatLLM's strict command format. Prompt wording, model choice, context history, prompt augmentation, and shared-vs-independent contexts all affect whether a strategically sound idea becomes a valid in-game action.
 
-- the Python `ollama` client for gameplay chat requests
-- the `ollama` CLI and local HTTP endpoints for the Ollama configuration screen
+## What role does Ollama play in BatLLM?
 
-## What is the difference between local models and remote models?
+BatLLM uses the Python `ollama` client for gameplay chat requests. The `Ollama Config` screen uses the `ollama` CLI plus local HTTP endpoints for lifecycle actions, model inventory, downloads, deletions, and warm-up.
 
-- local models are already present in your local Ollama installation
-- remote models are names discovered from `https://ollama.com/library` and are only usable after download
+## What happens if Ollama is missing or not running?
 
-## How do I close the model list popup?
+If the CLI is missing, BatLLM can ask whether to launch the official installer. If Ollama is installed but stopped, BatLLM can ask whether to start it or skip the prompt and auto-start it when `Start Ollama Automatically on BatLLM Launch` is enabled.
 
-The local and remote model pickers close when you:
+## What is the difference between local and remote models?
 
-- press `Esc`
-- click outside the popup
-- click the popup `Close` button
-
-## What happens if Ollama is not installed?
-
-If the app cannot start Ollama because the CLI is missing, the Ollama screen opens an install-guidance flow. BatLLM does not auto-install Ollama for you.
-
-## What happens if the remote model list cannot be loaded?
-
-The Ollama screen shows an error in its status/output area and leaves the current selection state unchanged. Typical causes are no network access or a failure reaching `https://ollama.com/library`.
+- local models already exist in the local Ollama installation and can be selected for gameplay immediately
+- remote models are names discovered from `https://ollama.com/library` and only become playable after download
 
 ## Does BatLLM change my real Ollama installation?
 
-Yes. The current Ollama screen operates on the real local Ollama service and model store configured by `llm.url` and `llm.port`.
+Yes. Starting or stopping the service, downloading models, deleting models, and reinstalling Ollama all affect the configured local Ollama environment. Treat the Ollama screen as a real system control surface, not a BatLLM-only sandbox.
 
-## Does deleting a model only remove BatLLM's reference?
+## What does `Use Selected` change?
 
-No. `Delete Selected` deletes the local Ollama model itself.
+`Use Selected` writes the chosen model to `llm.model`, attempts to warm it for gameplay, and records it in `llm.last_served_model` after a successful warm-up. That saved value lets BatLLM restore the same served model the next time it starts Ollama.
 
-## Does downloading a model only affect BatLLM?
+## Can I manage Ollama outside BatLLM?
 
-No. `Download Selected` pulls the model into the shared local Ollama installation. Other local tools that use the same Ollama store can see that model afterward.
+Yes. If Ollama is already installed, running, and reachable at the configured host and port, BatLLM can use it without the in-app control screen. The screen is recommended, not mandatory.
 
-## Can BatLLM stop models that are already running?
+## Where is the runtime configuration stored?
 
-When you choose a model with `Use Selected`, BatLLM may stop the previously managed BatLLM model before warming the newly selected one. It does not claim ownership of every model that may already be running outside BatLLM.
+The main runtime file is `src/configs/config.yaml`. Contributors should also know that `src/configs/app_config.py` defines fallback defaults used when keys are missing from the YAML.
 
-## Can I use BatLLM without the Ollama screen?
+## What should contributors validate before opening a pull request?
 
-Yes. If your Ollama setup is already running and reachable at the configured host, you can manage Ollama externally and simply use BatLLM for gameplay.
+Run the relevant non-live tests for the area changed, keep cross-platform impact in mind, and update documentation in the same branch whenever UI labels, config keys, setup steps, or Ollama behaviour change. The current command set is documented in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## How does prompt augmentation help?
+## Where should I start when something seems wrong?
 
-Prompt augmentation gives the model explicit, structured game-state context on each turn. In practice that can make model output more relevant and interpretable, but it still depends on the quality of the player's prompt and the model's ability to follow command-format constraints.
+Use the document that matches the problem:
 
-## Why does the app ask about exit confirmation or saving?
+- gameplay flow and screen behaviour: [USER_GUIDE.md](USER_GUIDE.md)
+- recurring practical and architectural questions: [FAQ.md](FAQ.md)
+- setup, configuration, testing, and troubleshooting: [CONTRIBUTING.md](CONTRIBUTING.md)
 
-Those behaviours are controlled by the Settings screen values:
-
-- `Confirm on Exit`
-- `Prompt to Save on Exit`
-
-## Does the history screen support `Esc` to go back?
-
-Not currently. The history screen uses its explicit `Back` button.
-
-## Where should I look for setup or runtime failures?
-
-Start with [USER_GUIDE.md](USER_GUIDE.md) for normal usage questions, or [CONTRIBUTING.md](CONTRIBUTING.md) if you need the consolidated developer troubleshooting notes.
+If the problem is model-related, inspect the History screen and the Ollama output log before assuming the game logic failed.

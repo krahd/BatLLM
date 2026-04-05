@@ -309,11 +309,8 @@ class HomeScreen(Screen):
             self.set_prompt_gui_input_text(bot_id, "")  # Clear the editing field
             self.set_prompt_history_text(bot_id, new_prompt)
 
-            #  add the prompt to the store and to the bot
+            # Route prompt registration through the board so the store is updated once.
             gbw = self.ids.game_board
-            gui_element_id = f"prompt_store_viewer_{bot_id}"
-
-            gbw.prompt_store.add_prompt(bot_id, new_prompt)
             gbw.submit_prompt_to_bot(bot_id, new_prompt)
 
 

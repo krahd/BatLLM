@@ -1,4 +1,4 @@
-> ![BatLLM logo](./images/logo-small.png) **[Overview](DOCUMENTATION.md) · [Readme](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
+> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [Overview](DOCUMENTATION.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Code Docs](code/html/index.html)**
 
 # Changelog
 
@@ -8,13 +8,19 @@
 
 - added startup prompts to install Ollama when the CLI is missing
 - added startup prompts and settings-backed auto-start behaviour for Ollama when it is installed but not running
-- added automatic Ollama shutdown on app exit when `Auto-Stop Ollama on Exit` is enabled
+- added automatic Ollama shutdown on app exit when `Stop Ollama Automatically on BatLLM Quit` is enabled
 - added `Install Ollama` to the Ollama control screen with install vs reinstall confirmation
 - persisted `llm.last_served_model` so BatLLM can warm the same model when it starts Ollama again
 
 ### Documentation
 
 - updated the README, user guide, and contributor guide to reflect the install flow, startup prompts, new settings, and `last_served_model`
+- replaced the user-only FAQ with a shared user/developer FAQ focused on recurring non-trivial questions
+- aligned the overview docs and docs index with the new FAQ scope
+- removed outdated interface illustration references from the README while keeping the animated gameplay demo
+- added a compact compatibility matrix, glossary, and release-bundle troubleshooting appendix to the README
+- added a lightweight documentation review checklist to the PR workflow in the contributor guide
+- reordered the shared documentation navigation so `README` is the first item and removed the obsolete SVG interface diagrams from the repository
 
 ## v0.2.1 - 2026-04-03
 

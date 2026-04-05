@@ -14,19 +14,19 @@ KivyConfig.set("graphics", "window_state", "maximized")
 # Default fallback values
 DEFAULTS = {
     "game": {
-        "total_rounds": 3,
-        "turns_per_round": 5,
+        "total_rounds": 2,
+        "turns_per_round": 8,
         "independent_contexts": True,
-        "prompt_augmentation": False,
-        "initial_health": 20,
-        "bullet_damage": 3,
-        "shield_size": 20,
+        "prompt_augmentation": True,
+        "initial_health": 30,
+        "bullet_damage": 5,
+        "shield_size": 70,
     },
     "ui": {
-        "font_size": 14,
+        "font_size": 16,
         "frame_rate": 60,
         "confirm_on_exit": True,
-        "prompt_save_on_exit": True,
+        "prompt_save_on_exit": False,
         "auto_start_ollama": False,
         "stop_ollama_on_exit": False,
     },
