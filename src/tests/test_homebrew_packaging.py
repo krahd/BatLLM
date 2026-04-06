@@ -1,22 +1,27 @@
 from __future__ import annotations
+from util import paths
+from create_homebrew_formula import (
+    create_worktree_archive,
+    parse_downloaded_artifact_name,
+    read_requirements,
+    read_version,
+    render_formula,
+)
+from configs.app_config import AppConfig
+import ollama_service
 
+import sys
 import tarfile
 from pathlib import Path
 
 import yaml
 
-import ollama_service
-from configs.app_config import AppConfig
-from create_homebrew_formula import (
-    create_worktree_archive,
-    parse_downloaded_artifact_name,
-    read_requirements,
-    render_formula,
-)
-from util import paths
-
-
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+
+
 HOMEBREW_REQUIREMENTS = ROOT / "packaging" / "homebrew" / "requirements.txt"
 
 
@@ -104,7 +109,7 @@ def test_parse_downloaded_artifact_name_supports_wheels_and_sdists() -> None:
 
 def test_render_formula_includes_expected_homebrew_runtime_wrapper() -> None:
     formula = render_formula(
-        version="0.3.0",
+        version=read_version(),
         source_url="https://example.com/BatLLM.tar.gz",
         source_sha256="abc123",
         resources=[

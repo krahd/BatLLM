@@ -300,7 +300,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--github-tag",
-        help="Published GitHub tag to use as the formula source archive, for example v0.3.0.",
+        help="Published GitHub tag to use as the formula source archive, for example vX.Y.Z.",
     )
     parser.add_argument(
         "--github-branch",
