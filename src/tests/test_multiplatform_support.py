@@ -385,6 +385,7 @@ def test_cross_platform_launchers_compile() -> None:
         root / "run_game_analyzer.py",
         root / "run_tests.py",
         root / "create_release_bundles.py",
+        root / "create_homebrew_formula.py",
     ):
         py_compile.compile(str(script), doraise=True)
 

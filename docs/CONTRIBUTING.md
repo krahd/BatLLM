@@ -104,7 +104,9 @@ Core runtime modules:
 - `run_game_analyzer.py`: repository-root standalone analyzer launcher
 - `run_tests.py`: cross-platform test runner
 - `create_release_bundles.py`: source and platform bundle generator
+- `create_homebrew_formula.py`: Homebrew tap formula generator
 - `start_ollama.sh` and `stop_ollama.sh`: Unix wrappers around the Python Ollama helper
+- `packaging/homebrew/`: Homebrew runtime requirement pins and maintainer notes
 
 Maintained documentation:
 
@@ -153,14 +155,16 @@ Important implementation notes:
 
 ## Configuration Reference
 
-BatLLM reads its runtime configuration from `src/configs/config.yaml`.
+BatLLM reads its runtime configuration from `src/configs/config.yaml` by default.
 
 ### File Locations
 
 - primary runtime config: `src/configs/config.yaml`
 - loader: `src/configs/app_config.py`
 
-BatLLM writes updated values back to `src/configs/config.yaml` when the app saves configuration.
+If `BATLLM_HOME` is not set, BatLLM writes updated values back to `src/configs/config.yaml` when the app saves configuration.
+
+If `BATLLM_HOME` is set, BatLLM treats `src/configs/config.yaml` as the shipped default config and writes mutable runtime config to `BATLLM_HOME/config.yaml` instead. Relative save folders such as `saved_sessions` are also resolved under `BATLLM_HOME` in that mode.
 
 ### Current Default File
 
@@ -316,6 +320,7 @@ The Ollama configuration screen writes:
 4. The current Ollama lifecycle toggles are stored in `ui.auto_start_ollama` and `ui.stop_ollama_on_exit`. `main.py` still accepts the legacy `ui.auto_stop_ollama` key as a backward-compatible fallback for older configs.
 5. On a fresh install, `llm.last_served_model` starts empty and is filled after BatLLM successfully warms a model so startup can later restore that serving state.
 6. Timeout precedence is: `llm.model_timeouts[model]`, then `llm.timeout`, then BatLLM's built-in common-model defaults, then the generic fallback.
+7. Packaged installs can set `BATLLM_HOME` to keep mutable config and saved-session data out of a read-only install prefix.
 
 ## Testing And Validation
 
@@ -466,6 +471,22 @@ That produces:
 - a Windows bundle with `.bat` launchers
 - a macOS bundle with `.command` launchers
 - a Linux bundle with `.sh` launchers
+
+To generate a Homebrew formula for the `krahd` tap after publishing a release tag:
+
+```bash
+python create_homebrew_formula.py \
+  --github-tag v$(cat VERSION) \
+  --formula-out /path/to/homebrew-krahd/Formula/batllm.rb
+```
+
+For local validation before publishing, create a formula from the current worktree instead:
+
+```bash
+python create_homebrew_formula.py \
+  --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz \
+  --formula-out /tmp/batllm.rb
+```
 
 ## Coding Conventions
 

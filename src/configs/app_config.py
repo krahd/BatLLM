@@ -5,8 +5,11 @@ from pathlib import Path
 import yaml
 from kivy.config import Config as KivyConfig
 
+from util.paths import resolve_config_path
+
 APP_NAME = "BatLLM"
-CONFIG_PATH = Path(__file__).parent / "config.yaml"
+SHIPPED_CONFIG_PATH = Path(__file__).parent / "config.yaml"
+CONFIG_PATH = resolve_config_path(SHIPPED_CONFIG_PATH)
 
 # Maximize the window on startup
 KivyConfig.set("graphics", "window_state", "maximized")
@@ -39,35 +42,63 @@ DEFAULTS = {
 }
 
 
+def _read_yaml(path: Path) -> dict:
+    """Read a YAML mapping, returning an empty mapping for missing or empty files."""
+    if not path.exists():
+        return {}
+    with path.open("r", encoding="utf-8") as handle:
+        data = yaml.safe_load(handle) or {}
+    return data if isinstance(data, dict) else {}
+
+
+def _merge_config(target: dict, overlay: dict) -> None:
+    """Merge a sectioned config mapping into the target mapping."""
+    for section, values in overlay.items():
+        if section not in target:
+            target[section] = {}
+        if isinstance(values, dict):
+            target[section].update(values)
+        else:
+            target[section] = values
+
+
+def load_config_data(
+    path: Path | None = None,
+    *,
+    shipped_path: Path = SHIPPED_CONFIG_PATH,
+) -> dict:
+    """Load defaults, then the shipped config, then an optional user overlay config."""
+    resolved_path = resolve_config_path(shipped_path) if path is None else path
+    merged = copy.deepcopy(DEFAULTS)
+    _merge_config(merged, _read_yaml(shipped_path))
+    if resolved_path != shipped_path:
+        _merge_config(merged, _read_yaml(resolved_path))
+    return merged
+
+
 class AppConfig:
     """This class handles the application configuration.
     It loads the configuration from a YAML file and provides methods to get and set configuration values.
     """
 
-    def __init__(self, path=CONFIG_PATH):
+    def __init__(self, path: Path | None = None, default_path: Path = SHIPPED_CONFIG_PATH):
+        self._default_path = default_path
         self._config = copy.deepcopy(DEFAULTS)
-        self._path = path
-        self.load(path)
+        self._path = resolve_config_path(default_path) if path is None else path
+        self.load(self._path)
 
 
-    def load(self, path=CONFIG_PATH):
+    def load(self, path: Path | None = None):
         """Loads the configuration from the specified path.
         If the file does not exist, it initialises with default values.
         """
-
-        if path.exists():
-            with open(path, "r", encoding="utf-8") as f:
-                user_config = yaml.safe_load(f) or {}
-
-                for section, values in user_config.items():
-                    if section not in self._config:
-                        self._config[section] = {}
-
-                    self._config[section].update(values)
+        resolved_path = resolve_config_path(self._default_path) if path is None else path
+        self._path = resolved_path
+        self._config = load_config_data(resolved_path, shipped_path=self._default_path)
 
 
 
-    def save(self, path=CONFIG_PATH):
+    def save(self, path: Path | None = None):
         """Saves the current configuration to the specified path or the default path.
         If the path is None, it uses the path set during initialisation.
         """
@@ -78,7 +109,7 @@ class AppConfig:
         path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(path, "w", encoding="utf-8") as f:
-            yaml.dump(self._config, f)
+            yaml.safe_dump(self._config, f, sort_keys=False)
 
 
 

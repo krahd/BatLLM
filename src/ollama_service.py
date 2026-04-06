@@ -20,10 +20,12 @@ from urllib.request import Request, urlopen
 import psutil
 import yaml
 
+from util.paths import resolve_config_path
+
 
 MIN_PYTHON = (3, 10)
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = ROOT / "src" / "configs" / "config.yaml"
+SHIPPED_CONFIG_PATH = ROOT / "src" / "configs" / "config.yaml"
 REMOTE_TIMEOUT_CATALOG_PATH = ROOT / "src" / "assets" / "ollama_remote_timeout_catalog.json"
 UNIX_INSTALL_URL = "https://ollama.com/install.sh"
 WINDOWS_INSTALL_URL = "https://ollama.com/install.ps1"
@@ -48,9 +50,34 @@ def require_supported_python() -> None:
     raise SystemExit(f"BatLLM requires Python 3.10 or newer. Detected Python {version}.")
 
 
-def load_llm_config(path: Path = CONFIG_PATH) -> dict[str, Any]:
+def default_config_path() -> Path:
+    """Return the active runtime config path for the current process."""
+    return resolve_config_path(SHIPPED_CONFIG_PATH)
+
+
+CONFIG_PATH = default_config_path()
+
+
+def load_config_data(path: Path | None = None) -> dict[str, Any]:
+    """Load the shipped config plus any active user overlay config."""
+    resolved_path = default_config_path() if path is None else path
+    data = yaml.safe_load(SHIPPED_CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    if resolved_path.exists() and resolved_path != SHIPPED_CONFIG_PATH:
+        overlay = yaml.safe_load(resolved_path.read_text(encoding="utf-8")) or {}
+        if isinstance(overlay, dict):
+            for section, values in overlay.items():
+                if section not in data:
+                    data[section] = {}
+                if isinstance(values, dict):
+                    data[section].update(values)
+                else:
+                    data[section] = values
+    return data if isinstance(data, dict) else {}
+
+
+def load_llm_config(path: Path | None = None) -> dict[str, Any]:
     """Load the LLM configuration required to manage the local Ollama service."""
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    data = load_config_data(path)
     llm = data.get("llm") or {}
     model_timeouts = llm.get("model_timeouts")
     if not isinstance(model_timeouts, dict):
@@ -229,12 +256,14 @@ def preferred_start_model(llm: Mapping[str, Any]) -> str:
     return last_served_model or model
 
 
-def save_last_served_model(model: str, path: Path = CONFIG_PATH) -> None:
+def save_last_served_model(model: str, path: Path | None = None) -> None:
     """Persist the most recent BatLLM-managed Ollama model."""
-    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    resolved_path = default_config_path() if path is None else path
+    data = load_config_data(resolved_path)
     llm = data.setdefault("llm", {})
     llm["last_served_model"] = model.strip()
-    path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+    resolved_path.parent.mkdir(parents=True, exist_ok=True)
+    resolved_path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
 
 
 def ollama_binary_candidates() -> list[Path]:
@@ -421,7 +450,7 @@ def server_is_up(url: str, port: int) -> bool:
         return False
 
 
-def inspect_service_state(config_path: Path = CONFIG_PATH) -> dict[str, object]:
+def inspect_service_state(config_path: Path | None = None) -> dict[str, object]:
     """Return the install/runtime state BatLLM cares about at startup."""
     llm = load_llm_config(config_path)
     url = str(llm["url"])
@@ -498,7 +527,7 @@ def preload_model(url: str, port: int, model: str, timeout: float = 120.0) -> No
     )
 
 
-def start_service(config_path: Path = CONFIG_PATH) -> int:
+def start_service(config_path: Path | None = None) -> int:
     """Start Ollama if needed, ensure the configured model is present, and warm it."""
     llm = load_llm_config(config_path)
     model = preferred_start_model(llm)
@@ -606,7 +635,7 @@ def find_ollama_listener_pids(port: int) -> list[int]:
     return sorted(pids)
 
 
-def stop_service(config_path: Path = CONFIG_PATH, verbose: bool = False) -> int:
+def stop_service(config_path: Path | None = None, verbose: bool = False) -> int:
     """Stop models reported by Ollama and terminate the listening server process."""
     llm = load_llm_config(config_path)
     url = str(llm["url"])
@@ -669,7 +698,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-c",
         "--config",
-        default=str(CONFIG_PATH),
+        default=str(default_config_path()),
         help="Path to the BatLLM YAML config file.",
     )
     parser.add_argument(
