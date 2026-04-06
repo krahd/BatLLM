@@ -33,6 +33,7 @@ class HomeScreen(Screen):
         """
         super().__init__(**kwargs)
         self._active_confirmation_popup = None
+        self._active_load_prompt_dialog = None
         self._exit_confirmation_popup = None
 
     def _clear_confirmation_popup(self, popup=None):
@@ -54,6 +55,22 @@ class HomeScreen(Screen):
         else:
             self._clear_confirmation_popup(popup)
         return popup
+
+    def _clear_load_prompt_dialog(self, dialog=None):
+        """Clear the tracked prompt-load dialog, optionally only for the provided dialog."""
+        if dialog is None or self._active_load_prompt_dialog is dialog:
+            self._active_load_prompt_dialog = None
+
+    def _suspend_window_key_down(self):
+        """Temporarily disable the screen-level Esc handler while a modal dialog owns it."""
+        Window.unbind(on_key_down=self.handle_window_key_down)
+
+    def _resume_window_key_down(self, *_args):
+        """Restore the screen-level Esc handler when the home screen should own it again."""
+        Window.unbind(on_key_down=self.handle_window_key_down)
+        manager = getattr(self, "manager", None)
+        if manager is None or manager.current == self.name:
+            Window.bind(on_key_down=self.handle_window_key_down)
 
 
     def save_session(self):
@@ -362,6 +379,13 @@ class HomeScreen(Screen):
         start_folder = str(prompt_asset_dir())
         dialog = LoadTextDialog(on_choice=file_dialog_callback, start_dir=start_folder)
 
+        def _on_dialog_dismiss(*_args):
+            self._clear_load_prompt_dialog(dialog)
+            self._resume_window_key_down()
+
+        self._active_load_prompt_dialog = dialog
+        self._suspend_window_key_down()
+        dialog.bind(on_dismiss=_on_dialog_dismiss)
         dialog.open()
 
 
@@ -370,6 +394,12 @@ class HomeScreen(Screen):
     def handle_window_key_down(self, _window, key, *_args):
         if key != 27:
             return False
+
+        prompt_dialog = getattr(self, "_active_load_prompt_dialog", None)
+        if prompt_dialog is not None:
+            self._clear_load_prompt_dialog(prompt_dialog)
+            prompt_dialog.dismiss()
+            return True
 
         popup = getattr(self, "_active_confirmation_popup", None)
         if popup is not None:
@@ -468,7 +498,7 @@ class HomeScreen(Screen):
 
 
     def on_leave(self):
-        Window.unbind(on_key_down=self.handle_window_key_down)
+        self._suspend_window_key_down()
 
 
     def on_enter(self):
@@ -479,8 +509,7 @@ class HomeScreen(Screen):
 
         self.ids.overlay.darken = 0.2  # Set the initial overlay alpha value
         self.ids.overlay.desaturation = 0.1  # Set the initial desaturation value
-        Window.unbind(on_key_down=self.handle_window_key_down)
-        Window.bind(on_key_down=self.handle_window_key_down)
+        self._resume_window_key_down()
 
     def _save_session_file(self, filename: str) -> None:
         """Persist the current session into the configured save folder."""

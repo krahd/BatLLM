@@ -5,6 +5,7 @@ from types import SimpleNamespace
 
 import util.utils as utils
 from view.home_screen import HomeScreen
+from view.load_text_dialog import LoadTextDialog
 from view.settings_screen import SettingsScreen
 
 
@@ -220,6 +221,79 @@ def test_home_screen_escape_cancels_save_session_confirmation(monkeypatch) -> No
     assert close_called["value"] is False
     assert filename_dialog_called["value"] is False
     assert getattr(screen, "_active_confirmation_popup", None) is None
+
+
+def test_home_screen_load_prompt_suspends_escape_close_handler(monkeypatch) -> None:
+    screen = HomeScreen()
+    window_calls = []
+
+    class FakeLoadPromptDialog:
+        last = None
+
+        def __init__(self, on_choice, start_dir=None, **_kwargs):
+            self.on_choice = on_choice
+            self.start_dir = start_dir
+            self._on_dismiss = None
+            self.opened = False
+            self.dismissed = False
+            FakeLoadPromptDialog.last = self
+
+        def bind(self, on_dismiss=None, **_kwargs):
+            if on_dismiss is not None:
+                self._on_dismiss = on_dismiss
+
+        def open(self):
+            self.opened = True
+
+        def dismiss(self):
+            self.dismissed = True
+            if self._on_dismiss is not None:
+                self._on_dismiss(self)
+
+    monkeypatch.setattr("view.home_screen.LoadTextDialog", FakeLoadPromptDialog)
+    monkeypatch.setattr("view.home_screen.prompt_asset_dir", lambda: "/tmp/prompts")
+    monkeypatch.setattr(
+        "view.home_screen.Window.unbind",
+        lambda **kwargs: window_calls.append(("unbind", kwargs.get("on_key_down"))),
+    )
+    monkeypatch.setattr(
+        "view.home_screen.Window.bind",
+        lambda **kwargs: window_calls.append(("bind", kwargs.get("on_key_down"))),
+    )
+
+    screen.load_prompt(1)
+
+    assert FakeLoadPromptDialog.last is not None
+    assert FakeLoadPromptDialog.last.opened is True
+    assert getattr(screen, "_active_load_prompt_dialog", None) is FakeLoadPromptDialog.last
+    assert [call[0] for call in window_calls] == ["unbind"]
+
+    FakeLoadPromptDialog.last.dismiss()
+
+    assert getattr(screen, "_active_load_prompt_dialog", None) is None
+    assert [call[0] for call in window_calls] == ["unbind", "unbind", "bind"]
+
+
+def test_home_screen_escape_dismisses_active_load_prompt_dialog(monkeypatch) -> None:
+    screen = HomeScreen()
+    close_called = {"value": False}
+    dismissed = {"value": False}
+
+    class FakeLoadPromptDialog:
+        def dismiss(self):
+            dismissed["value"] = True
+
+    screen._active_load_prompt_dialog = FakeLoadPromptDialog()
+    monkeypatch.setattr(
+        screen,
+        "on_request_close",
+        lambda *args, **kwargs: close_called.__setitem__("value", True) or True,
+    )
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert dismissed["value"] is True
+    assert close_called["value"] is False
+    assert getattr(screen, "_active_load_prompt_dialog", None) is None
 
 
 
