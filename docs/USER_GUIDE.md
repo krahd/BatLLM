@@ -14,11 +14,36 @@ Prompts can be loaded and saved to disk, the history screen can be used to inspe
 
 ## Before You Begin
 
+### Install BatLLM
+
+If you are on macOS on Apple Silicon, you can install BatLLM with Homebrew:
+
+```bash
+brew tap krahd/tap
+brew install krahd/tap/batllm
+```
+
+Launch the main app with:
+
+```bash
+batllm
+```
+
+Launch the standalone analyzer with:
+
+```bash
+batllm-analyzer
+```
+
+The Homebrew install stores BatLLM's writable config and saved-session data under `~/Library/Application Support/BatLLM` by default, so updates do not try to write into the Homebrew cellar.
+
+If you are not using the Homebrew install, you can still run BatLLM from a source checkout or from one of the release bundles.
+
 Recommended first-run flow:
 
-1. install the Python dependencies
+1. install BatLLM
 2. install the Ollama CLI if it is not already available on the machine, or let BatLLM launch the official installer for you
-3. launch BatLLM with `python run_batllm.py`
+3. launch BatLLM with `batllm` if you installed it with Homebrew, otherwise launch it with `python run_batllm.py` from the repository checkout
 4. open `Settings`
 5. click `Ollama Config`
 6. start Ollama and choose a local model

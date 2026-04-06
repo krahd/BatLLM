@@ -2,6 +2,18 @@
 
 # Changelog
 
+## v0.3.1 - 2026-04-06
+
+### Homebrew Distribution
+
+- added Homebrew distribution support with `create_homebrew_formula.py`, pinned packaging requirements, and regression coverage for the formula and packaged runtime overlay
+- added `BATLLM_HOME`-aware packaged-install behavior so writable config and saved-session data stay outside the read-only Homebrew cellar
+
+### Installation Documentation
+
+- added end-user Homebrew install and launch instructions for Apple Silicon macOS across the maintained docs
+- documented the Homebrew maintainer workflow separately from the end-user install path in the repository documentation
+
 ## v0.3.0 - 2026-04-05
 
 ### Fresh Install Defaults

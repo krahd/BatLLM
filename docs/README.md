@@ -88,7 +88,7 @@ If the CLI is missing, the app can offer to install Ollama from the Ollama scree
 | Topic | Current expectation | Notes |
 | --- | --- | --- |
 | Python | `3.10+` | `3.11` or `3.12` is recommended for normal development and usage. |
-| BatLLM | `0.2.3` | Matches the current repository `VERSION` file and release line. |
+| BatLLM | `0.3.1` | Matches the current repository `VERSION` file and release line. |
 | Ollama workflow | local Ollama install with the CLI available | The recommended path is to manage install, start, stop, and model selection through `Ollama Config`. BatLLM can prompt to install/start Ollama and restore `llm.last_served_model`. |
 
 ## Quick Start
@@ -123,6 +123,33 @@ To launch the standalone analyzer directly:
 python run_game_analyzer.py
 ```
 
+### Homebrew Packaging
+
+The repository now includes tap-oriented Homebrew packaging support for macOS on Apple Silicon.
+
+To install BatLLM on macOS on Apple Silicon:
+
+```bash
+brew tap krahd/tap
+brew install krahd/tap/batllm
+```
+
+Launch the game with `batllm` and the standalone analyzer with `batllm-analyzer`.
+
+Maintainers generate the formula with:
+
+```bash
+python create_homebrew_formula.py --github-tag v$(cat VERSION) --formula-out /path/to/homebrew-krahd/Formula/batllm.rb
+```
+
+For local validation before publishing a tag, the same generator can build a temporary formula from the current worktree:
+
+```bash
+python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb
+```
+
+The resulting Homebrew install uses a user-writable `BATLLM_HOME` directory, which defaults to `~/Library/Application Support/BatLLM`, so config updates and saved sessions stay out of the Homebrew cellar.
+
 You can install Ollama manually from the official download pages:
 
 - macOS: `https://ollama.com/download`
@@ -155,6 +182,8 @@ Each platform bundle now includes both the main app launcher and a dedicated ana
 - Windows: `run-batllm.bat` and `run-game-analyzer.bat`
 - macOS: `run-batllm.command` and `run-game-analyzer.command`
 - Linux: `run-batllm.sh` and `run-game-analyzer.sh`
+
+The Homebrew workflow lives separately under `packaging/homebrew/` and is generated with `create_homebrew_formula.py`.
 
 #### Release Bundle Troubleshooting
 

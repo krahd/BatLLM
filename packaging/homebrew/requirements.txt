@@ -1,0 +1,6 @@
+Kivy==2.3.1
+kivymd==1.2.0
+ollama==0.5.3
+psutil==7.0.0
+PyYAML==6.0.2
+requests==2.32.4
