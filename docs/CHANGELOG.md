@@ -2,6 +2,24 @@
 
 # Changelog
 
+## v0.2.5 - 2026-04-05
+
+### Timeout Configuration and Recovery
+
+- centralised model-aware Ollama timeout resolution across gameplay requests, service warm-up, and live smoke helpers
+- added built-in timeout defaults for common local models while keeping explicit per-model and global timeout overrides
+- hardened timeout message formatting and fixed the remaining timeout/configuration edge cases that could surface during live play
+
+### Ollama Config Screen
+
+- added per-model timeout controls to `Local Models`, including the effective-timeout display, explicit override save, and reset-to-default action
+- removed saved timeout overrides automatically when a local model is deleted
+
+### Prompt Dialog Esc Handling
+
+- made the prompt-load dialog own `Esc` while it is open so it dismisses the dialog instead of falling through to the home-screen exit confirmation
+- added regression coverage for both the dialog-owned `Esc` flow and the model-timeout precedence path
+
 ## v0.2.4 - 2026-04-05
 
 ### Prompt and Keyboard UX
