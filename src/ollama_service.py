@@ -30,6 +30,8 @@ WINDOWS_INSTALL_URL = "https://ollama.com/install.ps1"
 COMMON_MODEL_TIMEOUTS = {
     "mistral-small": 60.0,
     "mistral-small:latest": 60.0,
+    "smollm2": 35.0,
+    "smollm2:latest": 35.0,
     "llama3.2": 75.0,
     "llama3.2:latest": 75.0,
     "phi3": 90.0,

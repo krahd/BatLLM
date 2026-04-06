@@ -15,9 +15,9 @@ game:
   turns_per_round: 8
 llm:
   debug_requests: false
-  last_served_model: qwen3:30b
+  last_served_model: ''
   max_tokens: null
-  model: qwen3:30b
+  model: smollm2
   model_timeouts: {}
   num_ctx: 4096
   num_predict: null

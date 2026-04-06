@@ -182,9 +182,9 @@ game:
   turns_per_round: 8
 llm:
   debug_requests: false
-  last_served_model: qwen3:30b
+  last_served_model: ''
   max_tokens: null
-  model: qwen3:30b
+  model: smollm2
   model_timeouts: {}
   num_ctx: 4096
   num_predict: null
@@ -314,7 +314,7 @@ The Ollama configuration screen writes:
 2. The Ollama configuration screen assumes the configured host and port are the shared local Ollama service to manage.
 3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
 4. The current Ollama lifecycle toggles are stored in `ui.auto_start_ollama` and `ui.stop_ollama_on_exit`. `main.py` still accepts the legacy `ui.auto_stop_ollama` key as a backward-compatible fallback for older configs.
-5. `llm.last_served_model` tracks the last model BatLLM explicitly warmed so startup can restore that serving state.
+5. On a fresh install, `llm.last_served_model` starts empty and is filled after BatLLM successfully warms a model so startup can later restore that serving state.
 6. Timeout precedence is: `llm.model_timeouts[model]`, then `llm.timeout`, then BatLLM's built-in common-model defaults, then the generic fallback.
 
 ## Testing And Validation

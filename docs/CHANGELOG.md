@@ -2,6 +2,20 @@
 
 # Changelog
 
+## v0.3.0 - 2026-04-05
+
+### Fresh Install Defaults
+
+- changed the primary shipped Ollama model from `qwen3:30b` to `smollm2` so first-run BatLLM is more likely to work on modest local hardware
+- stopped shipping a pre-populated `llm.last_served_model`, so a new installation starts with a clean first-run model state and only records the served model after a successful warm-up
+- aligned the built-in local timeout table with the new default by adding a shared `smollm2` timeout profile
+
+### Validation And Documentation
+
+- added fresh-install startup tests that verify BatLLM falls back to the configured default model when no served-model history exists
+- strengthened shipped-config validation to pin the expected first-install Ollama defaults in the repository test suite
+- updated the contributor guide's documented sample config to match the shipped first-install defaults
+
 ## v0.2.5 - 2026-04-05
 
 ### Timeout Configuration and Recovery

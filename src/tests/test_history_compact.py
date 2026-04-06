@@ -52,6 +52,17 @@ def test_llm_config_has_required_fields() -> None:
     assert not missing, f"Missing llm config keys: {missing}"
 
 
+def test_shipped_llm_config_uses_smollm2_first_install_defaults() -> None:
+    config = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    llm = config.get("llm") or {}
+
+    assert llm.get("model") == "smollm2"
+    assert llm.get("last_served_model", "") == ""
+    assert llm.get("url") == "http://localhost"
+    assert llm.get("port") == 11434
+    assert llm.get("path") == "/api/chat"
+
+
 def test_ollama_scripts_have_valid_shell_syntax() -> None:
     command = _bash_syntax_command()
     for script in (START_SCRIPT, STOP_SCRIPT):
