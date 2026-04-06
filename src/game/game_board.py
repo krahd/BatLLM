@@ -473,10 +473,11 @@ class GameBoard(Widget):
             self.history_manager.end_round()
             # Insert visual separation and summary
             for b in self.bots:
-                self.add_text_to_home_screen_cmd_history(b.id, "\n\n")
+                self.add_text_to_home_screen_cmd_history(b.id, "\n")
                 self.add_text_to_home_screen_cmd_history(
                     b.id, markup(f"Round {self.current_round} ended.", color="#a00000", bold=True)
                 )
+                self.add_text_to_home_screen_cmd_history(b.id, "\n\n")
 
             if self.game_is_over():
                 self.end_game()

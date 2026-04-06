@@ -9,6 +9,7 @@ import pytest
 
 from configs.app_config import config
 from game.bot import Bot
+from game.bullet import Bullet
 from game.game_board import GameBoard
 from game.ollama_connector import LLMTimeoutError, OllamaConnector
 from game.prompt_store import PromptStore
@@ -576,6 +577,39 @@ def test_round_completion_and_session_save(monkeypatch, tmp_path: Path) -> None:
     assert saved["games"][0]["rounds"][0]["gameplay_settings_snapshot"]["turns_per_round"] == 1
 
 
+def test_round_end_history_spacing_separates_next_round(monkeypatch) -> None:
+    board, scheduled_once, history_log = _build_board(
+        monkeypatch,
+        overrides={
+            ("game", "turns_per_round"): 1,
+            ("game", "total_rounds"): 2,
+        },
+    )
+    monkeypatch.setattr(
+        board.ollama_connector,
+        "send_prompt_to_llm_sync",
+        lambda _bot_id, **_kwargs: "S0",
+    )
+
+    board.submit_prompt_to_bot(1, "Reply with exactly S0")
+    board.submit_prompt_to_bot(2, "Reply with exactly S0")
+
+    scheduled_once.pop(0)(0)
+    scheduled_once.pop(0)(0)
+
+    board.submit_prompt_to_bot(1, "Reply with exactly S0")
+    board.submit_prompt_to_bot(2, "Reply with exactly S0")
+
+    bot_one_entries = [text for bot_id, text in history_log if bot_id == 1]
+    round_end_index = next(
+        index for index, text in enumerate(bot_one_entries) if "Round 1 ended." in text
+    )
+
+    assert bot_one_entries[round_end_index - 1] == "\n"
+    assert bot_one_entries[round_end_index + 1] == "\n\n"
+    assert "Round 2" in bot_one_entries[round_end_index + 2]
+
+
 def test_history_manager_exports_roundtrip_and_views(monkeypatch, tmp_path: Path) -> None:
     board, scheduled_once, _history_log = _build_board(monkeypatch, overrides={
         ("game", "turns_per_round"): 1,
@@ -658,6 +692,7 @@ def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:
         ("game", "turns_per_round"): 1,
         ("game", "total_rounds"): 2,
         ("game", "bullet_damage"): 5,
+        ("game", "bullet_diameter"): 0.02,
         ("game", "shield_size"): 70,
     }
     board, scheduled_once, _history_log = _build_board(monkeypatch, overrides=overrides)
@@ -672,12 +707,15 @@ def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:
 
     first_snapshot = board.history_manager.current_round["gameplay_settings_snapshot"]
     assert first_snapshot["bullet_damage"] == 5
+    assert first_snapshot["bullet_diameter"] == pytest.approx(0.02)
     assert first_snapshot["shield_size"] == 70
 
     overrides[("game", "bullet_damage")] = 9
+    overrides[("game", "bullet_diameter")] = 0.05
     overrides[("game", "shield_size")] = 33
 
     assert board.current_round_settings.bullet_damage == 5
+    assert board.current_round_settings.bullet_diameter == pytest.approx(0.02)
     assert board.current_round_settings.shield_size == 70
 
     scheduled_once.pop(0)(0)
@@ -688,4 +726,20 @@ def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:
 
     second_snapshot = board.history_manager.current_round["gameplay_settings_snapshot"]
     assert second_snapshot["bullet_damage"] == 9
+    assert second_snapshot["bullet_diameter"] == pytest.approx(0.05)
     assert second_snapshot["shield_size"] == 33
+
+
+def test_bullet_uses_configured_diameter(monkeypatch) -> None:
+    original_get = config.get
+    monkeypatch.setattr(
+        config,
+        "get",
+        lambda section, key: 0.05
+        if (section, key) == ("game", "bullet_diameter")
+        else original_get(section, key),
+    )
+
+    bullet = Bullet(1, 0.5, 0.5, 0)
+
+    assert bullet.diameter == pytest.approx(0.05)

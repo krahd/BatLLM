@@ -89,6 +89,23 @@ def test_history_screen_back_navigates_right() -> None:
     assert screen.manager.transition.direction == "right"
 
 
+def test_history_screen_escape_returns_home() -> None:
+    screen = HistoryScreen()
+    screen.manager = DummyManager(current="history")
+
+    assert screen.handle_window_key_down(None, 27) is True
+    assert screen.manager.current == "home"
+    assert screen.manager.transition.direction == "right"
+
+
+def test_history_screen_non_escape_key_is_ignored() -> None:
+    screen = HistoryScreen()
+    screen.manager = DummyManager(current="history")
+
+    assert screen.handle_window_key_down(None, 13) is False
+    assert screen.manager.current == "history"
+
+
 def test_start_and_stop_call_scripts(monkeypatch) -> None:
     screen = OllamaConfigScreen()
     calls = []
@@ -169,7 +186,8 @@ def test_request_install_ollama_prompts_and_runs_install(monkeypatch) -> None:
         "view.ollama_config_screen.ollama_service.inspect_service_state",
         lambda: {"installed": False},
     )
-    monkeypatch.setattr(screen, "refresh_ollama_status", lambda: refreshed.__setitem__("status", True))
+    monkeypatch.setattr(screen, "refresh_ollama_status",
+                        lambda: refreshed.__setitem__("status", True))
     monkeypatch.setattr("view.ollama_config_screen.show_fading_alert", lambda *args, **kwargs: None)
 
     def fake_confirm(title, message, on_confirm, on_cancel=None):
@@ -461,7 +479,8 @@ def test_show_model_picker_uses_touching_rows_with_white_text(monkeypatch) -> No
     assert popup.auto_dismiss is True
 
     layout = popup.content
-    scroll = next(child for child in layout.children if isinstance(child, FakeContainer) and hasattr(child, "do_scroll_x"))
+    scroll = next(child for child in layout.children if isinstance(
+        child, FakeContainer) and hasattr(child, "do_scroll_x"))
     items = scroll.children[0]
     buttons = {button.text: button for button in items.children}
 

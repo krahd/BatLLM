@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import shlex
 import subprocess
@@ -23,6 +24,7 @@ import yaml
 MIN_PYTHON = (3, 10)
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "src" / "configs" / "config.yaml"
+REMOTE_TIMEOUT_CATALOG_PATH = ROOT / "src" / "assets" / "ollama_remote_timeout_catalog.json"
 UNIX_INSTALL_URL = "https://ollama.com/install.sh"
 WINDOWS_INSTALL_URL = "https://ollama.com/install.ps1"
 COMMON_MODEL_TIMEOUTS = {
@@ -79,6 +81,107 @@ def common_model_timeout(model_name: str) -> float | None:
         return COMMON_MODEL_TIMEOUTS[normalized]
     family = normalized.split(":", 1)[0]
     return COMMON_MODEL_TIMEOUTS.get(family)
+
+
+def load_remote_timeout_catalog(path: Path = REMOTE_TIMEOUT_CATALOG_PATH) -> dict[str, Any]:
+    """Load the shipped remote-model timeout catalog."""
+    if not path.exists():
+        return {}
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+    return data if isinstance(data, dict) else {}
+
+
+def _parse_model_scale_billions(size_label: str) -> float | None:
+    """Convert a remote-model size label such as ``7b`` or ``8x7b`` into billions."""
+    normalized = str(size_label or "").strip().lower().replace(" ", "")
+    if not normalized:
+        return None
+
+    multiplicative = re.fullmatch(r"([0-9.]+)x([0-9.]+)([bmk])", normalized)
+    if multiplicative:
+        factor = float(multiplicative.group(1))
+        value = float(multiplicative.group(2))
+        suffix = multiplicative.group(3)
+        scale = value * factor
+    else:
+        simple = re.search(r"([0-9.]+)([bmk])", normalized)
+        if simple is None:
+            return None
+        scale = float(simple.group(1))
+        suffix = simple.group(2)
+
+    if suffix == "b":
+        return scale
+    if suffix == "m":
+        return scale / 1000.0
+    if suffix == "k":
+        return scale / 1_000_000.0
+    return None
+
+
+def estimate_remote_model_timeout_details(
+    model_name: str,
+    *,
+    size_label: str = "",
+    default: float | None = None,
+) -> tuple[float, str]:
+    """Estimate a timeout for a remote Ollama library entry using the shipped catalog."""
+    catalog = load_remote_timeout_catalog()
+    fallback = float(catalog.get("default_timeout") or default or 120.0)
+    normalized_name = str(model_name or "").strip().lower()
+
+    for rule in catalog.get("family_overrides", []):
+        pattern = str(rule.get("pattern") or "")
+        if pattern and re.search(pattern, normalized_name, re.IGNORECASE):
+            timeout = _parse_positive_timeout(rule.get("timeout"))
+            if timeout is not None:
+                return timeout, str(rule.get("source") or "the remote family catalog")
+
+    size_billions = _parse_model_scale_billions(size_label)
+    timeout = fallback
+    source = "the remote timeout catalog fallback"
+
+    if size_billions is not None:
+        for band in catalog.get("size_bands", []):
+            max_billions = band.get("max_billions")
+            band_timeout = _parse_positive_timeout(band.get("timeout"))
+            try:
+                band_limit = float(max_billions)
+            except (TypeError, ValueError):
+                continue
+            if band_timeout is None:
+                continue
+            if size_billions <= band_limit:
+                timeout = band_timeout
+                source = str(
+                    band.get("source")
+                    or f"the {band_limit:g}B remote size band"
+                )
+                break
+
+    for rule in catalog.get("keyword_adjustments", []):
+        pattern = str(rule.get("pattern") or "")
+        if not pattern or not re.search(pattern, normalized_name, re.IGNORECASE):
+            continue
+
+        try:
+            offset = float(rule.get("offset") or 0.0)
+        except (TypeError, ValueError):
+            offset = 0.0
+
+        minimum = _parse_positive_timeout(rule.get("minimum"))
+        timeout = timeout + offset
+        if minimum is not None:
+            timeout = max(timeout, minimum)
+        timeout = max(20.0, timeout)
+        source = str(rule.get("source") or source)
+
+    return timeout, source
 
 
 def resolve_request_timeout_details(

@@ -292,6 +292,7 @@ class AnalyzerSessionModel:
             "bot_diameter",
             "bot_step_length",
             "bullet_damage",
+            "bullet_diameter",
             "bullet_step_length",
             "shield_size",
             "shield_initial_state",

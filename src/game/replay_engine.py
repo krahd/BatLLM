@@ -13,6 +13,7 @@ GAMEPLAY_SNAPSHOT_KEYS = (
     "bot_diameter",
     "bot_step_length",
     "bullet_damage",
+    "bullet_diameter",
     "bullet_step_length",
     "shield_size",
     "shield_initial_state",
@@ -57,6 +58,7 @@ class GameplaySettingsSnapshot:
     bot_diameter: float
     bot_step_length: float
     bullet_damage: int
+    bullet_diameter: float
     bullet_step_length: float
     shield_size: float
     shield_initial_state: bool
@@ -79,6 +81,7 @@ class GameplaySettingsSnapshot:
             bot_diameter=_to_float(values.get("bot_diameter"), 0.1),
             bot_step_length=_to_float(values.get("bot_step_length"), 0.03),
             bullet_damage=_to_int(values.get("bullet_damage"), 5),
+            bullet_diameter=_to_float(values.get("bullet_diameter"), 0.02),
             bullet_step_length=_to_float(values.get("bullet_step_length"), 0.01),
             shield_size=_to_float(values.get("shield_size"), 70.0),
             shield_initial_state=_to_bool(values.get("shield_initial_state"), True),
@@ -92,6 +95,7 @@ class GameplaySettingsSnapshot:
             "bot_diameter": self.bot_diameter,
             "bot_step_length": self.bot_step_length,
             "bullet_damage": self.bullet_damage,
+            "bullet_diameter": self.bullet_diameter,
             "bullet_step_length": self.bullet_step_length,
             "shield_size": self.shield_size,
             "shield_initial_state": self.shield_initial_state,
@@ -277,7 +281,8 @@ def _segment_interaction(
     hit_y = p1[1] + hit_t * dy
     impact_angle = math.atan2(hit_y - cy, hit_x - cx)
     shield_half_angle = math.radians(rules.shield_size + 18)
-    diff = (impact_angle - math.radians(_to_float(target_state.get("rot"), 0.0)) + math.pi) % (2 * math.pi) - math.pi
+    diff = (impact_angle - math.radians(_to_float(target_state.get("rot"), 0.0)) +
+            math.pi) % (2 * math.pi) - math.pi
     if abs(diff) <= shield_half_angle:
         return False, True
     return True, False
@@ -376,7 +381,8 @@ def apply_play(
         new_x, new_y = compute_move_target(actor, rules, parsed.value)
         actor["x"] = new_x
         actor["y"] = new_y
-        event_type = "move" if not math.isclose(old_x, new_x) or not math.isclose(old_y, new_y) else "no_op"
+        event_type = "move" if not math.isclose(
+            old_x, new_x) or not math.isclose(old_y, new_y) else "no_op"
         events.append(
             ReplayEvent(
                 type=event_type,

@@ -152,8 +152,10 @@
                         halign: "left"
                         valign: "middle"
                         text_size: self.width - dp(16), None
-                        color: 0, 0, 0, 1
-                        background_color: .95, .95, .95, 1
+                        color: 1, 1, 1, 1
+                        background_normal: ""
+                        background_down: ""
+                        background_color: .12, .12, .12, 1
                         on_press: root.open_local_model_selector()
 
                     Button:
@@ -218,7 +220,8 @@
                 orientation: "vertical"
                 spacing: dp(10)
 
-                Label:
+                height: dp(202)
+                padding: 0, dp(12), 0, 0
                     text: "Remote Models"
                     color: 0, 0, 0, 1
                     font_size: sp(22)
@@ -238,9 +241,20 @@
                         halign: "left"
                         valign: "middle"
                         text_size: self.width - dp(16), None
-                        color: 0, 0, 0, 1
-                        background_color: .95, .95, .95, 1
+                        color: 1, 1, 1, 1
+                        background_normal: ""
+                        background_down: ""
+                        background_color: .12, .12, .12, 1
                         on_press: root.open_remote_model_selector()
+                Label:
+                    text: root.selected_remote_timeout_details
+                    color: 0.15, 0.15, 0.15, 1
+                    font_size: sp(14)
+                    size_hint_y: None
+                    height: max(self.texture_size[1] + dp(8), dp(42))
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.width, None
 
                     Button:
                         text: "Download Selected"

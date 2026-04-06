@@ -20,6 +20,7 @@ DEFAULTS = {
         "prompt_augmentation": True,
         "initial_health": 30,
         "bullet_damage": 5,
+        "bullet_diameter": 0.02,
         "shield_size": 70,
     },
     "ui": {

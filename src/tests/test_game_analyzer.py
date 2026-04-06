@@ -38,6 +38,7 @@ def _sample_payload() -> dict:
                         "bot_diameter": 0.1,
                         "bot_step_length": 0.03,
                         "bullet_damage": 5,
+                        "bullet_diameter": 0.02,
                         "bullet_step_length": 0.01,
                         "shield_size": 70,
                         "shield_initial_state": True,
@@ -152,6 +153,7 @@ def test_analyzer_model_replays_turns_and_preserves_selection_state() -> None:
     assert model.round_index == 0
     assert model.flat_index == 1
     assert any(row.kind == "turn" and "damage" in row.badge_tokens for row in rows)
+    assert "bullet_diameter" in model.format_round_settings()
     assert "bullet_damage" in model.format_round_settings()
     assert "Bot 2 took 5 damage" in model.format_insights()
     assert model.current_turn_replay() is not None

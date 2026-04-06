@@ -71,6 +71,9 @@ class OllamaConfigScreen(Screen):
     selected_local_timeout_text = StringProperty("")
     selected_local_timeout_details = StringProperty("Select a local model to edit its timeout.")
     selected_remote_model_label = StringProperty("Select remote model")
+    selected_remote_timeout_details = StringProperty(
+        "Select a remote model to see its estimated timeout."
+    )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -181,6 +184,35 @@ class OllamaConfigScreen(Screen):
         self.selected_remote_model = model_name
         self.selected_remote_model_label = (
             self._remote_model_display_map.get(model_name, model_name) or "Select remote model"
+        )
+        self._refresh_selected_remote_timeout()
+
+    def _selected_remote_entry(self) -> dict[str, str] | None:
+        model_name = self.selected_remote_model.strip()
+        if not model_name:
+            return None
+
+        for entry in self._remote_model_entries:
+            if entry.get("name") == model_name:
+                return entry
+        return None
+
+    def _refresh_selected_remote_timeout(self):
+        entry = self._selected_remote_entry()
+        if entry is None:
+            self.selected_remote_timeout_details = (
+                "Select a remote model to see its estimated timeout."
+            )
+            return
+
+        timeout_seconds, source = ollama_service.estimate_remote_model_timeout_details(
+            entry.get("name", ""),
+            size_label=entry.get("size", ""),
+        )
+        formatted = self._format_timeout_seconds(timeout_seconds)
+        self.selected_remote_timeout_details = (
+            f"Estimated timeout for {entry.get('display') or entry.get('name')}: "
+            f"{formatted}s from {source}."
         )
 
     def _set_status(self, text: str):

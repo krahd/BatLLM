@@ -4,6 +4,13 @@ from kivy.graphics import Color, Ellipse, PopMatrix, PushMatrix, Translate
 from configs.app_config import config
 
 
+def _bullet_diameter_from_config() -> float:
+    try:
+        return float(config.get("game", "bullet_diameter"))
+    except (TypeError, ValueError):
+        return 0.02
+
+
 class Bullet:
     """
     Bullet class models the bullets fired by bots in the game. It manages its own rendering, movement, and collision detection with both the arena boundaries and other bots.
@@ -45,7 +52,7 @@ class Bullet:
 
         self.step = float(config.get("game", "bullet_step_length"))
 
-        self.diameter = 0.02  # Diameter of the drawn bullet, internally bullets have no diameter, they are just a point
+        self.diameter = _bullet_diameter_from_config()
 
         self.colour = (1, 0, 0, 1)  #
 

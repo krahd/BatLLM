@@ -175,6 +175,24 @@ def test_refresh_remote_models_uses_official_library_html(monkeypatch) -> None:
     assert fake_screen._remote_model_entries[0]["display"] == "all-minilm (22m)"
 
 
+def test_remote_selection_refreshes_timeout_details(monkeypatch) -> None:
+    monkeypatch.setattr(
+        screen_module.ollama_service,
+        "estimate_remote_model_timeout_details",
+        lambda model_name, *, size_label="": (150.0, "the Qwen 3 family rule"),
+    )
+
+    screen = screen_module.OllamaConfigScreen()
+    screen._remote_model_entries = [{"name": "qwen3", "display": "qwen3 (30b)", "size": "30b"}]
+    screen._remote_model_display_map = {"qwen3": "qwen3 (30b)"}
+
+    screen._set_remote_selection("qwen3")
+
+    assert screen.selected_remote_model_label == "qwen3 (30b)"
+    assert "150s" in screen.selected_remote_timeout_details
+    assert "Qwen 3 family rule" in screen.selected_remote_timeout_details
+
+
 def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
     fake_screen = SimpleNamespace(
         selected_local_model="llama3.2:latest",

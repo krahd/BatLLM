@@ -74,6 +74,42 @@ def test_resolve_request_timeout_uses_common_model_default() -> None:
     ) == 75.0
 
 
+def test_load_remote_timeout_catalog_contains_family_rules() -> None:
+    catalog = ollama_service.load_remote_timeout_catalog()
+
+    assert catalog["default_timeout"] == 120.0
+    assert catalog["family_overrides"]
+    assert catalog["size_bands"]
+
+
+def test_estimate_remote_model_timeout_uses_family_rule() -> None:
+    timeout, source = ollama_service.estimate_remote_model_timeout_details(
+        "qwen3", size_label="30b")
+
+    assert timeout == 120.0
+    assert "Qwen 3 family rule" in source
+
+
+def test_estimate_remote_model_timeout_uses_keyword_adjustment() -> None:
+    timeout, source = ollama_service.estimate_remote_model_timeout_details(
+        "llava-phi3",
+        size_label="3.8b",
+    )
+
+    assert timeout == 90.0
+    assert "multimodal-model adjustment" in source
+
+
+def test_estimate_remote_model_timeout_falls_back_to_size_band() -> None:
+    timeout, source = ollama_service.estimate_remote_model_timeout_details(
+        "llama3.1",
+        size_label="8b",
+    )
+
+    assert timeout == 80.0
+    assert "8B remote size band" in source
+
+
 def test_resolve_request_timeout_falls_back_to_default() -> None:
     assert ollama_service.resolve_request_timeout({"timeout": None}) == 120.0
     assert ollama_service.resolve_request_timeout({"timeout": 0}) == 120.0

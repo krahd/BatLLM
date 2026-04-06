@@ -171,7 +171,7 @@ game:
   bot_diameter: 0.1
   bot_step_length: 0.03
   bullet_damage: 5
-  bullet_diameter: 0.2
+  bullet_diameter: 0.02
   bullet_step_length: 0.01
   independent_contexts: true
   initial_health: 30
