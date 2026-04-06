@@ -653,10 +653,13 @@ class OllamaConfigScreen(Screen):
     def _preload_model(self, model_name: str):
         base_url, port = self._llm_endpoint()
         url = f"{base_url}:{port}/api/generate"
+        request_timeout = ollama_service.resolve_request_timeout(
+            {"timeout": config.get("llm", "timeout")}
+        )
         resp = requests.post(
             url,
             json={"model": model_name, "keep_alive": "30m"},
-            timeout=60,
+            timeout=request_timeout,
         )
         resp.raise_for_status()
         payload = resp.json() if resp.content else {}

@@ -54,10 +54,14 @@ class LLMTimeoutError(RuntimeError):
         original_exception: BaseException,
     ) -> None:
         self.model = model
-        self.timeout = timeout
+        normalized_timeout = _maybe_float(timeout) if timeout is not None else None
+        self.timeout = normalized_timeout if normalized_timeout is not None else timeout
         self.attempts = attempts
         self.original_exception = original_exception
-        timeout_suffix = f" after {timeout:g}s" if timeout is not None else ""
+        try:
+            timeout_suffix = f" after {self.timeout:g}s" if self.timeout is not None else ""
+        except (TypeError, ValueError):
+            timeout_suffix = f" after {self.timeout}s" if self.timeout is not None else ""
         super().__init__(
             f"Ollama model '{model or 'unknown'}' timed out{timeout_suffix} after {attempts} attempts."
         )
@@ -88,6 +92,8 @@ class OllamaConnector:
         self.num_predict: int | None = None
 
         self.client = None
+        self._client_host: str | None = None
+        self._client_timeout: float | str | None = None
         self._system_instructions: str = ""
         self._history_by_bot: dict[int, list[Message]] = {}
         self._history_shared: list[Message] = []
@@ -216,7 +222,9 @@ class OllamaConnector:
         self.top_p = _maybe_float(config.get("llm", "top_p"))
         self.top_k = _maybe_int(config.get("llm", "top_k"))
 
-        self.timeout = config.get("llm", "timeout") or 120
+        raw_timeout = config.get("llm", "timeout")
+        parsed_timeout = _maybe_float(raw_timeout)
+        self.timeout = parsed_timeout if parsed_timeout is not None and parsed_timeout > 0 else 120.0
 
         self.num_thread = _maybe_int(config.get("llm", "num_thread"))
         self.seed = _maybe_int(config.get("llm", "seed"))
@@ -243,8 +251,15 @@ class OllamaConnector:
             self.reset_histories()
 
         # Client setup
-        if self.client is None or force:
+        if (
+            self.client is None
+            or force
+            or host != self._client_host
+            or self.timeout != self._client_timeout
+        ):
             self.client = Client(host=host, timeout=self.timeout)
+            self._client_host = host
+            self._client_timeout = self.timeout
 
 
 

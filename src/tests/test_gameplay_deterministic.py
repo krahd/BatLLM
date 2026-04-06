@@ -194,6 +194,70 @@ def test_ollama_connector_timeout_raises_typed_error_and_rolls_back_prompt(monke
     assert all(message["role"] != "user" for message in history)
 
 
+def test_string_timeout_config_is_normalized_and_timeout_messages_stay_safe(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "game.ollama_connector.Client",
+        lambda *args, **kwargs: SimpleNamespace(),
+    )
+
+    board, _scheduled_once, _history_log = _build_board(monkeypatch, overrides={
+        ("llm", "timeout"): "120",
+    })
+    connector = board.ollama_connector
+
+    assert connector.timeout == 120.0
+    assert isinstance(connector.timeout, float)
+
+    exc = LLMTimeoutError(
+        model="qwen3:30b",
+        timeout=connector.timeout,
+        attempts=2,
+        original_exception=TimeoutError("slow model"),
+    )
+    assert "120" in str(exc)
+
+    setattr(exc, "timeout", "120")
+    message = board._format_timeout_message(board.get_bot_by_id(1), exc)
+    assert "after 120s" in message
+
+
+def test_connector_recreates_client_when_timeout_or_host_changes(monkeypatch) -> None:
+    created_clients = []
+
+    def fake_client(*args, **kwargs):
+        client = SimpleNamespace(
+            host=kwargs.get("host"),
+            timeout=kwargs.get("timeout"),
+            marker=len(created_clients),
+        )
+        created_clients.append(client)
+        return client
+
+    monkeypatch.setattr("game.ollama_connector.Client", fake_client)
+
+    overrides = {
+        ("llm", "timeout"): "120",
+    }
+    board, _scheduled_once, _history_log = _build_board(monkeypatch, overrides=overrides)
+    connector = board.ollama_connector
+    initial_client = connector.client
+
+    connector.load_options()
+    assert connector.client is initial_client
+
+    overrides[("llm", "timeout")] = "60"
+    connector.load_options()
+
+    assert connector.timeout == 60.0
+    assert connector.client.timeout == 60.0
+
+    overrides[("llm", "url")] = "http://127.0.0.1"
+    connector.load_options()
+
+    assert connector.client.host == "http://127.0.0.1:11434"
+    assert len(created_clients) == 3
+
+
 def test_submit_prompt_to_bot_waits_for_both_players(monkeypatch) -> None:
     board, scheduled_once, _history_log = _build_board(monkeypatch)
 

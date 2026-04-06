@@ -331,3 +331,41 @@ def test_set_model_from_selection_alerts_when_empty(monkeypatch) -> None:
     screen_module.OllamaConfigScreen.set_model_from_selection(fake_screen)
 
     assert alerted["value"] is True
+
+
+def test_preload_model_uses_resolved_request_timeout(monkeypatch) -> None:
+    calls = []
+
+    class FakeResponse:
+        content = b"{}"
+
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"ok": True}
+
+    def fake_post(url, **kwargs):
+        calls.append((url, kwargs))
+        return FakeResponse()
+
+    fake_screen = SimpleNamespace(
+        _llm_endpoint=lambda: ("http://localhost", 11434),
+        _append_log=lambda _text: None,
+    )
+
+    monkeypatch.setattr(screen_module.requests, "post", fake_post)
+    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout", lambda _cfg: 180.0)
+    monkeypatch.setattr(
+        screen_module.config,
+        "get",
+        lambda section, key: "180" if (section, key) == ("llm", "timeout") else None,
+    )
+
+    result = screen_module.OllamaConfigScreen._preload_model(fake_screen, "test-model")
+
+    assert result == {"ok": True}
+    assert len(calls) == 1
+    assert calls[0][0] == "http://localhost:11434/api/generate"
+    assert calls[0][1]["timeout"] == 180.0
+    assert calls[0][1]["json"] == {"model": "test-model", "keep_alive": "30m"}

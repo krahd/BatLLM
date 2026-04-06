@@ -559,7 +559,10 @@ class GameBoard(Widget):
         )
 
     def _format_timeout_message(self, bot: Bot, exc: LLMTimeoutError) -> str:
-        timeout_suffix = f" after {exc.timeout:g}s" if exc.timeout is not None else ""
+        try:
+            timeout_suffix = f" after {exc.timeout:g}s" if exc.timeout is not None else ""
+        except (TypeError, ValueError):
+            timeout_suffix = f" after {exc.timeout}s" if exc.timeout is not None else ""
         model_name = exc.model or self.ollama_connector.model or "the selected model"
         return (
             f"Bot {bot.id} timed out waiting for {model_name}{timeout_suffix}. "
