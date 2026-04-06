@@ -68,6 +68,8 @@ class OllamaConfigScreen(Screen):
     selected_local_model = StringProperty("")
     selected_remote_model = StringProperty("")
     selected_local_model_label = StringProperty("Select local model")
+    selected_local_timeout_text = StringProperty("")
+    selected_local_timeout_details = StringProperty("Select a local model to edit its timeout.")
     selected_remote_model_label = StringProperty("Select remote model")
 
     def __init__(self, **kwargs):
@@ -110,10 +112,69 @@ class OllamaConfigScreen(Screen):
     def _chat_path(self) -> str:
         return str(config.get("llm", "path") or "/api/chat")
 
+    def _llm_timeout_config(self, model_name: str | None = None) -> dict[str, Any]:
+        selected_model = str(model_name or config.get("llm", "model") or "").strip()
+        model_timeouts = config.get("llm", "model_timeouts")
+        if not isinstance(model_timeouts, dict):
+            model_timeouts = {}
+        return {
+            "model": selected_model,
+            "model_timeouts": dict(model_timeouts),
+            "timeout": config.get("llm", "timeout"),
+        }
+
+    @staticmethod
+    def _format_timeout_seconds(timeout_seconds: float) -> str:
+        return f"{float(timeout_seconds):g}"
+
+    @staticmethod
+    def _timeout_source_text(source: str) -> str:
+        return {
+            "model_override": "saved per-model override",
+            "global_override": "global timeout setting",
+            "model_default": "BatLLM's common-model default",
+            "fallback_default": "BatLLM's generic fallback",
+        }.get(source, "BatLLM timeout settings")
+
+    def _model_timeout_overrides(self) -> dict[str, Any]:
+        model_timeouts = config.get("llm", "model_timeouts")
+        return dict(model_timeouts) if isinstance(model_timeouts, dict) else {}
+
+    def _save_model_timeout_overrides(self, overrides: dict[str, Any]):
+        config.set("llm", "model_timeouts", overrides)
+        config.save()
+
+    def _remove_model_timeout_override(self, model_name: str) -> bool:
+        overrides = self._model_timeout_overrides()
+        if model_name not in overrides:
+            return False
+        del overrides[model_name]
+        self._save_model_timeout_overrides(overrides)
+        return True
+
+    def _refresh_selected_local_timeout(self):
+        model_name = self.selected_local_model.strip()
+        if not model_name:
+            self.selected_local_timeout_text = ""
+            self.selected_local_timeout_details = "Select a local model to edit its timeout."
+            return
+
+        timeout_seconds, source = ollama_service.resolve_request_timeout_details(
+            self._llm_timeout_config(model_name),
+            model=model_name,
+        )
+        formatted = self._format_timeout_seconds(timeout_seconds)
+        self.selected_local_timeout_text = formatted
+        self.selected_local_timeout_details = (
+            f"Effective timeout for {model_name}: {formatted}s from "
+            f"{self._timeout_source_text(source)}."
+        )
+
     def _set_local_selection(self, model_name: str):
         model_name = model_name.strip()
         self.selected_local_model = model_name
         self.selected_local_model_label = model_name or "Select local model"
+        self._refresh_selected_local_timeout()
 
     def _set_remote_selection(self, model_name: str):
         model_name = model_name.strip()
@@ -210,7 +271,8 @@ class OllamaConfigScreen(Screen):
                 else (0.12, 0.12, 0.12, 1),
                 color=(1, 1, 1, 1),
             )
-            button.bind(size=lambda inst, *_: setattr(inst, "text_size", (inst.width - dp(16), None)))
+            button.bind(size=lambda inst, *_: setattr(inst,
+                        "text_size", (inst.width - dp(16), None)))
             button.bind(on_release=lambda *_args, value=entry["name"]: choose(value))
             items.add_widget(button)
 
@@ -571,7 +633,8 @@ class OllamaConfigScreen(Screen):
                     self._local_model_entries = [{"name": name, "display": name} for name in names]
                     self.local_models = names
                     current = self.selected_local_model.strip() or str(config.get("llm", "model") or "")
-                    self._set_local_selection(current if current in names else (names[0] if names else ""))
+                    self._set_local_selection(
+                        current if current in names else (names[0] if names else ""))
                     self._set_status(f"Loaded {len(names)} local model(s).")
                     models_text = ", ".join(names) if names else "none"
                     self._append_log(f"GET {tags_url}\nLoaded local models: {models_text}")
@@ -654,7 +717,8 @@ class OllamaConfigScreen(Screen):
         base_url, port = self._llm_endpoint()
         url = f"{base_url}:{port}/api/generate"
         request_timeout = ollama_service.resolve_request_timeout(
-            {"timeout": config.get("llm", "timeout")}
+            self._llm_timeout_config(model_name),
+            model=model_name,
         )
         resp = requests.post(
             url,
@@ -741,6 +805,68 @@ class OllamaConfigScreen(Screen):
 
         self._run_in_thread(work)
 
+    def save_selected_model_timeout(self):
+        model = self.selected_local_model.strip()
+        if not model:
+            show_fading_alert(
+                "Model Timeout",
+                "Select a local model first.",
+                duration=1.5,
+                fade_duration=1.0,
+            )
+            return
+
+        raw_value = self.selected_local_timeout_text.strip()
+        try:
+            timeout_seconds = float(raw_value)
+        except ValueError:
+            show_fading_alert(
+                "Model Timeout",
+                "Enter a positive timeout in seconds.",
+                duration=1.7,
+                fade_duration=1.0,
+            )
+            return
+
+        if timeout_seconds <= 0:
+            show_fading_alert(
+                "Model Timeout",
+                "Enter a positive timeout in seconds.",
+                duration=1.7,
+                fade_duration=1.0,
+            )
+            return
+
+        overrides = self._model_timeout_overrides()
+        overrides[model] = timeout_seconds
+        self._save_model_timeout_overrides(overrides)
+        self._refresh_selected_local_timeout()
+        self._set_status(f"Saved timeout for {model}.")
+        self._append_log(
+            f"Saved model timeout override: {model} -> "
+            f"{self._format_timeout_seconds(timeout_seconds)}s"
+        )
+
+    def reset_selected_model_timeout(self):
+        model = self.selected_local_model.strip()
+        if not model:
+            show_fading_alert(
+                "Model Timeout",
+                "Select a local model first.",
+                duration=1.5,
+                fade_duration=1.0,
+            )
+            return
+
+        removed = self._remove_model_timeout_override(model)
+        self._refresh_selected_local_timeout()
+        if removed:
+            self._set_status(f"Using default timeout for {model}.")
+            self._append_log(f"Cleared model timeout override: {model}")
+        else:
+            self._set_status(f"No saved timeout override for {model}.")
+            self._append_log(f"No model timeout override to clear: {model}")
+
     def _pull_model(self, model_name: str):
         base_url, port = self._llm_endpoint()
         url = f"{base_url}:{port}/api/pull"
@@ -812,6 +938,9 @@ class OllamaConfigScreen(Screen):
                     if model == self._managed_model_name:
                         self._managed_model_name = None
                     self._delete_model(model)
+                    if self._remove_model_timeout_override(model):
+                        self._append_log(
+                            f"Removed model timeout override for deleted model: {model}")
                     self._set_status(f"Model deleted: {model}")
                     self._append_log(f"Model deleted: {model}")
                     self.refresh_local_models()

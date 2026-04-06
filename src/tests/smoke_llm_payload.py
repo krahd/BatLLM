@@ -10,6 +10,7 @@ from urllib.request import Request, urlopen
 import pytest
 import yaml
 
+import ollama_service
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "src/configs/config.yaml"
@@ -28,12 +29,11 @@ def _load_llm_config() -> dict:
 
 
 def _resolve_chat_timeout(llm: dict) -> float:
-    raw_timeout = llm.get("timeout")
-    try:
-        timeout = float(raw_timeout)
-    except (TypeError, ValueError):
-        return DEFAULT_CHAT_TIMEOUT
-    return timeout if timeout > 0 else DEFAULT_CHAT_TIMEOUT
+    return ollama_service.resolve_request_timeout(
+        llm,
+        default=DEFAULT_CHAT_TIMEOUT,
+        model=str(llm.get("model") or "").strip() or None,
+    )
 
 
 def _post_json(url: str, payload: dict, *, timeout: float, description: str) -> dict:

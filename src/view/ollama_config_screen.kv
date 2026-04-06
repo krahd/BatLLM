@@ -126,7 +126,7 @@
         BoxLayout:
             spacing: dp(20)
             size_hint_y: None
-            height: dp(130)
+            height: dp(190)
 
             BoxLayout:
                 orientation: "vertical"
@@ -170,6 +170,50 @@
                         color: 1, 1, 1, 1
                         on_press: root.request_delete_selected_model()
 
+                Label:
+                    text: root.selected_local_timeout_details
+                    color: 0.15, 0.15, 0.15, 1
+                    font_size: sp(14)
+                    size_hint_y: None
+                    height: max(self.texture_size[1] + dp(8), dp(42))
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.width, None
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(46)
+                    spacing: dp(8)
+
+                    TextInput:
+                        text: root.selected_local_timeout_text
+                        hint_text: "Timeout (seconds)"
+                        multiline: False
+                        write_tab: False
+                        disabled: not root.selected_local_model
+                        input_filter: "float"
+                        size_hint_x: 0.34
+                        foreground_color: 0, 0, 0, 1
+                        background_color: .95, .95, .95, 1
+                        on_text: root.selected_local_timeout_text = self.text
+                        on_text_validate: root.save_selected_model_timeout()
+
+                    Button:
+                        text: "Save Timeout"
+                        font_size: sp(18)
+                        size_hint_x: 0.33
+                        disabled: not root.selected_local_model
+                        on_press: root.save_selected_model_timeout()
+
+                    Button:
+                        text: "Use Default"
+                        font_size: sp(18)
+                        size_hint_x: 0.33
+                        background_color: .8, .8, .8, 1
+                        color: 1, 1, 1, 1
+                        disabled: not root.selected_local_model
+                        on_press: root.reset_selected_model_timeout()
+
             BoxLayout:
                 orientation: "vertical"
                 spacing: dp(10)
@@ -205,6 +249,8 @@
                         background_color: .6, .8, .9, .8
                         color: 1, 1, 1, 1
                         on_press: root.request_pull_selected_model()
+
+                Widget:
 
         BoxLayout:
             size_hint_y: None

@@ -32,6 +32,8 @@ DEFAULTS = {
     },
     "llm": {
         "last_served_model": "",
+        "timeout": None,
+        "model_timeouts": {},
     },
 }
 

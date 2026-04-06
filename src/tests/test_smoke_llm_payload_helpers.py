@@ -12,6 +12,26 @@ def test_resolve_chat_timeout_uses_positive_configured_value() -> None:
     assert smoke_llm_payload._resolve_chat_timeout({"timeout": "90"}) == 90.0
 
 
+def test_resolve_chat_timeout_prefers_model_override() -> None:
+    assert smoke_llm_payload._resolve_chat_timeout(
+        {
+            "model": "qwen3:30b",
+            "timeout": 60,
+            "model_timeouts": {"qwen3:30b": 180},
+        }
+    ) == 180.0
+
+
+def test_resolve_chat_timeout_uses_common_model_default() -> None:
+    assert smoke_llm_payload._resolve_chat_timeout(
+        {
+            "model": "llama3.2:latest",
+            "timeout": None,
+            "model_timeouts": {},
+        }
+    ) == 75.0
+
+
 def test_resolve_chat_timeout_falls_back_to_default() -> None:
     assert smoke_llm_payload._resolve_chat_timeout({"timeout": None}) == 120.0
     assert smoke_llm_payload._resolve_chat_timeout({"timeout": 0}) == 120.0

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-import requests
-
 from view import ollama_config_screen as screen_module
 
 
@@ -85,7 +83,8 @@ def test_open_remote_model_selector_refreshes_then_opens_picker() -> None:
         _append_log=lambda text: logs.append(text),
         refresh_remote_models=fake_refresh_remote_models,
         _current_model_entries=lambda entries, models: entries if entries else models,
-        _remote_model_entries=[{"name": "all-minilm", "display": "all-minilm (22m)", "size": "22m"}],
+        _remote_model_entries=[{"name": "all-minilm",
+                                "display": "all-minilm (22m)", "size": "22m"}],
         remote_models=["all-minilm"],
         selected_remote_model="all-minilm",
         _select_remote_model=lambda _model: None,
@@ -103,7 +102,8 @@ def test_open_remote_model_selector_refreshes_then_opens_picker() -> None:
     assert refreshed["value"] is True
     assert logs == ["Refreshing remote models..."]
     assert opened["title"] == "Remote Models"
-    assert opened["entries"] == [{"name": "all-minilm", "display": "all-minilm (22m)", "size": "22m"}]
+    assert opened["entries"] == [{"name": "all-minilm",
+                                  "display": "all-minilm (22m)", "size": "22m"}]
     assert opened["selected"] == "all-minilm"
 
 
@@ -139,7 +139,8 @@ def test_refresh_remote_models_uses_official_library_html(monkeypatch) -> None:
             setattr(
                 fake_screen,
                 "selected_remote_model_label",
-                fake_screen._remote_model_display_map.get(model_name, model_name) or "Select remote model",
+                fake_screen._remote_model_display_map.get(
+                    model_name, model_name) or "Select remote model",
             ),
         ),
         _parse_remote_models_html=lambda html: screen_module.OllamaConfigScreen._parse_remote_models_html(
@@ -335,6 +336,7 @@ def test_set_model_from_selection_alerts_when_empty(monkeypatch) -> None:
 
 def test_preload_model_uses_resolved_request_timeout(monkeypatch) -> None:
     calls = []
+    resolved = {}
 
     class FakeResponse:
         content = b"{}"
@@ -352,20 +354,134 @@ def test_preload_model_uses_resolved_request_timeout(monkeypatch) -> None:
     fake_screen = SimpleNamespace(
         _llm_endpoint=lambda: ("http://localhost", 11434),
         _append_log=lambda _text: None,
+        _llm_timeout_config=lambda model_name: {"model": model_name, "timeout": "180"},
     )
 
     monkeypatch.setattr(screen_module.requests, "post", fake_post)
-    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout", lambda _cfg: 180.0)
     monkeypatch.setattr(
-        screen_module.config,
-        "get",
-        lambda section, key: "180" if (section, key) == ("llm", "timeout") else None,
+        screen_module.ollama_service,
+        "resolve_request_timeout",
+        lambda _cfg, *, model=None: resolved.update({"cfg": _cfg, "model": model}) or 180.0,
     )
 
     result = screen_module.OllamaConfigScreen._preload_model(fake_screen, "test-model")
 
     assert result == {"ok": True}
+    assert resolved == {"cfg": {"model": "test-model", "timeout": "180"}, "model": "test-model"}
     assert len(calls) == 1
     assert calls[0][0] == "http://localhost:11434/api/generate"
     assert calls[0][1]["timeout"] == 180.0
     assert calls[0][1]["json"] == {"model": "test-model", "keep_alive": "30m"}
+
+
+def test_local_selection_refreshes_timeout_editor_from_model_override(monkeypatch) -> None:
+    monkeypatch.setattr(
+        screen_module.config,
+        "get",
+        lambda section, key: {
+            ("llm", "last_served_model"): "",
+            ("llm", "model"): "qwen3:30b",
+            ("llm", "timeout"): None,
+            ("llm", "model_timeouts"): {"qwen3:30b": 180.0},
+        }.get((section, key)),
+    )
+
+    screen = screen_module.OllamaConfigScreen()
+    screen._set_local_selection("qwen3:30b")
+
+    assert screen.selected_local_timeout_text == "180"
+    assert "saved per-model override" in screen.selected_local_timeout_details
+
+
+def test_save_selected_model_timeout_persists_override(monkeypatch) -> None:
+    config_state = {
+        ("llm", "last_served_model"): "",
+        ("llm", "model"): "qwen3:30b",
+        ("llm", "timeout"): None,
+        ("llm", "model_timeouts"): {},
+    }
+    save_calls = []
+
+    monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
+    monkeypatch.setattr(screen_module.config, "get", lambda section,
+                        key: config_state.get((section, key)))
+    monkeypatch.setattr(
+        screen_module.config,
+        "set",
+        lambda section, key, value: config_state.__setitem__((section, key), value),
+    )
+    monkeypatch.setattr(screen_module.config, "save", lambda: save_calls.append(True))
+    monkeypatch.setattr(screen_module, "show_fading_alert", lambda *_args, **_kwargs: None)
+
+    screen = screen_module.OllamaConfigScreen()
+    screen._set_local_selection("qwen3:30b")
+    screen.selected_local_timeout_text = "150"
+
+    screen.save_selected_model_timeout()
+
+    assert config_state[("llm", "model_timeouts")] == {"qwen3:30b": 150.0}
+    assert save_calls == [True]
+    assert screen.status_text == "Saved timeout for qwen3:30b."
+    assert screen.selected_local_timeout_text == "150"
+    assert "saved per-model override" in screen.selected_local_timeout_details
+
+
+def test_reset_selected_model_timeout_uses_common_model_default(monkeypatch) -> None:
+    config_state = {
+        ("llm", "last_served_model"): "",
+        ("llm", "model"): "qwen3:30b",
+        ("llm", "timeout"): None,
+        ("llm", "model_timeouts"): {"qwen3:30b": 150.0},
+    }
+    save_calls = []
+
+    monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
+    monkeypatch.setattr(screen_module.config, "get", lambda section,
+                        key: config_state.get((section, key)))
+    monkeypatch.setattr(
+        screen_module.config,
+        "set",
+        lambda section, key, value: config_state.__setitem__((section, key), value),
+    )
+    monkeypatch.setattr(screen_module.config, "save", lambda: save_calls.append(True))
+    monkeypatch.setattr(screen_module, "show_fading_alert", lambda *_args, **_kwargs: None)
+
+    screen = screen_module.OllamaConfigScreen()
+    screen._set_local_selection("qwen3:30b")
+
+    screen.reset_selected_model_timeout()
+
+    assert config_state[("llm", "model_timeouts")] == {}
+    assert save_calls == [True]
+    assert screen.status_text == "Using default timeout for qwen3:30b."
+    assert screen.selected_local_timeout_text == "120"
+    assert "common-model default" in screen.selected_local_timeout_details
+
+
+def test_request_delete_selected_model_clears_timeout_override(monkeypatch) -> None:
+    removed = []
+    deleted = []
+    refreshed = []
+
+    fake_screen = SimpleNamespace(
+        selected_local_model="qwen3:30b",
+        _managed_model_name=None,
+        _set_status=lambda _text: None,
+        _append_log=lambda _text: None,
+        _run_in_thread=lambda fn: fn(),
+        _delete_model=lambda model: deleted.append(model),
+        _remove_model_timeout_override=lambda model: removed.append(model) or True,
+        refresh_local_models=lambda: refreshed.append(True),
+    )
+
+    monkeypatch.setattr(
+        screen_module,
+        "show_confirmation_dialog",
+        lambda _title, _text, on_confirm, on_cancel: on_confirm(),
+    )
+
+    screen_module.OllamaConfigScreen.request_delete_selected_model(fake_screen)
+
+    assert deleted == ["qwen3:30b"]
+    assert removed == ["qwen3:30b"]
+    assert refreshed == [True]

@@ -28,6 +28,7 @@ if TYPE_CHECKING:
 
 from ollama import Client
 
+import ollama_service
 from configs.app_config import config
 from util.paths import resolve_repo_relative
 from util.utils import _maybe_float, _maybe_int
@@ -222,9 +223,15 @@ class OllamaConnector:
         self.top_p = _maybe_float(config.get("llm", "top_p"))
         self.top_k = _maybe_int(config.get("llm", "top_k"))
 
-        raw_timeout = config.get("llm", "timeout")
-        parsed_timeout = _maybe_float(raw_timeout)
-        self.timeout = parsed_timeout if parsed_timeout is not None and parsed_timeout > 0 else 120.0
+        self.model = str(config.get("llm", "model") or "").strip()
+        self.timeout = ollama_service.resolve_request_timeout(
+            {
+                "model": self.model,
+                "model_timeouts": config.get("llm", "model_timeouts"),
+                "timeout": config.get("llm", "timeout"),
+            },
+            model=self.model,
+        )
 
         self.num_thread = _maybe_int(config.get("llm", "num_thread"))
         self.seed = _maybe_int(config.get("llm", "seed"))
@@ -236,7 +243,6 @@ class OllamaConnector:
         self.max_tokens = config.get("llm", "max_tokens") or None
         self.stop = config.get("llm", "stop") or None
 
-        self.model = config.get("llm", "model")
         url = config.get("llm", "url")
         port = config.get("llm", "port")
         path = config.get("llm", "path")

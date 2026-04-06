@@ -265,6 +265,9 @@ After choosing a local model:
 - BatLLM then attempts to make that model ready for gameplay
 - successful warm-up also updates `llm.last_served_model`
 - if BatLLM previously managed a different model itself, it may stop that earlier managed model first
+- the timeout row shows the effective timeout for the selected local model
+- `Save Timeout` stores a per-model timeout override for that installed model
+- `Use Default` removes the per-model override and returns that model to BatLLM's shared timeout rules
 
 `Delete Selected` asks for confirmation and then removes the selected local Ollama model.
 

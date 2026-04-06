@@ -185,6 +185,7 @@ llm:
   last_served_model: qwen3:30b
   max_tokens: null
   model: qwen3:30b
+  model_timeouts: {}
   num_ctx: 4096
   num_predict: null
   num_thread: null
@@ -247,6 +248,7 @@ Saved sessions exported from the current app use the v2 BatLLM envelope. The ana
 | `last_served_model` | The last model BatLLM explicitly warmed so startup can restore it. |
 | `max_tokens` | Optional generation option forwarded when not `null`. |
 | `model` | Active model name used for gameplay and as the BatLLM-selected Ollama model. |
+| `model_timeouts` | Optional per-model timeout overrides keyed by installed model name. |
 | `num_ctx` | Optional Ollama context size. |
 | `num_predict` | Optional generation limit. |
 | `num_thread` | Optional thread-count override. |
@@ -259,7 +261,7 @@ Saved sessions exported from the current app use the v2 BatLLM envelope. The ana
 | `system_instructions_not_augmented_independent` | File used when prompt augmentation is off and contexts are independent. |
 | `system_instructions_not_augmented_shared` | File used when prompt augmentation is off and context is shared. |
 | `temperature` | Optional generation temperature. |
-| `timeout` | Optional timeout; if unset, `OllamaConnector` currently falls back to `55`. |
+| `timeout` | Optional global timeout fallback used when there is no per-model override. |
 | `top_k` | Optional top-k sampling value. |
 | `top_p` | Optional top-p sampling value. |
 | `url` | Ollama base URL, usually `http://localhost`. |
@@ -303,6 +305,7 @@ The settings screen writes these keys:
 The Ollama configuration screen writes:
 
 - `llm.model`
+- `llm.model_timeouts`
 - installer actions are launched from the screen, but the config file is not modified directly by that action
 
 ### Configuration Notes
@@ -312,6 +315,7 @@ The Ollama configuration screen writes:
 3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
 4. The current Ollama lifecycle toggles are stored in `ui.auto_start_ollama` and `ui.stop_ollama_on_exit`. `main.py` still accepts the legacy `ui.auto_stop_ollama` key as a backward-compatible fallback for older configs.
 5. `llm.last_served_model` tracks the last model BatLLM explicitly warmed so startup can restore that serving state.
+6. Timeout precedence is: `llm.model_timeouts[model]`, then `llm.timeout`, then BatLLM's built-in common-model defaults, then the generic fallback.
 
 ## Testing And Validation
 

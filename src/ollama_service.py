@@ -10,7 +10,9 @@ import shlex
 import subprocess
 import sys
 import time
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -23,6 +25,15 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "src" / "configs" / "config.yaml"
 UNIX_INSTALL_URL = "https://ollama.com/install.sh"
 WINDOWS_INSTALL_URL = "https://ollama.com/install.ps1"
+COMMON_MODEL_TIMEOUTS = {
+    "mistral-small": 60.0,
+    "mistral-small:latest": 60.0,
+    "llama3.2": 75.0,
+    "llama3.2:latest": 75.0,
+    "phi3": 90.0,
+    "phi3:14b": 90.0,
+    "qwen3:30b": 120.0,
+}
 
 
 def require_supported_python() -> None:
@@ -33,30 +44,80 @@ def require_supported_python() -> None:
     raise SystemExit(f"BatLLM requires Python 3.10 or newer. Detected Python {version}.")
 
 
-def load_llm_config(path: Path = CONFIG_PATH) -> dict[str, str | int]:
+def load_llm_config(path: Path = CONFIG_PATH) -> dict[str, Any]:
     """Load the LLM configuration required to manage the local Ollama service."""
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     llm = data.get("llm") or {}
+    model_timeouts = llm.get("model_timeouts")
+    if not isinstance(model_timeouts, dict):
+        model_timeouts = {}
     return {
         "last_served_model": str(llm.get("last_served_model") or "").strip(),
         "model": str(llm.get("model") or "").strip(),
+        "model_timeouts": dict(model_timeouts),
         "timeout": llm.get("timeout"),
         "url": str(llm.get("url") or "http://localhost").strip().rstrip("/"),
         "port": int(llm.get("port") or 11434),
     }
 
 
-def resolve_request_timeout(llm: dict[str, str | int | float | None], default: float = 120.0) -> float:
-    """Resolve the configured Ollama request timeout or fall back to a large-model default."""
-    raw_timeout = llm.get("timeout")
+def _parse_positive_timeout(raw_timeout: Any) -> float | None:
+    """Parse a timeout value and return it only when it is positive."""
     try:
         timeout = float(raw_timeout)
     except (TypeError, ValueError):
-        return default
-    return timeout if timeout > 0 else default
+        return None
+    return timeout if timeout > 0 else None
 
 
-def preferred_start_model(llm: dict[str, str | int]) -> str:
+def common_model_timeout(model_name: str) -> float | None:
+    """Return a built-in timeout default for common BatLLM models."""
+    normalized = str(model_name or "").strip()
+    if not normalized:
+        return None
+    if normalized in COMMON_MODEL_TIMEOUTS:
+        return COMMON_MODEL_TIMEOUTS[normalized]
+    family = normalized.split(":", 1)[0]
+    return COMMON_MODEL_TIMEOUTS.get(family)
+
+
+def resolve_request_timeout_details(
+    llm: Mapping[str, Any],
+    default: float = 120.0,
+    *,
+    model: str | None = None,
+) -> tuple[float, str]:
+    """Resolve the effective timeout and identify the source of that value."""
+    model_name = str(model or llm.get("model") or "").strip()
+    model_timeouts = llm.get("model_timeouts")
+    if isinstance(model_timeouts, dict) and model_name:
+        model_timeout = _parse_positive_timeout(model_timeouts.get(model_name))
+        if model_timeout is not None:
+            return model_timeout, "model_override"
+
+    configured_timeout = _parse_positive_timeout(llm.get("timeout"))
+    if configured_timeout is not None:
+        return configured_timeout, "global_override"
+
+    model_default = common_model_timeout(model_name)
+    if model_default is not None:
+        return model_default, "model_default"
+
+    return default, "fallback_default"
+
+
+def resolve_request_timeout(
+    llm: Mapping[str, Any],
+    default: float = 120.0,
+    *,
+    model: str | None = None,
+) -> float:
+    """Resolve the effective Ollama request timeout for the selected model."""
+    timeout, _source = resolve_request_timeout_details(llm, default=default, model=model)
+    return timeout
+
+
+def preferred_start_model(llm: Mapping[str, Any]) -> str:
     """Prefer the last BatLLM-served model, then fall back to the configured model."""
     last_served_model = str(llm.get("last_served_model") or "").strip()
     model = str(llm.get("model") or "").strip()
@@ -336,7 +397,7 @@ def start_service(config_path: Path = CONFIG_PATH) -> int:
     """Start Ollama if needed, ensure the configured model is present, and warm it."""
     llm = load_llm_config(config_path)
     model = preferred_start_model(llm)
-    timeout = resolve_request_timeout(llm)
+    timeout = resolve_request_timeout(llm, model=model)
     url = str(llm["url"])
     port = int(llm["port"])
     host = f"{url.removeprefix('http://').removeprefix('https://')}:{port}"

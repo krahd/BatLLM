@@ -221,6 +221,48 @@ def test_string_timeout_config_is_normalized_and_timeout_messages_stay_safe(monk
     assert "after 120s" in message
 
 
+def test_connector_uses_model_specific_timeout_override(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "game.ollama_connector.Client",
+        lambda *args, **kwargs: SimpleNamespace(
+            host=kwargs.get("host"),
+            timeout=kwargs.get("timeout"),
+        ),
+    )
+
+    board, _scheduled_once, _history_log = _build_board(monkeypatch, overrides={
+        ("llm", "model"): "qwen3:30b",
+        ("llm", "timeout"): 60,
+        ("llm", "model_timeouts"): {"qwen3:30b": "180"},
+    })
+
+    connector = board.ollama_connector
+
+    assert connector.timeout == 180.0
+    assert connector.client.timeout == 180.0
+
+
+def test_connector_uses_common_model_default_timeout(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "game.ollama_connector.Client",
+        lambda *args, **kwargs: SimpleNamespace(
+            host=kwargs.get("host"),
+            timeout=kwargs.get("timeout"),
+        ),
+    )
+
+    board, _scheduled_once, _history_log = _build_board(monkeypatch, overrides={
+        ("llm", "model"): "llama3.2:latest",
+        ("llm", "timeout"): None,
+        ("llm", "model_timeouts"): {},
+    })
+
+    connector = board.ollama_connector
+
+    assert connector.timeout == 75.0
+    assert connector.client.timeout == 75.0
+
+
 def test_connector_recreates_client_when_timeout_or_host_changes(monkeypatch) -> None:
     created_clients = []
 

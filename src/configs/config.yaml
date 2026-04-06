@@ -18,6 +18,7 @@ llm:
   last_served_model: qwen3:30b
   max_tokens: null
   model: qwen3:30b
+  model_timeouts: {}
   num_ctx: 4096
   num_predict: null
   num_thread: null
