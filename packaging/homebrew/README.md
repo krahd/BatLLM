@@ -1,6 +1,6 @@
 # Homebrew Packaging
 
-BatLLM's Homebrew distribution is maintained as a tap formula rather than as a Python package published to PyPI.
+BatLLM's Homebrew distribution is maintained as a source-based tap formula rather than as a Python package published to PyPI. The current generator and formula remain oriented around macOS on Apple Silicon.
 
 The tap formula installs:
 
@@ -35,7 +35,9 @@ brew uninstall --force batllm
 
 ## Tap Publish Workflow
 
-For the `krahd` tap, generate the formula after the source ref you want to install from is published on GitHub.
+Tagged releases can publish automatically to the shared `krahd/homebrew-tap` through the repository workflow. That workflow requires a repository secret named `HOMEBREW_TAP_TOKEN` with push access to `krahd/homebrew-tap`.
+
+For manual maintainer updates, generate the formula after the source ref you want to install from is published on GitHub.
 
 For a release tag:
 

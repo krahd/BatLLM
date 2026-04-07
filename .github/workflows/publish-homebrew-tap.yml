@@ -1,0 +1,82 @@
+name: Publish Homebrew Tap
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag to publish, for example v0.3.1
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish batllm formula
+    runs-on: ubuntu-latest
+    env:
+      FORMULA_NAME: batllm
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || github.ref_name }}
+
+    steps:
+      - name: Check out tagged release
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', github.event.inputs.release_tag) || github.ref }}
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Clone shared tap repository
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          : "${HOMEBREW_TAP_TOKEN:?HOMEBREW_TAP_TOKEN is required}"
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/krahd/homebrew-tap.git" tap-repo
+
+      - name: Render formula
+        run: |
+          mkdir -p tap-repo/Formula
+          python create_homebrew_formula.py \
+            --github-tag "$RELEASE_TAG" \
+            --python-executable python \
+            --formula-out "tap-repo/Formula/batllm.rb"
+
+      - name: Commit and push tap update
+        working-directory: tap-repo
+        run: |
+          git checkout main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git ls-files --error-unmatch "Formula/${FORMULA_NAME}.rb" >/dev/null 2>&1; then
+            if git diff --quiet -- "Formula/${FORMULA_NAME}.rb"; then
+              echo "Formula already up to date."
+              exit 0
+            fi
+          fi
+
+          git add "Formula/${FORMULA_NAME}.rb"
+          git commit -m "Update ${FORMULA_NAME} formula for ${RELEASE_TAG}"
+
+          max_attempts=5
+          for attempt in $(seq 1 "$max_attempts"); do
+            if ! git pull --rebase origin main; then
+              echo "Rebase failed while preparing the tap update." >&2
+              git rebase --abort || true
+              exit 1
+            fi
+
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+
+          exit 1

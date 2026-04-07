@@ -472,6 +472,8 @@ That produces:
 - a macOS bundle with `.command` launchers
 - a Linux bundle with `.sh` launchers
 
+Tagged releases can also publish BatLLM's source-based Apple Silicon Homebrew formula automatically to `krahd/homebrew-tap` through the repository workflow. That automation requires a repository secret named `HOMEBREW_TAP_TOKEN` with push access to the shared tap.
+
 To generate a Homebrew formula for the `krahd` tap after publishing a release tag:
 
 ```bash

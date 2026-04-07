@@ -2,6 +2,18 @@
 
 # Changelog
 
+## v0.3.2 - 2026-04-06
+
+### Homebrew Tap Automation
+
+- added a dedicated GitHub Actions workflow that publishes `batllm.rb` to `krahd/homebrew-tap` for pushed release tags and manual dispatches
+- made the tap publish path reuse `create_homebrew_formula.py` and the shared rebase-and-retry push flow so first-time formula creation and concurrent tap updates are handled consistently
+
+### Maintainer Documentation
+
+- documented the automatic shared-tap publish path and the required `HOMEBREW_TAP_TOKEN` secret in the Homebrew maintainer docs
+- updated the contributor guide's release workflow notes to mention the source-based Apple Silicon tap publishing automation
+
 ## v0.3.1 - 2026-04-06
 
 ### Homebrew Distribution
