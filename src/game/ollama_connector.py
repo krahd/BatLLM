@@ -26,7 +26,13 @@ if TYPE_CHECKING:
     # Only imported for type checking; won't run at runtime.
     from ollama._types import ChatResponse
 
-from ollama import Client
+from llm.adapter import get_client
+
+# Compatibility: previous code imported `Client` from the `ollama` package
+# and many tests monkeypatch `game.ollama_connector.Client`. Provide a
+# `Client` symbol that mirrors the previous constructor API (callable
+# returning an object with `.chat(...)`).
+Client = get_client
 
 import ollama_service
 from configs.app_config import config
@@ -263,6 +269,8 @@ class OllamaConnector:
             or host != self._client_host
             or self.timeout != self._client_timeout
         ):
+            # Use the module-level `Client` symbol so tests can monkeypatch
+            # `game.ollama_connector.Client` as the legacy code did.
             self.client = Client(host=host, timeout=self.timeout)
             self._client_host = host
             self._client_timeout = self.timeout
