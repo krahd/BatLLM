@@ -735,3 +735,23 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# Prefer `modelito`'s small Ollama helpers when the package is available.
+# This allows downstream projects to install `modelito` and benefit from its
+# thin HTTP helpers while keeping the full BatLLM lifecycle helpers here as
+# a fallback and for features BatLLM requires.
+try:
+    from modelito import ollama_service as _modelito_ollama  # type: ignore
+except Exception:
+    _modelito_ollama = None
+
+if _modelito_ollama is not None:
+    try:
+        endpoint_url = _modelito_ollama.endpoint_url  # type: ignore
+        server_is_up = _modelito_ollama.server_is_up  # type: ignore
+        ensure_ollama_running = _modelito_ollama.ensure_ollama_running  # type: ignore
+    except Exception:
+        # If any attribute is missing or fails, just keep the local
+        # implementations defined above.
+        pass

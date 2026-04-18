@@ -11,7 +11,7 @@ from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.utils import get_color_from_hex
 from kivymd.app import MDApp
 
-import ollama_service
+from llm import service as ollama_service
 
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
 MIN_PYTHON = (3, 10)
