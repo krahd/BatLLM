@@ -18,6 +18,9 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
+        with_modelito:
+          - false
+          - true
 
     env:
       KIVY_WINDOW: mock
@@ -35,6 +38,10 @@ jobs:
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+
+      - name: Install optional modelito
+        if: matrix.with_modelito == true
+        run: python -m pip install modelito==0.1.1
 
       - name: Compile launchers and source
         run: python -m compileall -q src run_batllm.py run_tests.py create_release_bundles.py
