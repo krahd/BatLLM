@@ -13,7 +13,8 @@ import yaml
 import ollama_service
 
 ROOT = Path(__file__).resolve().parents[2]
-CONFIG_PATH = ROOT / "src/configs/config.yaml"
+# Allow overriding the config used by smoke tests via env var for CI/local flexibility
+CONFIG_PATH = Path(os.getenv("BATLLM_CONFIG_PATH") or str(ROOT / "src/configs/config.yaml"))
 RUN_OLLAMA_SMOKE = os.getenv("BATLLM_RUN_OLLAMA_SMOKE") == "1"
 DEFAULT_CHAT_TIMEOUT = 120.0
 

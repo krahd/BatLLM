@@ -84,3 +84,51 @@ def run_ollama_command(*args: str, host: str | None = None) -> subprocess.Comple
     if host:
         env = {**(None or {}), "OLLAMA_HOST": host}
     return subprocess.run(cmd, cwd=Path(__file__).resolve().parents[1], text=True, capture_output=True, check=False, env=env)
+
+
+def build_parser() -> 'argparse.ArgumentParser':
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Centralized Ollama/modelito helper")
+    parser.add_argument("action", choices=("install", "start", "stop"))
+    parser.add_argument(
+        "-c",
+        "--config",
+        default=None,
+        help="Path to the BatLLM YAML config file.",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Print verbose status when stopping the service.",
+    )
+    parser.add_argument(
+        "--reinstall",
+        action="store_true",
+        help="Launch the official installer even if Ollama is already installed.",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    import sys
+    from pathlib import Path
+
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    config_path = Path(args.config).resolve() if args.config else None
+
+    if args.action == "install":
+        code, message = install_service(reinstall=args.reinstall)
+        if message:
+            stream = sys.stderr if code else sys.stdout
+            print(message, file=stream)
+        return code
+    if args.action == "start":
+        return start_service(config_path)
+    return stop_service(config_path, verbose=args.verbose)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

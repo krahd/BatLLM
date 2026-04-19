@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-exec python3 src/ollama_service.py stop "$@"
+# Stop Ollama via the centralized llm.service module
+exec python3 -m llm.service stop "$@"

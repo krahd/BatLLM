@@ -74,7 +74,7 @@ def main(argv: list[str] | None = None) -> int:
         return core.returncode
 
     start_proc = subprocess.run(
-        [str(VENV_PYTHON), str(OLLAMA_HELPER), "start"],
+        [str(VENV_PYTHON), "-m", "llm.service", "start"],
         cwd=ROOT,
         text=True,
         check=False,
@@ -91,7 +91,7 @@ def main(argv: list[str] | None = None) -> int:
         return full.returncode
     finally:
         subprocess.run(
-            [str(VENV_PYTHON), str(OLLAMA_HELPER), "stop", "-v"],
+            [str(VENV_PYTHON), "-m", "llm.service", "stop", "-v"],
             cwd=ROOT,
             text=True,
             check=False,
