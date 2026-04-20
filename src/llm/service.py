@@ -34,7 +34,8 @@ _logger = logging.getLogger(__name__)
 try:
     from modelito import ollama_service as _MODELITO  # type: ignore
 except Exception as exc:  # pragma: no cover - environment misconfiguration
-    raise RuntimeError("`modelito` is required for `llm.service`; install modelito") from exc
+    _logger.debug("modelito not available; llm.service will work in fallback mode: %s", exc)
+    _MODELITO = None
 
 
 # Paths and defaults (shipped config + remote timeout catalog)
