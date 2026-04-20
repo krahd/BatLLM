@@ -17,7 +17,10 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-import psutil
+try:
+    import psutil
+except Exception:  # pragma: no cover - fallback during transition
+    psutil = None  # type: ignore
 import yaml
 
 from util.paths import resolve_config_path

@@ -13,7 +13,7 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 
-import ollama_service
+from llm import service as ollama_service
 import requests
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -326,9 +326,8 @@ class OllamaConfigScreen(Screen):
         popup.open()
 
     def _run_ollama_helper(self, action: str, *args: str) -> subprocess.CompletedProcess:
-        helper = ROOT / "src" / "ollama_service.py"
         return subprocess.run(
-            [sys.executable, str(helper), action, *args],
+            [sys.executable, "-m", "llm.service", action, *args],
             cwd=ROOT,
             text=True,
             capture_output=True,
@@ -496,12 +495,10 @@ class OllamaConfigScreen(Screen):
                         return
 
                     output = f"{proc.stdout or ''}\n{proc.stderr or ''}".strip()
-                    command_text = "python src/ollama_service.py install"
+                    command_text = "python -m llm.service install"
                     if installed:
                         command_text = f"{command_text} --reinstall"
-                    self._append_log(
-                        f"$ {command_text}\n{output or f'exit {proc.returncode}'}"
-                    )
+                    self._append_log(f"$ {command_text}\n{output or f'exit {proc.returncode}'}")
 
                     if proc.returncode == 0:
                         state = ollama_service.inspect_service_state()
@@ -557,7 +554,7 @@ class OllamaConfigScreen(Screen):
         def work():
             proc = self._run_ollama_helper("start")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ python src/ollama_service.py start\n{combined or '(no output)'}")
+            self._append_log(f"$ python -m llm.service start\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
                 configured_model = str(
@@ -590,7 +587,7 @@ class OllamaConfigScreen(Screen):
         def work():
             proc = self._run_ollama_helper("stop", "-v")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ python src/ollama_service.py stop -v\n{combined or '(no output)'}")
+            self._append_log(f"$ python -m llm.service stop -v\n{combined or '(no output)'}")
 
             if proc.returncode == 0:
                 self._managed_model_name = None
@@ -782,7 +779,7 @@ class OllamaConfigScreen(Screen):
             self._append_log(f"Preload failed for {model_name}: {exc}")
             proc = self._run_ollama_helper("start")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ python src/ollama_service.py start\n{combined or '(no output)'}")
+            self._append_log(f"$ python -m llm.service start\n{combined or '(no output)'}")
             if proc.returncode != 0:
                 raise RuntimeError(
                     combined or f"ollama_service.py start exited {proc.returncode}"

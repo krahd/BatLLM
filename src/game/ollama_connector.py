@@ -6,6 +6,10 @@ This connector targets Ollama's /api/chat contract. It does NOT use the deprecat
 """
 
 from __future__ import annotations
+from util.utils import _maybe_float, _maybe_int
+from util.paths import resolve_repo_relative
+from configs.app_config import config
+from llm import service as ollama_service
 
 import json
 
@@ -34,10 +38,6 @@ from llm.adapter import get_client
 # returning an object with `.chat(...)`).
 Client = get_client
 
-import ollama_service
-from configs.app_config import config
-from util.paths import resolve_repo_relative
-from util.utils import _maybe_float, _maybe_int
 
 Message = Dict[str, str]  # {"role": "system"|"user"|"assistant", "content": str}
 

@@ -125,8 +125,8 @@ def test_start_and_stop_call_scripts(monkeypatch) -> None:
 
     assert ("start", ()) in calls
     assert ("stop", ("-v",)) in calls
-    assert "python src/ollama_service.py start" in screen.output_log
-    assert "python src/ollama_service.py stop -v" in screen.output_log
+    assert "python -m llm.service start" in screen.output_log
+    assert "python -m llm.service stop -v" in screen.output_log
     assert "ok" in screen.output_log
 
 
@@ -202,7 +202,7 @@ def test_request_install_ollama_prompts_and_runs_install(monkeypatch) -> None:
     assert prompt["title"] == "Install Ollama"
     assert "not installed" in prompt["message"]
     assert any("Installing Ollama" in entry for entry in statuses)
-    assert any("python src/ollama_service.py install" in entry for entry in statuses)
+    assert any("python -m llm.service install" in entry for entry in statuses)
     assert any("installer launched" in entry for entry in statuses)
     assert helper_calls == [("install", ())]
     assert refreshed["status"] is False

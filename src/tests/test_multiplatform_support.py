@@ -5,7 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from configs.app_config import DEFAULTS
-import ollama_service
+from llm import service as ollama_service
 import yaml
 from util import paths
 

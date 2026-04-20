@@ -8,7 +8,7 @@ from create_homebrew_formula import (
     render_formula,
 )
 from configs.app_config import AppConfig
-import ollama_service
+from llm import service as ollama_service
 
 import sys
 import tarfile

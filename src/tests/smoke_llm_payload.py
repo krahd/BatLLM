@@ -10,7 +10,7 @@ from urllib.request import Request, urlopen
 import pytest
 import yaml
 
-import ollama_service
+from llm import service as ollama_service
 
 ROOT = Path(__file__).resolve().parents[2]
 # Allow overriding the config used by smoke tests via env var for CI/local flexibility
