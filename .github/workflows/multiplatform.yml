@@ -61,7 +61,7 @@ jobs:
 
       - name: Install optional modelito
         if: matrix.with_modelito == true
-        run: python -m pip install modelito==1.0.6
+        run: python -m pip install modelito==1.0.7
 
       - name: Compile launchers and source
         run: python -m compileall -q src run_batllm.py run_tests.py create_release_bundles.py
