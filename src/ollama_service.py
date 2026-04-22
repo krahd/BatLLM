@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import Any, Mapping
 from pathlib import Path
 
-from llm import service as _service
+from modelito import ollama_service as _service  # type: ignore
 
 # Re-export constants
 SHIPPED_CONFIG_PATH = _service.SHIPPED_CONFIG_PATH
