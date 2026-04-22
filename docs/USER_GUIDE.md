@@ -322,10 +322,10 @@ BatLLM uses Ollama in two ways:
 
 If you already manage Ollama elsewhere, you can keep doing that. The in-app Ollama screen is recommended, but it is not the only possible workflow.
 
-Optional: prefer `modelito`
----------------------------
+Required: `modelito`
+--------------------
 
-BatLLM will prefer the lightweight `modelito` package for Ollama lifecycle helpers when it is available in the Python environment. Installing `modelito` (for example `pip install modelito==0.1.1`) provides thin, well-tested helpers that BatLLM will use automatically; if `modelito` is not installed BatLLM falls back to its bundled `ollama_service` implementation.
+BatLLM requires the lightweight `modelito` package for Ollama lifecycle and model-management helpers. Install `modelito` (for example `pip install modelito==1.0.6`) to enable the in-app Ollama controls and lifecycle management.
 
 ## Safety Notes
 
