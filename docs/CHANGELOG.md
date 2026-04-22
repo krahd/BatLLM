@@ -2,6 +2,14 @@
 
 # Changelog
 
+## v0.3.3 - 2026-04-21
+
+### Modelito migration
+
+- migrated generic Ollama lifecycle and helper functions to the published `modelito` package; `src/ollama_service.py` now imports `modelito.ollama_service` unconditionally
+- removed legacy migration documentation (`docs/MIGRATION_TO_MODELITO.md`)
+- bumped repository `VERSION` to 0.3.3
+
 ## v0.3.2 - 2026-04-06
 
 ### Homebrew Tap Automation
