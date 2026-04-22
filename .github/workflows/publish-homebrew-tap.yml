@@ -11,6 +11,10 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: publish-homebrew-tap-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -18,6 +22,7 @@ jobs:
   publish:
     name: Publish batllm formula
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     env:
       FORMULA_NAME: batllm
       RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.release_tag || github.ref_name }}
@@ -39,7 +44,10 @@ jobs:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           : "${HOMEBREW_TAP_TOKEN:?HOMEBREW_TAP_TOKEN is required}"
-          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/krahd/homebrew-tap.git" tap-repo
+          git clone "https://github.com/krahd/homebrew-tap.git" tap-repo
+          pushd tap-repo
+          git config http.extraHeader "Authorization: Bearer ${HOMEBREW_TAP_TOKEN}"
+          popd
 
       - name: Render formula
         run: |
