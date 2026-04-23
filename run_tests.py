@@ -1,6 +1,7 @@
 """Cross-platform test runner for BatLLM."""
 
 from __future__ import annotations
+from util.compat import require_supported_python
 
 import argparse
 import os
@@ -8,21 +9,16 @@ import subprocess
 import sys
 from pathlib import Path
 
-
-MIN_PYTHON = (3, 10)
 ROOT = Path(__file__).resolve().parent
+SRC = ROOT / "src"
 VENV_PYTHON = (
     ROOT / ".venv_BatLLM" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
 )
 OLLAMA_HELPER = ROOT / "src" / "ollama_service.py"
 
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 
-def require_supported_python() -> None:
-    """Exit early with a clear message on unsupported Python versions."""
-    if sys.version_info >= MIN_PYTHON:
-        return
-    version = ".".join(str(part) for part in sys.version_info[:3])
-    raise SystemExit(f"BatLLM requires Python 3.10 or newer. Detected Python {version}.")
 
 
 def build_parser() -> argparse.ArgumentParser:

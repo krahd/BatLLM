@@ -469,18 +469,31 @@ def start_service(config_path: Path | None = None) -> int:
         try:
             starter = getattr(_MODELITO, "start_service", None)
             if callable(starter):
-                return starter(None)
+                # Prefer delegating to modelito, but if it fails (non-zero),
+                # fall back to the local implementation so BatLLM can still
+                # attempt to start the Ollama server.
+                try:
+                    rc = starter(None)
+                except Exception:
+                    rc = 1
+                if rc == 0:
+                    return 0
+                # fall through to local start implementation on non-zero rc
         except Exception:
             pass
     llm = load_llm_config(config_path)
     model = preferred_start_model(llm)
     timeout = resolve_request_timeout(llm, model=model)
+
     url = str(llm["url"])
     port = int(llm["port"])
     host = f"{url.removeprefix('http://').removeprefix('https://')}:{port}"
-    if not model:
-        print(f"No model configured in {config_path}", file=sys.stderr)
-        return 1
+    model_provided = bool(model)
+    if not model_provided:
+        print(
+            f"No model configured in {config_path}; starting Ollama without preloading a model.",
+            file=sys.stderr,
+        )
     try:
         version_proc = run_ollama_command("--version", host=host)
     except FileNotFoundError:
@@ -498,16 +511,24 @@ def start_service(config_path: Path | None = None) -> int:
         wait_until_ready(url, port)
         started = True
         print(f"Ollama is ready at {host}")
-    pull_proc = run_ollama_command("pull", model, host=host)
-    if pull_proc.returncode != 0:
-        sys.stderr.write((pull_proc.stdout or "") + (pull_proc.stderr or ""))
-        return pull_proc.returncode
-    preload_model(url, port, model, timeout=timeout)
-    save_last_served_model(model, config_path)
+    if model_provided:
+        pull_proc = run_ollama_command("pull", model, host=host)
+        if pull_proc.returncode != 0:
+            sys.stderr.write((pull_proc.stdout or "") + (pull_proc.stderr or ""))
+            return pull_proc.returncode
+        preload_model(url, port, model, timeout=timeout)
+        save_last_served_model(model, config_path)
+        if started:
+            print(f"Completed: started ollama at {host}, pulled and warmed model '{model}'.")
+        else:
+            print(
+                f"Completed: ollama already running at {host}; pulled and warmed model '{model}'.")
+        return 0
+    # No model configured: server started (or already running), nothing more to do.
     if started:
-        print(f"Completed: started ollama at {host}, pulled and warmed model '{model}'.")
+        print(f"Completed: started ollama at {host} (no model configured).")
     else:
-        print(f"Completed: ollama already running at {host}; pulled and warmed model '{model}'.")
+        print(f"Ollama already running at {host} (no model configured).")
     return 0
 
 

@@ -1,3 +1,13 @@
+from view.settings_screen import SettingsScreen
+from view.ollama_config_screen import OllamaConfigScreen
+from view.home_screen import HomeScreen
+from view.history_screen import HistoryScreen
+from view.analyzer_review_screen import AnalyzerReviewScreen
+from view.analyzer_load_screen import AnalyzerLoadScreen
+from util.version import current_app_version
+from util.utils import show_confirmation_dialog, show_fading_alert
+from util.paths import asset_path, register_kivy_resource_paths, repo_path, theme_colors_path, view_path
+from configs.app_config import config
 import os
 import sys
 import threading
@@ -14,29 +24,8 @@ from kivymd.app import MDApp
 from llm import service as ollama_service
 
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
-MIN_PYTHON = (3, 10)
 
 
-def require_supported_python() -> None:
-    """Exit early with a clear message on unsupported Python versions."""
-    if sys.version_info >= MIN_PYTHON:
-        return
-    version = ".".join(str(part) for part in sys.version_info[:3])
-    raise SystemExit(f"BatLLM requires Python 3.10 or newer. Detected Python {version}.")
-
-
-require_supported_python()
-
-from configs.app_config import config
-from util.paths import asset_path, register_kivy_resource_paths, repo_path, theme_colors_path, view_path
-from util.utils import show_confirmation_dialog, show_fading_alert
-from util.version import current_app_version
-from view.analyzer_load_screen import AnalyzerLoadScreen
-from view.analyzer_review_screen import AnalyzerReviewScreen
-from view.history_screen import HistoryScreen
-from view.home_screen import HomeScreen
-from view.ollama_config_screen import OllamaConfigScreen
-from view.settings_screen import SettingsScreen
 
 register_kivy_resource_paths()
 
@@ -260,7 +249,6 @@ class BatLLM(MDApp):
 
 
 def main() -> int:
-    require_supported_python()
     Config.set("kivy", "log_level", "error")
     Config.write()
     if hasattr(Window, "maximize"):

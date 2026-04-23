@@ -1,3 +1,12 @@
+from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
+from view.save_dialog import SaveDialog
+from view.load_text_dialog import LoadTextDialog
+from util.paths import prompt_asset_dir, resolve_saved_sessions_dir
+from game.history_manager import HistoryManager
+from game.game_board import GameBoard
+from game.bot import Bot
+from configs.app_config import config
+from kivy.uix.screenmanager import Screen
 import datetime
 import sys
 
@@ -33,17 +42,8 @@ if _window is None:
 
 # Expose module-level `Window` name
 Window = _window
-from kivy.uix.screenmanager import Screen
 
-from configs.app_config import config
-from game.bot import Bot
 # from game.game_board import GameBoard
-from game.game_board import GameBoard
-from game.history_manager import HistoryManager
-from util.paths import prompt_asset_dir, resolve_saved_sessions_dir
-from view.load_text_dialog import LoadTextDialog
-from view.save_dialog import SaveDialog
-from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
 
 
 class HomeScreen(Screen):

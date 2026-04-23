@@ -123,6 +123,28 @@ To launch the standalone analyzer directly:
 python run_game_analyzer.py
 ```
 
+### Wrapper script (optional)
+
+The repository includes a small convenience wrapper at `scripts/cmr-r` that prefers the project's
+virtualenv Python and sets `PYTHONPATH` so helper subprocesses can import the local `src` package
+reliably. Use it to start BatLLM from the repo root.
+
+Make it executable and run:
+
+```bash
+chmod +x scripts/cmr-r
+./scripts/cmr-r
+```
+
+Or add a shell alias for convenience:
+
+```bash
+echo "alias cmr-r='(cd /path/to/BatLLM && ./scripts/cmr-r)'" >> ~/.zshrc
+```
+
+VS Code: a task/keybinding named `cmr-r` is available to run the same command from the editor.
+
+
 ### Homebrew Packaging
 
 The repository now includes tap-oriented Homebrew packaging support for macOS on Apple Silicon.

@@ -22,16 +22,6 @@ from view.analyzer_review_screen import AnalyzerReviewScreen
 
 MIN_PYTHON = (3, 10)
 
-
-def require_supported_python() -> None:
-    """Exit early with a clear message on unsupported Python versions."""
-    if sys.version_info >= MIN_PYTHON:
-        return
-    version = ".".join(str(part) for part in sys.version_info[:3])
-    raise SystemExit(f"BatLLM Game Analyzer requires Python 3.10 or newer. Detected Python {version}.")
-
-
-require_supported_python()
 register_kivy_resource_paths()
 
 Builder.load_file(str(view_path("analyzer_load_screen.kv")))
@@ -83,7 +73,6 @@ class GameAnalyzerApp(MDApp):
 
 
 def main(argv: list[str] | None = None) -> int:
-    require_supported_python()
     argv = argv or sys.argv[1:]
     initial_session = argv[0] if argv else None
     Config.set("kivy", "log_level", "error")

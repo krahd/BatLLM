@@ -8,6 +8,7 @@ import re
 import subprocess
 import sys
 import threading
+import os
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -326,12 +327,19 @@ class OllamaConfigScreen(Screen):
         popup.open()
 
     def _run_ollama_helper(self, action: str, *args: str) -> subprocess.CompletedProcess:
+        # Ensure the child Python process can import the local `llm` package by
+        # setting PYTHONPATH to include the repository `src` directory.
+        env = os.environ.copy()
+        src_path = str(ROOT / "src")
+        existing = env.get("PYTHONPATH")
+        env["PYTHONPATH"] = src_path + (os.pathsep + existing if existing else "")
         return subprocess.run(
             [sys.executable, "-m", "llm.service", action, *args],
             cwd=ROOT,
             text=True,
             capture_output=True,
             check=False,
+            env=env,
         )
 
     def _run_ollama_command(self, *args: str) -> subprocess.CompletedProcess:
