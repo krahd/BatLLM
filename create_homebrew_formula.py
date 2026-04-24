@@ -21,7 +21,6 @@ PYPI_USER_AGENT = "BatLLM Homebrew Formula Generator"
 GITHUB_OWNER = "krahd"
 GITHUB_REPO = "BatLLM"
 EXTRA_BUILD_REQUIREMENTS = ["maturin==1.9.4"]
-SOURCE_ONLY_PACKAGES = ("kivymd", "pydantic_core")
 
 
 def read_version() -> str:
@@ -116,8 +115,7 @@ def resolve_runtime_resources(
             "--disable-pip-version-check",
             "--dest",
             str(temp_dir),
-            "--only-binary=:all:",
-            *(f"--no-binary={package_name}" for package_name in SOURCE_ONLY_PACKAGES),
+            "--no-binary=:all:",
             *(requirements + EXTRA_BUILD_REQUIREMENTS),
         ]
         subprocess.run(command, cwd=ROOT, check=True)

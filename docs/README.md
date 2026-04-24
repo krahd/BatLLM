@@ -50,6 +50,10 @@ README is the canonical overview and start-here page. The rest of the maintained
 
 - [CHANGELOG.md](CHANGELOG.md): release history and notable documentation changes
 - [CREDITS.md](CREDITS.md): project attribution and support context
+- [ROADMAP.md](ROADMAP.md): planned 1.0 and 2.0 product direction
+- [RELEASE_CRITERIA_1_0.md](RELEASE_CRITERIA_1_0.md): explicit 1.0 release gates
+- [FIRST_RUN_RELEASE_CHECKLIST.md](FIRST_RUN_RELEASE_CHECKLIST.md): pre-release first-run and bundle validation checklist
+- [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md): concrete UI unification workstreams for 1.0
 - [code/html/index.html](code/html/index.html): generated API reference
 
 The FAQ is intentionally a mixed-audience page. Routine screen instructions stay in the user guide, while recurring non-trivial questions that matter to both players and contributors live in the FAQ.
