@@ -26,9 +26,6 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-        with_modelito:
-          - false
-          - true
 
     env:
       KIVY_WINDOW: mock
@@ -43,15 +40,7 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.11"
-
-      - name: Cache pip
-        if: matrix.os != 'windows-latest'
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          cache: pip
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip
@@ -59,25 +48,42 @@ jobs:
       - name: Install dependencies (requirements)
         run: python -m pip install -r requirements.txt
 
-      - name: Install optional modelito
-        if: matrix.with_modelito == true
-        run: python -m pip install modelito==1.0.7
-
       - name: Compile launchers and source
-        run: python -m compileall -q src run_batllm.py run_tests.py create_release_bundles.py
+        run: python -m compileall -q src run_batllm.py run_tests.py create_release_bundles.py create_homebrew_formula.py
 
       - name: Run non-live test suite
-        run: >
-          python -m pytest -q
-          src/tests/test_history_compact.py
-          src/tests/test_close_prompt_behavior.py
-          src/tests/test_utils_confirmation_dialog.py
-          src/tests/test_ollama_config_screen.py
-          src/tests/test_ollama_config_screen_logic.py
-          src/tests/test_multiplatform_support.py
+        run: python -m pytest -q src/tests --ignore=src/tests/test_homebrew_packaging.py
 
       - name: Build release bundles
         run: python create_release_bundles.py --version 0.0.0-ci
+
+  homebrew:
+    name: "Homebrew dry-run"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip
+
+      - name: Install dependencies (requirements)
+        run: python -m pip install -r requirements.txt
+
+      - name: Render Homebrew formula from current worktree
+        run: >
+          python create_homebrew_formula.py
+          --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz
+          --formula-out /tmp/batllm.rb
+
+      - name: Run Homebrew packaging tests
+        run: python -m pytest -q src/tests/test_homebrew_packaging.py
 
   smoke:
     name: "Smoke: Ollama integration"
@@ -96,14 +102,7 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.11"
-
-      - name: Cache pip
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          cache: pip
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip

@@ -10,6 +10,14 @@ BatLLM is both a software project and a research and education project. When con
 
 Features wishlist: [ROADMAP.md](ROADMAP.md)
 
+1.0 planning references:
+
+- [RELEASE_CRITERIA_1_0.md](RELEASE_CRITERIA_1_0.md)
+- [FIRST_RUN_RELEASE_CHECKLIST.md](FIRST_RUN_RELEASE_CHECKLIST.md)
+- [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md)
+
+For repository settings, set branch protection required checks to the list in `RELEASE_CRITERIA_1_0.md`.
+
 ## Ways To Contribute
 
 Contributions are welcome in several forms:
@@ -375,7 +383,7 @@ That covers:
 This is the most useful day-to-day test command for UI and logic changes:
 
 ```bash
-python -m pytest -q src/tests/test_history_compact.py src/tests/test_close_prompt_behavior.py src/tests/test_utils_confirmation_dialog.py src/tests/test_ollama_config_screen.py src/tests/test_ollama_config_screen_logic.py src/tests/test_multiplatform_support.py
+python -m pytest -q src/tests
 ```
 
 That suite covers:
@@ -386,6 +394,25 @@ That suite covers:
 - model-picker behaviour
 - cross-platform launch and path handling
 - non-live smoke checks
+
+### Homebrew Dry-Run Validation
+
+For Homebrew packaging or release-tooling changes, validate that the formula renders from the current worktree and that the packaging tests pass:
+
+```bash
+python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb
+python -m pytest -q src/tests/test_homebrew_packaging.py
+```
+
+This mirrors the repository's CI `Homebrew dry-run` job and keeps the formula path aligned with the standard tap-release workflow.
+
+### CI Defaults
+
+Current repository CI follows these defaults:
+
+- PR validation runs the full non-live suite across Linux, macOS, and Windows.
+- Homebrew packaging is validated on PRs in a dedicated Linux job that renders a formula from the current worktree and runs Homebrew packaging tests.
+- Tagged releases publish the formula to `krahd/homebrew-tap` through the dedicated publish workflow.
 
 ### Live Ollama Smoke
 
@@ -473,6 +500,7 @@ That produces:
 - a Linux bundle with `.sh` launchers
 
 Tagged releases can also publish BatLLM's source-based Apple Silicon Homebrew formula automatically to `krahd/homebrew-tap` through the repository workflow. That automation requires a repository secret named `HOMEBREW_TAP_TOKEN` with push access to the shared tap.
+The publish workflow now validates that release tags use `vMAJOR.MINOR.PATCH` format and that the tag version matches the repository `VERSION` file before it pushes any tap update.
 
 To generate a Homebrew formula for the `krahd` tap after publishing a release tag:
 

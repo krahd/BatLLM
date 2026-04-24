@@ -61,3 +61,40 @@ def test_post_json_reports_timeout_with_context(monkeypatch) -> None:
     message = str(exc_info.value)
     assert "chat request for model 'qwen3:30b'" in message
     assert "timeout=60.0s" in message
+
+
+def test_post_json_raises_for_non_timeout_url_errors(monkeypatch) -> None:
+    def fake_urlopen(*_args, **_kwargs):
+        raise URLError("connection refused")
+
+    monkeypatch.setattr(smoke_llm_payload, "urlopen", fake_urlopen)
+
+    with pytest.raises(URLError, match="connection refused"):
+        smoke_llm_payload._post_json(
+            "http://localhost:11434/api/chat",
+            {"model": "qwen3:30b"},
+            timeout=60.0,
+            description="chat request",
+        )
+
+
+def test_post_json_raises_for_malformed_json_payload(monkeypatch) -> None:
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self):
+            return b"{not-json"
+
+    monkeypatch.setattr(smoke_llm_payload, "urlopen", lambda *_args, **_kwargs: FakeResponse())
+
+    with pytest.raises(ValueError):
+        smoke_llm_payload._post_json(
+            "http://localhost:11434/api/chat",
+            {"model": "qwen3:30b"},
+            timeout=60.0,
+            description="chat request",
+        )
