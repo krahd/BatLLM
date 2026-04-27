@@ -6,6 +6,7 @@ on:
       - main
       - "feature/**"
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -113,6 +114,15 @@ jobs:
       - name: Start mock Ollama and run smoke tests
         run: |
           set -euo pipefail
+
+          cleanup() {
+            if [ -n "${PID:-}" ] && kill -0 "$PID" >/dev/null 2>&1; then
+              kill "$PID" >/dev/null 2>&1 || true
+              wait "$PID" >/dev/null 2>&1 || true
+            fi
+          }
+          trap cleanup EXIT
+
           python tools/ollama_mock_server.py --port 11434 &
           PID=$!
           echo "waiting for mock server ($PID)"
@@ -121,8 +131,11 @@ jobs:
             sleep 1
             n=$((n+1))
           done
+
+          if ! curl -sS http://127.0.0.1:11434/api/version >/dev/null 2>&1; then
+            echo "Mock Ollama server did not become ready in time." >&2
+            exit 1
+          fi
+
           curl -sS http://127.0.0.1:11434/api/version
           python -m pytest -q src/tests/smoke_llm_payload.py
-          RC=$?
-          kill $PID || true
-          exit $RC
