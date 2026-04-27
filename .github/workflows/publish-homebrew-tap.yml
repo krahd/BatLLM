@@ -60,7 +60,7 @@ jobs:
           HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           : "${HOMEBREW_TAP_TOKEN:?HOMEBREW_TAP_TOKEN is required}"
-          git -c http.extraHeader="Authorization: Bearer ${HOMEBREW_TAP_TOKEN}" clone "https://github.com/krahd/homebrew-tap.git" tap-repo
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/krahd/homebrew-tap.git" tap-repo
 
       - name: Render formula
         run: |
@@ -72,8 +72,6 @@ jobs:
 
       - name: Commit and push tap update
         working-directory: tap-repo
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           git checkout main
           git config user.name "github-actions[bot]"
@@ -91,15 +89,20 @@ jobs:
 
           max_attempts=5
           for attempt in $(seq 1 "$max_attempts"); do
-            if ! git -c http.extraHeader="Authorization: Bearer ${HOMEBREW_TAP_TOKEN}" pull --rebase origin main; then
+            echo "Push attempt ${attempt}/${max_attempts}"
+
+            if ! git pull --rebase origin main; then
               echo "Rebase failed while preparing the tap update." >&2
               git rebase --abort || true
               exit 1
             fi
 
-            if git -c http.extraHeader="Authorization: Bearer ${HOMEBREW_TAP_TOKEN}" push origin HEAD:main; then
+            if git push origin HEAD:main; then
               exit 0
             fi
+
+            sleep $((attempt * 2))
           done
 
+          echo "Unable to push tap update after ${max_attempts} attempts." >&2
           exit 1
