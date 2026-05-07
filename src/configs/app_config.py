@@ -38,6 +38,7 @@ DEFAULTS = {
         "last_served_model": "",
         "timeout": None,
         "model_timeouts": {},
+        "warmup_timeout": 30.0,
     },
 }
 

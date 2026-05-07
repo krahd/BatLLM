@@ -24,15 +24,19 @@ def build_session_payload(
     games: list[dict[str, Any]],
     app_version: str,
     saved_at: str,
+    llm_metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build the current saved-session envelope."""
-    return {
+    payload = {
         "schema_version": SESSION_SCHEMA_VERSION,
         "session_type": SESSION_TYPE,
         "app_version": app_version,
         "saved_at": saved_at,
         "games": games,
     }
+    if isinstance(llm_metadata, dict) and llm_metadata:
+        payload["llm_metadata"] = llm_metadata
+    return payload
 
 
 def _ensure(condition: bool, message: str) -> None:
@@ -106,6 +110,7 @@ def summarize_session_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "session_type": payload.get("session_type"),
         "app_version": payload.get("app_version"),
         "saved_at": payload.get("saved_at"),
+        "configured_model": ((payload.get("llm_metadata") or {}).get("configured_model") if isinstance(payload.get("llm_metadata"), dict) else None),
         "game_count": len(games),
         "round_count": round_count,
         "turn_count": turn_count,

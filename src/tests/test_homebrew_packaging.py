@@ -1,4 +1,13 @@
 from __future__ import annotations
+
+import sys
+import tarfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from util import paths
 from create_homebrew_formula import (
     create_worktree_archive,
@@ -10,15 +19,7 @@ from create_homebrew_formula import (
 from configs.app_config import AppConfig
 from llm import service as ollama_service
 
-import sys
-import tarfile
-from pathlib import Path
-
 import yaml
-
-ROOT = Path(__file__).resolve().parents[2]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
 
 

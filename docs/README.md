@@ -76,7 +76,7 @@ BatLLM is now maintained for:
 
 ### Python Dependencies
 
-The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports. BatLLM's maintained Ollama integration depends on `modelito==1.2.2`.
+The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports. BatLLM's maintained Ollama integration depends on `modelito==1.4.0`.
 
 ### Ollama Requirements
 
@@ -92,8 +92,8 @@ If the CLI is missing, the app can offer to install Ollama from the Ollama scree
 | Topic | Current expectation | Notes |
 | --- | --- | --- |
 | Python | `3.10+` | `3.11` or `3.12` is recommended for normal development and usage. |
-| BatLLM | `0.3.2` | Matches the current repository `VERSION` file and release line. |
-| Ollama workflow | local Ollama install with the CLI available | The recommended path is to manage install, start, stop, and model selection through `Ollama Config`. BatLLM can prompt to install/start Ollama and restore `llm.last_served_model`. |
+| BatLLM | `0.3.3` | Matches the current repository `VERSION` file and release line. |
+| Ollama workflow | local Ollama install with the CLI available | The recommended path is to manage install, start, stop, and model selection through `Ollama Config`. BatLLM can prompt to install/start Ollama, restore `llm.last_served_model`, and use the configured `llm.warmup_timeout` during service startup. |
 
 ## Quick Start
 
@@ -147,7 +147,6 @@ echo "alias cmr-r='(cd /path/to/BatLLM && ./scripts/cmr-r)'" >> ~/.zshrc
 ```
 
 VS Code: a task/keybinding named `cmr-r` is available to run the same command from the editor.
-
 
 ### Homebrew Packaging
 
@@ -266,7 +265,6 @@ Behind the UI, BatLLM now uses a cross-platform Python helper for Ollama lifecyc
 
 > [!WARNING]
 > BatLLM is provided as-is. The Ollama screen operates on your real local Ollama installation.
-
 > [!CAUTION]
 > If other tools use the same Ollama installation, BatLLM can affect them by starting or stopping the server, downloading models, deleting models, or switching the model BatLLM itself uses.
 
@@ -315,7 +313,7 @@ The history screen shows:
 - a compact, per-bot history pane
 - a full session history pane
 
-`Save Session` exports the current session as analyzer-compatible JSON in the configured `saved_sessions_folder`. New exports use the BatLLM v2 session envelope and include a per-round `gameplay_settings_snapshot`, so the analyzer can replay the same game logic later even if the current config has changed.
+`Save Session` exports the current session as analyzer-compatible JSON in the configured `saved_sessions_folder`. New exports use the BatLLM v2 session envelope and include a per-round `gameplay_settings_snapshot` plus a top-level `llm_metadata` snapshot, so the analyzer can replay the same game logic later and show the saved model/runtime context even if the current config has changed.
 
 It currently uses an explicit `Back` button to return to the home screen.
 
@@ -332,7 +330,7 @@ The analyzer is read-only. It lets you:
 - select a game and round from multi-game session files
 - step forward and backward through turn starts and individual plays
 - replay the board state using the saved prompts, ordered plays, and per-round gameplay settings snapshot
-- inspect prompts, raw LLM responses, parsed commands, state diffs, round settings, and replay insights
+- inspect prompts, raw LLM responses, parsed commands, state diffs, saved model metadata in the `Model` tab, round settings, and replay insights
 
 The analyzer intentionally targets new v2 saved sessions only. Legacy top-level list exports are rejected with a compatibility message instead of being replayed approximately.
 
@@ -342,9 +340,18 @@ The Ollama screen shows:
 
 - current Ollama status
 - a multi-line output log
+- warmup-timeout controls for Ollama service startup
 - install and reinstall controls
 - local model controls
 - remote model controls
+
+### Warmup Timeout Controls
+
+The Ollama screen now includes a warmup-timeout row above the status panel.
+
+- `Save Warmup` stores `llm.warmup_timeout` in seconds.
+- `Use Default` clears the saved override and returns startup warmup to BatLLM's `30s` default.
+- `Start Ollama` passes the effective warmup timeout to the service helper and CLI path.
 
 ## For Contributors
 

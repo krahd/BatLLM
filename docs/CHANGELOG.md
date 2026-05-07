@@ -12,6 +12,9 @@
 - imported transport error handling types (`ErrorEnvelope`, `ResponseEnvelope`, `TransportPolicy`) from `modelito` for improved error normalization
 - updated Ollama config screen to use the new readiness result object for richer UI lifecycle feedback (phase, elapsed time, source details, error information)
 - updated service layer to pass `warmup_timeout` through to modelito's `start_service()` call
+- added a user-editable warmup-timeout control to the Ollama screen and CLI support for `python -m llm.service start --warmup-timeout ...`
+- added focused tests for detailed readiness success/failure handling and warmup-timeout config persistence
+- added saved `llm_metadata` snapshots to exported sessions and exposed that metadata in a new Game Analyzer inspector tab
 
 ### Modelito 1.2.2 Direct Integration
 

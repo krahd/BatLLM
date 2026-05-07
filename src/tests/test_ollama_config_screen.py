@@ -123,9 +123,9 @@ def test_start_and_stop_call_scripts(monkeypatch) -> None:
     screen.start_ollama()
     screen.stop_ollama()
 
-    assert ("start", ()) in calls
+    assert ("start", ("--warmup-timeout", "30")) in calls
     assert ("stop", ("-v",)) in calls
-    assert "python -m llm.service start" in screen.output_log
+    assert "python -m llm.service start --warmup-timeout 30" in screen.output_log
     assert "python -m llm.service stop -v" in screen.output_log
     assert "ok" in screen.output_log
 

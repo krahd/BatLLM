@@ -4,5 +4,6 @@ Kivy-Garden==0.1.5
 ollama==0.5.3
 psutil==7.0.0
 PyYAML==6.0.2
+requests==2.32.4
 pytest==8.3.5
 modelito==1.4.0

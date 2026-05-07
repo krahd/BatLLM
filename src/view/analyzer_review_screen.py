@@ -216,6 +216,7 @@ class AnalyzerReviewScreen(Screen):
         self.ids.prompts_text.text = model.format_prompts()
         self.ids.plays_text.text = model.format_plays()
         self.ids.state_diff_text.text = model.format_state_diff()
+        self.ids.model_metadata_text.text = model.format_model_metadata()
         self.ids.round_settings_text.text = model.format_round_settings()
         self.ids.insights_text.text = model.format_insights()
 

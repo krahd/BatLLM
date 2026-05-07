@@ -225,7 +225,7 @@ The history screen shows two synchronised views:
 
 This is the best place to inspect what each model saw, what it returned, and how your prompt strategy is evolving across rounds.
 
-Use `Save Session` on the home screen to export the current session as a JSON file in `saved_sessions_folder`. Current exports use the BatLLM v2 session format and include a `gameplay_settings_snapshot` for every round so the Game Analyzer can replay the same rules later.
+Use `Save Session` on the home screen to export the current session as a JSON file in `saved_sessions_folder`. Current exports use the BatLLM v2 session format and include a `gameplay_settings_snapshot` for every round plus a saved `llm_metadata` snapshot so the Game Analyzer can replay the same rules later and show the model/runtime context that was active when the session was exported.
 
 The current implementation uses the explicit `Back` button to return home.
 
@@ -243,7 +243,7 @@ The analyzer lets you:
 - choose a game and round inside that session
 - move backward and forward across turn starts and individual plays
 - replay the board using the saved prompts, ordered plays, and that round's frozen gameplay settings snapshot
-- inspect prompts, raw model responses, parsed commands, state diffs, round settings, and mismatch warnings
+- inspect prompts, raw model responses, parsed commands, state diffs, saved model metadata in the `Model` tab, round settings, and mismatch warnings
 
 Legacy saved sessions that predate the v2 schema are not replay-supported in the analyzer. Save a new session from the current app if you want to study it there.
 
@@ -255,6 +255,7 @@ It includes:
 
 - an `Ollama Status` section
 - an `Output` log
+- a warmup-timeout editor for Ollama startup
 - a `Local Models` section
 - a `Remote Models` section
 - a `Back to Settings` button
@@ -262,9 +263,18 @@ It includes:
 ### Start And Stop Ollama
 
 - `Install Ollama` launches the official install or reinstall flow after confirmation
-- `Start Ollama` runs BatLLM's cross-platform Ollama helper
+- `Start Ollama` runs BatLLM's cross-platform Ollama helper with the effective warmup timeout
 - `Stop Ollama` runs the same helper in stop mode
 - `Refresh` reloads status plus both model lists
+
+### Warmup Timeout
+
+BatLLM now treats Ollama startup warmup as a configurable setting.
+
+- the warmup row shows the effective service-start timeout BatLLM will use
+- `Save Warmup` stores `llm.warmup_timeout`
+- `Use Default` clears the override and returns the service-start warmup timeout to `30s`
+- the same timeout is honored by the in-app `Start Ollama` button and the `python -m llm.service start --warmup-timeout ...` CLI path
 
 ### Local Models
 
@@ -321,10 +331,9 @@ The app routes gameplay prompts through `modelito`'s Ollama provider surface and
 
 If you already manage Ollama elsewhere, you can keep doing that. The in-app Ollama screen is recommended, but it is not the only possible workflow.
 
-Required: `modelito`
---------------------
+## Required: `modelito`
 
-BatLLM requires the lightweight `modelito` package for gameplay and Ollama lifecycle/model-management helpers. Install `modelito` with the repository-supported version: `pip install modelito==1.2.2`.
+BatLLM requires the lightweight `modelito` package for gameplay and Ollama lifecycle/model-management helpers. Install `modelito` with the repository-supported version: `pip install modelito==1.4.0`.
 
 ## Safety Notes
 

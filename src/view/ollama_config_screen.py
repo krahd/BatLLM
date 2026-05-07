@@ -62,6 +62,8 @@ class OllamaConfigScreen(Screen):
     selected_local_model_label = StringProperty("Select local model")
     selected_local_timeout_text = StringProperty("")
     selected_local_timeout_details = StringProperty("Select a local model to edit its timeout.")
+    warmup_timeout_text = StringProperty("")
+    warmup_timeout_details = StringProperty("Configure how long BatLLM waits for Ollama to finish starting.")
     selected_remote_model_label = StringProperty("Select remote model")
     selected_remote_timeout_details = StringProperty(
         "Select a remote model to see its estimated timeout."
@@ -79,6 +81,7 @@ class OllamaConfigScreen(Screen):
     def on_pre_enter(self, *_args):
         Window.unbind(on_key_down=self.handle_window_key_down)
         Window.bind(on_key_down=self.handle_window_key_down)
+        self._refresh_warmup_timeout()
         self.refresh_ollama_status()
         self.refresh_local_models()
 
@@ -117,6 +120,9 @@ class OllamaConfigScreen(Screen):
             "model_timeouts": dict(model_timeouts),
             "timeout": config.get("llm", "timeout"),
         }
+
+    def _warmup_timeout_config(self) -> dict[str, Any]:
+        return {"warmup_timeout": config.get("llm", "warmup_timeout")}
 
     @staticmethod
     def _format_timeout_seconds(timeout_seconds: float) -> str:
@@ -170,6 +176,15 @@ class OllamaConfigScreen(Screen):
         self.selected_local_model = model_name
         self.selected_local_model_label = model_name or "Select local model"
         self._refresh_selected_local_timeout()
+
+    def _refresh_warmup_timeout(self):
+        timeout_seconds = ollama_service.resolve_warmup_timeout(self._warmup_timeout_config())
+        configured = config.get("llm", "warmup_timeout")
+        self.warmup_timeout_text = self._format_timeout_seconds(timeout_seconds)
+        source = "saved warmup timeout override" if configured not in (None, "") else "BatLLM/modelito default"
+        self.warmup_timeout_details = (
+            f"Service warmup timeout: {self._format_timeout_seconds(timeout_seconds)}s from {source}."
+        )
 
     def _set_remote_selection(self, model_name: str):
         model_name = model_name.strip()
@@ -439,6 +454,7 @@ class OllamaConfigScreen(Screen):
     def _collect_ollama_status(self) -> dict[str, Any]:
         state = ollama_service.inspect_service_state()
         base_url, port = self._llm_endpoint()
+        warmup_timeout = ollama_service.resolve_warmup_timeout(self._warmup_timeout_config())
         snapshot: dict[str, Any] = {
             "found": bool(state.get("installed")),
             "version": str(state.get("version") or "unknown"),
@@ -447,6 +463,7 @@ class OllamaConfigScreen(Screen):
             "running_models": self._running_model_names_via_modelito() if state.get("running") else [],
             "configured_model": str(state.get("configured_model") or config.get("llm", "model") or ""),
             "endpoint": f"{base_url}:{port}",
+            "warmup_timeout": warmup_timeout,
         }
         self._append_log(
             "modelito inspect_service_state -> "
@@ -467,10 +484,12 @@ class OllamaConfigScreen(Screen):
             lines.append("Installed version: unavailable")
             lines.append("Server status: not running")
             lines.append(f"BatLLM model: {configured_model}")
+            lines.append(f"Warmup timeout: {self._format_timeout_seconds(snapshot.get('warmup_timeout') or 0)}s")
             return "\n".join(lines)
 
         lines.append("Ollama CLI: found")
         lines.append(f"Installed version: {snapshot.get('version') or 'unknown'}")
+        lines.append(f"Warmup timeout: {self._format_timeout_seconds(snapshot.get('warmup_timeout') or 0)}s")
 
         if snapshot.get("running"):
             lines.append("Server status: running")
@@ -600,9 +619,17 @@ class OllamaConfigScreen(Screen):
         self._set_status("Starting Ollama...")
 
         def work():
-            proc = self._run_ollama_helper("start")
+            warmup_timeout_config = getattr(
+                self,
+                "_warmup_timeout_config",
+                lambda: {"warmup_timeout": config.get("llm", "warmup_timeout")},
+            )
+            warmup_timeout = ollama_service.resolve_warmup_timeout(warmup_timeout_config())
+            proc = self._run_ollama_helper("start", "--warmup-timeout", f"{warmup_timeout:g}")
             combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ python -m llm.service start\n{combined or '(no output)'}")
+            self._append_log(
+                f"$ python -m llm.service start --warmup-timeout {warmup_timeout:g}\n{combined or '(no output)'}"
+            )
 
             if proc.returncode == 0:
                 configured_model = str(
@@ -915,6 +942,43 @@ class OllamaConfigScreen(Screen):
             f"Saved model timeout override: {model} -> "
             f"{self._format_timeout_seconds(timeout_seconds)}s"
         )
+
+    def save_warmup_timeout(self):
+        raw_value = self.warmup_timeout_text.strip()
+        try:
+            timeout_seconds = float(raw_value)
+        except ValueError:
+            show_fading_alert(
+                "Warmup Timeout",
+                "Enter a positive warmup timeout in seconds.",
+                duration=1.7,
+                fade_duration=1.0,
+            )
+            return
+
+        if timeout_seconds <= 0:
+            show_fading_alert(
+                "Warmup Timeout",
+                "Enter a positive warmup timeout in seconds.",
+                duration=1.7,
+                fade_duration=1.0,
+            )
+            return
+
+        config.set("llm", "warmup_timeout", timeout_seconds)
+        config.save()
+        self._refresh_warmup_timeout()
+        self._set_status("Saved warmup timeout.")
+        self._append_log(
+            f"Saved warmup timeout override -> {self._format_timeout_seconds(timeout_seconds)}s"
+        )
+
+    def reset_warmup_timeout(self):
+        config.set("llm", "warmup_timeout", None)
+        config.save()
+        self._refresh_warmup_timeout()
+        self._set_status("Using default warmup timeout.")
+        self._append_log("Cleared warmup timeout override.")
 
     def reset_selected_model_timeout(self):
         model = self.selected_local_model.strip()

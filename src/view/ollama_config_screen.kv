@@ -60,6 +60,47 @@
                 color: 1, 1, 1, 1
                 on_press: root.refresh_all()
 
+        Label:
+            text: root.warmup_timeout_details
+            color: 0.15, 0.15, 0.15, 1
+            font_size: sp(14)
+            size_hint_y: None
+            height: max(self.texture_size[1] + dp(8), dp(34))
+            halign: "left"
+            valign: "middle"
+            text_size: self.width, None
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(46)
+            spacing: dp(8)
+
+            TextInput:
+                text: root.warmup_timeout_text
+                hint_text: "Warmup timeout (seconds)"
+                multiline: False
+                write_tab: False
+                input_filter: "float"
+                size_hint_x: 0.34
+                foreground_color: 0, 0, 0, 1
+                background_color: .95, .95, .95, 1
+                on_text: root.warmup_timeout_text = self.text
+                on_text_validate: root.save_warmup_timeout()
+
+            Button:
+                text: "Save Warmup"
+                font_size: sp(18)
+                size_hint_x: 0.33
+                on_press: root.save_warmup_timeout()
+
+            Button:
+                text: "Use Default"
+                font_size: sp(18)
+                size_hint_x: 0.33
+                background_color: .8, .8, .8, 1
+                color: 1, 1, 1, 1
+                on_press: root.reset_warmup_timeout()
+
         BoxLayout:
             size_hint_y: 1
             orientation: "vertical"

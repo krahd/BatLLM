@@ -311,6 +311,44 @@ class AnalyzerSessionModel:
             lines.extend(replay.mismatch_details)
         return "\n".join(lines).strip() or "No insights for this step."
 
+    def format_model_metadata(self) -> str:
+        metadata = self.payload.get("llm_metadata")
+        if not isinstance(metadata, dict) or not metadata:
+            return "No saved model metadata was recorded for this session."
+
+        lines: list[str] = []
+        configured_model = str(metadata.get("configured_model") or "").strip()
+        last_served_model = str(metadata.get("last_served_model") or "").strip()
+        if configured_model:
+            lines.append(f"[b]Configured model[/b]: {configured_model}")
+        if last_served_model:
+            lines.append(f"[b]Last served model[/b]: {last_served_model}")
+        request_timeout = metadata.get("request_timeout")
+        if request_timeout is not None:
+            lines.append(f"[b]Request timeout[/b]: {request_timeout!r}s")
+        warmup_timeout = metadata.get("warmup_timeout")
+        if warmup_timeout is not None:
+            lines.append(f"[b]Warmup timeout[/b]: {warmup_timeout!r}s")
+        endpoint = f"{metadata.get('url') or 'http://localhost'}:{metadata.get('port') or 11434}"
+        lines.append(f"[b]Ollama endpoint[/b]: {endpoint}")
+
+        config_snapshot = metadata.get("config_snapshot")
+        if isinstance(config_snapshot, dict) and config_snapshot:
+            lines.append("")
+            lines.append("[b]Saved config snapshot[/b]")
+            for key in ("path", "num_ctx", "num_predict", "num_thread", "max_tokens", "temperature", "top_k", "top_p"):
+                if key in config_snapshot:
+                    lines.append(f"{key}: {config_snapshot.get(key)!r}")
+
+        provider_metadata = metadata.get("provider_metadata")
+        if isinstance(provider_metadata, dict) and provider_metadata:
+            lines.append("")
+            lines.append("[b]Saved provider metadata[/b]")
+            for key in sorted(provider_metadata):
+                lines.append(f"{key}: {provider_metadata.get(key)!r}")
+
+        return "\n".join(lines).strip() or "No saved model metadata was recorded for this session."
+
     def session_tree_rows(self) -> list[AnalyzerTreeRow]:
         original_game_index = self.game_index
         original_round_index = self.round_index

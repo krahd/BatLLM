@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-06 22:15
+Last updated: 2026-05-07 00:04
 
 ## Current State
 
@@ -15,8 +15,9 @@ The repository now routes maintained Ollama lifecycle/model-management behavior 
 
 - Upgraded BatLLM to `modelito 1.4.0` with high-priority feature integration.
 - Implemented `ensure_model_ready_detailed()` for structured lifecycle feedback.
-- Added `warmup_timeout` parameter support through service layer.
-- Keep the maintained docs aligned with the enhanced `modelito 1.4.0` architecture.
+- Added configurable `warmup_timeout` support through config, service CLI, and the Ollama screen.
+- Added saved-session `llm_metadata` snapshots and exposed them in the Game Analyzer UI.
+- Keep the maintained docs, broader validation notes, and packaging-sensitive checks aligned with the enhanced `modelito 1.4.0` architecture.
 
 ## Architecture Notes
 
@@ -51,34 +52,40 @@ The repository now routes maintained Ollama lifecycle/model-management behavior 
   - Modified `start_service()` signature to accept `warmup_timeout: float = 30.0` parameter.
   - Added error envelope imports for future error handling improvements.
   - Passed `warmup_timeout` through to modelito's `start_service()` call.
-- Updated `docs/CHANGELOG.md` with modelito 1.4.0 upgrade notes.
+- Added `llm.warmup_timeout` to the shipped config/default config flow and wired it into the Ollama screen plus the `python -m llm.service start --warmup-timeout ...` CLI path.
+- Added saved `llm_metadata` snapshots to session export and exposed that metadata in the analyzer's new `Model` inspector tab.
+- Updated the maintained docs (`docs/README.md`, `docs/USER_GUIDE.md`, `docs/CONTRIBUTING.md`, `docs/CHANGELOG.md`) for modelito 1.4.0, warmup-timeout controls, and analyzer metadata.
+- Fixed broader pytest collection for `src/tests/test_homebrew_packaging.py` by moving the repo-root `sys.path` setup ahead of repo-root helper imports.
+- Updated the legacy `src/tests/test_ollama_config_screen.py` start/stop assertion to match the new `--warmup-timeout` service invocation.
+- Added explicit `requests==2.32.4` pin to the root runtime requirements so the repository manifest remains a superset of the Homebrew runtime subset.
 
 ## Validation
 
 Completed in this work session:
 
-- Upgraded `modelito` from `1.2.2` to `1.4.0` in requirements.txt.
-- Updated `src/llm/service.py` with warmup_timeout parameter and error envelope imports.
-- Updated both `_ensure_model_serving_via_modelito()` and `_ensure_model_serving()` methods to use `ensure_model_ready_detailed()`.
-- Python syntax validation with py_compile pending after this session.
-- Pytest validation pending after this session.
+- Upgraded the active virtual environment from `modelito 1.2.2` to `modelito 1.4.0`.
+- Updated `requirements.txt` to pin `modelito==1.4.0`.
+- Updated `src/llm/service.py` with `warmup_timeout` support and modelito transport-envelope imports.
+- Updated both readiness paths in `src/view/ollama_config_screen.py` to use `ensure_model_ready_detailed()` and structured readiness results.
+- `./.venv_BatLLM/bin/python -m py_compile src/llm/service.py src/view/ollama_config_screen.py src/game/session_schema.py src/game/history_manager.py src/analyzer_model.py src/view/analyzer_review_screen.py src/tests/test_ollama_config_screen_logic.py src/tests/test_multiplatform_support.py src/tests/test_game_analyzer.py` -> passed.
+- `./.venv_BatLLM/bin/python -m pytest -q src/tests/test_ollama_config_screen_logic.py src/tests/test_multiplatform_support.py src/tests/test_game_analyzer.py` -> 57 passed.
+- `./.venv_BatLLM/bin/python -m pytest -q src/tests/test_homebrew_packaging.py` -> 7 passed.
+- `./.venv_BatLLM/bin/python -m pytest -q` -> 138 passed, 2 skipped.
 
 Not yet completed in this work session:
 
-- Running pytest suite to validate ensure_model_ready_detailed() integration
-- Broader full-suite pytest validation
-- Packaging or release-flow validation
 - Doxygen/code-doc regeneration for `docs/code/`
 
 ## Known Risks And Gaps
 
 - `src/llm/service.py` still owns BatLLM-specific config overlay and timeout policy; that module should stay narrow and should not grow back into a generic Ollama abstraction layer.
 - Kivy/UI behavior around model-management flows needs regression coverage whenever service helpers or model lifecycle logic changes.
+- Packaging-sensitive test coverage is clean, but an actual release-bundle or Homebrew build/install smoke run was not executed in this work session.
 - Generated `docs/code/` output still reflects older code snapshots until Doxygen is rerun.
 
 ## Next Prioritized Steps
 
-1. Run broader full-suite pytest coverage and any packaging-sensitive validation needed for release confidence.
+1. Run an actual release-bundle or Homebrew build/install smoke validation if this work is headed toward a publish step.
 2. Regenerate `docs/code/` if the generated API docs are expected to ship with this refactor.
 3. Evaluate whether `src/llm/service.py` startup orchestration should further collapse to direct `modelito.start_service/stop_service` calls in all code paths.
 
@@ -90,4 +97,6 @@ Not yet completed in this work session:
 4. Library / repo / examples of prompts
 5. Computer-controlled player (flavours: prompted, AI-directly, programatically)
 
-Last updated: 2026-05-06 22:15
+---
+
+Last updated: 2026-05-07 00:04

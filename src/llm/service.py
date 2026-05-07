@@ -30,6 +30,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from modelito import ollama_service as _MODELITO  # type: ignore
+    from modelito import Client, normalize_metadata  # type: ignore
     from modelito import ErrorEnvelope, ResponseEnvelope, TransportPolicy  # type: ignore
 except Exception as exc:  # pragma: no cover - environment misconfiguration
     raise RuntimeError("`modelito` is required for `llm.service`; install modelito") from exc
@@ -53,6 +54,7 @@ COMMON_MODEL_TIMEOUTS = {
     "phi3:14b": 90.0,
     "qwen3:30b": 120.0,
 }
+DEFAULT_WARMUP_TIMEOUT = 30.0
 
 
 # Compatibility names expected by tests and other modules
@@ -98,26 +100,30 @@ def load_llm_config(path: Path | None = None) -> dict[str, Any]:
       plus any overlay at `path`. This ensures callers (and tests) that monkeypatch
       `SHIPPED_CONFIG_PATH` get the patched file.
     """
+    loaded_llm: Mapping[str, Any] = {}
     if path is None:
         try:
             loader = getattr(_MODELITO, "load_llm_config", None)
             if callable(loader):
-                return loader(None)
+                candidate = loader(None)
+                if isinstance(candidate, Mapping):
+                    loaded_llm = candidate
         except Exception:
             pass
 
     data = load_config_data(path)
     llm = data.get("llm") or {}
-    model_timeouts = llm.get("model_timeouts")
+    model_timeouts = loaded_llm.get("model_timeouts", llm.get("model_timeouts"))
     if not isinstance(model_timeouts, dict):
         model_timeouts = {}
     return {
-        "last_served_model": str(llm.get("last_served_model") or "").strip(),
-        "model": str(llm.get("model") or "").strip(),
+        "last_served_model": str(loaded_llm.get("last_served_model") or llm.get("last_served_model") or "").strip(),
+        "model": str(loaded_llm.get("model") or llm.get("model") or "").strip(),
         "model_timeouts": dict(model_timeouts),
-        "timeout": llm.get("timeout"),
-        "url": str(llm.get("url") or "http://localhost").strip().rstrip("/"),
-        "port": int(llm.get("port") or 11434),
+        "timeout": loaded_llm.get("timeout", llm.get("timeout")),
+        "warmup_timeout": loaded_llm.get("warmup_timeout", llm.get("warmup_timeout")),
+        "url": str(loaded_llm.get("url") or llm.get("url") or "http://localhost").strip().rstrip("/"),
+        "port": int(loaded_llm.get("port") or llm.get("port") or 11434),
     }
 
 
@@ -137,6 +143,68 @@ def common_model_timeout(model_name: str) -> float | None:
         return COMMON_MODEL_TIMEOUTS[normalized]
     family = normalized.split(":", 1)[0]
     return COMMON_MODEL_TIMEOUTS.get(family)
+
+
+def resolve_warmup_timeout(llm: Mapping[str, Any], default: float = DEFAULT_WARMUP_TIMEOUT) -> float:
+    timeout = _parse_positive_timeout(llm.get("warmup_timeout"))
+    if timeout is not None:
+        return timeout
+    return float(default)
+
+
+def lookup_model_metadata(
+    model: str | None = None,
+    *,
+    host: str | None = None,
+    port: int | None = None,
+) -> dict[str, Any]:
+    llm = load_llm_config()
+    selected_model = str(model or llm.get("model") or "").strip()
+    if not selected_model:
+        return {}
+    base_url = str(host or llm.get("url") or "http://localhost").rstrip("/")
+    resolved_port = int(port or llm.get("port") or 11434)
+    try:
+        client = Client(provider="ollama", model=selected_model, host=base_url, port=resolved_port)
+        raw = client.model_metadata(model=selected_model)
+        return normalize_metadata(raw)
+    except Exception:
+        return {}
+
+
+def build_saved_llm_metadata_snapshot(path: Path | None = None) -> dict[str, Any]:
+    data = load_config_data(path)
+    llm = data.get("llm") or {}
+    config_llm = load_llm_config(path)
+    selected_model = str(config_llm.get("model") or "").strip()
+    last_served_model = str(config_llm.get("last_served_model") or "").strip()
+    snapshot = {
+        "configured_model": selected_model,
+        "last_served_model": last_served_model,
+        "request_timeout": resolve_request_timeout(config_llm, model=selected_model) if selected_model else None,
+        "warmup_timeout": resolve_warmup_timeout(config_llm),
+        "url": str(config_llm.get("url") or "http://localhost"),
+        "port": int(config_llm.get("port") or 11434),
+        "config_snapshot": {
+            "num_ctx": llm.get("num_ctx"),
+            "num_predict": llm.get("num_predict"),
+            "num_thread": llm.get("num_thread"),
+            "max_tokens": llm.get("max_tokens"),
+            "temperature": llm.get("temperature"),
+            "top_k": llm.get("top_k"),
+            "top_p": llm.get("top_p"),
+            "path": llm.get("path"),
+        },
+        "provider_metadata": lookup_model_metadata(
+            selected_model,
+            host=str(config_llm.get("url") or "http://localhost"),
+            port=int(config_llm.get("port") or 11434),
+        ) if selected_model else {},
+    }
+    snapshot["config_snapshot"] = {
+        key: value for key, value in snapshot["config_snapshot"].items() if value is not None
+    }
+    return snapshot
 
 
 def load_remote_timeout_catalog(path: Path = REMOTE_TIMEOUT_CATALOG_PATH) -> dict[str, Any]:
@@ -457,10 +525,12 @@ def preload_model(url: str, port: int, model: str, timeout: float = 120.0) -> No
     raise RuntimeError("modelito.preload_model is unavailable")
 
 
-def start_service(config_path: Path | None = None, warmup_timeout: float = 30.0) -> int:
+def start_service(config_path: Path | None = None, warmup_timeout: float | None = None) -> int:
     # Prefer delegating to modelito when no explicit config path is provided; when
     # a `config_path` is given, run the local implementation so callers and tests
     # that monkeypatch module-level helpers are respected.
+    llm = load_llm_config(config_path)
+    resolved_warmup_timeout = resolve_warmup_timeout(llm, default=DEFAULT_WARMUP_TIMEOUT) if warmup_timeout is None else float(warmup_timeout)
     if config_path is None:
         try:
             starter = getattr(_MODELITO, "start_service", None)
@@ -469,7 +539,7 @@ def start_service(config_path: Path | None = None, warmup_timeout: float = 30.0)
                 # fall back to the local implementation so BatLLM can still
                 # attempt to start the Ollama server.
                 try:
-                    rc = starter(None, warmup_timeout=warmup_timeout)
+                    rc = starter(None, warmup_timeout=resolved_warmup_timeout)
                 except Exception:
                     rc = 1
                 if rc == 0:
@@ -477,7 +547,6 @@ def start_service(config_path: Path | None = None, warmup_timeout: float = 30.0)
                 # fall through to local start implementation on non-zero rc
         except Exception:
             pass
-    llm = load_llm_config(config_path)
     model = preferred_start_model(llm)
     timeout = resolve_request_timeout(llm, model=model)
 
@@ -504,7 +573,7 @@ def start_service(config_path: Path | None = None, warmup_timeout: float = 30.0)
     else:
         print(f"Starting ollama serve at {host} ...")
         start_detached_ollama_serve(host)
-        wait_until_ready(url, port)
+        wait_until_ready(url, port, timeout_seconds=resolved_warmup_timeout)
         started = True
         print(f"Ollama is ready at {host}")
     if model_provided:
@@ -679,6 +748,12 @@ def build_parser() -> 'argparse.ArgumentParser':
         action="store_true",
         help="Launch the official installer even if Ollama is already installed.",
     )
+    parser.add_argument(
+        "--warmup-timeout",
+        type=float,
+        default=None,
+        help="Override the Ollama service warmup timeout in seconds for this start operation.",
+    )
     return parser
 
 
@@ -700,7 +775,7 @@ def main(argv: list[str] | None = None) -> int:
             print(message, file=stream)
         return code
     if args.action == "start":
-        return start_service(config_path)
+        return start_service(config_path, warmup_timeout=args.warmup_timeout)
     return stop_service(config_path, verbose=args.verbose)
 
 

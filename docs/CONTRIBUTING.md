@@ -317,6 +317,7 @@ The Ollama configuration screen writes:
 
 - `llm.model`
 - `llm.model_timeouts`
+- `llm.warmup_timeout`
 - installer actions are launched from the screen, but the config file is not modified directly by that action
 
 ### Configuration Notes
@@ -326,8 +327,9 @@ The Ollama configuration screen writes:
 3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
 4. The current Ollama lifecycle toggles are stored in `ui.auto_start_ollama` and `ui.stop_ollama_on_exit`. `main.py` still accepts the legacy `ui.auto_stop_ollama` key as a backward-compatible fallback for older configs.
 5. On a fresh install, `llm.last_served_model` starts empty and is filled after BatLLM successfully warms a model so startup can later restore that serving state.
-6. Timeout precedence is: `llm.model_timeouts[model]`, then `llm.timeout`, then BatLLM's built-in common-model defaults, then the generic fallback.
-7. Packaged installs can set `BATLLM_HOME` to keep mutable config and saved-session data out of a read-only install prefix.
+6. Request-timeout precedence is: `llm.model_timeouts[model]`, then `llm.timeout`, then BatLLM's built-in common-model defaults, then the generic fallback.
+7. Ollama service-start warmup uses `llm.warmup_timeout` when present, otherwise BatLLM falls back to the built-in `30s` default.
+8. Packaged installs can set `BATLLM_HOME` to keep mutable config and saved-session data out of a read-only install prefix.
 
 ## Testing And Validation
 
@@ -575,7 +577,7 @@ BatLLM gameplay uses `modelito` plus the configured Ollama host, port, and model
 Check:
 
 1. `pip install -r requirements.txt` completed successfully
-2. the virtual environment contains `modelito==1.2.2`
+2. the virtual environment contains `modelito==1.4.0`
 3. `llm.url` and `llm.port` point to the intended Ollama service
 4. the configured model name in `llm.model` exists locally
 

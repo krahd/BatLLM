@@ -81,6 +81,16 @@ def _sample_payload() -> dict:
         games=deepcopy(games),
         app_version=current_app_version(),
         saved_at="2026-04-04T10:06:00",
+        llm_metadata={
+            "configured_model": "smollm2",
+            "last_served_model": "smollm2",
+            "request_timeout": 35.0,
+            "warmup_timeout": 45.0,
+            "url": "http://localhost",
+            "port": 11434,
+            "config_snapshot": {"num_ctx": 4096, "temperature": 0.2},
+            "provider_metadata": {"context_window": 4096, "model": "smollm2"},
+        },
     )
 
 
@@ -158,6 +168,10 @@ def test_analyzer_model_replays_turns_and_preserves_selection_state() -> None:
     assert "Bot 2 took 5 damage" in model.format_insights()
     assert model.current_turn_replay() is not None
     assert model.current_turn_replay().mismatch is False
+    metadata = model.format_model_metadata()
+    assert "Configured model" in metadata
+    assert "Warmup timeout" in metadata
+    assert "context_window" in metadata
 
 
 def test_analyzer_load_screen_opens_valid_session(tmp_path: Path) -> None:

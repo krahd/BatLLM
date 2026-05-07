@@ -9,6 +9,7 @@ from configs.app_config import config
 from game.bot import Bot
 import codecs
 from util.version import current_app_version
+from llm import service as ollama_service
 
 """
 Events
@@ -481,6 +482,7 @@ class HistoryManager:
             games=self.games,
             app_version=current_app_version(),
             saved_at=self._now_iso(),
+            llm_metadata=ollama_service.build_saved_llm_metadata_snapshot(),
         )
         with open(
             filepath, "w", encoding="utf-8"

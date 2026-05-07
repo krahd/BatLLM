@@ -24,6 +24,7 @@ llm:
   last_served_model: ""
   timeout: null
   model_timeouts: {}
+  warmup_timeout: 30.0
   debug_requests: false
   max_tokens: null
   model: smollm2

@@ -207,7 +207,7 @@ def test_start_ollama_marks_configured_model_as_managed(monkeypatch) -> None:
         _managed_model_name=None,
         _set_status=lambda text: statuses.append(text),
         _append_log=lambda _text: None,
-        _run_ollama_helper=lambda _action: DummyProc(returncode=0, stdout="ok"),
+        _run_ollama_helper=lambda *_args: DummyProc(returncode=0, stdout="ok"),
         _remember_served_model=lambda model: remembered.append(model),
         refresh_ollama_status=lambda: None,
         refresh_local_models=lambda: None,
@@ -472,3 +472,149 @@ def test_request_delete_selected_model_clears_timeout_override(monkeypatch) -> N
     assert deleted == ["qwen3:30b"]
     assert removed == ["qwen3:30b"]
     assert refreshed == [True]
+
+
+def test_save_warmup_timeout_persists_override(monkeypatch) -> None:
+    config_state = {
+        ("llm", "last_served_model"): "",
+        ("llm", "model"): "qwen3:30b",
+        ("llm", "warmup_timeout"): 30.0,
+    }
+    save_calls = []
+
+    monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
+    monkeypatch.setattr(screen_module.config, "get", lambda section, key: config_state.get((section, key)))
+    monkeypatch.setattr(
+        screen_module.config,
+        "set",
+        lambda section, key, value: config_state.__setitem__((section, key), value),
+    )
+    monkeypatch.setattr(screen_module.config, "save", lambda: save_calls.append(True))
+    monkeypatch.setattr(screen_module, "show_fading_alert", lambda *_args, **_kwargs: None)
+
+    screen = screen_module.OllamaConfigScreen()
+    screen.warmup_timeout_text = "45"
+
+    screen.save_warmup_timeout()
+
+    assert config_state[("llm", "warmup_timeout")] == 45.0
+    assert save_calls == [True]
+    assert screen.status_text == "Saved warmup timeout."
+    assert "45s" in screen.warmup_timeout_details
+
+
+def test_reset_warmup_timeout_uses_default(monkeypatch) -> None:
+    config_state = {
+        ("llm", "last_served_model"): "",
+        ("llm", "model"): "qwen3:30b",
+        ("llm", "warmup_timeout"): 45.0,
+    }
+    save_calls = []
+
+    monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
+    monkeypatch.setattr(screen_module.config, "get", lambda section, key: config_state.get((section, key)))
+    monkeypatch.setattr(
+        screen_module.config,
+        "set",
+        lambda section, key, value: config_state.__setitem__((section, key), value),
+    )
+    monkeypatch.setattr(screen_module.config, "save", lambda: save_calls.append(True))
+
+    screen = screen_module.OllamaConfigScreen()
+    screen.reset_warmup_timeout()
+
+    assert config_state[("llm", "warmup_timeout")] is None
+    assert save_calls == [True]
+    assert screen.status_text == "Using default warmup timeout."
+    assert "30s" in screen.warmup_timeout_details
+
+
+def test_start_ollama_passes_configured_warmup_timeout(monkeypatch) -> None:
+    statuses = []
+    helper_calls = []
+    remembered = []
+    fake_screen = SimpleNamespace(
+        _managed_model_name=None,
+        _set_status=lambda text: statuses.append(text),
+        _append_log=lambda _text: None,
+        _run_ollama_helper=lambda *args: helper_calls.append(args) or DummyProc(returncode=0, stdout="ok"),
+        _remember_served_model=lambda model: remembered.append(model),
+        refresh_ollama_status=lambda: None,
+        refresh_local_models=lambda: None,
+        _run_in_thread=lambda fn: fn(),
+        _warmup_timeout_config=lambda: {"warmup_timeout": 45.0},
+    )
+
+    monkeypatch.setattr(
+        screen_module.ollama_service,
+        "resolve_warmup_timeout",
+        lambda _cfg: 45.0,
+    )
+    monkeypatch.setattr(
+        screen_module.config,
+        "get",
+        lambda _section, key: "mistral-small:latest" if key == "last_served_model" else "llama3.2:latest",
+    )
+
+    screen_module.OllamaConfigScreen.start_ollama(fake_screen)
+
+    assert helper_calls == [("start", "--warmup-timeout", "45")]
+    assert remembered == ["mistral-small:latest"]
+    assert statuses[-1] == "Ollama started successfully."
+
+
+def test_ensure_model_serving_uses_detailed_result_success(monkeypatch) -> None:
+    logs = []
+    fake_screen = SimpleNamespace(
+        _llm_endpoint=lambda: ("http://localhost", 11434),
+        _llm_timeout_config=lambda model_name: {"model": model_name, "timeout": 120},
+        _append_log=lambda text: logs.append(text),
+    )
+
+    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout", lambda _cfg, *, model=None: 120.0)
+    monkeypatch.setattr(
+        screen_module.modelito_ollama_service,
+        "ensure_model_ready_detailed",
+        lambda *args, **kwargs: SimpleNamespace(
+            success=True,
+            phase="ready",
+            elapsed_seconds=1.25,
+            source="probe",
+            message="ready",
+            error=None,
+        ),
+    )
+
+    result = screen_module.OllamaConfigScreen._ensure_model_serving(fake_screen, "smollm2")
+
+    assert result == {"ready": True}
+    assert any("phase=ready" in entry and "source=probe" in entry for entry in logs)
+
+
+def test_ensure_model_serving_uses_detailed_result_failure(monkeypatch) -> None:
+    fake_screen = SimpleNamespace(
+        _llm_endpoint=lambda: ("http://localhost", 11434),
+        _llm_timeout_config=lambda model_name: {"model": model_name, "timeout": 120},
+        _append_log=lambda _text: None,
+    )
+
+    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout", lambda _cfg, *, model=None: 120.0)
+    monkeypatch.setattr(
+        screen_module.modelito_ollama_service,
+        "ensure_model_ready_detailed",
+        lambda *args, **kwargs: SimpleNamespace(
+            success=False,
+            phase="failed",
+            elapsed_seconds=0.4,
+            source="probe",
+            message="warmup failed",
+            error="timed out waiting for readiness",
+        ),
+    )
+
+    try:
+        screen_module.OllamaConfigScreen._ensure_model_serving(fake_screen, "smollm2")
+    except RuntimeError as exc:
+        assert "timed out waiting for readiness" in str(exc)
+    else:
+        raise AssertionError("Expected RuntimeError when detailed readiness fails")
