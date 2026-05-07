@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 17:10
+Last updated: 2026-05-07 17:13
 
 ## Project Purpose
 
@@ -87,6 +87,8 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Repaired a reintroduced import-order regression in `src/tests/test_homebrew_packaging.py` and `src/tests/test_multiplatform_support.py` so pytest collection remains stable.
 - Ran packaging smoke validation for release bundles and Homebrew formula generation.
 - Hardened the same two test modules to use dynamic post-bootstrap imports so formatter/isort reordering cannot reintroduce collection-time import failures.
+- Added `src/util/packaging_smoke.py` plus `validate_packaging_smoke.py` for a unified packaging smoke-validation command.
+- Added `src/tests/test_packaging_smoke.py` and contributor docs for the new packaging smoke command.
 
 ## Tests And Verification Status
 
@@ -97,11 +99,15 @@ Executed in this work session:
 - `pytest -q` -> `138 passed, 2 skipped`
 - `python create_release_bundles.py` -> generated all expected archives under `dist/releases/`.
 - `python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb` -> completed successfully and wrote `/tmp/batllm.rb`.
+- `pytest -q src/tests/test_packaging_smoke.py` -> `4 passed`
+- `python validate_packaging_smoke.py --skip-homebrew` -> `Packaging smoke validation passed.`
+- `python validate_packaging_smoke.py` -> `Packaging smoke validation passed.`
+- `pytest -q` -> `142 passed, 2 skipped`
 
 ## Known Issues, Risks, And Limitations
 
 - `src/llm/service.py` still owns BatLLM-specific overlay logic and timeout policy; avoid re-expanding it into a generic provider abstraction already handled by `modelito`.
-- Packaging helpers execute successfully, but an end-to-end install smoke run of the generated release bundle or Homebrew formula was not executed in this session.
+- Packaging helpers and the unified smoke validator execute successfully, but an end-to-end install smoke run of the generated release bundle or Homebrew formula was not executed in this session.
 - Generated API docs in `docs/code/` have not been regenerated in this session.
 
 ## Recurring Tasks
@@ -130,4 +136,4 @@ Executed in this work session:
 
 ---
 
-Last updated: 2026-05-07 17:10
+Last updated: 2026-05-07 17:13

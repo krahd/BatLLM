@@ -407,6 +407,24 @@ python -m pytest -q src/tests/test_homebrew_packaging.py
 
 This mirrors the repository's CI `Homebrew dry-run` job and keeps the formula path aligned with the standard tap-release workflow.
 
+### Packaging Smoke Validation
+
+To run release-bundle and Homebrew dry-run checks together with one command:
+
+```bash
+python validate_packaging_smoke.py
+```
+
+This command executes:
+
+- `create_release_bundles.py` and verifies expected archives plus launcher files
+- `create_homebrew_formula.py --create-worktree-archive ... --formula-out ...` and validates key formula entries
+
+Optional flags:
+
+- `--skip-release-bundles`
+- `--skip-homebrew`
+
 ### CI Defaults
 
 Current repository CI follows these defaults:
