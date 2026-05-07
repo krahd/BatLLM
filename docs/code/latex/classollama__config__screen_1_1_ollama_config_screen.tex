@@ -26,6 +26,9 @@ Inheritance diagram for ollama\+\_\+config\+\_\+screen.\+Ollama\+Config\+Screen:
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ace83122c25f52539746e9074f356d43e}\label{classollama__config__screen_1_1_ollama_config_screen_ace83122c25f52539746e9074f356d43e} 
 {\bfseries refresh\+\_\+ollama\+\_\+status} (self)
 \item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_acd64a5a554df1a2b46b2fcf34b22f696}\label{classollama__config__screen_1_1_ollama_config_screen_acd64a5a554df1a2b46b2fcf34b22f696} 
+{\bfseries request\+\_\+install\+\_\+ollama} (self)
+\item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a7621c6ec36b754045029d65a516c3b12}\label{classollama__config__screen_1_1_ollama_config_screen_a7621c6ec36b754045029d65a516c3b12} 
 {\bfseries start\+\_\+ollama} (self)
 \item 
@@ -49,6 +52,18 @@ Inheritance diagram for ollama\+\_\+config\+\_\+screen.\+Ollama\+Config\+Screen:
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a7717885b2d73268c0154ba6981bdc7de}\label{classollama__config__screen_1_1_ollama_config_screen_a7717885b2d73268c0154ba6981bdc7de} 
 {\bfseries set\+\_\+model\+\_\+from\+\_\+selection} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ac141dfb55d3b963003c06590c6738856}\label{classollama__config__screen_1_1_ollama_config_screen_ac141dfb55d3b963003c06590c6738856} 
+{\bfseries save\+\_\+selected\+\_\+model\+\_\+timeout} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a145a161a9b507837721688f03d186b09}\label{classollama__config__screen_1_1_ollama_config_screen_a145a161a9b507837721688f03d186b09} 
+{\bfseries save\+\_\+warmup\+\_\+timeout} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a0ab6ec9d1b8ff357d7c6791f137afac3}\label{classollama__config__screen_1_1_ollama_config_screen_a0ab6ec9d1b8ff357d7c6791f137afac3} 
+{\bfseries reset\+\_\+warmup\+\_\+timeout} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a94106fb1ea586d8e659ddf9d0b89c416}\label{classollama__config__screen_1_1_ollama_config_screen_a94106fb1ea586d8e659ddf9d0b89c416} 
+{\bfseries reset\+\_\+selected\+\_\+model\+\_\+timeout} (self)
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_adce39106e3f44429415de83e5399bca7}\label{classollama__config__screen_1_1_ollama_config_screen_adce39106e3f44429415de83e5399bca7} 
 {\bfseries request\+\_\+pull\+\_\+selected\+\_\+model} (self)
@@ -89,8 +104,21 @@ str {\bfseries output\+\_\+log} = String\+Property("{}"{})
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a0a9154b84ec27d790c473f9557ff3e7b}\label{classollama__config__screen_1_1_ollama_config_screen_a0a9154b84ec27d790c473f9557ff3e7b} 
 str {\bfseries selected\+\_\+local\+\_\+model\+\_\+label} = String\+Property("{}Select local model"{})
 \item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a376b13250f030bc007c365914d10bf15}\label{classollama__config__screen_1_1_ollama_config_screen_a376b13250f030bc007c365914d10bf15} 
+str {\bfseries selected\+\_\+local\+\_\+timeout\+\_\+text} = String\+Property("{}"{})
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ab818762411cc97f3b57e3cd37cbbfbd6}\label{classollama__config__screen_1_1_ollama_config_screen_ab818762411cc97f3b57e3cd37cbbfbd6} 
+str {\bfseries selected\+\_\+local\+\_\+timeout\+\_\+details} = String\+Property("{}Select a local model to edit its timeout."{})
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ae0ae49801c2ec5feeacd13d3b79f33d8}\label{classollama__config__screen_1_1_ollama_config_screen_ae0ae49801c2ec5feeacd13d3b79f33d8} 
+str {\bfseries warmup\+\_\+timeout\+\_\+text} = String\+Property("{}"{})
+\item 
+tuple \doxymbox{\hyperlink{classollama__config__screen_1_1_ollama_config_screen_ad5c8a1def65cfddca6e410fc33567bf8}{warmup\+\_\+timeout\+\_\+details}}
+\item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a0b8bdceef17784cb704cae17188719e2}\label{classollama__config__screen_1_1_ollama_config_screen_a0b8bdceef17784cb704cae17188719e2} 
 tuple {\bfseries selected\+\_\+remote\+\_\+model\+\_\+label} = String\+Property("{}Select remote model"{})
+\item 
+tuple \doxymbox{\hyperlink{classollama__config__screen_1_1_ollama_config_screen_a1e7d5072babde972f7f1dae1ef3c5f80}{selected\+\_\+remote\+\_\+timeout\+\_\+details}}
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Protected Member Functions}
 \begin{DoxyCompactItemize}
@@ -101,11 +129,38 @@ tuple\+[str, int]\+ {\bfseries \+\_\+llm\+\_\+endpoint} (self)
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a22cd2f47ada89fbe0c2a1427a721c3b2}\label{classollama__config__screen_1_1_ollama_config_screen_a22cd2f47ada89fbe0c2a1427a721c3b2} 
 str {\bfseries \+\_\+chat\+\_\+path} (self)
 \item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a50a31c1f6f7ef16f9115b2c808e58678}\label{classollama__config__screen_1_1_ollama_config_screen_a50a31c1f6f7ef16f9115b2c808e58678} 
+dict\+[str, Any]\+ {\bfseries \+\_\+llm\+\_\+timeout\+\_\+config} (self, str\texorpdfstring{$\vert$}{|}None model\+\_\+name=None)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a3003feeb71aeb11c29b5cc32a00f36bb}\label{classollama__config__screen_1_1_ollama_config_screen_a3003feeb71aeb11c29b5cc32a00f36bb} 
+dict\+[str, Any]\+ {\bfseries \+\_\+warmup\+\_\+timeout\+\_\+config} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ae654a77c50a81e4e164f171b537824b4}\label{classollama__config__screen_1_1_ollama_config_screen_ae654a77c50a81e4e164f171b537824b4} 
+dict\+[str, Any]\+ {\bfseries \+\_\+model\+\_\+timeout\+\_\+overrides} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_aeb491a61868b7a1490fd054fecf902e1}\label{classollama__config__screen_1_1_ollama_config_screen_aeb491a61868b7a1490fd054fecf902e1} 
+{\bfseries \+\_\+save\+\_\+model\+\_\+timeout\+\_\+overrides} (self, dict\+[str, Any]\+ overrides)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a0d3c9dc7c4b0df13f980e09ce52801c8}\label{classollama__config__screen_1_1_ollama_config_screen_a0d3c9dc7c4b0df13f980e09ce52801c8} 
+bool {\bfseries \+\_\+remove\+\_\+model\+\_\+timeout\+\_\+override} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ad4b15166ead6f45600fd5434a17557d5}\label{classollama__config__screen_1_1_ollama_config_screen_ad4b15166ead6f45600fd5434a17557d5} 
+{\bfseries \+\_\+refresh\+\_\+selected\+\_\+local\+\_\+timeout} (self)
+\item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ad20cc49a5fba9b298f8b8ee1b00329b5}\label{classollama__config__screen_1_1_ollama_config_screen_ad20cc49a5fba9b298f8b8ee1b00329b5} 
 {\bfseries \+\_\+set\+\_\+local\+\_\+selection} (self, str model\+\_\+name)
 \item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_acb7f7c2bae0543aa6a94475d952fdc26}\label{classollama__config__screen_1_1_ollama_config_screen_acb7f7c2bae0543aa6a94475d952fdc26} 
+{\bfseries \+\_\+refresh\+\_\+warmup\+\_\+timeout} (self)
+\item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_afd0b32284c7973ac363e98ecdc207776}\label{classollama__config__screen_1_1_ollama_config_screen_afd0b32284c7973ac363e98ecdc207776} 
 {\bfseries \+\_\+set\+\_\+remote\+\_\+selection} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ac0c513efa283961b6f2d61e0232423e6}\label{classollama__config__screen_1_1_ollama_config_screen_ac0c513efa283961b6f2d61e0232423e6} 
+dict\+[str, str]\+\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+selected\+\_\+remote\+\_\+entry} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a0e2cd27bf13667097ee41b4704fa95e7}\label{classollama__config__screen_1_1_ollama_config_screen_a0e2cd27bf13667097ee41b4704fa95e7} 
+{\bfseries \+\_\+refresh\+\_\+selected\+\_\+remote\+\_\+timeout} (self)
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ac793945fe1c5d815b57f04698f63d22c}\label{classollama__config__screen_1_1_ollama_config_screen_ac793945fe1c5d815b57f04698f63d22c} 
 {\bfseries \+\_\+set\+\_\+status} (self, str text)
@@ -132,17 +187,41 @@ subprocess.\+Completed\+Process {\bfseries \+\_\+run\+\_\+ollama\+\_\+helper} (s
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a26fad9fd3ea1947c866d9a87e211aedf}\label{classollama__config__screen_1_1_ollama_config_screen_a26fad9fd3ea1947c866d9a87e211aedf} 
 subprocess.\+Completed\+Process {\bfseries \+\_\+run\+\_\+ollama\+\_\+command} (self, \texorpdfstring{$\ast$}{*}str args)
 \item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a32dc2153c7141f31d19e51a4cecd429c}\label{classollama__config__screen_1_1_ollama_config_screen_a32dc2153c7141f31d19e51a4cecd429c} 
+subprocess.\+Completed\+Process {\bfseries \+\_\+run\+\_\+ollama\+\_\+install\+\_\+command} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a73fa88cc8c65185327b9f16e51cd57db}\label{classollama__config__screen_1_1_ollama_config_screen_a73fa88cc8c65185327b9f16e51cd57db} 
+{\bfseries \+\_\+remember\+\_\+served\+\_\+model} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a17caef27d1b3d7e1871717057681ff52}\label{classollama__config__screen_1_1_ollama_config_screen_a17caef27d1b3d7e1871717057681ff52} 
+list\+[str]\+ {\bfseries \+\_\+list\+\_\+local\+\_\+models\+\_\+via\+\_\+modelito} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_af5db41b857a4b5b7f9ac13c56590fb27}\label{classollama__config__screen_1_1_ollama_config_screen_af5db41b857a4b5b7f9ac13c56590fb27} 
+list\+[dict\+[str, str]\+]\+ {\bfseries \+\_\+list\+\_\+remote\+\_\+model\+\_\+catalog\+\_\+via\+\_\+modelito} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a865f3bf60ccaec02a0ddec3c6e6d26f1}\label{classollama__config__screen_1_1_ollama_config_screen_a865f3bf60ccaec02a0ddec3c6e6d26f1} 
+list\+[str]\+ {\bfseries \+\_\+running\+\_\+model\+\_\+names\+\_\+via\+\_\+modelito} (self)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a246f67f51890ed70af896f77033626a7}\label{classollama__config__screen_1_1_ollama_config_screen_a246f67f51890ed70af896f77033626a7} 
+dict\+[str, Any]\+ {\bfseries \+\_\+preload\+\_\+model\+\_\+via\+\_\+modelito} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a3679b0acb0fdf9873d44cbbcf042fbf7}\label{classollama__config__screen_1_1_ollama_config_screen_a3679b0acb0fdf9873d44cbbcf042fbf7} 
+dict\+[str, Any]\+ {\bfseries \+\_\+stop\+\_\+serving\+\_\+model\+\_\+via\+\_\+modelito} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a05324abd98ac74675d5d132b9c525503}\label{classollama__config__screen_1_1_ollama_config_screen_a05324abd98ac74675d5d132b9c525503} 
+dict\+[str, Any]\+ {\bfseries \+\_\+ensure\+\_\+model\+\_\+serving\+\_\+via\+\_\+modelito} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a1380ee95ecc6b041b725743e9c7a61f5}\label{classollama__config__screen_1_1_ollama_config_screen_a1380ee95ecc6b041b725743e9c7a61f5} 
+{\bfseries \+\_\+pull\+\_\+model\+\_\+via\+\_\+modelito} (self, str model\+\_\+name)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ab3b6c3b2bae1551b76098e9ab94ffa87}\label{classollama__config__screen_1_1_ollama_config_screen_ab3b6c3b2bae1551b76098e9ab94ffa87} 
+{\bfseries \+\_\+delete\+\_\+model\+\_\+via\+\_\+modelito} (self, str model\+\_\+name)
+\item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a289a77a8949e04ee23c49687895709bf}\label{classollama__config__screen_1_1_ollama_config_screen_a289a77a8949e04ee23c49687895709bf} 
 dict\+[str, Any]\+ {\bfseries \+\_\+collect\+\_\+ollama\+\_\+status} (self)
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_aac7be9e51c5e45f4b55e9dff667a2bbc}\label{classollama__config__screen_1_1_ollama_config_screen_aac7be9e51c5e45f4b55e9dff667a2bbc} 
 str {\bfseries \+\_\+format\+\_\+status\+\_\+report} (self, dict\+[str, Any]\+ snapshot)
-\item 
-\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a7fcc372c661465e0c4b4630105724018}\label{classollama__config__screen_1_1_ollama_config_screen_a7fcc372c661465e0c4b4630105724018} 
-{\bfseries \+\_\+open\+\_\+install\+\_\+guidance} (self)
-\item 
-\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a76293ed4653fbd2f7a110d0e32daa614}\label{classollama__config__screen_1_1_ollama_config_screen_a76293ed4653fbd2f7a110d0e32daa614} 
-dict\+[str, Any]\+ {\bfseries \+\_\+json\+\_\+get} (self, str url, float timeout=10.\+0)
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a777001672f9bc897e00739c3d5331b3c}\label{classollama__config__screen_1_1_ollama_config_screen_a777001672f9bc897e00739c3d5331b3c} 
 {\bfseries \+\_\+current\+\_\+model\+\_\+entries} (self, list\+[dict\+[str, str]\+]\+ entries, list\+[str]\+ model\+\_\+names)
@@ -152,9 +231,6 @@ dict\+[str, Any]\+ {\bfseries \+\_\+json\+\_\+get} (self, str url, float timeout
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a1042d15634e1785082fcada48e08b773}\label{classollama__config__screen_1_1_ollama_config_screen_a1042d15634e1785082fcada48e08b773} 
 {\bfseries \+\_\+select\+\_\+remote\+\_\+model} (self, str model\+\_\+name)
-\item 
-\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a6ee2ccf675874b90339a55d9a47b0218}\label{classollama__config__screen_1_1_ollama_config_screen_a6ee2ccf675874b90339a55d9a47b0218} 
-list\+[dict\+[str, str]\+]\+ {\bfseries \+\_\+parse\+\_\+remote\+\_\+models\+\_\+html} (self, str html)
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a5fc5212e45271203d4a4cf7be77ddf5c}\label{classollama__config__screen_1_1_ollama_config_screen_a5fc5212e45271203d4a4cf7be77ddf5c} 
 list\+[str]\+ {\bfseries \+\_\+get\+\_\+running\+\_\+model\+\_\+names} (self)
@@ -174,6 +250,15 @@ list\+[str]\+ {\bfseries \+\_\+get\+\_\+running\+\_\+model\+\_\+names} (self)
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_aac1d67a825415d514473751f2f0245e0}\label{classollama__config__screen_1_1_ollama_config_screen_aac1d67a825415d514473751f2f0245e0} 
 {\bfseries \+\_\+delete\+\_\+model} (self, str model\+\_\+name)
 \end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a88d6e0ead849458b540cf183e5f4bc54}\label{classollama__config__screen_1_1_ollama_config_screen_a88d6e0ead849458b540cf183e5f4bc54} 
+str {\bfseries \+\_\+format\+\_\+timeout\+\_\+seconds} (float timeout\+\_\+seconds)
+\item 
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ae05944e4768024cb3aa7a39ad4d3f6eb}\label{classollama__config__screen_1_1_ollama_config_screen_ae05944e4768024cb3aa7a39ad4d3f6eb} 
+str {\bfseries \+\_\+timeout\+\_\+source\+\_\+text} (str source)
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
 \item 
@@ -190,7 +275,7 @@ dict {\bfseries \+\_\+remote\+\_\+model\+\_\+display\+\_\+map} = \{\}
 {\bfseries \+\_\+model\+\_\+picker\+\_\+popup} = None
 \item 
 \Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ab9a4dd0a39841ff98c427a3ef11e0c65}\label{classollama__config__screen_1_1_ollama_config_screen_ab9a4dd0a39841ff98c427a3ef11e0c65} 
-str\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+managed\+\_\+model\+\_\+name} = None
+str\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+managed\+\_\+model\+\_\+name} = managed\+\_\+model or None
 \end{DoxyCompactItemize}
 
 
@@ -223,6 +308,36 @@ ollama\+\_\+config\+\_\+screen.\+Ollama\+Config\+Screen.\+handle\+\_\+window\+\_
 
 \begin{DoxyVerb}Handle Escape by dismissing the model picker or returning to Settings.\end{DoxyVerb}
  
+
+\label{doc-variable-members}
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_a1e7d5072babde972f7f1dae1ef3c5f80}\index{ollama\_config\_screen.OllamaConfigScreen@{ollama\_config\_screen.OllamaConfigScreen}!selected\_remote\_timeout\_details@{selected\_remote\_timeout\_details}}
+\index{selected\_remote\_timeout\_details@{selected\_remote\_timeout\_details}!ollama\_config\_screen.OllamaConfigScreen@{ollama\_config\_screen.OllamaConfigScreen}}
+\doxysubsubsection{\texorpdfstring{selected\_remote\_timeout\_details}{selected\_remote\_timeout\_details}}
+{\footnotesize\ttfamily \label{classollama__config__screen_1_1_ollama_config_screen_a1e7d5072babde972f7f1dae1ef3c5f80} 
+tuple ollama\+\_\+config\+\_\+screen.\+Ollama\+Config\+Screen.\+selected\+\_\+remote\+\_\+timeout\+\_\+details\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ StringProperty(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Select\ a\ remote\ model\ to\ see\ its\ estimated\ timeout."{}}}
+\DoxyCodeLine{\ \ \ \ )}
+
+\end{DoxyCode}
+\Hypertarget{classollama__config__screen_1_1_ollama_config_screen_ad5c8a1def65cfddca6e410fc33567bf8}\index{ollama\_config\_screen.OllamaConfigScreen@{ollama\_config\_screen.OllamaConfigScreen}!warmup\_timeout\_details@{warmup\_timeout\_details}}
+\index{warmup\_timeout\_details@{warmup\_timeout\_details}!ollama\_config\_screen.OllamaConfigScreen@{ollama\_config\_screen.OllamaConfigScreen}}
+\doxysubsubsection{\texorpdfstring{warmup\_timeout\_details}{warmup\_timeout\_details}}
+{\footnotesize\ttfamily \label{classollama__config__screen_1_1_ollama_config_screen_ad5c8a1def65cfddca6e410fc33567bf8} 
+tuple ollama\+\_\+config\+\_\+screen.\+Ollama\+Config\+Screen.\+warmup\+\_\+timeout\+\_\+details\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ StringProperty(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Configure\ how\ long\ BatLLM\ waits\ for\ Ollama\ to\ finish\ starting."{}})}
+
+\end{DoxyCode}
+
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
 \item 

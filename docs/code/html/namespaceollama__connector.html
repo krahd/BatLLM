@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -97,12 +97,27 @@ $(function(){initNavTree('namespaceollama__connector.html','',''); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:Client" id="r_Client"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classollama__connector_1_1_client.html">Client</a></td></tr>
+<tr class="memitem:LLMTimeoutError" id="r_LLMTimeoutError"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classollama__connector_1_1_l_l_m_timeout_error.html">LLMTimeoutError</a></td></tr>
 <tr class="memitem:OllamaConnector" id="r_OllamaConnector"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classollama__connector_1_1_ollama_connector.html">OllamaConnector</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a361114a6d6e1e129dfef0e1d5cf42614" id="r_a361114a6d6e1e129dfef0e1d5cf42614"><td class="memItemLeft"><a id="a361114a6d6e1e129dfef0e1d5cf42614" name="a361114a6d6e1e129dfef0e1d5cf42614"></a>
+tuple[str, int]&#160;</td><td class="memItemRight"><b>_normalize_host_and_port</b> (str host)</td></tr>
+<tr class="memitem:ae3107078cd001f22a80bb62300099a5b" id="r_ae3107078cd001f22a80bb62300099a5b"><td class="memItemLeft"><a id="ae3107078cd001f22a80bb62300099a5b" name="ae3107078cd001f22a80bb62300099a5b"></a>
+List[ModelitoMessage]&#160;</td><td class="memItemRight"><b>_to_modelito_messages</b> (List[Dict[str, str]] messages)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a5154904ed4071945d0155d57fb986763" id="r_a5154904ed4071945d0155d57fb986763"><td class="memItemLeft"><a id="a5154904ed4071945d0155d57fb986763" name="a5154904ed4071945d0155d57fb986763"></a>
+&#160;</td><td class="memItemRight"><b>httpcore</b> = None</td></tr>
+<tr class="memitem:adecac893db75de93572879bf58e2f32d" id="r_adecac893db75de93572879bf58e2f32d"><td class="memItemLeft"><a id="adecac893db75de93572879bf58e2f32d" name="adecac893db75de93572879bf58e2f32d"></a>
+&#160;</td><td class="memItemRight"><b>httpx</b> = None</td></tr>
 <tr class="memitem:a830f0556a93e8d6c55986fb65deb5f36" id="r_a830f0556a93e8d6c55986fb65deb5f36"><td class="memItemLeft"><a id="a830f0556a93e8d6c55986fb65deb5f36" name="a830f0556a93e8d6c55986fb65deb5f36"></a>
 &#160;</td><td class="memItemRight"><b>Message</b> = Dict[str, str]</td></tr>
+<tr class="memitem:a040f44d857ca17fe6970392a9b91d902" id="r_a040f44d857ca17fe6970392a9b91d902"><td class="memItemLeft"><a id="a040f44d857ca17fe6970392a9b91d902" name="a040f44d857ca17fe6970392a9b91d902"></a>
+tuple&#160;</td><td class="memItemRight"><b>TIMEOUT_EXCEPTIONS</b> = (TimeoutError,)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Ollama connector: manages chat requests and per-bot/shared message histories.

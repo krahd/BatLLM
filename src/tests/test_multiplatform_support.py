@@ -443,6 +443,152 @@ def test_build_parser_accepts_warmup_timeout() -> None:
     assert args.warmup_timeout == 45.0
 
 
+def test_start_service_without_config_uses_modelito_path(monkeypatch) -> None:
+    called = {}
+
+    monkeypatch.setattr(
+        ollama_service,
+        "load_llm_config",
+        lambda _path=None: {"warmup_timeout": 12, "model": "smollm2",
+                            "url": "http://localhost", "port": 11434},
+    )
+    monkeypatch.setattr(
+        ollama_service,
+        "run_ollama_command",
+        lambda *_args, **_kwargs: (_ for _ in ()
+                                   ).throw(AssertionError("local orchestration should not run")),
+    )
+    monkeypatch.setattr(
+        ollama_service._MODELITO,
+        "start_service",
+        lambda _path=None, warmup_timeout=None: called.update(
+            {"path": _path, "warmup_timeout": warmup_timeout}) or 3,
+    )
+
+    assert ollama_service.start_service(None) == 3
+    assert called == {"path": None, "warmup_timeout": 12.0}
+
+
+def test_stop_service_only_force_kills_ollama_processes(monkeypatch, tmp_path: Path) -> None:
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        (
+            "llm:\n"
+            "  model: smollm2\n"
+            "  url: http://localhost\n"
+            "  port: 11434\n"
+        ),
+        encoding="utf-8",
+    )
+
+    class FakePsutilError(Exception):
+        pass
+
+    class FakeProc:
+        def __init__(self, pid: int, name: str):
+            self.pid = pid
+            self._name = name
+            self.terminated = False
+            self.killed = False
+
+        def name(self) -> str:
+            return self._name
+
+        def terminate(self) -> None:
+            self.terminated = True
+
+        def kill(self) -> None:
+            self.killed = True
+
+    ollama_proc = FakeProc(111, "ollama")
+    other_proc = FakeProc(222, "python")
+    procs = {111: ollama_proc, 222: other_proc}
+
+    class FakePsutilModule:
+        Error = FakePsutilError
+
+        @staticmethod
+        def Process(pid: int) -> FakeProc:
+            if pid not in procs:
+                raise FakePsutilError("missing")
+            return procs[pid]
+
+        @staticmethod
+        def wait_procs(wait_for, timeout=3.0):
+            _ = timeout
+            return [], list(wait_for)
+
+    monkeypatch.setattr(ollama_service, "running_model_names", lambda _host: [])
+    monkeypatch.setattr(ollama_service, "find_ollama_listener_pids", lambda _port: [111, 222])
+    monkeypatch.setattr(
+        ollama_service,
+        "run_ollama_command",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stdout="", stderr=""),
+    )
+    monkeypatch.setitem(sys.modules, "psutil", FakePsutilModule)
+
+    assert ollama_service.stop_service(config_path) == 0
+    assert ollama_proc.terminated is True
+    assert ollama_proc.killed is True
+    assert other_proc.terminated is False
+    assert other_proc.killed is False
+
+
+def test_stop_service_handles_process_race_during_lookup(monkeypatch, tmp_path: Path) -> None:
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(
+        (
+            "llm:\n"
+            "  model: smollm2\n"
+            "  url: http://localhost\n"
+            "  port: 11434\n"
+        ),
+        encoding="utf-8",
+    )
+
+    class FakePsutilError(Exception):
+        pass
+
+    class FakeProc:
+        def __init__(self, pid: int):
+            self.pid = pid
+
+        def name(self) -> str:
+            return "ollama"
+
+        def terminate(self) -> None:
+            return None
+
+        def kill(self) -> None:
+            return None
+
+    class FakePsutilModule:
+        Error = FakePsutilError
+
+        @staticmethod
+        def Process(pid: int) -> FakeProc:
+            if pid == 999:
+                raise FakePsutilError("gone")
+            return FakeProc(pid)
+
+        @staticmethod
+        def wait_procs(wait_for, timeout=3.0):
+            _ = wait_for
+            _ = timeout
+            return [], []
+
+    monkeypatch.setattr(ollama_service, "running_model_names", lambda _host: [])
+    monkeypatch.setattr(ollama_service, "find_ollama_listener_pids", lambda _port: [999, 111])
+    monkeypatch.setattr(
+        ollama_service,
+        "run_ollama_command",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stdout="", stderr=""),
+    )
+    monkeypatch.setitem(sys.modules, "psutil", FakePsutilModule)
+
+    assert ollama_service.stop_service(config_path) == 0
+
+
 def test_cross_platform_launchers_compile() -> None:
     root = ROOT
 

@@ -1,11 +1,17 @@
 var classhome__screen_1_1_home_screen =
 [
     [ "__init__", "classhome__screen_1_1_home_screen.html#a3dd05b19da94d35cdd7031978d228caa", null ],
+    [ "_clear_confirmation_popup", "classhome__screen_1_1_home_screen.html#a64200d6649777a697360089a2b266eec", null ],
+    [ "_clear_load_prompt_dialog", "classhome__screen_1_1_home_screen.html#a9186c76206881aba9f53d749378601ba", null ],
+    [ "_resume_window_key_down", "classhome__screen_1_1_home_screen.html#a5bc01ba03f6592f68d4002653b876b8e", null ],
     [ "_save_session_file", "classhome__screen_1_1_home_screen.html#a8b2773b89ced2b8718fc11b37a9e63bb", null ],
+    [ "_show_confirmation_popup", "classhome__screen_1_1_home_screen.html#a21f9cbe21d73ac7a809481f3b57de5ee", null ],
+    [ "_suspend_window_key_down", "classhome__screen_1_1_home_screen.html#adafd1c2e6b1d117bfd31b787909bb91d", null ],
     [ "forward_prompt_store", "classhome__screen_1_1_home_screen.html#a603c95ac6fe9ed485e75f1e7af5c7422", null ],
     [ "get_game_board", "classhome__screen_1_1_home_screen.html#a10f994eb100fe0ecbc7a8079d3b9ad20", null ],
     [ "get_prompt_gui_input_text", "classhome__screen_1_1_home_screen.html#a2b0e1a0f767172e494300855c65411e2", null ],
     [ "get_prompt_history_selected_text", "classhome__screen_1_1_home_screen.html#ac1beec0734abf74ba9bece181b718362", null ],
+    [ "go_to_analyzer_load_screen", "classhome__screen_1_1_home_screen.html#acac46291b3e47c710d5836a3244768ef", null ],
     [ "go_to_history_screen", "classhome__screen_1_1_home_screen.html#a22736b774db0b127860e92313731a942", null ],
     [ "go_to_settings_screen", "classhome__screen_1_1_home_screen.html#a6e73d393bc35b428e053555c5526ad52", null ],
     [ "load_prompt", "classhome__screen_1_1_home_screen.html#ab71a7bbb09a4c0cdab569800a781d03e", null ],

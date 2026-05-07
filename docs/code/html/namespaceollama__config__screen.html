@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -99,34 +99,50 @@ $(function(){initNavTree('namespaceollama__config__screen.html','',''); });
 Classes</h2></td></tr>
 <tr class="memitem:OllamaConfigScreen" id="r_OllamaConfigScreen"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classollama__config__screen_1_1_ollama_config_screen.html">OllamaConfigScreen</a></td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a1489623e58bb53bbe00f7515a0aea255" id="r_a1489623e58bb53bbe00f7515a0aea255"><td class="memItemLeft">list[str]&#160;</td><td class="memItemRight"><a class="el" href="#a1489623e58bb53bbe00f7515a0aea255">build_ollama_install_command</a> (str|None platform_name=None)</td></tr>
+<tr class="memitem:a68fc05a9fe3e50672be4baf83e2bed4c" id="r_a68fc05a9fe3e50672be4baf83e2bed4c"><td class="memItemLeft">str&#160;</td><td class="memItemRight"><a class="el" href="#a68fc05a9fe3e50672be4baf83e2bed4c">describe_ollama_install_command</a> (str|None platform_name=None)</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:afef773609959880283e2e24c9b569362" id="r_afef773609959880283e2e24c9b569362"><td class="memItemLeft"><a id="afef773609959880283e2e24c9b569362" name="afef773609959880283e2e24c9b569362"></a>
 &#160;</td><td class="memItemRight"><b>ROOT</b> = Path(__file__).resolve().parents[2]</td></tr>
-<tr class="memitem:a572cd3c5f5983edc04a06a3e55ffb4e4" id="r_a572cd3c5f5983edc04a06a3e55ffb4e4"><td class="memItemLeft"><a id="a572cd3c5f5983edc04a06a3e55ffb4e4" name="a572cd3c5f5983edc04a06a3e55ffb4e4"></a>
-str&#160;</td><td class="memItemRight"><b>REMOTE_LIBRARY_URL</b> = &quot;https://ollama.com/library&quot;</td></tr>
-<tr class="memitem:abb019557e1ee0bae90f0fd3853036945" id="r_abb019557e1ee0bae90f0fd3853036945"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#abb019557e1ee0bae90f0fd3853036945">REMOTE_MODEL_CARD_RE</a></td></tr>
-<tr class="memitem:ae96628569d589bb9445afb7bd4f87f8b" id="r_ae96628569d589bb9445afb7bd4f87f8b"><td class="memItemLeft"><a id="ae96628569d589bb9445afb7bd4f87f8b" name="ae96628569d589bb9445afb7bd4f87f8b"></a>
-&#160;</td><td class="memItemRight"><b>REMOTE_MODEL_SIZE_RE</b> = re.compile(r'&lt;span x-test-size[^&gt;]*&gt;([^&lt;]+)&lt;/span&gt;')</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">Ollama configuration and model-management screen.</pre> </div><a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
-<a id="abb019557e1ee0bae90f0fd3853036945" name="abb019557e1ee0bae90f0fd3853036945"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb019557e1ee0bae90f0fd3853036945">&#9670;&#160;</a></span>REMOTE_MODEL_CARD_RE</h2>
+<div class="textblock"><pre class="fragment">Ollama configuration and model-management screen.</pre> </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="a1489623e58bb53bbe00f7515a0aea255" name="a1489623e58bb53bbe00f7515a0aea255"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1489623e58bb53bbe00f7515a0aea255">&#9670;&#160;</a></span>build_ollama_install_command()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">ollama_config_screen.REMOTE_MODEL_CARD_RE</td>
+          <td class="memname"> list[str] ollama_config_screen.build_ollama_install_command </td>
+          <td>(</td>
+          <td class="paramtype">str | None </td>          <td class="paramname"><span class="paramname"><em>platform_name</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line"><span class="lineno">    1</span>=  re.compile(</div>
-<div class="line"><span class="lineno">    2</span>    <span class="stringliteral">r&#39;&lt;a href=&quot;/library/([^&quot;/:?#]+)&quot;\s+class=&quot;group w-full space-y-5&quot;&gt;(.*?)&lt;/a&gt;&#39;</span>,</div>
-<div class="line"><span class="lineno">    3</span>    re.S,</div>
-<div class="line"><span class="lineno">    4</span>)</div>
-</div><!-- fragment -->
+<pre class="fragment">Return the platform-specific Ollama install command.</pre> 
+</div>
+</div>
+<a id="a68fc05a9fe3e50672be4baf83e2bed4c" name="a68fc05a9fe3e50672be4baf83e2bed4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68fc05a9fe3e50672be4baf83e2bed4c">&#9670;&#160;</a></span>describe_ollama_install_command()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> str ollama_config_screen.describe_ollama_install_command </td>
+          <td>(</td>
+          <td class="paramtype">str | None </td>          <td class="paramname"><span class="paramname"><em>platform_name</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Return a human-readable description of the install command.</pre> 
 </div>
 </div>
 </div><!-- contents -->

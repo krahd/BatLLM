@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['historymanager_0',['HistoryManager',['../classhistory__manager_1_1_history_manager.html',1,'history_manager']]],
-  ['historyscreen_1',['HistoryScreen',['../classhistory__screen_1_1_history_screen.html',1,'history_screen']]],
-  ['homescreen_2',['HomeScreen',['../classhome__screen_1_1_home_screen.html',1,'home_screen']]]
+  ['gameanalyzerapp_0',['GameAnalyzerApp',['../classanalyzer__main_1_1_game_analyzer_app.html',1,'analyzer_main']]],
+  ['gameboard_1',['GameBoard',['../classgame__board_1_1_game_board.html',1,'game_board']]],
+  ['gameplaysettingssnapshot_2',['GameplaySettingsSnapshot',['../classreplay__engine_1_1_gameplay_settings_snapshot.html',1,'replay_engine']]]
 ];

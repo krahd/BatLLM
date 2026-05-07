@@ -1,16 +1,17 @@
 var hierarchy =
 [
+    [ "tests.test_gameplay_deterministic._FakeKeyboard", "classtests_1_1test__gameplay__deterministic_1_1___fake_keyboard.html", null ],
+    [ "tests.test_gameplay_deterministic._FakePopup", "classtests_1_1test__gameplay__deterministic_1_1___fake_popup.html", null ],
+    [ "tests.test_game_analyzer._FakeScreen", "classtests_1_1test__game__analyzer_1_1___fake_screen.html", null ],
+    [ "tests.test_game_analyzer._FakeScreenManager", "classtests_1_1test__game__analyzer_1_1___fake_screen_manager.html", null ],
+    [ "tests.test_gameplay_deterministic._FakeSound", "classtests_1_1test__gameplay__deterministic_1_1___fake_sound.html", null ],
+    [ "analyzer_model.AnalyzerSessionModel", "classanalyzer__model_1_1_analyzer_session_model.html", null ],
+    [ "analyzer_model.AnalyzerTreeRow", "classanalyzer__model_1_1_analyzer_tree_row.html", null ],
     [ "App", null, [
-      [ "configurator-backup-sep-30.BatLLMConfigApp", "classconfigurator-backup-sep-30_1_1_bat_l_l_m_config_app.html", null ],
       [ "configurator.BatLLMConfigApp", "classconfigurator_1_1_bat_l_l_m_config_app.html", null ]
     ] ],
     [ "app_config.AppConfig", "classapp__config_1_1_app_config.html", null ],
     [ "BoxLayout", null, [
-      [ "configurator-backup-sep-30.ConsolePanel", "classconfigurator-backup-sep-30_1_1_console_panel.html", null ],
-      [ "configurator-backup-sep-30.LocalModelsPanel", "classconfigurator-backup-sep-30_1_1_local_models_panel.html", null ],
-      [ "configurator-backup-sep-30.RawYAMLPanel", "classconfigurator-backup-sep-30_1_1_raw_y_a_m_l_panel.html", null ],
-      [ "configurator-backup-sep-30.RemoteModelsPanel", "classconfigurator-backup-sep-30_1_1_remote_models_panel.html", null ],
-      [ "configurator-backup-sep-30.SnapshotPanel", "classconfigurator-backup-sep-30_1_1_snapshot_panel.html", null ],
       [ "configurator.ConsolePanel", "classconfigurator_1_1_console_panel.html", null ],
       [ "configurator.LocalModelsPanel", "classconfigurator_1_1_local_models_panel.html", null ],
       [ "configurator.RawYAMLPanel", "classconfigurator_1_1_raw_y_a_m_l_panel.html", null ],
@@ -18,7 +19,7 @@ var hierarchy =
       [ "configurator.SnapshotPanel", "classconfigurator_1_1_snapshot_panel.html", null ]
     ] ],
     [ "bullet.Bullet", "classbullet_1_1_bullet.html", null ],
-    [ "configurator-backup-sep-30.ConfigManager", "classconfigurator-backup-sep-30_1_1_config_manager.html", null ],
+    [ "ollama_connector.Client", "classollama__connector_1_1_client.html", null ],
     [ "configurator.ConfigManager", "classconfigurator_1_1_config_manager.html", null ],
     [ "tests.conversation_cli.ConversationCLI", "classtests_1_1conversation__cli_1_1_conversation_c_l_i.html", null ],
     [ "tests.test_ollama_config_screen.DummyManager", "classtests_1_1test__ollama__config__screen_1_1_dummy_manager.html", null ],
@@ -39,32 +40,47 @@ var hierarchy =
     [ "tests.test_utils_confirmation_dialog.FakePopup", "classtests_1_1test__utils__confirmation__dialog_1_1_fake_popup.html", null ],
     [ "tests.test_close_prompt_behavior.FakeTextInput", "classtests_1_1test__close__prompt__behavior_1_1_fake_text_input.html", null ],
     [ "tests.test_utils_confirmation_dialog.FakeWindow", "classtests_1_1test__utils__confirmation__dialog_1_1_fake_window.html", null ],
+    [ "replay_engine.GameplaySettingsSnapshot", "classreplay__engine_1_1_gameplay_settings_snapshot.html", null ],
     [ "history_manager.HistoryManager", "classhistory__manager_1_1_history_manager.html", null ],
     [ "MDApp", null, [
+      [ "analyzer_main.GameAnalyzerApp", "classanalyzer__main_1_1_game_analyzer_app.html", null ],
       [ "main.BatLLM", "classmain_1_1_bat_l_l_m.html", null ]
     ] ],
     [ "normalized_canvas.NormalizedCanvas", "classnormalized__canvas_1_1_normalized_canvas.html", null ],
-    [ "configurator-backup-sep-30.OllamaClient", "classconfigurator-backup-sep-30_1_1_ollama_client.html", null ],
     [ "configurator.OllamaClient", "classconfigurator_1_1_ollama_client.html", null ],
     [ "ollama_connector.OllamaConnector", "classollama__connector_1_1_ollama_connector.html", null ],
+    [ "replay_engine.ParsedCommand", "classreplay__engine_1_1_parsed_command.html", null ],
+    [ "replay_engine.PlayResolution", "classreplay__engine_1_1_play_resolution.html", null ],
     [ "Popup", null, [
       [ "load_text_dialog.LoadTextDialog", "classload__text__dialog_1_1_load_text_dialog.html", null ],
       [ "save_dialog.SaveDialog", "classsave__dialog_1_1_save_dialog.html", null ]
     ] ],
     [ "prompt_store.PromptStore", "classprompt__store_1_1_prompt_store.html", null ],
+    [ "replay_engine.ReplayEvent", "classreplay__engine_1_1_replay_event.html", null ],
+    [ "RuntimeError", null, [
+      [ "ollama_connector.LLMTimeoutError", "classollama__connector_1_1_l_l_m_timeout_error.html", null ]
+    ] ],
     [ "Screen", null, [
+      [ "analyzer_load_screen.AnalyzerLoadScreen", "classanalyzer__load__screen_1_1_analyzer_load_screen.html", null ],
+      [ "analyzer_review_screen.AnalyzerReviewScreen", "classanalyzer__review__screen_1_1_analyzer_review_screen.html", null ],
       [ "history_screen.HistoryScreen", "classhistory__screen_1_1_history_screen.html", null ],
       [ "home_screen.HomeScreen", "classhome__screen_1_1_home_screen.html", null ],
       [ "ollama_config_screen.OllamaConfigScreen", "classollama__config__screen_1_1_ollama_config_screen.html", null ],
       [ "settings_screen.SettingsScreen", "classsettings__screen_1_1_settings_screen.html", null ]
     ] ],
     [ "ScrollView", null, [
-      [ "configurator-backup-sep-30.LLMPanel", "classconfigurator-backup-sep-30_1_1_l_l_m_panel.html", null ],
-      [ "configurator-backup-sep-30.OtherSettingsPanel", "classconfigurator-backup-sep-30_1_1_other_settings_panel.html", null ],
       [ "configurator.LLMPanel", "classconfigurator_1_1_l_l_m_panel.html", null ],
       [ "configurator.OtherSettingsPanel", "classconfigurator_1_1_other_settings_panel.html", null ]
     ] ],
+    [ "replay_engine.ShotResolution", "classreplay__engine_1_1_shot_resolution.html", null ],
+    [ "replay_engine.TurnReplay", "classreplay__engine_1_1_turn_replay.html", null ],
+    [ "ValueError", null, [
+      [ "session_schema.SessionFormatError", "classsession__schema_1_1_session_format_error.html", [
+        [ "session_schema.UnsupportedLegacySession", "classsession__schema_1_1_unsupported_legacy_session.html", null ]
+      ] ]
+    ] ],
     [ "Widget", null, [
+      [ "analyzer_board.AnalyzerBoard", "classanalyzer__board_1_1_analyzer_board.html", null ],
       [ "bot.Bot", "classbot_1_1_bot.html", null ],
       [ "game_board.GameBoard", "classgame__board_1_1_game_board.html", null ]
     ] ]

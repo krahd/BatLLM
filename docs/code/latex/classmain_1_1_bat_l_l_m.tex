@@ -9,8 +9,17 @@ Inheritance diagram for main.\+Bat\+LLM:\+\begin{figure}[H]
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
+\Hypertarget{classmain_1_1_bat_l_l_m_aeb5e32cd0e12a7789e140cae27ed4505}\label{classmain_1_1_bat_l_l_m_aeb5e32cd0e12a7789e140cae27ed4505} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
 \Hypertarget{classmain_1_1_bat_l_l_m_a071c022e20ea3ddc332c7fda7df794c9}\label{classmain_1_1_bat_l_l_m_a071c022e20ea3ddc332c7fda7df794c9} 
 {\bfseries build} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_ad6c294011655d66feec91bee4f9ed8ad}\label{classmain_1_1_bat_l_l_m_ad6c294011655d66feec91bee4f9ed8ad} 
+{\bfseries on\+\_\+start} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a4a7c0c221415ddd79f2521c3317dcca8}\label{classmain_1_1_bat_l_l_m_a4a7c0c221415ddd79f2521c3317dcca8} 
+{\bfseries on\+\_\+stop} (self)
 \item 
 \doxymbox{\hyperlink{classmain_1_1_bat_l_l_m_ae5b55dbf2589791e40a6a6a4ac686f8d}{load\+\_\+theme\+\_\+colors}} (self)
 \item 
@@ -30,6 +39,51 @@ Inheritance diagram for main.\+Bat\+LLM:\+\begin{figure}[H]
 \item 
 \Hypertarget{classmain_1_1_bat_l_l_m_a7759b3b0b1a3c67d634f81d66b331c4e}\label{classmain_1_1_bat_l_l_m_a7759b3b0b1a3c67d634f81d66b331c4e} 
 dict {\bfseries theme\+\_\+colors} = Dict\+Property(\{\})
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a58462e8ffb1ee4ff2beff6eeeac7694c}\label{classmain_1_1_bat_l_l_m_a58462e8ffb1ee4ff2beff6eeeac7694c} 
+{\bfseries app\+\_\+version} = String\+Property(current\+\_\+app\+\_\+version())
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a27da82abaf81a8f758db9cdc9b256e99}\label{classmain_1_1_bat_l_l_m_a27da82abaf81a8f758db9cdc9b256e99} 
+None {\bfseries \+\_\+refresh\+\_\+ollama\+\_\+screen} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_ae9143419f86f0a2044aa50c843d216fd}\label{classmain_1_1_bat_l_l_m_ae9143419f86f0a2044aa50c843d216fd} 
+None {\bfseries \+\_\+run\+\_\+in\+\_\+thread} (self, fn)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_aa6ebdb5295b639de52fc54b7c49a6121}\label{classmain_1_1_bat_l_l_m_aa6ebdb5295b639de52fc54b7c49a6121} 
+None {\bfseries \+\_\+start\+\_\+ollama\+\_\+in\+\_\+background} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a4cb230ca92756e1dd64fcb0d4ce2ee2a}\label{classmain_1_1_bat_l_l_m_a4cb230ca92756e1dd64fcb0d4ce2ee2a} 
+None {\bfseries \+\_\+install\+\_\+ollama\+\_\+in\+\_\+background} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a695658aaee1689879a88731e22aeee91}\label{classmain_1_1_bat_l_l_m_a695658aaee1689879a88731e22aeee91} 
+None {\bfseries \+\_\+prompt\+\_\+to\+\_\+install\+\_\+ollama} (self)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_aec87a9b4c898f388b46969e7e100b567}\label{classmain_1_1_bat_l_l_m_aec87a9b4c898f388b46969e7e100b567} 
+None {\bfseries \+\_\+prompt\+\_\+to\+\_\+start\+\_\+ollama} (self, str\texorpdfstring{$\vert$}{|}None startup\+\_\+model=None)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_ad3a4708b35d9d38f9ee4a82c12185539}\label{classmain_1_1_bat_l_l_m_ad3a4708b35d9d38f9ee4a82c12185539} 
+None {\bfseries \+\_\+handle\+\_\+startup\+\_\+ollama\+\_\+state} (self, dict\+[str, object]\+ state)
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_aff33072d71a7ce19721034f865f9f203}\label{classmain_1_1_bat_l_l_m_aff33072d71a7ce19721034f865f9f203} 
+None {\bfseries \+\_\+run\+\_\+startup\+\_\+ollama\+\_\+flow} (self, \texorpdfstring{$\ast$}{*}\+\_\+args)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a957af4bcf9b295a654bb6925efc492ee}\label{classmain_1_1_bat_l_l_m_a957af4bcf9b295a654bb6925efc492ee} 
+bool {\bfseries \+\_\+startup\+\_\+ollama\+\_\+flow\+\_\+completed} = False
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a6f793f1ea3591f0507fba80322e55816}\label{classmain_1_1_bat_l_l_m_a6f793f1ea3591f0507fba80322e55816} 
+{\bfseries \+\_\+install\+\_\+ollama\+\_\+in\+\_\+background}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a7882c044708bf10f3c52721a7330d673}\label{classmain_1_1_bat_l_l_m_a7882c044708bf10f3c52721a7330d673} 
+{\bfseries \+\_\+start\+\_\+ollama\+\_\+in\+\_\+background}
+\item 
+\Hypertarget{classmain_1_1_bat_l_l_m_a66f740675a0936c9e08818f1245ad6e0}\label{classmain_1_1_bat_l_l_m_a66f740675a0936c9e08818f1245ad6e0} 
+{\bfseries \+\_\+run\+\_\+startup\+\_\+ollama\+\_\+flow}
 \end{DoxyCompactItemize}
 
 

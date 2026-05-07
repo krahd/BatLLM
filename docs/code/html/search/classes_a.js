@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['promptstore_0',['PromptStore',['../classprompt__store_1_1_prompt_store.html',1,'prompt_store']]]
+  ['ollamaclient_0',['OllamaClient',['../classconfigurator_1_1_ollama_client.html',1,'configurator']]],
+  ['ollamaconfigscreen_1',['OllamaConfigScreen',['../classollama__config__screen_1_1_ollama_config_screen.html',1,'ollama_config_screen']]],
+  ['ollamaconnector_2',['OllamaConnector',['../classollama__connector_1_1_ollama_connector.html',1,'ollama_connector']]],
+  ['othersettingspanel_3',['OtherSettingsPanel',['../classconfigurator_1_1_other_settings_panel.html',1,'configurator']]]
 ];

@@ -1,0 +1,151 @@
+\doxysection{replay\+\_\+engine Namespace Reference}
+\hypertarget{namespacereplay__engine}{}\label{namespacereplay__engine}\index{replay\_engine@{replay\_engine}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}}
+\item 
+class \doxymbox{\hyperlink{classreplay__engine_1_1_parsed_command}{Parsed\+Command}}
+\item 
+class \doxymbox{\hyperlink{classreplay__engine_1_1_replay_event}{Replay\+Event}}
+\item 
+class \doxymbox{\hyperlink{classreplay__engine_1_1_shot_resolution}{Shot\+Resolution}}
+\item 
+class \doxymbox{\hyperlink{classreplay__engine_1_1_play_resolution}{Play\+Resolution}}
+\item 
+class \doxymbox{\hyperlink{classreplay__engine_1_1_turn_replay}{Turn\+Replay}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacereplay__engine_a4aa8884c115b83a7b8eab7fac0e6340d}\label{namespacereplay__engine_a4aa8884c115b83a7b8eab7fac0e6340d} 
+float {\bfseries \+\_\+to\+\_\+float} (Any value, float fallback=0.\+0)
+\item 
+\Hypertarget{namespacereplay__engine_aa53f5459ed46f840d6a65c945098ec94}\label{namespacereplay__engine_aa53f5459ed46f840d6a65c945098ec94} 
+int {\bfseries \+\_\+to\+\_\+int} (Any value, int fallback=0)
+\item 
+\Hypertarget{namespacereplay__engine_a009e5883399a90c2bbc8c0ce3c4e6687}\label{namespacereplay__engine_a009e5883399a90c2bbc8c0ce3c4e6687} 
+bool {\bfseries \+\_\+to\+\_\+bool} (Any value, bool fallback=False)
+\item 
+dict\+[int, dict\+[str, Any]\+]\+ \doxymbox{\hyperlink{namespacereplay__engine_aedcb8fcf0b10c60e958930713610b464}{normalize\+\_\+state\+\_\+map}} (Mapping\+[Any, Mapping\+[str, Any]\+]\+\texorpdfstring{$\vert$}{|}None state\+\_\+map)
+\item 
+\Hypertarget{namespacereplay__engine_a508d778337266c94bd2be7deae7796e3}\label{namespacereplay__engine_a508d778337266c94bd2be7deae7796e3} 
+dict\+[int, dict\+[str, Any]\+]\+ {\bfseries clone\+\_\+state\+\_\+map} (Mapping\+[int, Mapping\+[str, Any]\+]\+ state\+\_\+map)
+\item 
+\Hypertarget{namespacereplay__engine_adf3b0c1931c130f8167760cf2b85b6e6}\label{namespacereplay__engine_adf3b0c1931c130f8167760cf2b85b6e6} 
+tuple\+[float, float]\+ {\bfseries clamp\+\_\+position} (float x, float y, \texorpdfstring{$\ast$}{*}, float radius)
+\item 
+\doxymbox{\hyperlink{classreplay__engine_1_1_parsed_command}{Parsed\+Command}} \doxymbox{\hyperlink{namespacereplay__engine_a6b5a7a8724805b55427510566c693980}{parse\+\_\+model\+\_\+response}} (Any response)
+\item 
+tuple\+[float, float]\+ \doxymbox{\hyperlink{namespacereplay__engine_a700798eb9558d0bc775a2388c976733b}{compute\+\_\+move\+\_\+target}} (Mapping\+[str, Any]\+ state, \doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}} rules, float\texorpdfstring{$\vert$}{|}None distance=None)
+\item 
+\Hypertarget{namespacereplay__engine_a1c5abf502454281b241f3415c90265e4}\label{namespacereplay__engine_a1c5abf502454281b241f3415c90265e4} 
+float {\bfseries compute\+\_\+rotation\+\_\+target} (float rot, float delta)
+\item 
+tuple\+[bool, bool]\+ \doxymbox{\hyperlink{namespacereplay__engine_a317b71db8be94009e3b800c55653d722}{\+\_\+segment\+\_\+interaction}} (Mapping\+[str, Any]\+ target\+\_\+state, tuple\+[float, float]\+ p1, tuple\+[float, float]\+ p2, \doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}} rules)
+\item 
+\doxymbox{\hyperlink{classreplay__engine_1_1_shot_resolution}{Shot\+Resolution}} \doxymbox{\hyperlink{namespacereplay__engine_ac432049380591b4c2bb28e15369b723c}{resolve\+\_\+shot}} (Mapping\+[int, Mapping\+[str, Any]\+]\+ state\+\_\+by\+\_\+bot, int actor\+\_\+id, \doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}} rules)
+\item 
+\doxymbox{\hyperlink{classreplay__engine_1_1_play_resolution}{Play\+Resolution}} \doxymbox{\hyperlink{namespacereplay__engine_a530faf75849c0a345b81fa0df2394409}{apply\+\_\+play}} (Mapping\+[int, Mapping\+[str, Any]\+]\+ state\+\_\+by\+\_\+bot, \texorpdfstring{$\ast$}{*}, int bot\+\_\+id, str llm\+\_\+response, str\texorpdfstring{$\vert$}{|}None cmd\+\_\+text, \doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}} rules)
+\item 
+tuple\+[bool, list\+[str]\+]\+ \doxymbox{\hyperlink{namespacereplay__engine_ad051728c278cfa34f958e9635ee0ae1f}{compare\+\_\+state\+\_\+maps}} (Mapping\+[int, Mapping\+[str, Any]\+]\+ derived, Mapping\+[Any, Mapping\+[str, Any]\+]\+\texorpdfstring{$\vert$}{|}None saved, \texorpdfstring{$\ast$}{*}, float tolerance=1e-\/6)
+\item 
+\doxymbox{\hyperlink{classreplay__engine_1_1_turn_replay}{Turn\+Replay}} \doxymbox{\hyperlink{namespacereplay__engine_a0f72b6aa8fadde5fa73c6026d3e6f6b1}{replay\+\_\+turn}} (Mapping\+[Any, Mapping\+[str, Any]\+]\+ pre\+\_\+state, list\+[Mapping\+[str, Any]\+]\+ plays, \doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}} rules, \texorpdfstring{$\ast$}{*}, Mapping\+[Any, Mapping\+[str, Any]\+]\+\texorpdfstring{$\vert$}{|}None saved\+\_\+post\+\_\+state=None)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+tuple \doxymbox{\hyperlink{namespacereplay__engine_a752fd9b19a020048c5d7b424750c5f5d}{GAMEPLAY\+\_\+\+SNAPSHOT\+\_\+\+KEYS}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Pure gameplay replay helpers shared by BatLLM and the analyzer.\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespacereplay__engine_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacereplay__engine_a317b71db8be94009e3b800c55653d722}\index{replay\_engine@{replay\_engine}!\_segment\_interaction@{\_segment\_interaction}}
+\index{\_segment\_interaction@{\_segment\_interaction}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{\_segment\_interaction()}{\_segment\_interaction()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_a317b71db8be94009e3b800c55653d722} 
+ tuple\+[bool, bool]\+ replay\+\_\+engine.\+\_\+segment\+\_\+interaction (\begin{DoxyParamCaption}\item[{Mapping\+[str, Any]\+}]{target\+\_\+state}{, }\item[{tuple\+[float, float]\+}]{p1}{, }\item[{tuple\+[float, float]\+}]{p2}{, }\item[{\doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}}}]{rules}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Return ``(hit, blocked)`` for the target and segment.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_a530faf75849c0a345b81fa0df2394409}\index{replay\_engine@{replay\_engine}!apply\_play@{apply\_play}}
+\index{apply\_play@{apply\_play}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{apply\_play()}{apply\_play()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_a530faf75849c0a345b81fa0df2394409} 
+ \doxymbox{\hyperlink{classreplay__engine_1_1_play_resolution}{Play\+Resolution}} replay\+\_\+engine.\+apply\+\_\+play (\begin{DoxyParamCaption}\item[{Mapping\+[int, Mapping\+[str, Any]\+]\+}]{state\+\_\+by\+\_\+bot}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{int}]{bot\+\_\+id}{, }\item[{str}]{llm\+\_\+response}{, }\item[{str \texorpdfstring{$\vert$}{|} None}]{cmd\+\_\+text}{, }\item[{\doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}}}]{rules}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Apply one ordered play to a state map and return the new state.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_ad051728c278cfa34f958e9635ee0ae1f}\index{replay\_engine@{replay\_engine}!compare\_state\_maps@{compare\_state\_maps}}
+\index{compare\_state\_maps@{compare\_state\_maps}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{compare\_state\_maps()}{compare\_state\_maps()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_ad051728c278cfa34f958e9635ee0ae1f} 
+ tuple\+[bool, list\+[str]\+]\+ replay\+\_\+engine.\+compare\+\_\+state\+\_\+maps (\begin{DoxyParamCaption}\item[{Mapping\+[int, Mapping\+[str, Any]\+]\+}]{derived}{, }\item[{Mapping\+[Any, Mapping\+[str, Any]\+]\+ \texorpdfstring{$\vert$}{|} None}]{saved}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{float }]{tolerance}{ = {\ttfamily 1e-\/6}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Compare two state maps with a small float tolerance.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_a700798eb9558d0bc775a2388c976733b}\index{replay\_engine@{replay\_engine}!compute\_move\_target@{compute\_move\_target}}
+\index{compute\_move\_target@{compute\_move\_target}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{compute\_move\_target()}{compute\_move\_target()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_a700798eb9558d0bc775a2388c976733b} 
+ tuple\+[float, float]\+ replay\+\_\+engine.\+compute\+\_\+move\+\_\+target (\begin{DoxyParamCaption}\item[{Mapping\+[str, Any]\+}]{state}{, }\item[{\doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}}}]{rules}{, }\item[{float \texorpdfstring{$\vert$}{|} None }]{distance}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the movement target for the given bot state.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_aedcb8fcf0b10c60e958930713610b464}\index{replay\_engine@{replay\_engine}!normalize\_state\_map@{normalize\_state\_map}}
+\index{normalize\_state\_map@{normalize\_state\_map}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{normalize\_state\_map()}{normalize\_state\_map()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_aedcb8fcf0b10c60e958930713610b464} 
+ dict\+[int, dict\+[str, Any]\+]\+ replay\+\_\+engine.\+normalize\+\_\+state\+\_\+map (\begin{DoxyParamCaption}\item[{Mapping\+[Any, Mapping\+[str, Any]\+]\+ \texorpdfstring{$\vert$}{|} None}]{state\+\_\+map}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Coerce history-manager state dictionaries into replay-friendly values.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_a6b5a7a8724805b55427510566c693980}\index{replay\_engine@{replay\_engine}!parse\_model\_response@{parse\_model\_response}}
+\index{parse\_model\_response@{parse\_model\_response}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{parse\_model\_response()}{parse\_model\_response()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_a6b5a7a8724805b55427510566c693980} 
+ \doxymbox{\hyperlink{classreplay__engine_1_1_parsed_command}{Parsed\+Command}} replay\+\_\+engine.\+parse\+\_\+model\+\_\+response (\begin{DoxyParamCaption}\item[{Any}]{response}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Parse BatLLM command grammar into a normalized command.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_a0f72b6aa8fadde5fa73c6026d3e6f6b1}\index{replay\_engine@{replay\_engine}!replay\_turn@{replay\_turn}}
+\index{replay\_turn@{replay\_turn}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{replay\_turn()}{replay\_turn()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_a0f72b6aa8fadde5fa73c6026d3e6f6b1} 
+ \doxymbox{\hyperlink{classreplay__engine_1_1_turn_replay}{Turn\+Replay}} replay\+\_\+engine.\+replay\+\_\+turn (\begin{DoxyParamCaption}\item[{Mapping\+[Any, Mapping\+[str, Any]\+]\+}]{pre\+\_\+state}{, }\item[{list\+[Mapping\+[str, Any]\+]\+}]{plays}{, }\item[{\doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}}}]{rules}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{Mapping\+[Any, Mapping\+[str, Any]\+]\+ \texorpdfstring{$\vert$}{|} None }]{saved\+\_\+post\+\_\+state}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Replay one turn from ordered plays.\end{DoxyVerb}
+ \Hypertarget{namespacereplay__engine_ac432049380591b4c2bb28e15369b723c}\index{replay\_engine@{replay\_engine}!resolve\_shot@{resolve\_shot}}
+\index{resolve\_shot@{resolve\_shot}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{resolve\_shot()}{resolve\_shot()}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_ac432049380591b4c2bb28e15369b723c} 
+ \doxymbox{\hyperlink{classreplay__engine_1_1_shot_resolution}{Shot\+Resolution}} replay\+\_\+engine.\+resolve\+\_\+shot (\begin{DoxyParamCaption}\item[{Mapping\+[int, Mapping\+[str, Any]\+]\+}]{state\+\_\+by\+\_\+bot}{, }\item[{int}]{actor\+\_\+id}{, }\item[{\doxymbox{\hyperlink{classreplay__engine_1_1_gameplay_settings_snapshot}{Gameplay\+Settings\+Snapshot}}}]{rules}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Resolve a single shot using the shared logic model.\end{DoxyVerb}
+ 
+
+\label{doc-var-members}
+\Hypertarget{namespacereplay__engine_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacereplay__engine_a752fd9b19a020048c5d7b424750c5f5d}\index{replay\_engine@{replay\_engine}!GAMEPLAY\_SNAPSHOT\_KEYS@{GAMEPLAY\_SNAPSHOT\_KEYS}}
+\index{GAMEPLAY\_SNAPSHOT\_KEYS@{GAMEPLAY\_SNAPSHOT\_KEYS}!replay\_engine@{replay\_engine}}
+\doxysubsubsection{\texorpdfstring{GAMEPLAY\_SNAPSHOT\_KEYS}{GAMEPLAY\_SNAPSHOT\_KEYS}}
+{\footnotesize\ttfamily \label{namespacereplay__engine_a752fd9b19a020048c5d7b424750c5f5d} 
+tuple replay\+\_\+engine.\+GAMEPLAY\+\_\+\+SNAPSHOT\+\_\+\+KEYS}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ (}
+\DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{"{}bot\_diameter"{}},}
+\DoxyCodeLine{00003\ \ \ \ \ \textcolor{stringliteral}{"{}bot\_step\_length"{}},}
+\DoxyCodeLine{00004\ \ \ \ \ \textcolor{stringliteral}{"{}bullet\_damage"{}},}
+\DoxyCodeLine{00005\ \ \ \ \ \textcolor{stringliteral}{"{}bullet\_diameter"{}},}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{stringliteral}{"{}bullet\_step\_length"{}},}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{stringliteral}{"{}shield\_size"{}},}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{stringliteral}{"{}shield\_initial\_state"{}},}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{stringliteral}{"{}initial\_health"{}},}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{stringliteral}{"{}turns\_per\_round"{}},}
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{stringliteral}{"{}total\_rounds"{}},}
+\DoxyCodeLine{00012\ )}
+
+\end{DoxyCode}

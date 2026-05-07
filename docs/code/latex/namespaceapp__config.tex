@@ -5,14 +5,26 @@
 \item 
 class \doxymbox{\hyperlink{classapp__config_1_1_app_config}{App\+Config}}
 \end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+dict \doxymbox{\hyperlink{namespaceapp__config_ad885a174502d7b6b66e08f1ef4db7435}{\+\_\+read\+\_\+yaml}} (Path path)
+\item 
+None \doxymbox{\hyperlink{namespaceapp__config_a34cf99fa0bee685f6b468aac92340d0d}{\+\_\+merge\+\_\+config}} (dict target, dict overlay)
+\item 
+dict \doxymbox{\hyperlink{namespaceapp__config_a6fcc2bd52aba52f0d8e4bc5afcb8f477}{load\+\_\+config\+\_\+data}} (Path\texorpdfstring{$\vert$}{|}None path=None, \texorpdfstring{$\ast$}{*}, Path shipped\+\_\+path=SHIPPED\+\_\+\+CONFIG\+\_\+\+PATH)
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{namespaceapp__config_a1e8adb381456967a9740c46688d7d024}\label{namespaceapp__config_a1e8adb381456967a9740c46688d7d024} 
 str {\bfseries APP\+\_\+\+NAME} = "{}Bat\+LLM"{}
 \item 
-\Hypertarget{namespaceapp__config_ace67493e0226d379fd4bdffa4af82e3e}\label{namespaceapp__config_ace67493e0226d379fd4bdffa4af82e3e} 
-str {\bfseries CONFIG\+\_\+\+PATH} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).parent /\+ "{}config.\+yaml"{}
+\Hypertarget{namespaceapp__config_a24188b688286dbf9db6d6684e9eb9b85}\label{namespaceapp__config_a24188b688286dbf9db6d6684e9eb9b85} 
+str {\bfseries SHIPPED\+\_\+\+CONFIG\+\_\+\+PATH} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).parent /\+ "{}config.\+yaml"{}
+\item 
+\Hypertarget{namespaceapp__config_ab016ab5e2c75da7d76b488609b4c7f59}\label{namespaceapp__config_ab016ab5e2c75da7d76b488609b4c7f59} 
+{\bfseries CONFIG\+\_\+\+PATH} = resolve\+\_\+config\+\_\+path(SHIPPED\+\_\+\+CONFIG\+\_\+\+PATH)
 \item 
 dict \doxymbox{\hyperlink{namespaceapp__config_ae53659198152861a832e8ccfb2c38545}{DEFAULTS}}
 \item 
@@ -23,6 +35,32 @@ dict \doxymbox{\hyperlink{namespaceapp__config_ae53659198152861a832e8ccfb2c38545
 
 \doxysubsection{Detailed Description}
 \begin{DoxyVerb}Configuration loader module\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespaceapp__config_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespaceapp__config_a34cf99fa0bee685f6b468aac92340d0d}\index{app\_config@{app\_config}!\_merge\_config@{\_merge\_config}}
+\index{\_merge\_config@{\_merge\_config}!app\_config@{app\_config}}
+\doxysubsubsection{\texorpdfstring{\_merge\_config()}{\_merge\_config()}}
+{\footnotesize\ttfamily \label{namespaceapp__config_a34cf99fa0bee685f6b468aac92340d0d} 
+ None app\+\_\+config.\+\_\+merge\+\_\+config (\begin{DoxyParamCaption}\item[{dict}]{target}{, }\item[{dict}]{overlay}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Merge a sectioned config mapping into the target mapping.\end{DoxyVerb}
+ \Hypertarget{namespaceapp__config_ad885a174502d7b6b66e08f1ef4db7435}\index{app\_config@{app\_config}!\_read\_yaml@{\_read\_yaml}}
+\index{\_read\_yaml@{\_read\_yaml}!app\_config@{app\_config}}
+\doxysubsubsection{\texorpdfstring{\_read\_yaml()}{\_read\_yaml()}}
+{\footnotesize\ttfamily \label{namespaceapp__config_ad885a174502d7b6b66e08f1ef4db7435} 
+ dict app\+\_\+config.\+\_\+read\+\_\+yaml (\begin{DoxyParamCaption}\item[{Path}]{path}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Read a YAML mapping, returning an empty mapping for missing or empty files.\end{DoxyVerb}
+ \Hypertarget{namespaceapp__config_a6fcc2bd52aba52f0d8e4bc5afcb8f477}\index{app\_config@{app\_config}!load\_config\_data@{load\_config\_data}}
+\index{load\_config\_data@{load\_config\_data}!app\_config@{app\_config}}
+\doxysubsubsection{\texorpdfstring{load\_config\_data()}{load\_config\_data()}}
+{\footnotesize\ttfamily \label{namespaceapp__config_a6fcc2bd52aba52f0d8e4bc5afcb8f477} 
+ dict app\+\_\+config.\+load\+\_\+config\+\_\+data (\begin{DoxyParamCaption}\item[{Path \texorpdfstring{$\vert$}{|} None }]{path}{ = {\ttfamily None}, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{Path }]{shipped\+\_\+path}{ = {\ttfamily SHIPPED\+\_\+CONFIG\+\_\+PATH}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load defaults, then the shipped config, then an optional user overlay config.\end{DoxyVerb}
  
 
 \label{doc-var-members}
@@ -38,20 +76,29 @@ dict app\+\_\+config.\+DEFAULTS}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{00001\ =\ \ \{}
 \DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{"{}game"{}}:\ \{}
-\DoxyCodeLine{00003\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}total\_rounds"{}}:\ 3,}
-\DoxyCodeLine{00004\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}turns\_per\_round"{}}:\ 5,}
+\DoxyCodeLine{00003\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}total\_rounds"{}}:\ 2,}
+\DoxyCodeLine{00004\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}turns\_per\_round"{}}:\ 8,}
 \DoxyCodeLine{00005\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}independent\_contexts"{}}:\ \textcolor{keyword}{True},}
-\DoxyCodeLine{00006\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}prompt\_augmentation"{}}:\ \textcolor{keyword}{False},}
-\DoxyCodeLine{00007\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}initial\_health"{}}:\ 20,}
-\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}bullet\_damage"{}}:\ 3,}
-\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}shield\_size"{}}:\ 20,}
-\DoxyCodeLine{00010\ \ \ \ \ \},}
-\DoxyCodeLine{00011\ \ \ \ \ \textcolor{stringliteral}{"{}ui"{}}:\ \{}
-\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}font\_size"{}}:\ 14,}
-\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}frame\_rate"{}}:\ 60,}
-\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}confirm\_on\_exit"{}}:\ \textcolor{keyword}{True},}
-\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}prompt\_save\_on\_exit"{}}:\ \textcolor{keyword}{True},}
-\DoxyCodeLine{00016\ \ \ \ \ \},}
-\DoxyCodeLine{00017\ \}}
+\DoxyCodeLine{00006\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}prompt\_augmentation"{}}:\ \textcolor{keyword}{True},}
+\DoxyCodeLine{00007\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}initial\_health"{}}:\ 30,}
+\DoxyCodeLine{00008\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}bullet\_damage"{}}:\ 5,}
+\DoxyCodeLine{00009\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}bullet\_diameter"{}}:\ 0.02,}
+\DoxyCodeLine{00010\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}shield\_size"{}}:\ 70,}
+\DoxyCodeLine{00011\ \ \ \ \ \},}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{stringliteral}{"{}ui"{}}:\ \{}
+\DoxyCodeLine{00013\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}font\_size"{}}:\ 16,}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}frame\_rate"{}}:\ 60,}
+\DoxyCodeLine{00015\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}confirm\_on\_exit"{}}:\ \textcolor{keyword}{True},}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}prompt\_save\_on\_exit"{}}:\ \textcolor{keyword}{False},}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}auto\_start\_ollama"{}}:\ \textcolor{keyword}{False},}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}stop\_ollama\_on\_exit"{}}:\ \textcolor{keyword}{False},}
+\DoxyCodeLine{00019\ \ \ \ \ \},}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{stringliteral}{"{}llm"{}}:\ \{}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}last\_served\_model"{}}:\ \textcolor{stringliteral}{"{}"{}},}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}timeout"{}}:\ \textcolor{keywordtype}{None},}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}model\_timeouts"{}}:\ \{\},}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}warmup\_timeout"{}}:\ 30.0,}
+\DoxyCodeLine{00025\ \ \ \ \ \},}
+\DoxyCodeLine{00026\ \}}
 
 \end{DoxyCode}

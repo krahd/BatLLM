@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -119,6 +119,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a34af41c247dc16868ded166ba34663ce" id="r_a34af41c247dc16868ded166ba34663ce"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a34af41c247dc16868ded166ba34663ce">submit_prompt_to_bot</a> (self, int bot_id, str new_prompt)</td></tr>
 <tr class="memitem:a7d775f911d1baf6a3bbfbaa7f3b4b79f" id="r_a7d775f911d1baf6a3bbfbaa7f3b4b79f"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a7d775f911d1baf6a3bbfbaa7f3b4b79f">play_turn</a> (self, dt)</td></tr>
 <tr class="memitem:a7f36cfd231b3d98c59ffc68b67dc3066" id="r_a7f36cfd231b3d98c59ffc68b67dc3066"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a7f36cfd231b3d98c59ffc68b67dc3066">on_bot_llm_interaction_complete</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>)</td></tr>
+<tr class="memitem:afd1eee9606f42c393e265e9e36a08a82" id="r_afd1eee9606f42c393e265e9e36a08a82"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#afd1eee9606f42c393e265e9e36a08a82">handle_bot_llm_timeout</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>, LLMTimeoutError exc)</td></tr>
+<tr class="memitem:aa110c8d5a071bf41c2e7ef269e4d4f60" id="r_aa110c8d5a071bf41c2e7ef269e4d4f60"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aa110c8d5a071bf41c2e7ef269e4d4f60">cancel_current_round</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>, str reason)</td></tr>
 <tr class="memitem:a30c21752970ffc961467f9b0117d37c0" id="r_a30c21752970ffc961467f9b0117d37c0"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a30c21752970ffc961467f9b0117d37c0">shoot</a> (self, int bot_id)</td></tr>
 <tr class="memitem:a4f0434da328d135519c8a7490ebd2ff8" id="r_a4f0434da328d135519c8a7490ebd2ff8"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a4f0434da328d135519c8a7490ebd2ff8">update_title_label</a> (self)</td></tr>
 <tr class="memitem:ab090e4283ee87787237b074b60a487af" id="r_ab090e4283ee87787237b074b60a487af"><td class="memItemLeft">Optional[Bot]&#160;</td><td class="memItemRight"><a class="el" href="#ab090e4283ee87787237b074b60a487af">get_bot_by_id</a> (self, int bot_id)</td></tr>
@@ -140,6 +142,8 @@ float&#160;</td><td class="memItemRight"><b>bullet_alpha</b> = 1.0</td></tr>
 &#160;</td><td class="memItemRight"><b>bullet</b> = None</td></tr>
 <tr class="memitem:a20bf889958db6a3c29c7174b0f6f31c1" id="r_a20bf889958db6a3c29c7174b0f6f31c1"><td class="memItemLeft"><a id="a20bf889958db6a3c29c7174b0f6f31c1" name="a20bf889958db6a3c29c7174b0f6f31c1"></a>
 Optional[list[Bot]]&#160;</td><td class="memItemRight"><b>shuffled_bots</b> = None</td></tr>
+<tr class="memitem:a4a91b18e41ddaeeecf4517d075979966" id="r_a4a91b18e41ddaeeecf4517d075979966"><td class="memItemLeft"><a id="a4a91b18e41ddaeeecf4517d075979966" name="a4a91b18e41ddaeeecf4517d075979966"></a>
+Optional[GameplaySettingsSnapshot]&#160;</td><td class="memItemRight"><b>current_round_settings</b> = None</td></tr>
 <tr class="memitem:a28b65ac0077db44189509e14f861e12d" id="r_a28b65ac0077db44189509e14f861e12d"><td class="memItemLeft"><a id="a28b65ac0077db44189509e14f861e12d" name="a28b65ac0077db44189509e14f861e12d"></a>
 &#160;</td><td class="memItemRight"><b>sound_shoot</b> = SoundLoader.load(str(asset_path(&quot;sounds&quot;, &quot;shoot1.wav&quot;)))</td></tr>
 <tr class="memitem:a21036e1f654dfc9ee247e76477e388a4" id="r_a21036e1f654dfc9ee247e76477e388a4"><td class="memItemLeft"><a id="a21036e1f654dfc9ee247e76477e388a4" name="a21036e1f654dfc9ee247e76477e388a4"></a>
@@ -167,9 +171,28 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:acdc76a1cabff6fa2909a858b5756e443" id="r_acdc76a1cabff6fa2909a858b5756e443"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#acdc76a1cabff6fa2909a858b5756e443">_on_keyboard_down</a> (self, keyboard, keycode, text, modifiers)</td></tr>
 <tr class="memitem:aa7560715a6b4254695a8d8424638362a" id="r_aa7560715a6b4254695a8d8424638362a"><td class="memItemLeft">None&#160;</td><td class="memItemRight"><a class="el" href="#aa7560715a6b4254695a8d8424638362a">_prompt_manual_command</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>)</td></tr>
 <tr class="memitem:a82486e0a1a723cb2b8e6a6285a0a80aa" id="r_a82486e0a1a723cb2b8e6a6285a0a80aa"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a82486e0a1a723cb2b8e6a6285a0a80aa">_redraw</a> (self, *args)</td></tr>
+<tr class="memitem:a75ec2624e3884732b59d8abe3b63958a" id="r_a75ec2624e3884732b59d8abe3b63958a"><td class="memItemLeft">None&#160;</td><td class="memItemRight"><a class="el" href="#a75ec2624e3884732b59d8abe3b63958a">_apply_round_settings_to_live_bots</a> (self, GameplaySettingsSnapshot rules, *, bool reset_for_new_game)</td></tr>
+<tr class="memitem:acd72258a59b75fd3ae026ed4ba270ece" id="r_acd72258a59b75fd3ae026ed4ba270ece"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#acd72258a59b75fd3ae026ed4ba270ece">_submit_next_bot_for_turn</a> (self)</td></tr>
+<tr class="memitem:a608f401aa6ea93add2a1be22c1527841" id="r_a608f401aa6ea93add2a1be22c1527841"><td class="memItemLeft"><a id="a608f401aa6ea93add2a1be22c1527841" name="a608f401aa6ea93add2a1be22c1527841"></a>
+&#160;</td><td class="memItemRight"><b>_clear_timeout_popup</b> (self, *_args)</td></tr>
+<tr class="memitem:ab1c3132975c06c8fa749dbee98f11a00" id="r_ab1c3132975c06c8fa749dbee98f11a00"><td class="memItemLeft"><a id="ab1c3132975c06c8fa749dbee98f11a00" name="ab1c3132975c06c8fa749dbee98f11a00"></a>
+&#160;</td><td class="memItemRight"><b>_dismiss_timeout_popup_and_resolve</b> (self, Bot <a class="el" href="namespacebot.html">bot</a>, LLMTimeoutError exc, *, str action, bool remember_for_round)</td></tr>
+<tr class="memitem:a41e3cd5be95967178438098ffbb25a81" id="r_a41e3cd5be95967178438098ffbb25a81"><td class="memItemLeft"><a id="a41e3cd5be95967178438098ffbb25a81" name="a41e3cd5be95967178438098ffbb25a81"></a>
+str&#160;</td><td class="memItemRight"><b>_format_timeout_message</b> (self, Bot <a class="el" href="namespacebot.html">bot</a>, LLMTimeoutError exc)</td></tr>
+<tr class="memitem:a7f01c8bf9b5be070261ee705e401bf17" id="r_a7f01c8bf9b5be070261ee705e401bf17"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a7f01c8bf9b5be070261ee705e401bf17">_resolve_bot_timeout</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>, LLMTimeoutError exc, *, str action, bool remember_for_round)</td></tr>
+<tr class="memitem:a97cc2f62b824c6ab631eef2cbb91d14e" id="r_a97cc2f62b824c6ab631eef2cbb91d14e"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a97cc2f62b824c6ab631eef2cbb91d14e">_show_timeout_resolution_popup</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>, LLMTimeoutError exc)</td></tr>
+<tr class="memitem:a61a8e141ecd6466330a12a443220e3a4" id="r_a61a8e141ecd6466330a12a443220e3a4"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a61a8e141ecd6466330a12a443220e3a4">_restore_round_initial_state</a> (self)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a70fb54ebd79d363b5c67d44d2e942207" id="r_a70fb54ebd79d363b5c67d44d2e942207"><td class="memItemLeft"><a id="a70fb54ebd79d363b5c67d44d2e942207" name="a70fb54ebd79d363b5c67d44d2e942207"></a>
+list&#160;</td><td class="memItemRight"><b>_turn_submission_queue</b> = []</td></tr>
+<tr class="memitem:ad73559ce21fb88ae5604cc6f42f9551c" id="r_ad73559ce21fb88ae5604cc6f42f9551c"><td class="memItemLeft"><a id="ad73559ce21fb88ae5604cc6f42f9551c" name="ad73559ce21fb88ae5604cc6f42f9551c"></a>
+int&#160;</td><td class="memItemRight"><b>_turn_submission_index</b> = 0</td></tr>
+<tr class="memitem:a6fdf67184dc2ae0de7eb806660f9d01c" id="r_a6fdf67184dc2ae0de7eb806660f9d01c"><td class="memItemLeft"><a id="a6fdf67184dc2ae0de7eb806660f9d01c" name="a6fdf67184dc2ae0de7eb806660f9d01c"></a>
+str|None&#160;</td><td class="memItemRight"><b>_round_timeout_action</b> = None</td></tr>
+<tr class="memitem:a289788311dc68d43f1138e93df07275c" id="r_a289788311dc68d43f1138e93df07275c"><td class="memItemLeft"><a id="a289788311dc68d43f1138e93df07275c" name="a289788311dc68d43f1138e93df07275c"></a>
+Optional[Popup]&#160;</td><td class="memItemRight"><b>_timeout_popup</b> = None</td></tr>
 <tr class="memitem:ad2aad0a0fc30936861fc09bacafec32c" id="r_ad2aad0a0fc30936861fc09bacafec32c"><td class="memItemLeft"><a id="ad2aad0a0fc30936861fc09bacafec32c" name="ad2aad0a0fc30936861fc09bacafec32c"></a>
 &#160;</td><td class="memItemRight"><b>_keyboard</b> = Window.request_keyboard(self._keyboard_closed, self, &quot;text&quot;)</td></tr>
 <tr class="memitem:acfaae8a0819ee913a07bcf906ef6df38" id="r_acfaae8a0819ee913a07bcf906ef6df38"><td class="memItemLeft"><a id="acfaae8a0819ee913a07bcf906ef6df38" name="acfaae8a0819ee913a07bcf906ef6df38"></a>
@@ -203,6 +226,45 @@ render loop to update the UI at the configured frame rate.
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a75ec2624e3884732b59d8abe3b63958a" name="a75ec2624e3884732b59d8abe3b63958a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75ec2624e3884732b59d8abe3b63958a">&#9670;&#160;</a></span>_apply_round_settings_to_live_bots()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"> None game_board.GameBoard._apply_round_settings_to_live_bots </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">GameplaySettingsSnapshot</td>          <td class="paramname"><span class="paramname"><em>rules</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>reset_for_new_game</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Freeze round-level gameplay settings onto the live bot widgets.</pre> 
+</div>
+</div>
 <a id="a235fdf8d94911754e86dd21359342b73" name="a235fdf8d94911754e86dd21359342b73"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a235fdf8d94911754e86dd21359342b73">&#9670;&#160;</a></span>_grab_keyboard()</h2>
 
@@ -357,6 +419,139 @@ render loop to update the UI at the configured frame rate.
 <pre class="fragment">Refresh the screen by calling render().</pre> 
 </div>
 </div>
+<a id="a7f01c8bf9b5be070261ee705e401bf17" name="a7f01c8bf9b5be070261ee705e401bf17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f01c8bf9b5be070261ee705e401bf17">&#9670;&#160;</a></span>_resolve_bot_timeout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">game_board.GameBoard._resolve_bot_timeout </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Bot</td>          <td class="paramname"><span class="paramname"><em>bot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LLMTimeoutError</td>          <td class="paramname"><span class="paramname"><em>exc</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str</td>          <td class="paramname"><span class="paramname"><em>action</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>remember_for_round</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Apply the user's timeout choice to the current round.</pre> 
+</div>
+</div>
+<a id="a61a8e141ecd6466330a12a443220e3a4" name="a61a8e141ecd6466330a12a443220e3a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61a8e141ecd6466330a12a443220e3a4">&#9670;&#160;</a></span>_restore_round_initial_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">game_board.GameBoard._restore_round_initial_state </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Roll back live bot state to the round-start snapshot.</pre> 
+</div>
+</div>
+<a id="a97cc2f62b824c6ab631eef2cbb91d14e" name="a97cc2f62b824c6ab631eef2cbb91d14e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97cc2f62b824c6ab631eef2cbb91d14e">&#9670;&#160;</a></span>_show_timeout_resolution_popup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">game_board.GameBoard._show_timeout_resolution_popup </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Bot</td>          <td class="paramname"><span class="paramname"><em>bot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LLMTimeoutError</td>          <td class="paramname"><span class="paramname"><em>exc</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Ask the user whether a timed out bot should resolve as ERR or cancel the round.</pre> 
+</div>
+</div>
+<a id="acd72258a59b75fd3ae026ed4ba270ece" name="acd72258a59b75fd3ae026ed4ba270ece"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd72258a59b75fd3ae026ed4ba270ece">&#9670;&#160;</a></span>_submit_next_bot_for_turn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">game_board.GameBoard._submit_next_bot_for_turn </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Submit the next bot in the current turn order, if any remain.</pre> 
+</div>
+</div>
 <a id="abd67c47df4471162cc39ff8da6f5efdd" name="abd67c47df4471162cc39ff8da6f5efdd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd67c47df4471162cc39ff8da6f5efdd">&#9670;&#160;</a></span>add_cmd_to_home_screen_cmd_history()</h2>
 
@@ -409,6 +604,32 @@ render loop to update the UI at the configured frame rate.
 </div><div class="memdoc">
 <pre class="fragment">Adds text to the output history box next to the bot's prompt input.
 </pre> 
+</div>
+</div>
+<a id="aa110c8d5a071bf41c2e7ef269e4d4f60" name="aa110c8d5a071bf41c2e7ef269e4d4f60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa110c8d5a071bf41c2e7ef269e4d4f60">&#9670;&#160;</a></span>cancel_current_round()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">game_board.GameBoard.cancel_current_round </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Bot</td>          <td class="paramname"><span class="paramname"><em>bot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str</td>          <td class="paramname"><span class="paramname"><em>reason</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Cancel the active round, roll back state, and keep a cancelled-round history entry.</pre> 
 </div>
 </div>
 <a id="afc830cf8ef8496b0abbd3a0548620e3b" name="afc830cf8ef8496b0abbd3a0548620e3b"></a>
@@ -483,6 +704,32 @@ render loop to update the UI at the configured frame rate.
 <pre class="fragment">Returns the current game state as a dictionary:
 bot positions/health, current turn/round, and bullet trace/alpha.
 </pre> 
+</div>
+</div>
+<a id="afd1eee9606f42c393e265e9e36a08a82" name="afd1eee9606f42c393e265e9e36a08a82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd1eee9606f42c393e265e9e36a08a82">&#9670;&#160;</a></span>handle_bot_llm_timeout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">game_board.GameBoard.handle_bot_llm_timeout </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Bot</td>          <td class="paramname"><span class="paramname"><em>bot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LLMTimeoutError</td>          <td class="paramname"><span class="paramname"><em>exc</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Resolve an LLM timeout using the round policy or a user choice popup.</pre> 
 </div>
 </div>
 <a id="a7f36cfd231b3d98c59ffc68b67dc3066" name="a7f36cfd231b3d98c59ffc68b67dc3066"></a>

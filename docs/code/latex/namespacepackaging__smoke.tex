@@ -1,0 +1,55 @@
+\doxysection{packaging\+\_\+smoke Namespace Reference}
+\hypertarget{namespacepackaging__smoke}{}\label{namespacepackaging__smoke}\index{packaging\_smoke@{packaging\_smoke}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacepackaging__smoke_aea7e2313aba28196e8b5cfb9eaa9701c}\label{namespacepackaging__smoke_aea7e2313aba28196e8b5cfb9eaa9701c} 
+str {\bfseries read\+\_\+version} (Path root)
+\item 
+\Hypertarget{namespacepackaging__smoke_a86eb06e22715e311bc58f17e2a2b82d0}\label{namespacepackaging__smoke_a86eb06e22715e311bc58f17e2a2b82d0} 
+dict\+[str, Path]\+ {\bfseries expected\+\_\+release\+\_\+artifact\+\_\+paths} (Path root, str \doxymbox{\hyperlink{namespaceversion}{version}})
+\item 
+\Hypertarget{namespacepackaging__smoke_a726e2cf188f462539bbc8a7fe4fd3498}\label{namespacepackaging__smoke_a726e2cf188f462539bbc8a7fe4fd3498} 
+tuple\+[str,...]\+ {\bfseries required\+\_\+members\+\_\+for\+\_\+artifact} (str filename)
+\item 
+\Hypertarget{namespacepackaging__smoke_af391b9de58fd115edd0c9cc11f1d4c49}\label{namespacepackaging__smoke_af391b9de58fd115edd0c9cc11f1d4c49} 
+set\+[str]\+ {\bfseries archive\+\_\+members} (Path artifact\+\_\+path)
+\item 
+\Hypertarget{namespacepackaging__smoke_adf917ad7df1d8c4c9e289f830e32891c}\label{namespacepackaging__smoke_adf917ad7df1d8c4c9e289f830e32891c} 
+list\+[str]\+ {\bfseries missing\+\_\+required\+\_\+members} (Path artifact\+\_\+path, tuple\+[str,...]\+ required)
+\item 
+\Hypertarget{namespacepackaging__smoke_a850913b7a204da9d6f55f2ff8c448453}\label{namespacepackaging__smoke_a850913b7a204da9d6f55f2ff8c448453} 
+tuple\+[int, str, str]\+ {\bfseries run\+\_\+command} (list\+[str]\+ command, Path cwd, \texorpdfstring{$\ast$}{*}, dict\+[str, str]\+\texorpdfstring{$\vert$}{|}None env=None, float\texorpdfstring{$\vert$}{|}None timeout=None)
+\item 
+\Hypertarget{namespacepackaging__smoke_a562df03b5e93c117051919c2463e119a}\label{namespacepackaging__smoke_a562df03b5e93c117051919c2463e119a} 
+str {\bfseries installer\+\_\+artifact\+\_\+key\+\_\+for\+\_\+current\+\_\+platform} ()
+\item 
+\Hypertarget{namespacepackaging__smoke_af487b7c08ffac090780baff514646f98}\label{namespacepackaging__smoke_af487b7c08ffac090780baff514646f98} 
+str {\bfseries installer\+\_\+script\+\_\+name\+\_\+for\+\_\+artifact} (str filename)
+\item 
+\Hypertarget{namespacepackaging__smoke_ac8f87196b70fe93f10cdffa024c1e6ee}\label{namespacepackaging__smoke_ac8f87196b70fe93f10cdffa024c1e6ee} 
+None {\bfseries \+\_\+extract\+\_\+archive} (Path artifact\+\_\+path, Path destination)
+\item 
+\Hypertarget{namespacepackaging__smoke_a44c02984bf2505d879b4412884430c46}\label{namespacepackaging__smoke_a44c02984bf2505d879b4412884430c46} 
+tuple\+[int, str, str]\+ {\bfseries \+\_\+run\+\_\+installer\+\_\+script} (Path stage\+\_\+root, str script\+\_\+name, float timeout\+\_\+seconds)
+\item 
+\Hypertarget{namespacepackaging__smoke_a078fd5942f80ccae0ffe63abe0e18cba}\label{namespacepackaging__smoke_a078fd5942f80ccae0ffe63abe0e18cba} 
+list\+[str]\+ {\bfseries run\+\_\+release\+\_\+installer\+\_\+smoke} (Path root, \texorpdfstring{$\ast$}{*}, float timeout\+\_\+seconds, str\texorpdfstring{$\vert$}{|}None artifact\+\_\+key=None)
+\item 
+\Hypertarget{namespacepackaging__smoke_a43f6566bf011eaeaf654e5e615024c1a}\label{namespacepackaging__smoke_a43f6566bf011eaeaf654e5e615024c1a} 
+list\+[str]\+ {\bfseries run\+\_\+homebrew\+\_\+install\+\_\+smoke} (Path root, \texorpdfstring{$\ast$}{*}, Path formula\+\_\+path, float install\+\_\+timeout\+\_\+seconds)
+\item 
+\Hypertarget{namespacepackaging__smoke_abd4c3ddf3f8227c266ca36c006ec4943}\label{namespacepackaging__smoke_abd4c3ddf3f8227c266ca36c006ec4943} 
+list\+[str]\+ {\bfseries run\+\_\+packaging\+\_\+smoke} (Path root, \texorpdfstring{$\ast$}{*}, str python\+\_\+executable, bool run\+\_\+release, bool run\+\_\+homebrew, bool run\+\_\+homebrew\+\_\+install\+\_\+check, bool run\+\_\+installer\+\_\+smoke, float installer\+\_\+timeout\+\_\+seconds, float homebrew\+\_\+install\+\_\+timeout\+\_\+seconds)
+\item 
+\Hypertarget{namespacepackaging__smoke_ab8c0580a8e9601021afe87e0ee5ce457}\label{namespacepackaging__smoke_ab8c0580a8e9601021afe87e0ee5ce457} 
+argparse.\+Argument\+Parser {\bfseries build\+\_\+parser} ()
+\item 
+\Hypertarget{namespacepackaging__smoke_ae324f36af219653becfc409afbe89154}\label{namespacepackaging__smoke_ae324f36af219653becfc409afbe89154} 
+int {\bfseries main} (list\+[str]\+\texorpdfstring{$\vert$}{|}None argv=None)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Packaging smoke-validation helpers for BatLLM release workflows.\end{DoxyVerb}
+ 

@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -103,8 +103,14 @@ Inheritance diagram for main.BatLLM:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:aeb5e32cd0e12a7789e140cae27ed4505" id="r_aeb5e32cd0e12a7789e140cae27ed4505"><td class="memItemLeft"><a id="aeb5e32cd0e12a7789e140cae27ed4505" name="aeb5e32cd0e12a7789e140cae27ed4505"></a>
+&#160;</td><td class="memItemRight"><b>__init__</b> (self, **kwargs)</td></tr>
 <tr class="memitem:a071c022e20ea3ddc332c7fda7df794c9" id="r_a071c022e20ea3ddc332c7fda7df794c9"><td class="memItemLeft"><a id="a071c022e20ea3ddc332c7fda7df794c9" name="a071c022e20ea3ddc332c7fda7df794c9"></a>
 &#160;</td><td class="memItemRight"><b>build</b> (self)</td></tr>
+<tr class="memitem:ad6c294011655d66feec91bee4f9ed8ad" id="r_ad6c294011655d66feec91bee4f9ed8ad"><td class="memItemLeft"><a id="ad6c294011655d66feec91bee4f9ed8ad" name="ad6c294011655d66feec91bee4f9ed8ad"></a>
+&#160;</td><td class="memItemRight"><b>on_start</b> (self)</td></tr>
+<tr class="memitem:a4a7c0c221415ddd79f2521c3317dcca8" id="r_a4a7c0c221415ddd79f2521c3317dcca8"><td class="memItemLeft"><a id="a4a7c0c221415ddd79f2521c3317dcca8" name="a4a7c0c221415ddd79f2521c3317dcca8"></a>
+&#160;</td><td class="memItemRight"><b>on_stop</b> (self)</td></tr>
 <tr class="memitem:ae5b55dbf2589791e40a6a6a4ac686f8d" id="r_ae5b55dbf2589791e40a6a6a4ac686f8d"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ae5b55dbf2589791e40a6a6a4ac686f8d">load_theme_colors</a> (self)</td></tr>
 <tr class="memitem:a927e3b2385df5086a862aed991fb9c3b" id="r_a927e3b2385df5086a862aed991fb9c3b"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a927e3b2385df5086a862aed991fb9c3b">on_request_close</a> (self, *args, **kwargs)</td></tr>
 </table><table class="memberdecls">
@@ -119,6 +125,38 @@ Public Attributes</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a7759b3b0b1a3c67d634f81d66b331c4e" id="r_a7759b3b0b1a3c67d634f81d66b331c4e"><td class="memItemLeft"><a id="a7759b3b0b1a3c67d634f81d66b331c4e" name="a7759b3b0b1a3c67d634f81d66b331c4e"></a>
 dict&#160;</td><td class="memItemRight"><b>theme_colors</b> = DictProperty({})</td></tr>
+<tr class="memitem:a58462e8ffb1ee4ff2beff6eeeac7694c" id="r_a58462e8ffb1ee4ff2beff6eeeac7694c"><td class="memItemLeft"><a id="a58462e8ffb1ee4ff2beff6eeeac7694c" name="a58462e8ffb1ee4ff2beff6eeeac7694c"></a>
+&#160;</td><td class="memItemRight"><b>app_version</b> = StringProperty(current_app_version())</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a27da82abaf81a8f758db9cdc9b256e99" id="r_a27da82abaf81a8f758db9cdc9b256e99"><td class="memItemLeft"><a id="a27da82abaf81a8f758db9cdc9b256e99" name="a27da82abaf81a8f758db9cdc9b256e99"></a>
+None&#160;</td><td class="memItemRight"><b>_refresh_ollama_screen</b> (self)</td></tr>
+<tr class="memitem:ae9143419f86f0a2044aa50c843d216fd" id="r_ae9143419f86f0a2044aa50c843d216fd"><td class="memItemLeft"><a id="ae9143419f86f0a2044aa50c843d216fd" name="ae9143419f86f0a2044aa50c843d216fd"></a>
+None&#160;</td><td class="memItemRight"><b>_run_in_thread</b> (self, fn)</td></tr>
+<tr class="memitem:aa6ebdb5295b639de52fc54b7c49a6121" id="r_aa6ebdb5295b639de52fc54b7c49a6121"><td class="memItemLeft"><a id="aa6ebdb5295b639de52fc54b7c49a6121" name="aa6ebdb5295b639de52fc54b7c49a6121"></a>
+None&#160;</td><td class="memItemRight"><b>_start_ollama_in_background</b> (self)</td></tr>
+<tr class="memitem:a4cb230ca92756e1dd64fcb0d4ce2ee2a" id="r_a4cb230ca92756e1dd64fcb0d4ce2ee2a"><td class="memItemLeft"><a id="a4cb230ca92756e1dd64fcb0d4ce2ee2a" name="a4cb230ca92756e1dd64fcb0d4ce2ee2a"></a>
+None&#160;</td><td class="memItemRight"><b>_install_ollama_in_background</b> (self)</td></tr>
+<tr class="memitem:a695658aaee1689879a88731e22aeee91" id="r_a695658aaee1689879a88731e22aeee91"><td class="memItemLeft"><a id="a695658aaee1689879a88731e22aeee91" name="a695658aaee1689879a88731e22aeee91"></a>
+None&#160;</td><td class="memItemRight"><b>_prompt_to_install_ollama</b> (self)</td></tr>
+<tr class="memitem:aec87a9b4c898f388b46969e7e100b567" id="r_aec87a9b4c898f388b46969e7e100b567"><td class="memItemLeft"><a id="aec87a9b4c898f388b46969e7e100b567" name="aec87a9b4c898f388b46969e7e100b567"></a>
+None&#160;</td><td class="memItemRight"><b>_prompt_to_start_ollama</b> (self, str|None startup_model=None)</td></tr>
+<tr class="memitem:ad3a4708b35d9d38f9ee4a82c12185539" id="r_ad3a4708b35d9d38f9ee4a82c12185539"><td class="memItemLeft"><a id="ad3a4708b35d9d38f9ee4a82c12185539" name="ad3a4708b35d9d38f9ee4a82c12185539"></a>
+None&#160;</td><td class="memItemRight"><b>_handle_startup_ollama_state</b> (self, dict[str, object] state)</td></tr>
+<tr class="memitem:aff33072d71a7ce19721034f865f9f203" id="r_aff33072d71a7ce19721034f865f9f203"><td class="memItemLeft"><a id="aff33072d71a7ce19721034f865f9f203" name="aff33072d71a7ce19721034f865f9f203"></a>
+None&#160;</td><td class="memItemRight"><b>_run_startup_ollama_flow</b> (self, *_args)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a957af4bcf9b295a654bb6925efc492ee" id="r_a957af4bcf9b295a654bb6925efc492ee"><td class="memItemLeft"><a id="a957af4bcf9b295a654bb6925efc492ee" name="a957af4bcf9b295a654bb6925efc492ee"></a>
+bool&#160;</td><td class="memItemRight"><b>_startup_ollama_flow_completed</b> = False</td></tr>
+<tr class="memitem:a6f793f1ea3591f0507fba80322e55816" id="r_a6f793f1ea3591f0507fba80322e55816"><td class="memItemLeft"><a id="a6f793f1ea3591f0507fba80322e55816" name="a6f793f1ea3591f0507fba80322e55816"></a>
+&#160;</td><td class="memItemRight"><b>_install_ollama_in_background</b></td></tr>
+<tr class="memitem:a7882c044708bf10f3c52721a7330d673" id="r_a7882c044708bf10f3c52721a7330d673"><td class="memItemLeft"><a id="a7882c044708bf10f3c52721a7330d673" name="a7882c044708bf10f3c52721a7330d673"></a>
+&#160;</td><td class="memItemRight"><b>_start_ollama_in_background</b></td></tr>
+<tr class="memitem:a66f740675a0936c9e08818f1245ad6e0" id="r_a66f740675a0936c9e08818f1245ad6e0"><td class="memItemLeft"><a id="a66f740675a0936c9e08818f1245ad6e0" name="a66f740675a0936c9e08818f1245ad6e0"></a>
+&#160;</td><td class="memItemRight"><b>_run_startup_ollama_flow</b></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">This is the main application class for BattLLM.

@@ -1,0 +1,70 @@
+\doxysection{session\+\_\+schema Namespace Reference}
+\hypertarget{namespacesession__schema}{}\label{namespacesession__schema}\index{session\_schema@{session\_schema}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{classsession__schema_1_1_session_format_error}{Session\+Format\+Error}}
+\item 
+class \doxymbox{\hyperlink{classsession__schema_1_1_unsupported_legacy_session}{Unsupported\+Legacy\+Session}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+dict\+[str, Any]\+ \doxymbox{\hyperlink{namespacesession__schema_ae969596fe5f47a01101578ec281022fe}{build\+\_\+session\+\_\+payload}} (\texorpdfstring{$\ast$}{*}, list\+[dict\+[str, Any]\+]\+ games, str app\+\_\+version, str saved\+\_\+at, dict\+[str, Any]\+\texorpdfstring{$\vert$}{|}None llm\+\_\+metadata=None)
+\item 
+\Hypertarget{namespacesession__schema_ab6ea1119f2b6795e8e6918bbedfd93bf}\label{namespacesession__schema_ab6ea1119f2b6795e8e6918bbedfd93bf} 
+None {\bfseries \+\_\+ensure} (bool condition, str message)
+\item 
+dict\+[str, Any]\+ \doxymbox{\hyperlink{namespacesession__schema_ab23bddbb8574ba4a404b11c15afee0f0}{validate\+\_\+session\+\_\+payload}} (Any payload)
+\item 
+dict\+[str, Any]\+ \doxymbox{\hyperlink{namespacesession__schema_ad338994e595089ce91b40a40beda10f5}{load\+\_\+session\+\_\+payload}} (str\texorpdfstring{$\vert$}{|}Path path)
+\item 
+dict\+[str, Any]\+ \doxymbox{\hyperlink{namespacesession__schema_a08f4c7677013515cb766ca85c5cb136b}{summarize\+\_\+session\+\_\+payload}} (dict\+[str, Any]\+ payload)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacesession__schema_a7338473b0e04cba94e44977f94e947d3}\label{namespacesession__schema_a7338473b0e04cba94e44977f94e947d3} 
+int {\bfseries SESSION\+\_\+\+SCHEMA\+\_\+\+VERSION} = 2
+\item 
+\Hypertarget{namespacesession__schema_af875132dd2083ee4e85febb6aebf19cd}\label{namespacesession__schema_af875132dd2083ee4e85febb6aebf19cd} 
+str {\bfseries SESSION\+\_\+\+TYPE} = "{}batllm\+\_\+saved\+\_\+session"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Saved-session schema helpers for BatLLM and the analyzer.\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespacesession__schema_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacesession__schema_ae969596fe5f47a01101578ec281022fe}\index{session\_schema@{session\_schema}!build\_session\_payload@{build\_session\_payload}}
+\index{build\_session\_payload@{build\_session\_payload}!session\_schema@{session\_schema}}
+\doxysubsubsection{\texorpdfstring{build\_session\_payload()}{build\_session\_payload()}}
+{\footnotesize\ttfamily \label{namespacesession__schema_ae969596fe5f47a01101578ec281022fe} 
+ dict\+[str, Any]\+ session\+\_\+schema.\+build\+\_\+session\+\_\+payload (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{list\+[dict\+[str, Any]\+]\+}]{games}{, }\item[{str}]{app\+\_\+version}{, }\item[{str}]{saved\+\_\+at}{, }\item[{dict\+[str, Any]\+ \texorpdfstring{$\vert$}{|} None }]{llm\+\_\+metadata}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Build the current saved-session envelope.\end{DoxyVerb}
+ \Hypertarget{namespacesession__schema_ad338994e595089ce91b40a40beda10f5}\index{session\_schema@{session\_schema}!load\_session\_payload@{load\_session\_payload}}
+\index{load\_session\_payload@{load\_session\_payload}!session\_schema@{session\_schema}}
+\doxysubsubsection{\texorpdfstring{load\_session\_payload()}{load\_session\_payload()}}
+{\footnotesize\ttfamily \label{namespacesession__schema_ad338994e595089ce91b40a40beda10f5} 
+ dict\+[str, Any]\+ session\+\_\+schema.\+load\+\_\+session\+\_\+payload (\begin{DoxyParamCaption}\item[{str \texorpdfstring{$\vert$}{|} Path}]{path}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Read and validate a saved-session payload.\end{DoxyVerb}
+ \Hypertarget{namespacesession__schema_a08f4c7677013515cb766ca85c5cb136b}\index{session\_schema@{session\_schema}!summarize\_session\_payload@{summarize\_session\_payload}}
+\index{summarize\_session\_payload@{summarize\_session\_payload}!session\_schema@{session\_schema}}
+\doxysubsubsection{\texorpdfstring{summarize\_session\_payload()}{summarize\_session\_payload()}}
+{\footnotesize\ttfamily \label{namespacesession__schema_a08f4c7677013515cb766ca85c5cb136b} 
+ dict\+[str, Any]\+ session\+\_\+schema.\+summarize\+\_\+session\+\_\+payload (\begin{DoxyParamCaption}\item[{dict\+[str, Any]\+}]{payload}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a small preview summary for analyzer UIs.\end{DoxyVerb}
+ \Hypertarget{namespacesession__schema_ab23bddbb8574ba4a404b11c15afee0f0}\index{session\_schema@{session\_schema}!validate\_session\_payload@{validate\_session\_payload}}
+\index{validate\_session\_payload@{validate\_session\_payload}!session\_schema@{session\_schema}}
+\doxysubsubsection{\texorpdfstring{validate\_session\_payload()}{validate\_session\_payload()}}
+{\footnotesize\ttfamily \label{namespacesession__schema_ab23bddbb8574ba4a404b11c15afee0f0} 
+ dict\+[str, Any]\+ session\+\_\+schema.\+validate\+\_\+session\+\_\+payload (\begin{DoxyParamCaption}\item[{Any}]{payload}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Validate and return a v2 BatLLM saved-session payload.\end{DoxyVerb}
+ 

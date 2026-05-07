@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['llmpanel_0',['LLMPanel',['../classconfigurator-backup-sep-30_1_1_l_l_m_panel.html',1,'configurator-backup-sep-30.LLMPanel'],['../classconfigurator_1_1_l_l_m_panel.html',1,'configurator.LLMPanel']]],
-  ['loadtextdialog_1',['LoadTextDialog',['../classload__text__dialog_1_1_load_text_dialog.html',1,'load_text_dialog']]],
-  ['localmodelspanel_2',['LocalModelsPanel',['../classconfigurator-backup-sep-30_1_1_local_models_panel.html',1,'configurator-backup-sep-30.LocalModelsPanel'],['../classconfigurator_1_1_local_models_panel.html',1,'configurator.LocalModelsPanel']]]
+  ['historymanager_0',['HistoryManager',['../classhistory__manager_1_1_history_manager.html',1,'history_manager']]],
+  ['historyscreen_1',['HistoryScreen',['../classhistory__screen_1_1_history_screen.html',1,'history_screen']]],
+  ['homescreen_2',['HomeScreen',['../classhome__screen_1_1_home_screen.html',1,'home_screen']]]
 ];

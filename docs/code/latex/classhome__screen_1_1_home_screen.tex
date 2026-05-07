@@ -21,6 +21,8 @@ Game\+Board \doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a10f994eb100f
 \item 
 \doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a22736b774db0b127860e92313731a942}{go\+\_\+to\+\_\+history\+\_\+screen}} (self, bot\+\_\+id)
 \item 
+\doxymbox{\hyperlink{classhome__screen_1_1_home_screen_acac46291b3e47c710d5836a3244768ef}{go\+\_\+to\+\_\+analyzer\+\_\+load\+\_\+screen}} (self)
+\item 
 \doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a8583e572e3dcfa5072986fa847eebdb2}{save\+\_\+prompt}} (self, bot\+\_\+id)
 \item 
 \doxymbox{\hyperlink{classhome__screen_1_1_home_screen_ac98bdf775419855ef97755c0eac27be3}{set\+\_\+prompt\+\_\+history\+\_\+text}} (self, bot\+\_\+id, text)
@@ -62,10 +64,26 @@ Game\+Board \doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a10f994eb100f
 \doxysubsubsection*{Protected Member Functions}
 \begin{DoxyCompactItemize}
 \item 
+\doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a64200d6649777a697360089a2b266eec}{\+\_\+clear\+\_\+confirmation\+\_\+popup}} (self, popup=None)
+\item 
+\doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a21f9cbe21d73ac7a809481f3b57de5ee}{\+\_\+show\+\_\+confirmation\+\_\+popup}} (self, \texorpdfstring{$\ast$}{*}args, track\+\_\+exit=False, \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}kwargs)
+\item 
+\doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a9186c76206881aba9f53d749378601ba}{\+\_\+clear\+\_\+load\+\_\+prompt\+\_\+dialog}} (self, dialog=None)
+\item 
+\doxymbox{\hyperlink{classhome__screen_1_1_home_screen_adafd1c2e6b1d117bfd31b787909bb91d}{\+\_\+suspend\+\_\+window\+\_\+key\+\_\+down}} (self)
+\item 
+\doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a5bc01ba03f6592f68d4002653b876b8e}{\+\_\+resume\+\_\+window\+\_\+key\+\_\+down}} (self, \texorpdfstring{$\ast$}{*}\+\_\+args)
+\item 
 None \doxymbox{\hyperlink{classhome__screen_1_1_home_screen_a8b2773b89ced2b8718fc11b37a9e63bb}{\+\_\+save\+\_\+session\+\_\+file}} (self, str filename)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classhome__screen_1_1_home_screen_a85e4b08f3e799949e46a4ca604b4cb5c}\label{classhome__screen_1_1_home_screen_a85e4b08f3e799949e46a4ca604b4cb5c} 
+{\bfseries \+\_\+active\+\_\+confirmation\+\_\+popup} = None
+\item 
+\Hypertarget{classhome__screen_1_1_home_screen_a80fe566dbcedc9824af6646e8be5adb5}\label{classhome__screen_1_1_home_screen_a80fe566dbcedc9824af6646e8be5adb5} 
+{\bfseries \+\_\+active\+\_\+load\+\_\+prompt\+\_\+dialog} = None
 \item 
 \Hypertarget{classhome__screen_1_1_home_screen_aee034966963f7bc9b133c400ad0b54f7}\label{classhome__screen_1_1_home_screen_aee034966963f7bc9b133c400ad0b54f7} 
 {\bfseries \+\_\+exit\+\_\+confirmation\+\_\+popup} = None
@@ -97,13 +115,48 @@ Initialises the screen and sets up the history manager.
 \label{doc-func-members}
 \Hypertarget{classhome__screen_1_1_home_screen_doc-func-members}
 \doxysubsection{Member Function Documentation}
-\Hypertarget{classhome__screen_1_1_home_screen_a8b2773b89ced2b8718fc11b37a9e63bb}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_save\_session\_file@{\_save\_session\_file}}
+\Hypertarget{classhome__screen_1_1_home_screen_a64200d6649777a697360089a2b266eec}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_clear\_confirmation\_popup@{\_clear\_confirmation\_popup}}
+\index{\_clear\_confirmation\_popup@{\_clear\_confirmation\_popup}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{\_clear\_confirmation\_popup()}{\_clear\_confirmation\_popup()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a64200d6649777a697360089a2b266eec} 
+home\+\_\+screen.\+Home\+Screen.\+\_\+clear\+\_\+confirmation\+\_\+popup (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{popup}{ = {\ttfamily None}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Clear tracked confirmation popups, optionally only the provided popup.\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a9186c76206881aba9f53d749378601ba}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_clear\_load\_prompt\_dialog@{\_clear\_load\_prompt\_dialog}}
+\index{\_clear\_load\_prompt\_dialog@{\_clear\_load\_prompt\_dialog}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{\_clear\_load\_prompt\_dialog()}{\_clear\_load\_prompt\_dialog()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a9186c76206881aba9f53d749378601ba} 
+home\+\_\+screen.\+Home\+Screen.\+\_\+clear\+\_\+load\+\_\+prompt\+\_\+dialog (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{dialog}{ = {\ttfamily None}}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Clear the tracked prompt-load dialog, optionally only for the provided dialog.\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a5bc01ba03f6592f68d4002653b876b8e}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_resume\_window\_key\_down@{\_resume\_window\_key\_down}}
+\index{\_resume\_window\_key\_down@{\_resume\_window\_key\_down}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{\_resume\_window\_key\_down()}{\_resume\_window\_key\_down()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a5bc01ba03f6592f68d4002653b876b8e} 
+home\+\_\+screen.\+Home\+Screen.\+\_\+resume\+\_\+window\+\_\+key\+\_\+down (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{\+\_\+args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Restore the screen-level Esc handler when the home screen should own it again.\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a8b2773b89ced2b8718fc11b37a9e63bb}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_save\_session\_file@{\_save\_session\_file}}
 \index{\_save\_session\_file@{\_save\_session\_file}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
 \doxysubsubsection{\texorpdfstring{\_save\_session\_file()}{\_save\_session\_file()}}
 {\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a8b2773b89ced2b8718fc11b37a9e63bb} 
  None home\+\_\+screen.\+Home\+Screen.\+\_\+save\+\_\+session\+\_\+file (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{filename}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
 \begin{DoxyVerb}Persist the current session into the configured save folder.\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_a21f9cbe21d73ac7a809481f3b57de5ee}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_show\_confirmation\_popup@{\_show\_confirmation\_popup}}
+\index{\_show\_confirmation\_popup@{\_show\_confirmation\_popup}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{\_show\_confirmation\_popup()}{\_show\_confirmation\_popup()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_a21f9cbe21d73ac7a809481f3b57de5ee} 
+home\+\_\+screen.\+Home\+Screen.\+\_\+show\+\_\+confirmation\+\_\+popup (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{, }\item[{}]{track\+\_\+exit}{ = {\ttfamily False}, }\item[{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{kwargs}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Show a confirmation dialog and track it for Esc handling.\end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_adafd1c2e6b1d117bfd31b787909bb91d}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!\_suspend\_window\_key\_down@{\_suspend\_window\_key\_down}}
+\index{\_suspend\_window\_key\_down@{\_suspend\_window\_key\_down}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{\_suspend\_window\_key\_down()}{\_suspend\_window\_key\_down()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_adafd1c2e6b1d117bfd31b787909bb91d} 
+home\+\_\+screen.\+Home\+Screen.\+\_\+suspend\+\_\+window\+\_\+key\+\_\+down (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Temporarily disable the screen-level Esc handler while a modal dialog owns it.\end{DoxyVerb}
  \Hypertarget{classhome__screen_1_1_home_screen_a603c95ac6fe9ed485e75f1e7af5c7422}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!forward\_prompt\_store@{forward\_prompt\_store}}
 \index{forward\_prompt\_store@{forward\_prompt\_store}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
 \doxysubsubsection{\texorpdfstring{forward\_prompt\_store()}{forward\_prompt\_store()}}
@@ -151,6 +204,13 @@ Args:
 Returns:
     _type_: the text in the corresponding prompt text input
 \end{DoxyVerb}
+ \Hypertarget{classhome__screen_1_1_home_screen_acac46291b3e47c710d5836a3244768ef}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!go\_to\_analyzer\_load\_screen@{go\_to\_analyzer\_load\_screen}}
+\index{go\_to\_analyzer\_load\_screen@{go\_to\_analyzer\_load\_screen}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
+\doxysubsubsection{\texorpdfstring{go\_to\_analyzer\_load\_screen()}{go\_to\_analyzer\_load\_screen()}}
+{\footnotesize\ttfamily \label{classhome__screen_1_1_home_screen_acac46291b3e47c710d5836a3244768ef} 
+home\+\_\+screen.\+Home\+Screen.\+go\+\_\+to\+\_\+analyzer\+\_\+load\+\_\+screen (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Open the shared Game Analyzer load screen.\end{DoxyVerb}
  \Hypertarget{classhome__screen_1_1_home_screen_a22736b774db0b127860e92313731a942}\index{home\_screen.HomeScreen@{home\_screen.HomeScreen}!go\_to\_history\_screen@{go\_to\_history\_screen}}
 \index{go\_to\_history\_screen@{go\_to\_history\_screen}!home\_screen.HomeScreen@{home\_screen.HomeScreen}}
 \doxysubsubsection{\texorpdfstring{go\_to\_history\_screen()}{go\_to\_history\_screen()}}

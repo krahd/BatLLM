@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -110,19 +110,19 @@ Public Attributes</h2></td></tr>
 str&#160;</td><td class="memItemRight"><b>model</b> = str(config.get(&quot;llm&quot;, &quot;model&quot;))</td></tr>
 <tr class="memitem:a4e537c28514d42e87035f47369be5833" id="r_a4e537c28514d42e87035f47369be5833"><td class="memItemLeft"><a id="a4e537c28514d42e87035f47369be5833" name="a4e537c28514d42e87035f47369be5833"></a>
 int&#160;</td><td class="memItemRight"><b>num_ctx</b> = int(config.get(&quot;llm&quot;, &quot;num_ctx&quot;))</td></tr>
-<tr class="memitem:a2c801f6cfd2372cdee3a0683a194a328" id="r_a2c801f6cfd2372cdee3a0683a194a328"><td class="memItemLeft"><a id="a2c801f6cfd2372cdee3a0683a194a328" name="a2c801f6cfd2372cdee3a0683a194a328"></a>
-str&#160;</td><td class="memItemRight"><b>endpoint</b> = f&quot;{base}:{port}{path}&quot;</td></tr>
+<tr class="memitem:aa714caf8a4a2447a27cf5f86b9105c74" id="r_aa714caf8a4a2447a27cf5f86b9105c74"><td class="memItemLeft"><a id="aa714caf8a4a2447a27cf5f86b9105c74" name="aa714caf8a4a2447a27cf5f86b9105c74"></a>
+str&#160;</td><td class="memItemRight"><b>base_url</b> = str(config.get(&quot;llm&quot;, &quot;url&quot;)).rstrip(&quot;/&quot;)</td></tr>
+<tr class="memitem:a19222cddcb12f9fa94682e64241707cf" id="r_a19222cddcb12f9fa94682e64241707cf"><td class="memItemLeft"><a id="a19222cddcb12f9fa94682e64241707cf" name="a19222cddcb12f9fa94682e64241707cf"></a>
+int&#160;</td><td class="memItemRight"><b>port</b> = int(config.get(&quot;llm&quot;, &quot;port&quot;))</td></tr>
+<tr class="memitem:a7177380ce406f2612d132e35587bf47b" id="r_a7177380ce406f2612d132e35587bf47b"><td class="memItemLeft">float&#160;</td><td class="memItemRight"><a class="el" href="#a7177380ce406f2612d132e35587bf47b">timeout</a></td></tr>
+<tr class="memitem:ad669a7018504a7bfd68cd46c3ad21131" id="r_ad669a7018504a7bfd68cd46c3ad21131"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad669a7018504a7bfd68cd46c3ad21131">provider</a></td></tr>
 <tr class="memitem:a194b4e8089847ed5a10314d63fb500b4" id="r_a194b4e8089847ed5a10314d63fb500b4"><td class="memItemLeft"><a id="a194b4e8089847ed5a10314d63fb500b4" name="a194b4e8089847ed5a10314d63fb500b4"></a>
 list&#160;</td><td class="memItemRight"><b>history</b> = []</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a8c05cd07669afee5ffc28ed9521b8381" id="r_a8c05cd07669afee5ffc28ed9521b8381"><td class="memItemLeft"><a id="a8c05cd07669afee5ffc28ed9521b8381" name="a8c05cd07669afee5ffc28ed9521b8381"></a>
-Dict[str, Any]&#160;</td><td class="memItemRight"><b>_post</b> (self, Dict[str, Any] payload)</td></tr>
 <tr class="memitem:acbd4e6d2e6dd20d55c246183f0aff695" id="r_acbd4e6d2e6dd20d55c246183f0aff695"><td class="memItemLeft"><a id="acbd4e6d2e6dd20d55c246183f0aff695" name="acbd4e6d2e6dd20d55c246183f0aff695"></a>
 None&#160;</td><td class="memItemRight"><b>_ensure_system_message</b> (self, Optional[str] text)</td></tr>
-<tr class="memitem:a0f688eaf07479010cfb15ab4ca933ef3" id="r_a0f688eaf07479010cfb15ab4ca933ef3"><td class="memItemLeft"><a id="a0f688eaf07479010cfb15ab4ca933ef3" name="a0f688eaf07479010cfb15ab4ca933ef3"></a>
-Dict[str, Any]&#160;</td><td class="memItemRight"><b>_build_payload</b> (self)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Minimal interactive chat client for the configured Ollama model.
@@ -224,6 +224,48 @@ Returns:
 Args:
     history (List[Dict[str, str]]): List of message dictionaries with 'role' and 'content'.
 </pre> 
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<a id="ad669a7018504a7bfd68cd46c3ad21131" name="ad669a7018504a7bfd68cd46c3ad21131"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad669a7018504a7bfd68cd46c3ad21131">&#9670;&#160;</a></span>provider</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tests.conversation_cli.ConversationCLI.provider</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=  OllamaProvider(</div>
+<div class="line">            host=self.base_url,</div>
+<div class="line">            port=self.port,</div>
+<div class="line">            model=self.model,</div>
+<div class="line">        )</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a7177380ce406f2612d132e35587bf47b" name="a7177380ce406f2612d132e35587bf47b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7177380ce406f2612d132e35587bf47b">&#9670;&#160;</a></span>timeout</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float tests.conversation_cli.ConversationCLI.timeout</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=  ollama_service.resolve_request_timeout(</div>
+<div class="line">            {</div>
+<div class="line">                <span class="stringliteral">&quot;model&quot;</span>: self.model,</div>
+<div class="line">                <span class="stringliteral">&quot;model_timeouts&quot;</span>: config.get(<span class="stringliteral">&quot;llm&quot;</span>, <span class="stringliteral">&quot;model_timeouts&quot;</span>) <span class="keywordflow">or</span> {},</div>
+<div class="line">                <span class="stringliteral">&quot;timeout&quot;</span>: config.get(<span class="stringliteral">&quot;llm&quot;</span>, <span class="stringliteral">&quot;timeout&quot;</span>),</div>
+<div class="line">            },</div>
+<div class="line">            model=self.model,</div>
+<div class="line">        )</div>
+</div><!-- fragment -->
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>

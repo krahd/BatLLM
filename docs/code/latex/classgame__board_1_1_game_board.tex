@@ -41,6 +41,10 @@ bool \doxymbox{\hyperlink{classgame__board_1_1_game_board_aa07aa100656489273ee13
 \item 
 \doxymbox{\hyperlink{classgame__board_1_1_game_board_a7f36cfd231b3d98c59ffc68b67dc3066}{on\+\_\+bot\+\_\+llm\+\_\+interaction\+\_\+complete}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}})
 \item 
+\doxymbox{\hyperlink{classgame__board_1_1_game_board_afd1eee9606f42c393e265e9e36a08a82}{handle\+\_\+bot\+\_\+llm\+\_\+timeout}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}}, LLMTimeout\+Error exc)
+\item 
+\doxymbox{\hyperlink{classgame__board_1_1_game_board_aa110c8d5a071bf41c2e7ef269e4d4f60}{cancel\+\_\+current\+\_\+round}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}}, str reason)
+\item 
 \doxymbox{\hyperlink{classgame__board_1_1_game_board_a30c21752970ffc961467f9b0117d37c0}{shoot}} (self, int bot\+\_\+id)
 \item 
 \doxymbox{\hyperlink{classgame__board_1_1_game_board_a4f0434da328d135519c8a7490ebd2ff8}{update\+\_\+title\+\_\+label}} (self)
@@ -73,6 +77,9 @@ float {\bfseries bullet\+\_\+alpha} = 1.\+0
 \item 
 \Hypertarget{classgame__board_1_1_game_board_a20bf889958db6a3c29c7174b0f6f31c1}\label{classgame__board_1_1_game_board_a20bf889958db6a3c29c7174b0f6f31c1} 
 Optional\+[list\+[Bot]\+]\+ {\bfseries shuffled\+\_\+bots} = None
+\item 
+\Hypertarget{classgame__board_1_1_game_board_a4a91b18e41ddaeeecf4517d075979966}\label{classgame__board_1_1_game_board_a4a91b18e41ddaeeecf4517d075979966} 
+Optional\+[Gameplay\+Settings\+Snapshot]\+ {\bfseries current\+\_\+round\+\_\+settings} = None
 \item 
 \Hypertarget{classgame__board_1_1_game_board_a28b65ac0077db44189509e14f861e12d}\label{classgame__board_1_1_game_board_a28b65ac0077db44189509e14f861e12d} 
 {\bfseries sound\+\_\+shoot} = Sound\+Loader.\+load(str(asset\+\_\+path("{}sounds"{}, "{}shoot1.\+wav"{})))
@@ -113,9 +120,40 @@ int {\bfseries current\+\_\+round} = Numeric\+Property(0)
 None \doxymbox{\hyperlink{classgame__board_1_1_game_board_aa7560715a6b4254695a8d8424638362a}{\+\_\+prompt\+\_\+manual\+\_\+command}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}})
 \item 
 \doxymbox{\hyperlink{classgame__board_1_1_game_board_a82486e0a1a723cb2b8e6a6285a0a80aa}{\+\_\+redraw}} (self, \texorpdfstring{$\ast$}{*}args)
+\item 
+None \doxymbox{\hyperlink{classgame__board_1_1_game_board_a75ec2624e3884732b59d8abe3b63958a}{\+\_\+apply\+\_\+round\+\_\+settings\+\_\+to\+\_\+live\+\_\+bots}} (self, Gameplay\+Settings\+Snapshot rules, \texorpdfstring{$\ast$}{*}, bool reset\+\_\+for\+\_\+new\+\_\+game)
+\item 
+\doxymbox{\hyperlink{classgame__board_1_1_game_board_acd72258a59b75fd3ae026ed4ba270ece}{\+\_\+submit\+\_\+next\+\_\+bot\+\_\+for\+\_\+turn}} (self)
+\item 
+\Hypertarget{classgame__board_1_1_game_board_a608f401aa6ea93add2a1be22c1527841}\label{classgame__board_1_1_game_board_a608f401aa6ea93add2a1be22c1527841} 
+{\bfseries \+\_\+clear\+\_\+timeout\+\_\+popup} (self, \texorpdfstring{$\ast$}{*}\+\_\+args)
+\item 
+\Hypertarget{classgame__board_1_1_game_board_ab1c3132975c06c8fa749dbee98f11a00}\label{classgame__board_1_1_game_board_ab1c3132975c06c8fa749dbee98f11a00} 
+{\bfseries \+\_\+dismiss\+\_\+timeout\+\_\+popup\+\_\+and\+\_\+resolve} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}}, LLMTimeout\+Error exc, \texorpdfstring{$\ast$}{*}, str action, bool remember\+\_\+for\+\_\+round)
+\item 
+\Hypertarget{classgame__board_1_1_game_board_a41e3cd5be95967178438098ffbb25a81}\label{classgame__board_1_1_game_board_a41e3cd5be95967178438098ffbb25a81} 
+str {\bfseries \+\_\+format\+\_\+timeout\+\_\+message} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}}, LLMTimeout\+Error exc)
+\item 
+\doxymbox{\hyperlink{classgame__board_1_1_game_board_a7f01c8bf9b5be070261ee705e401bf17}{\+\_\+resolve\+\_\+bot\+\_\+timeout}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}}, LLMTimeout\+Error exc, \texorpdfstring{$\ast$}{*}, str action, bool remember\+\_\+for\+\_\+round)
+\item 
+\doxymbox{\hyperlink{classgame__board_1_1_game_board_a97cc2f62b824c6ab631eef2cbb91d14e}{\+\_\+show\+\_\+timeout\+\_\+resolution\+\_\+popup}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}}, LLMTimeout\+Error exc)
+\item 
+\doxymbox{\hyperlink{classgame__board_1_1_game_board_a61a8e141ecd6466330a12a443220e3a4}{\+\_\+restore\+\_\+round\+\_\+initial\+\_\+state}} (self)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classgame__board_1_1_game_board_a70fb54ebd79d363b5c67d44d2e942207}\label{classgame__board_1_1_game_board_a70fb54ebd79d363b5c67d44d2e942207} 
+list {\bfseries \+\_\+turn\+\_\+submission\+\_\+queue} = \+[$\,$]\+
+\item 
+\Hypertarget{classgame__board_1_1_game_board_ad73559ce21fb88ae5604cc6f42f9551c}\label{classgame__board_1_1_game_board_ad73559ce21fb88ae5604cc6f42f9551c} 
+int {\bfseries \+\_\+turn\+\_\+submission\+\_\+index} = 0
+\item 
+\Hypertarget{classgame__board_1_1_game_board_a6fdf67184dc2ae0de7eb806660f9d01c}\label{classgame__board_1_1_game_board_a6fdf67184dc2ae0de7eb806660f9d01c} 
+str\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+round\+\_\+timeout\+\_\+action} = None
+\item 
+\Hypertarget{classgame__board_1_1_game_board_a289788311dc68d43f1138e93df07275c}\label{classgame__board_1_1_game_board_a289788311dc68d43f1138e93df07275c} 
+Optional\+[Popup]\+ {\bfseries \+\_\+timeout\+\_\+popup} = None
 \item 
 \Hypertarget{classgame__board_1_1_game_board_ad2aad0a0fc30936861fc09bacafec32c}\label{classgame__board_1_1_game_board_ad2aad0a0fc30936861fc09bacafec32c} 
 {\bfseries \+\_\+keyboard} = Window.\+request\+\_\+keyboard(self.\+\_\+keyboard\+\_\+closed, self, "{}text"{})
@@ -148,7 +186,14 @@ render loop to update the UI at the configured frame rate.
 \label{doc-func-members}
 \Hypertarget{classgame__board_1_1_game_board_doc-func-members}
 \doxysubsection{Member Function Documentation}
-\Hypertarget{classgame__board_1_1_game_board_a235fdf8d94911754e86dd21359342b73}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_grab\_keyboard@{\_grab\_keyboard}}
+\Hypertarget{classgame__board_1_1_game_board_a75ec2624e3884732b59d8abe3b63958a}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_apply\_round\_settings\_to\_live\_bots@{\_apply\_round\_settings\_to\_live\_bots}}
+\index{\_apply\_round\_settings\_to\_live\_bots@{\_apply\_round\_settings\_to\_live\_bots}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{\_apply\_round\_settings\_to\_live\_bots()}{\_apply\_round\_settings\_to\_live\_bots()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_a75ec2624e3884732b59d8abe3b63958a} 
+ None game\+\_\+board.\+Game\+Board.\+\_\+apply\+\_\+round\+\_\+settings\+\_\+to\+\_\+live\+\_\+bots (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Gameplay\+Settings\+Snapshot}]{rules}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{bool}]{reset\+\_\+for\+\_\+new\+\_\+game}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Freeze round-level gameplay settings onto the live bot widgets.\end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_a235fdf8d94911754e86dd21359342b73}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_grab\_keyboard@{\_grab\_keyboard}}
 \index{\_grab\_keyboard@{\_grab\_keyboard}!game\_board.GameBoard@{game\_board.GameBoard}}
 \doxysubsubsection{\texorpdfstring{\_grab\_keyboard()}{\_grab\_keyboard()}}
 {\footnotesize\ttfamily \label{classgame__board_1_1_game_board_a235fdf8d94911754e86dd21359342b73} 
@@ -185,6 +230,34 @@ game\+\_\+board.\+Game\+Board.\+\_\+on\+\_\+keyboard\+\_\+down (\begin{DoxyParam
 game\+\_\+board.\+Game\+Board.\+\_\+redraw (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
 \begin{DoxyVerb}Refresh the screen by calling render().\end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_a7f01c8bf9b5be070261ee705e401bf17}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_resolve\_bot\_timeout@{\_resolve\_bot\_timeout}}
+\index{\_resolve\_bot\_timeout@{\_resolve\_bot\_timeout}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{\_resolve\_bot\_timeout()}{\_resolve\_bot\_timeout()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_a7f01c8bf9b5be070261ee705e401bf17} 
+game\+\_\+board.\+Game\+Board.\+\_\+resolve\+\_\+bot\+\_\+timeout (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Bot}]{bot}{, }\item[{LLMTimeout\+Error}]{exc}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{str}]{action}{, }\item[{bool}]{remember\+\_\+for\+\_\+round}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Apply the user's timeout choice to the current round.\end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_a61a8e141ecd6466330a12a443220e3a4}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_restore\_round\_initial\_state@{\_restore\_round\_initial\_state}}
+\index{\_restore\_round\_initial\_state@{\_restore\_round\_initial\_state}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{\_restore\_round\_initial\_state()}{\_restore\_round\_initial\_state()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_a61a8e141ecd6466330a12a443220e3a4} 
+game\+\_\+board.\+Game\+Board.\+\_\+restore\+\_\+round\+\_\+initial\+\_\+state (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Roll back live bot state to the round-start snapshot.\end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_a97cc2f62b824c6ab631eef2cbb91d14e}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_show\_timeout\_resolution\_popup@{\_show\_timeout\_resolution\_popup}}
+\index{\_show\_timeout\_resolution\_popup@{\_show\_timeout\_resolution\_popup}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{\_show\_timeout\_resolution\_popup()}{\_show\_timeout\_resolution\_popup()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_a97cc2f62b824c6ab631eef2cbb91d14e} 
+game\+\_\+board.\+Game\+Board.\+\_\+show\+\_\+timeout\+\_\+resolution\+\_\+popup (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Bot}]{bot}{, }\item[{LLMTimeout\+Error}]{exc}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Ask the user whether a timed out bot should resolve as ERR or cancel the round.\end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_acd72258a59b75fd3ae026ed4ba270ece}\index{game\_board.GameBoard@{game\_board.GameBoard}!\_submit\_next\_bot\_for\_turn@{\_submit\_next\_bot\_for\_turn}}
+\index{\_submit\_next\_bot\_for\_turn@{\_submit\_next\_bot\_for\_turn}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{\_submit\_next\_bot\_for\_turn()}{\_submit\_next\_bot\_for\_turn()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_acd72258a59b75fd3ae026ed4ba270ece} 
+game\+\_\+board.\+Game\+Board.\+\_\+submit\+\_\+next\+\_\+bot\+\_\+for\+\_\+turn (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Submit the next bot in the current turn order, if any remain.\end{DoxyVerb}
  \Hypertarget{classgame__board_1_1_game_board_abd67c47df4471162cc39ff8da6f5efdd}\index{game\_board.GameBoard@{game\_board.GameBoard}!add\_cmd\_to\_home\_screen\_cmd\_history@{add\_cmd\_to\_home\_screen\_cmd\_history}}
 \index{add\_cmd\_to\_home\_screen\_cmd\_history@{add\_cmd\_to\_home\_screen\_cmd\_history}!game\_board.GameBoard@{game\_board.GameBoard}}
 \doxysubsubsection{\texorpdfstring{add\_cmd\_to\_home\_screen\_cmd\_history()}{add\_cmd\_to\_home\_screen\_cmd\_history()}}
@@ -201,6 +274,13 @@ game\+\_\+board.\+Game\+Board.\+add\+\_\+text\+\_\+to\+\_\+home\+\_\+screen\+\_\
 
 \begin{DoxyVerb}Adds text to the output history box next to the bot's prompt input.
 \end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_aa110c8d5a071bf41c2e7ef269e4d4f60}\index{game\_board.GameBoard@{game\_board.GameBoard}!cancel\_current\_round@{cancel\_current\_round}}
+\index{cancel\_current\_round@{cancel\_current\_round}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{cancel\_current\_round()}{cancel\_current\_round()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_aa110c8d5a071bf41c2e7ef269e4d4f60} 
+game\+\_\+board.\+Game\+Board.\+cancel\+\_\+current\+\_\+round (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Bot}]{bot}{, }\item[{str}]{reason}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Cancel the active round, roll back state, and keep a cancelled-round history entry.\end{DoxyVerb}
  \Hypertarget{classgame__board_1_1_game_board_afc830cf8ef8496b0abbd3a0548620e3b}\index{game\_board.GameBoard@{game\_board.GameBoard}!end\_game@{end\_game}}
 \index{end\_game@{end\_game}!game\_board.GameBoard@{game\_board.GameBoard}}
 \doxysubsubsection{\texorpdfstring{end\_game()}{end\_game()}}
@@ -231,6 +311,13 @@ game\+\_\+board.\+Game\+Board.\+end\+\_\+game (\begin{DoxyParamCaption}\item[{}]
 \begin{DoxyVerb}Returns the current game state as a dictionary:
 bot positions/health, current turn/round, and bullet trace/alpha.
 \end{DoxyVerb}
+ \Hypertarget{classgame__board_1_1_game_board_afd1eee9606f42c393e265e9e36a08a82}\index{game\_board.GameBoard@{game\_board.GameBoard}!handle\_bot\_llm\_timeout@{handle\_bot\_llm\_timeout}}
+\index{handle\_bot\_llm\_timeout@{handle\_bot\_llm\_timeout}!game\_board.GameBoard@{game\_board.GameBoard}}
+\doxysubsubsection{\texorpdfstring{handle\_bot\_llm\_timeout()}{handle\_bot\_llm\_timeout()}}
+{\footnotesize\ttfamily \label{classgame__board_1_1_game_board_afd1eee9606f42c393e265e9e36a08a82} 
+game\+\_\+board.\+Game\+Board.\+handle\+\_\+bot\+\_\+llm\+\_\+timeout (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Bot}]{bot}{, }\item[{LLMTimeout\+Error}]{exc}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Resolve an LLM timeout using the round policy or a user choice popup.\end{DoxyVerb}
  \Hypertarget{classgame__board_1_1_game_board_a7f36cfd231b3d98c59ffc68b67dc3066}\index{game\_board.GameBoard@{game\_board.GameBoard}!on\_bot\_llm\_interaction\_complete@{on\_bot\_llm\_interaction\_complete}}
 \index{on\_bot\_llm\_interaction\_complete@{on\_bot\_llm\_interaction\_complete}!game\_board.GameBoard@{game\_board.GameBoard}}
 \doxysubsubsection{\texorpdfstring{on\_bot\_llm\_interaction\_complete()}{on\_bot\_llm\_interaction\_complete()}}

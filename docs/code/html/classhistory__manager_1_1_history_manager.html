@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -102,6 +102,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a43180d8d2e5a6fe2f8fcfe6f1de76b72" id="r_a43180d8d2e5a6fe2f8fcfe6f1de76b72"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a43180d8d2e5a6fe2f8fcfe6f1de76b72">end_game</a> (self, game)</td></tr>
 <tr class="memitem:ae40d97816a81571357c27f2a84ef73bd" id="r_ae40d97816a81571357c27f2a84ef73bd"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ae40d97816a81571357c27f2a84ef73bd">start_round</a> (self, game)</td></tr>
 <tr class="memitem:a73970bd3a3b977ed8b98c2a43f4867ba" id="r_a73970bd3a3b977ed8b98c2a43f4867ba"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a73970bd3a3b977ed8b98c2a43f4867ba">end_round</a> (self)</td></tr>
+<tr class="memitem:a93205f61921f3bc45c8c409ecb8c13eb" id="r_a93205f61921f3bc45c8c409ecb8c13eb"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a93205f61921f3bc45c8c409ecb8c13eb">cancel_round</a> (self, str reason, *, int|None cancelled_by_bot_id=None)</td></tr>
 <tr class="memitem:a2b51546288d5c667f5a9cc2e8b8f90ca" id="r_a2b51546288d5c667f5a9cc2e8b8f90ca"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a2b51546288d5c667f5a9cc2e8b8f90ca">start_turn</a> (self, game)</td></tr>
 <tr class="memitem:a898a8b37374cf9886e2c12093b170635" id="r_a898a8b37374cf9886e2c12093b170635"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a898a8b37374cf9886e2c12093b170635">record_play</a> (self, Bot <a class="el" href="namespacebot.html">bot</a>)</td></tr>
 <tr class="memitem:a1bba5f6c62258d570cbb28da246be776" id="r_a1bba5f6c62258d570cbb28da246be776"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a1bba5f6c62258d570cbb28da246be776">end_turn</a> (self, game)</td></tr>
@@ -148,7 +149,8 @@ Usage:
 - Instantiate once per session/run.
 - Call start_game(), start_round(), start_turn(), and their corresponding end_* methods at appropriate times.
 - Use record_play()
-- Retrieve history for display, debugging, or saving via to_json(), to_text(), to_compact_text(), etc.
+- Retrieve history for display, debugging, or saving via save_session(), to_text(),
+  to_compact_text(), etc.
 
 Attributes:
     games (list): List of all games played in the session.
@@ -172,7 +174,6 @@ Methods:
 
     save_session(filepath): Save the session history to a JSON file.
 
-    to_json(): Get the full session history as a JSON string.
     to_text(): Get the full session history as a human-readable string.
     to_compact_text(): Get a compact, UI-friendly summary of the session history.
     to_compact_text_for_bot(bot_id): Get a compact, per-bot summary of the session history.
@@ -279,6 +280,37 @@ Returns a dictionary of bot states (keyed by bot name or id).
 </table>
 </div><div class="memdoc">
 <pre class="fragment">Get current timestamp string in ISO 8601 format.</pre> 
+</div>
+</div>
+<a id="a93205f61921f3bc45c8c409ecb8c13eb" name="a93205f61921f3bc45c8c409ecb8c13eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93205f61921f3bc45c8c409ecb8c13eb">&#9670;&#160;</a></span>cancel_round()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">history_manager.HistoryManager.cancel_round </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str</td>          <td class="paramname"><span class="paramname"><em>reason</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int | None </td>          <td class="paramname"><span class="paramname"><em>cancelled_by_bot_id</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Abort the active round while keeping a cancelled-round record in history.</pre> 
 </div>
 </div>
 <a id="a43180d8d2e5a6fe2f8fcfe6f1de76b72" name="a43180d8d2e5a6fe2f8fcfe6f1de76b72"></a>

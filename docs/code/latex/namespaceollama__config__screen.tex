@@ -5,19 +5,18 @@
 \item 
 class \doxymbox{\hyperlink{classollama__config__screen_1_1_ollama_config_screen}{Ollama\+Config\+Screen}}
 \end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+list\+[str]\+ \doxymbox{\hyperlink{namespaceollama__config__screen_a1489623e58bb53bbe00f7515a0aea255}{build\+\_\+ollama\+\_\+install\+\_\+command}} (str\texorpdfstring{$\vert$}{|}None platform\+\_\+name=None)
+\item 
+str \doxymbox{\hyperlink{namespaceollama__config__screen_a68fc05a9fe3e50672be4baf83e2bed4c}{describe\+\_\+ollama\+\_\+install\+\_\+command}} (str\texorpdfstring{$\vert$}{|}None platform\+\_\+name=None)
+\end{DoxyCompactItemize}
 \doxysubsubsection*{Variables}
 \begin{DoxyCompactItemize}
 \item 
 \Hypertarget{namespaceollama__config__screen_afef773609959880283e2e24c9b569362}\label{namespaceollama__config__screen_afef773609959880283e2e24c9b569362} 
 {\bfseries ROOT} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).resolve().parents\+[2]\+
-\item 
-\Hypertarget{namespaceollama__config__screen_a572cd3c5f5983edc04a06a3e55ffb4e4}\label{namespaceollama__config__screen_a572cd3c5f5983edc04a06a3e55ffb4e4} 
-str {\bfseries REMOTE\+\_\+\+LIBRARY\+\_\+\+URL} = "{}https:\+/\+/\+ollama.\+com/\+library"{}
-\item 
-\doxymbox{\hyperlink{namespaceollama__config__screen_abb019557e1ee0bae90f0fd3853036945}{REMOTE\+\_\+\+MODEL\+\_\+\+CARD\+\_\+\+RE}}
-\item 
-\Hypertarget{namespaceollama__config__screen_ae96628569d589bb9445afb7bd4f87f8b}\label{namespaceollama__config__screen_ae96628569d589bb9445afb7bd4f87f8b} 
-{\bfseries REMOTE\+\_\+\+MODEL\+\_\+\+SIZE\+\_\+\+RE} = re.\+compile(r\textquotesingle{}$<$span x-\/test-\/size\+[\texorpdfstring{$^\wedge$}{\string^}$>$]\+\texorpdfstring{$\ast$}{*}$>$(\+[\texorpdfstring{$^\wedge$}{\string^}$<$]\++)$<$/\+span$>$\textquotesingle{})
 \end{DoxyCompactItemize}
 
 
@@ -25,20 +24,21 @@ str {\bfseries REMOTE\+\_\+\+LIBRARY\+\_\+\+URL} = "{}https:\+/\+/\+ollama.\+com
 \begin{DoxyVerb}Ollama configuration and model-management screen.\end{DoxyVerb}
  
 
-\label{doc-var-members}
-\Hypertarget{namespaceollama__config__screen_doc-var-members}
-\doxysubsection{Variable Documentation}
-\Hypertarget{namespaceollama__config__screen_abb019557e1ee0bae90f0fd3853036945}\index{ollama\_config\_screen@{ollama\_config\_screen}!REMOTE\_MODEL\_CARD\_RE@{REMOTE\_MODEL\_CARD\_RE}}
-\index{REMOTE\_MODEL\_CARD\_RE@{REMOTE\_MODEL\_CARD\_RE}!ollama\_config\_screen@{ollama\_config\_screen}}
-\doxysubsubsection{\texorpdfstring{REMOTE\_MODEL\_CARD\_RE}{REMOTE\_MODEL\_CARD\_RE}}
-{\footnotesize\ttfamily \label{namespaceollama__config__screen_abb019557e1ee0bae90f0fd3853036945} 
-ollama\+\_\+config\+\_\+screen.\+REMOTE\+\_\+\+MODEL\+\_\+\+CARD\+\_\+\+RE}
+\label{doc-func-members}
+\Hypertarget{namespaceollama__config__screen_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespaceollama__config__screen_a1489623e58bb53bbe00f7515a0aea255}\index{ollama\_config\_screen@{ollama\_config\_screen}!build\_ollama\_install\_command@{build\_ollama\_install\_command}}
+\index{build\_ollama\_install\_command@{build\_ollama\_install\_command}!ollama\_config\_screen@{ollama\_config\_screen}}
+\doxysubsubsection{\texorpdfstring{build\_ollama\_install\_command()}{build\_ollama\_install\_command()}}
+{\footnotesize\ttfamily \label{namespaceollama__config__screen_a1489623e58bb53bbe00f7515a0aea255} 
+ list\+[str]\+ ollama\+\_\+config\+\_\+screen.\+build\+\_\+ollama\+\_\+install\+\_\+command (\begin{DoxyParamCaption}\item[{str \texorpdfstring{$\vert$}{|} None }]{platform\+\_\+name}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
-{\bfseries Initial value:\+}
-\begin{DoxyCode}{0}
-\DoxyCodeLine{00001\ =\ \ re.compile(}
-\DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{r'<a\ href="{}/library/([\string^"{}/:?\#]+)"{}\(\backslash\)s+class="{}group\ w-\/full\ space-\/y-\/5"{}>(.*?)</a>'},}
-\DoxyCodeLine{00003\ \ \ \ \ re.S,}
-\DoxyCodeLine{00004\ )}
+\begin{DoxyVerb}Return the platform-specific Ollama install command.\end{DoxyVerb}
+ \Hypertarget{namespaceollama__config__screen_a68fc05a9fe3e50672be4baf83e2bed4c}\index{ollama\_config\_screen@{ollama\_config\_screen}!describe\_ollama\_install\_command@{describe\_ollama\_install\_command}}
+\index{describe\_ollama\_install\_command@{describe\_ollama\_install\_command}!ollama\_config\_screen@{ollama\_config\_screen}}
+\doxysubsubsection{\texorpdfstring{describe\_ollama\_install\_command()}{describe\_ollama\_install\_command()}}
+{\footnotesize\ttfamily \label{namespaceollama__config__screen_a68fc05a9fe3e50672be4baf83e2bed4c} 
+ str ollama\+\_\+config\+\_\+screen.\+describe\+\_\+ollama\+\_\+install\+\_\+command (\begin{DoxyParamCaption}\item[{str \texorpdfstring{$\vert$}{|} None }]{platform\+\_\+name}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
-\end{DoxyCode}
+\begin{DoxyVerb}Return a human-readable description of the install command.\end{DoxyVerb}
+ 

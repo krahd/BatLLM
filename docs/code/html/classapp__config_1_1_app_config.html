@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -97,20 +97,22 @@ $(function(){initNavTree('classapp__config_1_1_app_config.html','','classapp__co
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a365869a86a755dd58c529b0dc935b455" id="r_a365869a86a755dd58c529b0dc935b455"><td class="memItemLeft"><a id="a365869a86a755dd58c529b0dc935b455" name="a365869a86a755dd58c529b0dc935b455"></a>
-&#160;</td><td class="memItemRight"><b>__init__</b> (self, path=CONFIG_PATH)</td></tr>
-<tr class="memitem:a731b76d80ceee8c9bae9292dd5409363" id="r_a731b76d80ceee8c9bae9292dd5409363"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a731b76d80ceee8c9bae9292dd5409363">load</a> (self, path=CONFIG_PATH)</td></tr>
-<tr class="memitem:a641289ff8ed0eb13420babe8a872126d" id="r_a641289ff8ed0eb13420babe8a872126d"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a641289ff8ed0eb13420babe8a872126d">save</a> (self, path=CONFIG_PATH)</td></tr>
+<tr class="memitem:a547d4d01493da269fd0417bfde2bed3b" id="r_a547d4d01493da269fd0417bfde2bed3b"><td class="memItemLeft"><a id="a547d4d01493da269fd0417bfde2bed3b" name="a547d4d01493da269fd0417bfde2bed3b"></a>
+&#160;</td><td class="memItemRight"><b>__init__</b> (self, Path|None path=None, Path default_path=SHIPPED_CONFIG_PATH)</td></tr>
+<tr class="memitem:a9a1dfa5e0af14b02ad90a6de6fd014b7" id="r_a9a1dfa5e0af14b02ad90a6de6fd014b7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a9a1dfa5e0af14b02ad90a6de6fd014b7">load</a> (self, Path|None path=None)</td></tr>
+<tr class="memitem:a997a5d314aae62e9f39d1b9b51a6a7a8" id="r_a997a5d314aae62e9f39d1b9b51a6a7a8"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a997a5d314aae62e9f39d1b9b51a6a7a8">save</a> (self, Path|None path=None)</td></tr>
 <tr class="memitem:a1316a1bb845044a3be3b9fcc29551983" id="r_a1316a1bb845044a3be3b9fcc29551983"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a1316a1bb845044a3be3b9fcc29551983">get</a> (self, section, key)</td></tr>
 <tr class="memitem:aba866c6cec58c4cc8e40c990df2ef269" id="r_aba866c6cec58c4cc8e40c990df2ef269"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aba866c6cec58c4cc8e40c990df2ef269">set</a> (self, section, key, value)</td></tr>
 <tr class="memitem:adb5617ceb0746bc44c67f32623e0e4a7" id="r_adb5617ceb0746bc44c67f32623e0e4a7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#adb5617ceb0746bc44c67f32623e0e4a7">as_dict</a> (self)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a594e29d44b623aac7846bf4a02d2529a" id="r_a594e29d44b623aac7846bf4a02d2529a"><td class="memItemLeft"><a id="a594e29d44b623aac7846bf4a02d2529a" name="a594e29d44b623aac7846bf4a02d2529a"></a>
+&#160;</td><td class="memItemRight"><b>_default_path</b> = default_path</td></tr>
 <tr class="memitem:a1914e800de23169253d58e8719174d69" id="r_a1914e800de23169253d58e8719174d69"><td class="memItemLeft"><a id="a1914e800de23169253d58e8719174d69" name="a1914e800de23169253d58e8719174d69"></a>
 &#160;</td><td class="memItemRight"><b>_config</b> = copy.deepcopy(DEFAULTS)</td></tr>
 <tr class="memitem:ad0a62ab951869646d4e05d18c5d58819" id="r_ad0a62ab951869646d4e05d18c5d58819"><td class="memItemLeft"><a id="ad0a62ab951869646d4e05d18c5d58819" name="ad0a62ab951869646d4e05d18c5d58819"></a>
-&#160;</td><td class="memItemRight"><b>_path</b> = path</td></tr>
+&#160;</td><td class="memItemRight"><b>_path</b> = resolve_config_path(default_path) if path is None else path</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">This class handles the application configuration.
@@ -159,8 +161,8 @@ It loads the configuration from a YAML file and provides methods to get and set 
 <pre class="fragment">Gets a configuration value from the specified section and key.</pre> 
 </div>
 </div>
-<a id="a731b76d80ceee8c9bae9292dd5409363" name="a731b76d80ceee8c9bae9292dd5409363"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a731b76d80ceee8c9bae9292dd5409363">&#9670;&#160;</a></span>load()</h2>
+<a id="a9a1dfa5e0af14b02ad90a6de6fd014b7" name="a9a1dfa5e0af14b02ad90a6de6fd014b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a1dfa5e0af14b02ad90a6de6fd014b7">&#9670;&#160;</a></span>load()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -173,7 +175,7 @@ It loads the configuration from a YAML file and provides methods to get and set 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">CONFIG_PATH</span>&#160;)</td>
+          <td class="paramtype">Path | None </td>          <td class="paramname"><span class="paramname"><em>path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -182,8 +184,8 @@ If the file does not exist, it initialises with default values.
 </pre> 
 </div>
 </div>
-<a id="a641289ff8ed0eb13420babe8a872126d" name="a641289ff8ed0eb13420babe8a872126d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a641289ff8ed0eb13420babe8a872126d">&#9670;&#160;</a></span>save()</h2>
+<a id="a997a5d314aae62e9f39d1b9b51a6a7a8" name="a997a5d314aae62e9f39d1b9b51a6a7a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a997a5d314aae62e9f39d1b9b51a6a7a8">&#9670;&#160;</a></span>save()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,7 +198,7 @@ If the file does not exist, it initialises with default values.
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">CONFIG_PATH</span>&#160;)</td>
+          <td class="paramtype">Path | None </td>          <td class="paramname"><span class="paramname"><em>path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

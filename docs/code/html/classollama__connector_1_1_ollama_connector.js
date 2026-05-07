@@ -4,6 +4,7 @@ var classollama__connector_1_1_ollama_connector =
     [ "_ensure_system_message", "classollama__connector_1_1_ollama_connector.html#a020949666f500a53d851e4be133412c7", null ],
     [ "_get_history_ref", "classollama__connector_1_1_ollama_connector.html#aa0c10475e55bead97d9c55162313e689", null ],
     [ "_get_system_instructions_text", "classollama__connector_1_1_ollama_connector.html#a4cf0f211cdc2e541fae64991e39b873c", null ],
+    [ "_remove_message_instance", "classollama__connector_1_1_ollama_connector.html#aa3b5dc6465b1b66a2e3f49294a13df46", null ],
     [ "_trim_history_inplace", "classollama__connector_1_1_ollama_connector.html#aabcf3f02f09ba893606f13d635194d01", null ],
     [ "gen_options", "classollama__connector_1_1_ollama_connector.html#ac99b51bfc3b52f75e81c11b88262cb4d", null ],
     [ "load_options", "classollama__connector_1_1_ollama_connector.html#a72d2087f540e608ad33d360dac1ebfb3", null ],

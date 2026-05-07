@@ -1,0 +1,38 @@
+\doxysection{ollama\+\_\+connector.\+Client Class Reference}
+\hypertarget{classollama__connector_1_1_client}{}\label{classollama__connector_1_1_client}\index{ollama\_connector.Client@{ollama\_connector.Client}}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_client_aa3c3f9f8e5e808f31a605a00855f3900}\label{classollama__connector_1_1_client_aa3c3f9f8e5e808f31a605a00855f3900} 
+None {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, str host, Optional\+[float\texorpdfstring{$\vert$}{|}str]\+ timeout=None)
+\item 
+\Hypertarget{classollama__connector_1_1_client_a0024db9564b153e9a15571688196210e}\label{classollama__connector_1_1_client_a0024db9564b153e9a15571688196210e} 
+Dict\+[str, Any]\+ {\bfseries chat} (self, \texorpdfstring{$\ast$}{*}, str model, List\+[Dict\+[str, str]\+]\+ messages, Optional\+[Dict\+[str, Any]\+]\+ options=None, bool stream=False)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_client_a124a3184b643eb83532a9229412c120b}\label{classollama__connector_1_1_client_a124a3184b643eb83532a9229412c120b} 
+{\bfseries host} = host.\+rstrip("{}/\+"{})
+\item 
+\Hypertarget{classollama__connector_1_1_client_a11586623bb1a2a118053cf4f7c927d9f}\label{classollama__connector_1_1_client_a11586623bb1a2a118053cf4f7c927d9f} 
+{\bfseries timeout} = float(timeout) if timeout is not None else None
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_client_a756b192312ef006fd8799d2883d4e883}\label{classollama__connector_1_1_client_a756b192312ef006fd8799d2883d4e883} 
+{\bfseries \+\_\+provider} = Ollama\+Provider(host=base\+\_\+host, port=port)
+\item 
+\Hypertarget{classollama__connector_1_1_client_a5ae913a10c0fd05d27954bc47b7f5117}\label{classollama__connector_1_1_client_a5ae913a10c0fd05d27954bc47b7f5117} 
+{\bfseries \+\_\+client} = Modelito\+Client(provider=self.\+\_\+provider)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Thin internal seam over modelito for BatLLM gameplay requests.\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+game/\+ollama\+\_\+connector.\+py\end{DoxyCompactItemize}

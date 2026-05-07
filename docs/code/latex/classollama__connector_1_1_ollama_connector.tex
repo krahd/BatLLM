@@ -49,7 +49,7 @@ int\texorpdfstring{$\vert$}{|}None {\bfseries seed} = None
 \Hypertarget{classollama__connector_1_1_ollama_connector_ab867159fa37289b39fb0e5f690353c91}\label{classollama__connector_1_1_ollama_connector_ab867159fa37289b39fb0e5f690353c91} 
 int\texorpdfstring{$\vert$}{|}None {\bfseries num\+\_\+thread} = None
 \item 
-\Hypertarget{classollama__connector_1_1_ollama_connector_ab0d0097a0615ed269e466562bd572e51}\label{classollama__connector_1_1_ollama_connector_ab0d0097a0615ed269e466562bd572e51} 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a16ce9fa57e246ea685091a339df615ea}\label{classollama__connector_1_1_ollama_connector_a16ce9fa57e246ea685091a339df615ea} 
 str {\bfseries model} = "{}"{}
 \item 
 \Hypertarget{classollama__connector_1_1_ollama_connector_a48e2363d0fadedb0ba6f8b7c77e6c483}\label{classollama__connector_1_1_ollama_connector_a48e2363d0fadedb0ba6f8b7c77e6c483} 
@@ -75,10 +75,18 @@ List\+[Message]\+ \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connect
 \item 
 None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_aabcf3f02f09ba893606f13d635194d01}{\+\_\+trim\+\_\+history\+\_\+inplace}} (self, List\+[Message]\+ history)
 \item 
+None \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_aa3b5dc6465b1b66a2e3f49294a13df46}{\+\_\+remove\+\_\+message\+\_\+instance}} (self, List\+[Message]\+ history, Message message)
+\item 
 str \doxymbox{\hyperlink{classollama__connector_1_1_ollama_connector_a4cf0f211cdc2e541fae64991e39b873c}{\+\_\+get\+\_\+system\+\_\+instructions\+\_\+text}} (self)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_ad7855de35d12c790caad2334214ee9e2}\label{classollama__connector_1_1_ollama_connector_ad7855de35d12c790caad2334214ee9e2} 
+str\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+client\+\_\+host} = None
+\item 
+\Hypertarget{classollama__connector_1_1_ollama_connector_a11864c4348d0f961fd4e129ec9e6bc10}\label{classollama__connector_1_1_ollama_connector_a11864c4348d0f961fd4e129ec9e6bc10} 
+float\texorpdfstring{$\vert$}{|}str\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+client\+\_\+timeout} = None
 \item 
 \Hypertarget{classollama__connector_1_1_ollama_connector_a899cb3709b42b0e7f164cbaa8bcf7475}\label{classollama__connector_1_1_ollama_connector_a899cb3709b42b0e7f164cbaa8bcf7475} 
 str {\bfseries \+\_\+system\+\_\+instructions} = "{}"{}
@@ -145,6 +153,13 @@ context is shared or not\end{DoxyVerb}
 Returns:
     str: _description_
 \end{DoxyVerb}
+ \Hypertarget{classollama__connector_1_1_ollama_connector_aa3b5dc6465b1b66a2e3f49294a13df46}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_remove\_message\_instance@{\_remove\_message\_instance}}
+\index{\_remove\_message\_instance@{\_remove\_message\_instance}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
+\doxysubsubsection{\texorpdfstring{\_remove\_message\_instance()}{\_remove\_message\_instance()}}
+{\footnotesize\ttfamily \label{classollama__connector_1_1_ollama_connector_aa3b5dc6465b1b66a2e3f49294a13df46} 
+ None ollama\+\_\+connector.\+Ollama\+Connector.\+\_\+remove\+\_\+message\+\_\+instance (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{List\+[Message]\+}]{history}{, }\item[{Message}]{message}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Remove a specific message object from a history list if it is still present.\end{DoxyVerb}
  \Hypertarget{classollama__connector_1_1_ollama_connector_aabcf3f02f09ba893606f13d635194d01}\index{ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}!\_trim\_history\_inplace@{\_trim\_history\_inplace}}
 \index{\_trim\_history\_inplace@{\_trim\_history\_inplace}!ollama\_connector.OllamaConnector@{ollama\_connector.OllamaConnector}}
 \doxysubsubsection{\texorpdfstring{\_trim\_history\_inplace()}{\_trim\_history\_inplace()}}

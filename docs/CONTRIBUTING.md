@@ -420,10 +420,34 @@ This command executes:
 - `create_release_bundles.py` and verifies expected archives plus launcher files
 - `create_homebrew_formula.py --create-worktree-archive ... --formula-out ...` and validates key formula entries
 
+To additionally execute the packaged install wrapper for the current platform inside a temporary extracted bundle and verify the created virtual environment:
+
+```bash
+python validate_packaging_smoke.py --run-installer-smoke
+```
+
+Installer smoke notes:
+
+- runs only for the current platform bundle (macOS on macOS, Linux on Linux, Windows on Windows)
+- executes the bundled `install-batllm.*` script with a default 900-second timeout
+- accepts `--installer-timeout <seconds>` to override the timeout
+
 Optional flags:
 
 - `--skip-release-bundles`
 - `--skip-homebrew`
+- `--run-installer-smoke`
+- `--installer-timeout`
+- `--run-homebrew-install-smoke`
+- `--homebrew-install-timeout`
+
+For install-level Homebrew validation (install, test, uninstall), run:
+
+```bash
+python validate_packaging_smoke.py --run-homebrew-install-smoke
+```
+
+This path uses a temporary local tap generated from the current worktree formula because newer Homebrew versions reject direct `brew install --formula /tmp/batllm.rb` installs outside a tap.
 
 ### CI Defaults
 

@@ -24,7 +24,7 @@ None {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, int bot\+\_\+id, board\+\_\
 \item 
 \doxymbox{\hyperlink{classbot_1_1_bot_a673afcb7ac60a248d563ff9d02ada10e}{rotate\+\_\+instantaneously}} (self, float angle)
 \item 
-\doxymbox{\hyperlink{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8}{damage}} (self)
+\doxymbox{\hyperlink{classbot_1_1_bot_a2ba7dbdc3e5746203438be80e942c348}{damage}} (self, int\texorpdfstring{$\vert$}{|}None amount=None)
 \item 
 \doxymbox{\hyperlink{classbot_1_1_bot_a6c074341425cb967b736b3dca28f99f7}{toggle\+\_\+shield}} (self)
 \item 
@@ -46,6 +46,8 @@ dict {\bfseries get\+\_\+game\+\_\+state} (self)
 {\bfseries get\+\_\+current\+\_\+prompt} (self)
 \item 
 \doxymbox{\hyperlink{classbot_1_1_bot_acb39c317d60a602b7ba809cf2c4e0eb8}{process\+\_\+llm\+\_\+response}} (self, str res)
+\item 
+\doxymbox{\hyperlink{classbot_1_1_bot_a44d54141d90acf78207be65273189a7b}{finish\+\_\+turn\+\_\+with\+\_\+error}} (self, str raw\+\_\+response, str command="{}ERR"{})
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
@@ -67,7 +69,7 @@ tuple {\bfseries color} = (0.\+8, 0.\+88, 1, 0.\+85)
 {\bfseries prompt\+\_\+history\+\_\+index} = None
 \item 
 \Hypertarget{classbot_1_1_bot_aca51feb53b2e151def47f372c8326a91}\label{classbot_1_1_bot_aca51feb53b2e151def47f372c8326a91} 
-str {\bfseries last\+\_\+cmd} = "{}Res not parsed, error"{}
+str {\bfseries last\+\_\+cmd} = parsed.\+normalized\+\_\+cmd
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Static Public Attributes}
 \begin{DoxyCompactItemize}
@@ -84,8 +86,8 @@ str {\bfseries last\+\_\+cmd} = "{}Res not parsed, error"{}
 \Hypertarget{classbot_1_1_bot_a5ce357c691fd64889603556cd7fe3721}\label{classbot_1_1_bot_a5ce357c691fd64889603556cd7fe3721} 
 int {\bfseries rot} = Numeric\+Property(0.\+0)
 \item 
-\Hypertarget{classbot_1_1_bot_a749da41d1715af087667f0d290045f80}\label{classbot_1_1_bot_a749da41d1715af087667f0d290045f80} 
-bool {\bfseries shield} = Object\+Property(None)
+\Hypertarget{classbot_1_1_bot_a690321a5ee8340056ea6774d2e801d3d}\label{classbot_1_1_bot_a690321a5ee8340056ea6774d2e801d3d} 
+{\bfseries shield} = Object\+Property(None)
 \item 
 \Hypertarget{classbot_1_1_bot_a16bdd4ba85d70eada1946587599b974b}\label{classbot_1_1_bot_a16bdd4ba85d70eada1946587599b974b} 
 {\bfseries health} = Numeric\+Property(0)
@@ -130,14 +132,21 @@ Returns:
     Bullet: A new Bullet instance initialised with the bot's id, position (x, y), and rotation (rot) if the shield is inactive.
     None: If the shield is active, no bullet is created and None is returned.
 \end{DoxyVerb}
- \Hypertarget{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8}\index{bot.Bot@{bot.Bot}!damage@{damage}}
+ \Hypertarget{classbot_1_1_bot_a2ba7dbdc3e5746203438be80e942c348}\index{bot.Bot@{bot.Bot}!damage@{damage}}
 \index{damage@{damage}!bot.Bot@{bot.Bot}}
 \doxysubsubsection{\texorpdfstring{damage()}{damage()}}
-{\footnotesize\ttfamily \label{classbot_1_1_bot_a5c01173305f20de8140fd1fb7af4fdc8} 
-bot.\+Bot.\+damage (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a2ba7dbdc3e5746203438be80e942c348} 
+bot.\+Bot.\+damage (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{int \texorpdfstring{$\vert$}{|} None }]{amount}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Bot hit by a bullet, loses health.
 \end{DoxyVerb}
+ \Hypertarget{classbot_1_1_bot_a44d54141d90acf78207be65273189a7b}\index{bot.Bot@{bot.Bot}!finish\_turn\_with\_error@{finish\_turn\_with\_error}}
+\index{finish\_turn\_with\_error@{finish\_turn\_with\_error}!bot.Bot@{bot.Bot}}
+\doxysubsubsection{\texorpdfstring{finish\_turn\_with\_error()}{finish\_turn\_with\_error()}}
+{\footnotesize\ttfamily \label{classbot_1_1_bot_a44d54141d90acf78207be65273189a7b} 
+bot.\+Bot.\+finish\+\_\+turn\+\_\+with\+\_\+error (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{raw\+\_\+response}{, }\item[{str }]{command}{ = {\ttfamily "{}ERR"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Finish a turn without executing gameplay when the model could not return a usable command.\end{DoxyVerb}
  \Hypertarget{classbot_1_1_bot_a169de661126679c2314485ad1edb10a6}\index{bot.Bot@{bot.Bot}!move@{move}}
 \index{move@{move}!bot.Bot@{bot.Bot}}
 \doxysubsubsection{\texorpdfstring{move()}{move()}}

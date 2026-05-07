@@ -28,10 +28,15 @@ python create_homebrew_formula.py \
 Then test it with Homebrew:
 
 ```bash
-brew install --formula /tmp/batllm.rb
+brew tap-new --no-git local/batllm-smoke
+cp /tmp/batllm.rb "$(brew --repository)/Library/Taps/local/homebrew-batllm-smoke/Formula/batllm.rb"
+brew install local/batllm-smoke/batllm
 brew test batllm
 brew uninstall --force batllm
+brew untap local/batllm-smoke
 ```
+
+Recent Homebrew releases reject direct file-based formula installs outside a tap, so the temporary local tap flow is required for local install smoke tests.
 
 ## Tap Publish Workflow
 

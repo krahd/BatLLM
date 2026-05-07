@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 17:13
+Last updated: 2026-05-07 18:12
 
 ## Project Purpose
 
@@ -89,6 +89,16 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Hardened the same two test modules to use dynamic post-bootstrap imports so formatter/isort reordering cannot reintroduce collection-time import failures.
 - Added `src/util/packaging_smoke.py` plus `validate_packaging_smoke.py` for a unified packaging smoke-validation command.
 - Added `src/tests/test_packaging_smoke.py` and contributor docs for the new packaging smoke command.
+- Hardened `src/llm/service.py` stop logic so force-kill escalation only applies to Ollama processes that BatLLM has already terminated, reducing the risk of touching unrelated listeners.
+- Added targeted regression tests for the stop-service race/kill path in `src/tests/test_multiplatform_support.py`.
+- Extended `src/util/packaging_smoke.py` with an opt-in installer smoke mode that extracts the current-platform release bundle, executes `install-batllm.*`, and verifies the expected `.venv_BatLLM` Python executable.
+- Added installer-smoke helper coverage in `src/tests/test_packaging_smoke.py`.
+- Documented the installer smoke command path in `docs/CONTRIBUTING.md`.
+- Added an opt-in Homebrew install-level smoke mode in `src/util/packaging_smoke.py` that performs install/test/uninstall through a temporary local tap, compatible with current Homebrew policy.
+- Updated `docs/CONTRIBUTING.md` and `packaging/homebrew/README.md` to document the local-tap requirement for Homebrew install smoke.
+- Regenerated generated API docs under `docs/code/` with `doxygen docs/code/dox_config.properties`.
+- Narrowed `src/llm/service.py` startup orchestration by delegating the no-config path directly to `modelito.start_service()` instead of falling back to the local startup branch.
+- Added regression coverage in `src/tests/test_multiplatform_support.py` for the no-config startup delegation path.
 
 ## Tests And Verification Status
 
@@ -103,37 +113,43 @@ Executed in this work session:
 - `python validate_packaging_smoke.py --skip-homebrew` -> `Packaging smoke validation passed.`
 - `python validate_packaging_smoke.py` -> `Packaging smoke validation passed.`
 - `pytest -q` -> `142 passed, 2 skipped`
+- `pytest -q src/tests/test_multiplatform_support.py` -> `29 passed`
+- `pytest -q src/tests/test_packaging_smoke.py src/tests/test_multiplatform_support.py` -> `36 passed`
+- `python validate_packaging_smoke.py --run-installer-smoke` -> `Packaging smoke validation passed.`
+- `python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb && brew install/test/uninstall via temporary local tap` -> completed successfully.
+- `pytest -q src/tests/test_packaging_smoke.py src/tests/test_multiplatform_support.py` -> `37 passed`
+- `python validate_packaging_smoke.py --skip-release-bundles --skip-homebrew --run-homebrew-install-smoke --homebrew-install-timeout 1800` -> `Packaging smoke validation passed.`
+- `doxygen docs/code/dox_config.properties` -> completed successfully; regenerated `docs/code/` HTML/LaTeX outputs.
+- `pytest -q src/tests/test_multiplatform_support.py src/tests/test_packaging_smoke.py` -> `38 passed`
+- `pytest -q` -> `149 passed, 2 skipped`
 
 ## Known Issues, Risks, And Limitations
 
 - `src/llm/service.py` still owns BatLLM-specific overlay logic and timeout policy; avoid re-expanding it into a generic provider abstraction already handled by `modelito`.
-- Packaging helpers and the unified smoke validator execute successfully, but an end-to-end install smoke run of the generated release bundle or Homebrew formula was not executed in this session.
-- Generated API docs in `docs/code/` have not been regenerated in this session.
+- Homebrew install-level smoke now depends on temporary local tap setup because current Homebrew rejects direct file-based formula installs outside a tap.
 
 ## Recurring Tasks
 
 - Keep hygiene checks current as packaging and release scripts evolve.
+- Keep STATUS and maintained docs aligned with any additional runtime or packaging changes.
 
 ## Pending Tasks
 
-- Run an end-to-end install smoke validation using the generated release bundle or generated Homebrew formula before a publish step.
-- Regenerate `docs/code/` if generated API docs are intended to ship with this update.
-- Continue narrowing `src/llm/service.py` where direct `modelito` calls can replace local orchestration branches without changing BatLLM-specific behaviour.
+- No open pending tasks from the previous status cycle.
 
 ## Next Steps
 
-1. Run end-to-end install smoke validation for either generated release bundles or a local Homebrew formula install before publish.
-2. Regenerate and review generated docs under `docs/code/` if required for release artefacts.
-3. Keep STATUS and maintained docs aligned with any additional runtime or packaging changes.
+1. Keep narrowing local orchestration in `src/llm/service.py` only for explicit BatLLM overlay/config-path behaviour; continue delegating default-path lifecycle calls to `modelito`.
+2. Keep packaging smoke paths and release docs aligned as Homebrew policy evolves.
 
 ## Longer-Term Steps
 
-1. Decide GUI direction for web-app surface versus Kivy-only roadmap.
-2. LAN multiplayer support.
-3. Internet multiplayer support.
-4. Prompt library/repository and examples.
-5. Additional computer-controlled player modes.
+1. Decide GUI direction for web-app surface versus Kivy-only roadmap. Analysis: this is the highest leverage product decision because multiplayer, prompt sharing, and deployment choices depend on whether Kivy remains the only client or becomes one client among several.
+2. LAN multiplayer support. Analysis: best first networking milestone; keep deterministic replay by introducing an authoritative turn-order protocol and schema-stable event log before any internet exposure.
+3. Internet multiplayer support. Analysis: should follow LAN once identity, matchmaking, and anti-abuse controls are defined; otherwise operational/security complexity will exceed current release hardening capacity.
+4. Prompt library/repository and examples. Analysis: implement only after session schema/version governance is final so shared prompts reference stable command/round semantics across versions.
+5. Additional computer-controlled player modes. Analysis: lowest infrastructure risk and can progress in parallel with 1.x maintenance; useful as a short-cycle track while larger network architecture work is planned.
 
 ---
 
-Last updated: 2026-05-07 17:13
+Last updated: 2026-05-07 18:12

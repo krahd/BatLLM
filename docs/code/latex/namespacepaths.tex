@@ -5,6 +5,14 @@
 \item 
 Path \doxymbox{\hyperlink{namespacepaths_a923f42eb41fd40d767e07ed15bd95a37}{repo\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
 \item 
+Path\texorpdfstring{$\vert$}{|}None \doxymbox{\hyperlink{namespacepaths_aaf9d6f5b8e9f64bdb04be2f44457b077}{configured\+\_\+batllm\+\_\+home}} ()
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_a042dae073b5a1a54571e892f134c515f}{default\+\_\+batllm\+\_\+home}} ()
+\item 
+Path\texorpdfstring{$\vert$}{|}None \doxymbox{\hyperlink{namespacepaths_adefdb6d1a6820fc3ed12c39bd527de79}{active\+\_\+batllm\+\_\+home}} ()
+\item 
+Path \doxymbox{\hyperlink{namespacepaths_acc6067ec21a852af907dd336af95d8d3}{resolve\+\_\+config\+\_\+path}} (Path\texorpdfstring{$\vert$}{|}None default\+\_\+path=None)
+\item 
 Path \doxymbox{\hyperlink{namespacepaths_a5e7cc29280a5aecc5e0695992f791302}{src\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
 \item 
 Path \doxymbox{\hyperlink{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda}{asset\+\_\+path}} (\texorpdfstring{$\ast$}{*}str parts)
@@ -41,6 +49,9 @@ str {\bfseries GAME\+\_\+\+DIR} = SRC\+\_\+\+DIR /\+ "{}game"{}
 \item 
 \Hypertarget{namespacepaths_ab1ee080404498a9e532043d1df919f08}\label{namespacepaths_ab1ee080404498a9e532043d1df919f08} 
 str {\bfseries DOCS\+\_\+\+DIR} = ROOT\+\_\+\+DIR /\+ "{}docs"{}
+\item 
+\Hypertarget{namespacepaths_a8098632a1eb9072b6f04bec7fa5c8afa}\label{namespacepaths_a8098632a1eb9072b6f04bec7fa5c8afa} 
+str {\bfseries BATLLM\+\_\+\+HOME\+\_\+\+ENV} = "{}BATLLM\+\_\+\+HOME"{}
 \end{DoxyCompactItemize}
 
 
@@ -51,13 +62,34 @@ str {\bfseries DOCS\+\_\+\+DIR} = ROOT\+\_\+\+DIR /\+ "{}docs"{}
 \label{doc-func-members}
 \Hypertarget{namespacepaths_doc-func-members}
 \doxysubsection{Function Documentation}
-\Hypertarget{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda}\index{paths@{paths}!asset\_path@{asset\_path}}
+\Hypertarget{namespacepaths_adefdb6d1a6820fc3ed12c39bd527de79}\index{paths@{paths}!active\_batllm\_home@{active\_batllm\_home}}
+\index{active\_batllm\_home@{active\_batllm\_home}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{active\_batllm\_home()}{active\_batllm\_home()}}
+{\footnotesize\ttfamily \label{namespacepaths_adefdb6d1a6820fc3ed12c39bd527de79} 
+ Path \texorpdfstring{$\vert$}{|} None paths.\+active\+\_\+batllm\+\_\+home (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the active BatLLM home when packaged installs opt into a writable location.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda}\index{paths@{paths}!asset\_path@{asset\_path}}
 \index{asset\_path@{asset\_path}!paths@{paths}}
 \doxysubsubsection{\texorpdfstring{asset\_path()}{asset\_path()}}
 {\footnotesize\ttfamily \label{namespacepaths_a4d6b97ab4202dabd4bab3cec65a1edda} 
  Path paths.\+asset\+\_\+path (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{parts}{}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Return an absolute path inside ``src/assets``.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_aaf9d6f5b8e9f64bdb04be2f44457b077}\index{paths@{paths}!configured\_batllm\_home@{configured\_batllm\_home}}
+\index{configured\_batllm\_home@{configured\_batllm\_home}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{configured\_batllm\_home()}{configured\_batllm\_home()}}
+{\footnotesize\ttfamily \label{namespacepaths_aaf9d6f5b8e9f64bdb04be2f44457b077} 
+ Path \texorpdfstring{$\vert$}{|} None paths.\+configured\+\_\+batllm\+\_\+home (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the user-writable BatLLM home directory, when explicitly configured.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_a042dae073b5a1a54571e892f134c515f}\index{paths@{paths}!default\_batllm\_home@{default\_batllm\_home}}
+\index{default\_batllm\_home@{default\_batllm\_home}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{default\_batllm\_home()}{default\_batllm\_home()}}
+{\footnotesize\ttfamily \label{namespacepaths_a042dae073b5a1a54571e892f134c515f} 
+ Path paths.\+default\+\_\+batllm\+\_\+home (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the default user-writable BatLLM home for the current platform.\end{DoxyVerb}
  \Hypertarget{namespacepaths_a10427ba864e2eae34d2ec3d5af0fda90}\index{paths@{paths}!prompt\_asset\_dir@{prompt\_asset\_dir}}
 \index{prompt\_asset\_dir@{prompt\_asset\_dir}!paths@{paths}}
 \doxysubsubsection{\texorpdfstring{prompt\_asset\_dir()}{prompt\_asset\_dir()}}
@@ -79,6 +111,13 @@ str {\bfseries DOCS\+\_\+\+DIR} = ROOT\+\_\+\+DIR /\+ "{}docs"{}
  Path paths.\+repo\+\_\+path (\begin{DoxyParamCaption}\item[{\texorpdfstring{$\ast$}{*}str}]{parts}{}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Return an absolute path inside the repository root.\end{DoxyVerb}
+ \Hypertarget{namespacepaths_acc6067ec21a852af907dd336af95d8d3}\index{paths@{paths}!resolve\_config\_path@{resolve\_config\_path}}
+\index{resolve\_config\_path@{resolve\_config\_path}!paths@{paths}}
+\doxysubsubsection{\texorpdfstring{resolve\_config\_path()}{resolve\_config\_path()}}
+{\footnotesize\ttfamily \label{namespacepaths_acc6067ec21a852af907dd336af95d8d3} 
+ Path paths.\+resolve\+\_\+config\+\_\+path (\begin{DoxyParamCaption}\item[{Path \texorpdfstring{$\vert$}{|} None }]{default\+\_\+path}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the mutable runtime config path for the current process.\end{DoxyVerb}
  \Hypertarget{namespacepaths_a4fc102b6cc718db9225e68425080d342}\index{paths@{paths}!resolve\_repo\_relative@{resolve\_repo\_relative}}
 \index{resolve\_repo\_relative@{resolve\_repo\_relative}!paths@{paths}}
 \doxysubsubsection{\texorpdfstring{resolve\_repo\_relative()}{resolve\_repo\_relative()}}

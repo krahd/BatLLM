@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -111,7 +111,7 @@ None&#160;</td><td class="memItemRight"><b>__init__</b> (self, int bot_id, board
 <tr class="memitem:a2c55b92dcfdc7babd4ed275989640f5f" id="r_a2c55b92dcfdc7babd4ed275989640f5f"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a2c55b92dcfdc7babd4ed275989640f5f">move_instantaneously</a> (self, float step=default_step)</td></tr>
 <tr class="memitem:a778175a6baa29ca673febf517563f219" id="r_a778175a6baa29ca673febf517563f219"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a778175a6baa29ca673febf517563f219">rotate</a> (self, float angle, float duration=0.24, str easing=&quot;out_quad&quot;, on_complete=None)</td></tr>
 <tr class="memitem:a673afcb7ac60a248d563ff9d02ada10e" id="r_a673afcb7ac60a248d563ff9d02ada10e"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a673afcb7ac60a248d563ff9d02ada10e">rotate_instantaneously</a> (self, float angle)</td></tr>
-<tr class="memitem:a5c01173305f20de8140fd1fb7af4fdc8" id="r_a5c01173305f20de8140fd1fb7af4fdc8"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a5c01173305f20de8140fd1fb7af4fdc8">damage</a> (self)</td></tr>
+<tr class="memitem:a2ba7dbdc3e5746203438be80e942c348" id="r_a2ba7dbdc3e5746203438be80e942c348"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a2ba7dbdc3e5746203438be80e942c348">damage</a> (self, int|None amount=None)</td></tr>
 <tr class="memitem:a6c074341425cb967b736b3dca28f99f7" id="r_a6c074341425cb967b736b3dca28f99f7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a6c074341425cb967b736b3dca28f99f7">toggle_shield</a> (self)</td></tr>
 <tr class="memitem:a0456e9a9953cf4c78f4687adf51dfa92" id="r_a0456e9a9953cf4c78f4687adf51dfa92"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a0456e9a9953cf4c78f4687adf51dfa92">create_bullet</a> (self)</td></tr>
 <tr class="memitem:a39d07914c7de45253e02da373dc6d6d7" id="r_a39d07914c7de45253e02da373dc6d6d7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a39d07914c7de45253e02da373dc6d6d7">shield_range</a> (self)</td></tr>
@@ -124,6 +124,7 @@ dict&#160;</td><td class="memItemRight"><b>get_game_state</b> (self)</td></tr>
 <tr class="memitem:ab4337822ae12c23b3e571c2e8269b964" id="r_ab4337822ae12c23b3e571c2e8269b964"><td class="memItemLeft"><a id="ab4337822ae12c23b3e571c2e8269b964" name="ab4337822ae12c23b3e571c2e8269b964"></a>
 &#160;</td><td class="memItemRight"><b>get_current_prompt</b> (self)</td></tr>
 <tr class="memitem:acb39c317d60a602b7ba809cf2c4e0eb8" id="r_acb39c317d60a602b7ba809cf2c4e0eb8"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#acb39c317d60a602b7ba809cf2c4e0eb8">process_llm_response</a> (self, str res)</td></tr>
+<tr class="memitem:a44d54141d90acf78207be65273189a7b" id="r_a44d54141d90acf78207be65273189a7b"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a44d54141d90acf78207be65273189a7b">finish_turn_with_error</a> (self, str raw_response, str command=&quot;ERR&quot;)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -138,7 +139,7 @@ tuple&#160;</td><td class="memItemRight"><b>color</b> = (0.8, 0.88, 1, 0.85)</td
 <tr class="memitem:a77b2875ffd565c86821d3f6e3743e75a" id="r_a77b2875ffd565c86821d3f6e3743e75a"><td class="memItemLeft"><a id="a77b2875ffd565c86821d3f6e3743e75a" name="a77b2875ffd565c86821d3f6e3743e75a"></a>
 &#160;</td><td class="memItemRight"><b>prompt_history_index</b> = None</td></tr>
 <tr class="memitem:aca51feb53b2e151def47f372c8326a91" id="r_aca51feb53b2e151def47f372c8326a91"><td class="memItemLeft"><a id="aca51feb53b2e151def47f372c8326a91" name="aca51feb53b2e151def47f372c8326a91"></a>
-str&#160;</td><td class="memItemRight"><b>last_cmd</b> = &quot;Res not parsed, error&quot;</td></tr>
+str&#160;</td><td class="memItemRight"><b>last_cmd</b> = parsed.normalized_cmd</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -150,8 +151,8 @@ Static Public Attributes</h2></td></tr>
 &#160;</td><td class="memItemRight"><b>y</b> = NumericProperty(0.0)</td></tr>
 <tr class="memitem:a5ce357c691fd64889603556cd7fe3721" id="r_a5ce357c691fd64889603556cd7fe3721"><td class="memItemLeft"><a id="a5ce357c691fd64889603556cd7fe3721" name="a5ce357c691fd64889603556cd7fe3721"></a>
 int&#160;</td><td class="memItemRight"><b>rot</b> = NumericProperty(0.0)</td></tr>
-<tr class="memitem:a749da41d1715af087667f0d290045f80" id="r_a749da41d1715af087667f0d290045f80"><td class="memItemLeft"><a id="a749da41d1715af087667f0d290045f80" name="a749da41d1715af087667f0d290045f80"></a>
-bool&#160;</td><td class="memItemRight"><b>shield</b> = ObjectProperty(None)</td></tr>
+<tr class="memitem:a690321a5ee8340056ea6774d2e801d3d" id="r_a690321a5ee8340056ea6774d2e801d3d"><td class="memItemLeft"><a id="a690321a5ee8340056ea6774d2e801d3d" name="a690321a5ee8340056ea6774d2e801d3d"></a>
+&#160;</td><td class="memItemRight"><b>shield</b> = ObjectProperty(None)</td></tr>
 <tr class="memitem:a16bdd4ba85d70eada1946587599b974b" id="r_a16bdd4ba85d70eada1946587599b974b"><td class="memItemLeft"><a id="a16bdd4ba85d70eada1946587599b974b" name="a16bdd4ba85d70eada1946587599b974b"></a>
 &#160;</td><td class="memItemRight"><b>health</b> = NumericProperty(0)</td></tr>
 <tr class="memitem:af82dc902b408e51d2545131f7c88614a" id="r_af82dc902b408e51d2545131f7c88614a"><td class="memItemLeft"><a id="af82dc902b408e51d2545131f7c88614a" name="af82dc902b408e51d2545131f7c88614a"></a>
@@ -192,8 +193,8 @@ Returns:
 </pre> 
 </div>
 </div>
-<a id="a5c01173305f20de8140fd1fb7af4fdc8" name="a5c01173305f20de8140fd1fb7af4fdc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c01173305f20de8140fd1fb7af4fdc8">&#9670;&#160;</a></span>damage()</h2>
+<a id="a2ba7dbdc3e5746203438be80e942c348" name="a2ba7dbdc3e5746203438be80e942c348"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ba7dbdc3e5746203438be80e942c348">&#9670;&#160;</a></span>damage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,13 +202,43 @@ Returns:
         <tr>
           <td class="memname">bot.Bot.damage </td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int | None </td>          <td class="paramname"><span class="paramname"><em>amount</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <pre class="fragment">Bot hit by a bullet, loses health.
 </pre> 
+</div>
+</div>
+<a id="a44d54141d90acf78207be65273189a7b" name="a44d54141d90acf78207be65273189a7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44d54141d90acf78207be65273189a7b">&#9670;&#160;</a></span>finish_turn_with_error()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bot.Bot.finish_turn_with_error </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str</td>          <td class="paramname"><span class="paramname"><em>raw_response</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">str </td>          <td class="paramname"><span class="paramname"><em>command</em></span><span class="paramdefsep"> = </span><span class="paramdefval">&quot;ERR&quot;</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Finish a turn without executing gameplay when the model could not return a usable command.</pre> 
 </div>
 </div>
 <a id="a169de661126679c2314485ad1edb10a6" name="a169de661126679c2314485ad1edb10a6"></a>

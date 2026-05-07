@@ -1,7 +1,8 @@
 var classbot_1_1_bot =
 [
     [ "create_bullet", "classbot_1_1_bot.html#a0456e9a9953cf4c78f4687adf51dfa92", null ],
-    [ "damage", "classbot_1_1_bot.html#a5c01173305f20de8140fd1fb7af4fdc8", null ],
+    [ "damage", "classbot_1_1_bot.html#a2ba7dbdc3e5746203438be80e942c348", null ],
+    [ "finish_turn_with_error", "classbot_1_1_bot.html#a44d54141d90acf78207be65273189a7b", null ],
     [ "move", "classbot_1_1_bot.html#a169de661126679c2314485ad1edb10a6", null ],
     [ "move_instantaneously", "classbot_1_1_bot.html#a2c55b92dcfdc7babd4ed275989640f5f", null ],
     [ "prepare_prompt_submission", "classbot_1_1_bot.html#a55177f2afb50de74de9cba34f211bd42", null ],

@@ -3,12 +3,12 @@
 \doxysubsubsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{classapp__config_1_1_app_config_a365869a86a755dd58c529b0dc935b455}\label{classapp__config_1_1_app_config_a365869a86a755dd58c529b0dc935b455} 
-{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, path=CONFIG\+\_\+\+PATH)
+\Hypertarget{classapp__config_1_1_app_config_a547d4d01493da269fd0417bfde2bed3b}\label{classapp__config_1_1_app_config_a547d4d01493da269fd0417bfde2bed3b} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, Path\texorpdfstring{$\vert$}{|}None path=None, Path default\+\_\+path=SHIPPED\+\_\+\+CONFIG\+\_\+\+PATH)
 \item 
-\doxymbox{\hyperlink{classapp__config_1_1_app_config_a731b76d80ceee8c9bae9292dd5409363}{load}} (self, path=CONFIG\+\_\+\+PATH)
+\doxymbox{\hyperlink{classapp__config_1_1_app_config_a9a1dfa5e0af14b02ad90a6de6fd014b7}{load}} (self, Path\texorpdfstring{$\vert$}{|}None path=None)
 \item 
-\doxymbox{\hyperlink{classapp__config_1_1_app_config_a641289ff8ed0eb13420babe8a872126d}{save}} (self, path=CONFIG\+\_\+\+PATH)
+\doxymbox{\hyperlink{classapp__config_1_1_app_config_a997a5d314aae62e9f39d1b9b51a6a7a8}{save}} (self, Path\texorpdfstring{$\vert$}{|}None path=None)
 \item 
 \doxymbox{\hyperlink{classapp__config_1_1_app_config_a1316a1bb845044a3be3b9fcc29551983}{get}} (self, section, key)
 \item 
@@ -19,11 +19,14 @@
 \doxysubsubsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
 \item 
+\Hypertarget{classapp__config_1_1_app_config_a594e29d44b623aac7846bf4a02d2529a}\label{classapp__config_1_1_app_config_a594e29d44b623aac7846bf4a02d2529a} 
+{\bfseries \+\_\+default\+\_\+path} = default\+\_\+path
+\item 
 \Hypertarget{classapp__config_1_1_app_config_a1914e800de23169253d58e8719174d69}\label{classapp__config_1_1_app_config_a1914e800de23169253d58e8719174d69} 
 {\bfseries \+\_\+config} = copy.\+deepcopy(DEFAULTS)
 \item 
 \Hypertarget{classapp__config_1_1_app_config_ad0a62ab951869646d4e05d18c5d58819}\label{classapp__config_1_1_app_config_ad0a62ab951869646d4e05d18c5d58819} 
-{\bfseries \+\_\+path} = path
+{\bfseries \+\_\+path} = resolve\+\_\+config\+\_\+path(default\+\_\+path) if path is None else path
 \end{DoxyCompactItemize}
 
 
@@ -50,20 +53,20 @@ app\+\_\+config.\+App\+Config.\+as\+\_\+dict (\begin{DoxyParamCaption}\item[{}]{
 app\+\_\+config.\+App\+Config.\+get (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{section}{, }\item[{}]{key}{}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Gets a configuration value from the specified section and key.\end{DoxyVerb}
- \Hypertarget{classapp__config_1_1_app_config_a731b76d80ceee8c9bae9292dd5409363}\index{app\_config.AppConfig@{app\_config.AppConfig}!load@{load}}
+ \Hypertarget{classapp__config_1_1_app_config_a9a1dfa5e0af14b02ad90a6de6fd014b7}\index{app\_config.AppConfig@{app\_config.AppConfig}!load@{load}}
 \index{load@{load}!app\_config.AppConfig@{app\_config.AppConfig}}
 \doxysubsubsection{\texorpdfstring{load()}{load()}}
-{\footnotesize\ttfamily \label{classapp__config_1_1_app_config_a731b76d80ceee8c9bae9292dd5409363} 
-app\+\_\+config.\+App\+Config.\+load (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{path}{ = {\ttfamily CONFIG\+\_\+PATH}}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{classapp__config_1_1_app_config_a9a1dfa5e0af14b02ad90a6de6fd014b7} 
+app\+\_\+config.\+App\+Config.\+load (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Path \texorpdfstring{$\vert$}{|} None }]{path}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Loads the configuration from the specified path.
 If the file does not exist, it initialises with default values.
 \end{DoxyVerb}
- \Hypertarget{classapp__config_1_1_app_config_a641289ff8ed0eb13420babe8a872126d}\index{app\_config.AppConfig@{app\_config.AppConfig}!save@{save}}
+ \Hypertarget{classapp__config_1_1_app_config_a997a5d314aae62e9f39d1b9b51a6a7a8}\index{app\_config.AppConfig@{app\_config.AppConfig}!save@{save}}
 \index{save@{save}!app\_config.AppConfig@{app\_config.AppConfig}}
 \doxysubsubsection{\texorpdfstring{save()}{save()}}
-{\footnotesize\ttfamily \label{classapp__config_1_1_app_config_a641289ff8ed0eb13420babe8a872126d} 
-app\+\_\+config.\+App\+Config.\+save (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{}]{path}{ = {\ttfamily CONFIG\+\_\+PATH}}\end{DoxyParamCaption})}
+{\footnotesize\ttfamily \label{classapp__config_1_1_app_config_a997a5d314aae62e9f39d1b9b51a6a7a8} 
+app\+\_\+config.\+App\+Config.\+save (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{Path \texorpdfstring{$\vert$}{|} None }]{path}{ = {\ttfamily None}}\end{DoxyParamCaption})}
 
 \begin{DoxyVerb}Saves the current configuration to the specified path or the default path.
 If the path is None, it uses the path set during initialisation.

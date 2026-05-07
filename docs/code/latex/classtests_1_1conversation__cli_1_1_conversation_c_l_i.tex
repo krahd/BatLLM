@@ -23,8 +23,15 @@ str {\bfseries model} = str(config.\+get("{}llm"{}, "{}model"{}))
 \Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a4e537c28514d42e87035f47369be5833}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a4e537c28514d42e87035f47369be5833} 
 int {\bfseries num\+\_\+ctx} = int(config.\+get("{}llm"{}, "{}num\+\_\+ctx"{}))
 \item 
-\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a2c801f6cfd2372cdee3a0683a194a328}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a2c801f6cfd2372cdee3a0683a194a328} 
-str {\bfseries endpoint} = f"{}\{base\}:\+\{port\}\{path\}"{}
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_aa714caf8a4a2447a27cf5f86b9105c74}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_aa714caf8a4a2447a27cf5f86b9105c74} 
+str {\bfseries base\+\_\+url} = str(config.\+get("{}llm"{}, "{}url"{})).rstrip("{}/\+"{})
+\item 
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a19222cddcb12f9fa94682e64241707cf}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a19222cddcb12f9fa94682e64241707cf} 
+int {\bfseries port} = int(config.\+get("{}llm"{}, "{}port"{}))
+\item 
+float \doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a7177380ce406f2612d132e35587bf47b}{timeout}}
+\item 
+\doxymbox{\hyperlink{classtests_1_1conversation__cli_1_1_conversation_c_l_i_ad669a7018504a7bfd68cd46c3ad21131}{provider}}
 \item 
 \Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a194b4e8089847ed5a10314d63fb500b4}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a194b4e8089847ed5a10314d63fb500b4} 
 list {\bfseries history} = \+[$\,$]\+
@@ -32,14 +39,8 @@ list {\bfseries history} = \+[$\,$]\+
 \doxysubsubsection*{Protected Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8c05cd07669afee5ffc28ed9521b8381}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a8c05cd07669afee5ffc28ed9521b8381} 
-Dict\+[str, Any]\+ {\bfseries \+\_\+post} (self, Dict\+[str, Any]\+ payload)
-\item 
 \Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_acbd4e6d2e6dd20d55c246183f0aff695}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_acbd4e6d2e6dd20d55c246183f0aff695} 
 None {\bfseries \+\_\+ensure\+\_\+system\+\_\+message} (self, Optional\+[str]\+ text)
-\item 
-\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a0f688eaf07479010cfb15ab4ca933ef3}\label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a0f688eaf07479010cfb15ab4ca933ef3} 
-Dict\+[str, Any]\+ {\bfseries \+\_\+build\+\_\+payload} (self)
 \end{DoxyCompactItemize}
 
 
@@ -103,6 +104,44 @@ Args:
     history (List[Dict[str, str]]): List of message dictionaries with 'role' and 'content'.
 \end{DoxyVerb}
  
+
+\label{doc-variable-members}
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_doc-variable-members}
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_ad669a7018504a7bfd68cd46c3ad21131}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}!provider@{provider}}
+\index{provider@{provider}!tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection{\texorpdfstring{provider}{provider}}
+{\footnotesize\ttfamily \label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_ad669a7018504a7bfd68cd46c3ad21131} 
+tests.\+conversation\+\_\+cli.\+Conversation\+CLI.\+provider}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ OllamaProvider(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ host=self.base\_url,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ port=self.port,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ model=self.model,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ )}
+
+\end{DoxyCode}
+\Hypertarget{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a7177380ce406f2612d132e35587bf47b}\index{tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}!timeout@{timeout}}
+\index{timeout@{timeout}!tests.conversation\_cli.ConversationCLI@{tests.conversation\_cli.ConversationCLI}}
+\doxysubsubsection{\texorpdfstring{timeout}{timeout}}
+{\footnotesize\ttfamily \label{classtests_1_1conversation__cli_1_1_conversation_c_l_i_a7177380ce406f2612d132e35587bf47b} 
+float tests.\+conversation\+\_\+cli.\+Conversation\+CLI.\+timeout}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ ollama\_service.resolve\_request\_timeout(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}model"{}}:\ self.model,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}model\_timeouts"{}}:\ config.get(\textcolor{stringliteral}{"{}llm"{}},\ \textcolor{stringliteral}{"{}model\_timeouts"{}})\ \textcolor{keywordflow}{or}\ \{\},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}timeout"{}}:\ config.get(\textcolor{stringliteral}{"{}llm"{}},\ \textcolor{stringliteral}{"{}timeout"{}}),}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ model=self.model,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ )}
+
+\end{DoxyCode}
+
 
 The documentation for this class was generated from the following file:\+\begin{DoxyCompactItemize}
 \item 

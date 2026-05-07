@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -109,6 +109,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a10f994eb100fe0ecbc7a8079d3b9ad20" id="r_a10f994eb100fe0ecbc7a8079d3b9ad20"><td class="memItemLeft">GameBoard&#160;</td><td class="memItemRight"><a class="el" href="#a10f994eb100fe0ecbc7a8079d3b9ad20">get_game_board</a> (self)</td></tr>
 <tr class="memitem:a6e73d393bc35b428e053555c5526ad52" id="r_a6e73d393bc35b428e053555c5526ad52"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a6e73d393bc35b428e053555c5526ad52">go_to_settings_screen</a> (self)</td></tr>
 <tr class="memitem:a22736b774db0b127860e92313731a942" id="r_a22736b774db0b127860e92313731a942"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a22736b774db0b127860e92313731a942">go_to_history_screen</a> (self, bot_id)</td></tr>
+<tr class="memitem:acac46291b3e47c710d5836a3244768ef" id="r_acac46291b3e47c710d5836a3244768ef"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#acac46291b3e47c710d5836a3244768ef">go_to_analyzer_load_screen</a> (self)</td></tr>
 <tr class="memitem:a8583e572e3dcfa5072986fa847eebdb2" id="r_a8583e572e3dcfa5072986fa847eebdb2"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a8583e572e3dcfa5072986fa847eebdb2">save_prompt</a> (self, bot_id)</td></tr>
 <tr class="memitem:ac98bdf775419855ef97755c0eac27be3" id="r_ac98bdf775419855ef97755c0eac27be3"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ac98bdf775419855ef97755c0eac27be3">set_prompt_history_text</a> (self, bot_id, text)</td></tr>
 <tr class="memitem:aebeb8ccdc96a86e081855f4e83ded4bb" id="r_aebeb8ccdc96a86e081855f4e83ded4bb"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aebeb8ccdc96a86e081855f4e83ded4bb">set_prompt_gui_input_text</a> (self, bot_id, text)</td></tr>
@@ -134,10 +135,19 @@ Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a64200d6649777a697360089a2b266eec" id="r_a64200d6649777a697360089a2b266eec"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a64200d6649777a697360089a2b266eec">_clear_confirmation_popup</a> (self, popup=None)</td></tr>
+<tr class="memitem:a21f9cbe21d73ac7a809481f3b57de5ee" id="r_a21f9cbe21d73ac7a809481f3b57de5ee"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a21f9cbe21d73ac7a809481f3b57de5ee">_show_confirmation_popup</a> (self, *args, track_exit=False, **kwargs)</td></tr>
+<tr class="memitem:a9186c76206881aba9f53d749378601ba" id="r_a9186c76206881aba9f53d749378601ba"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a9186c76206881aba9f53d749378601ba">_clear_load_prompt_dialog</a> (self, dialog=None)</td></tr>
+<tr class="memitem:adafd1c2e6b1d117bfd31b787909bb91d" id="r_adafd1c2e6b1d117bfd31b787909bb91d"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#adafd1c2e6b1d117bfd31b787909bb91d">_suspend_window_key_down</a> (self)</td></tr>
+<tr class="memitem:a5bc01ba03f6592f68d4002653b876b8e" id="r_a5bc01ba03f6592f68d4002653b876b8e"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a5bc01ba03f6592f68d4002653b876b8e">_resume_window_key_down</a> (self, *_args)</td></tr>
 <tr class="memitem:a8b2773b89ced2b8718fc11b37a9e63bb" id="r_a8b2773b89ced2b8718fc11b37a9e63bb"><td class="memItemLeft">None&#160;</td><td class="memItemRight"><a class="el" href="#a8b2773b89ced2b8718fc11b37a9e63bb">_save_session_file</a> (self, str filename)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:a85e4b08f3e799949e46a4ca604b4cb5c" id="r_a85e4b08f3e799949e46a4ca604b4cb5c"><td class="memItemLeft"><a id="a85e4b08f3e799949e46a4ca604b4cb5c" name="a85e4b08f3e799949e46a4ca604b4cb5c"></a>
+&#160;</td><td class="memItemRight"><b>_active_confirmation_popup</b> = None</td></tr>
+<tr class="memitem:a80fe566dbcedc9824af6646e8be5adb5" id="r_a80fe566dbcedc9824af6646e8be5adb5"><td class="memItemLeft"><a id="a80fe566dbcedc9824af6646e8be5adb5" name="a80fe566dbcedc9824af6646e8be5adb5"></a>
+&#160;</td><td class="memItemRight"><b>_active_load_prompt_dialog</b> = None</td></tr>
 <tr class="memitem:aee034966963f7bc9b133c400ad0b54f7" id="r_aee034966963f7bc9b133c400ad0b54f7"><td class="memItemLeft"><a id="aee034966963f7bc9b133c400ad0b54f7" name="aee034966963f7bc9b133c400ad0b54f7"></a>
 &#160;</td><td class="memItemRight"><b>_exit_confirmation_popup</b> = None</td></tr>
 </table>
@@ -171,6 +181,93 @@ Initialises the screen and sets up the history manager.
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a64200d6649777a697360089a2b266eec" name="a64200d6649777a697360089a2b266eec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64200d6649777a697360089a2b266eec">&#9670;&#160;</a></span>_clear_confirmation_popup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">home_screen.HomeScreen._clear_confirmation_popup </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>popup</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Clear tracked confirmation popups, optionally only the provided popup.</pre> 
+</div>
+</div>
+<a id="a9186c76206881aba9f53d749378601ba" name="a9186c76206881aba9f53d749378601ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9186c76206881aba9f53d749378601ba">&#9670;&#160;</a></span>_clear_load_prompt_dialog()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">home_screen.HomeScreen._clear_load_prompt_dialog </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>dialog</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Clear the tracked prompt-load dialog, optionally only for the provided dialog.</pre> 
+</div>
+</div>
+<a id="a5bc01ba03f6592f68d4002653b876b8e" name="a5bc01ba03f6592f68d4002653b876b8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bc01ba03f6592f68d4002653b876b8e">&#9670;&#160;</a></span>_resume_window_key_down()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">home_screen.HomeScreen._resume_window_key_down </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*</td>          <td class="paramname"><span class="paramname"><em>_args</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Restore the screen-level Esc handler when the home screen should own it again.</pre> 
+</div>
+</div>
 <a id="a8b2773b89ced2b8718fc11b37a9e63bb" name="a8b2773b89ced2b8718fc11b37a9e63bb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8b2773b89ced2b8718fc11b37a9e63bb">&#9670;&#160;</a></span>_save_session_file()</h2>
 
@@ -198,6 +295,70 @@ Initialises the screen and sets up the history manager.
 </table>
 </div><div class="memdoc">
 <pre class="fragment">Persist the current session into the configured save folder.</pre> 
+</div>
+</div>
+<a id="a21f9cbe21d73ac7a809481f3b57de5ee" name="a21f9cbe21d73ac7a809481f3b57de5ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21f9cbe21d73ac7a809481f3b57de5ee">&#9670;&#160;</a></span>_show_confirmation_popup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">home_screen.HomeScreen._show_confirmation_popup </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*</td>          <td class="paramname"><span class="paramname"><em>args</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>track_exit</em></span><span class="paramdefsep"> = </span><span class="paramdefval">False</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">**</td>          <td class="paramname"><span class="paramname"><em>kwargs</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Show a confirmation dialog and track it for Esc handling.</pre> 
+</div>
+</div>
+<a id="adafd1c2e6b1d117bfd31b787909bb91d" name="adafd1c2e6b1d117bfd31b787909bb91d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adafd1c2e6b1d117bfd31b787909bb91d">&#9670;&#160;</a></span>_suspend_window_key_down()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">home_screen.HomeScreen._suspend_window_key_down </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Temporarily disable the screen-level Esc handler while a modal dialog owns it.</pre> 
 </div>
 </div>
 <a id="a603c95ac6fe9ed485e75f1e7af5c7422" name="a603c95ac6fe9ed485e75f1e7af5c7422"></a>
@@ -297,6 +458,23 @@ Args:
 Returns:
     _type_: the text in the corresponding prompt text input
 </pre> 
+</div>
+</div>
+<a id="acac46291b3e47c710d5836a3244768ef" name="acac46291b3e47c710d5836a3244768ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acac46291b3e47c710d5836a3244768ef">&#9670;&#160;</a></span>go_to_analyzer_load_screen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">home_screen.HomeScreen.go_to_analyzer_load_screen </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Open the shared Game Analyzer load screen.</pre> 
 </div>
 </div>
 <a id="a22736b774db0b127860e92313731a942" name="a22736b774db0b127860e92313731a942"></a>

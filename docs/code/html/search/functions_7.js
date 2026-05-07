@@ -14,8 +14,9 @@ var searchData=
   ['get_5fprompt_5fgui_5finput_5ftext_11',['get_prompt_gui_input_text',['../classhome__screen_1_1_home_screen.html#a2b0e1a0f767172e494300855c65411e2',1,'home_screen::HomeScreen']]],
   ['get_5fprompt_5fhistory_5fselected_5ftext_12',['get_prompt_history_selected_text',['../classhome__screen_1_1_home_screen.html#ac1beec0734abf74ba9bece181b718362',1,'home_screen::HomeScreen']]],
   ['go_5fback_5fhome_13',['go_back_home',['../classhistory__screen_1_1_history_screen.html#acd4029a3f2148c0c78861e9eafea98e4',1,'history_screen::HistoryScreen']]],
-  ['go_5fto_5fhistory_5fscreen_14',['go_to_history_screen',['../classhome__screen_1_1_home_screen.html#a22736b774db0b127860e92313731a942',1,'home_screen::HomeScreen']]],
-  ['go_5fto_5fhome_5fscreen_15',['go_to_home_screen',['../classsettings__screen_1_1_settings_screen.html#a344be2c1b4f58762c1252847448b7631',1,'settings_screen::SettingsScreen']]],
-  ['go_5fto_5follama_5fconfig_5fscreen_16',['go_to_ollama_config_screen',['../classsettings__screen_1_1_settings_screen.html#a40c76b7bc67254c28e70374f6735a425',1,'settings_screen::SettingsScreen']]],
-  ['go_5fto_5fsettings_5fscreen_17',['go_to_settings_screen',['../classhome__screen_1_1_home_screen.html#a6e73d393bc35b428e053555c5526ad52',1,'home_screen::HomeScreen']]]
+  ['go_5fto_5fanalyzer_5fload_5fscreen_14',['go_to_analyzer_load_screen',['../classhome__screen_1_1_home_screen.html#acac46291b3e47c710d5836a3244768ef',1,'home_screen::HomeScreen']]],
+  ['go_5fto_5fhistory_5fscreen_15',['go_to_history_screen',['../classhome__screen_1_1_home_screen.html#a22736b774db0b127860e92313731a942',1,'home_screen::HomeScreen']]],
+  ['go_5fto_5fhome_5fscreen_16',['go_to_home_screen',['../classsettings__screen_1_1_settings_screen.html#a344be2c1b4f58762c1252847448b7631',1,'settings_screen::SettingsScreen']]],
+  ['go_5fto_5follama_5fconfig_5fscreen_17',['go_to_ollama_config_screen',['../classsettings__screen_1_1_settings_screen.html#a40c76b7bc67254c28e70374f6735a425',1,'settings_screen::SettingsScreen']]],
+  ['go_5fto_5fsettings_5fscreen_18',['go_to_settings_screen',['../classhome__screen_1_1_home_screen.html#a6e73d393bc35b428e053555c5526ad52',1,'home_screen::HomeScreen']]]
 ];

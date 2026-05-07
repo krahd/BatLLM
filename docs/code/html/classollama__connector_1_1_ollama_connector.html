@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -127,7 +127,7 @@ list[str]|None&#160;</td><td class="memItemRight"><b>stop</b> = None</td></tr>
 int|None&#160;</td><td class="memItemRight"><b>seed</b> = None</td></tr>
 <tr class="memitem:ab867159fa37289b39fb0e5f690353c91" id="r_ab867159fa37289b39fb0e5f690353c91"><td class="memItemLeft"><a id="ab867159fa37289b39fb0e5f690353c91" name="ab867159fa37289b39fb0e5f690353c91"></a>
 int|None&#160;</td><td class="memItemRight"><b>num_thread</b> = None</td></tr>
-<tr class="memitem:ab0d0097a0615ed269e466562bd572e51" id="r_ab0d0097a0615ed269e466562bd572e51"><td class="memItemLeft"><a id="ab0d0097a0615ed269e466562bd572e51" name="ab0d0097a0615ed269e466562bd572e51"></a>
+<tr class="memitem:a16ce9fa57e246ea685091a339df615ea" id="r_a16ce9fa57e246ea685091a339df615ea"><td class="memItemLeft"><a id="a16ce9fa57e246ea685091a339df615ea" name="a16ce9fa57e246ea685091a339df615ea"></a>
 str&#160;</td><td class="memItemRight"><b>model</b> = &quot;&quot;</td></tr>
 <tr class="memitem:a48e2363d0fadedb0ba6f8b7c77e6c483" id="r_a48e2363d0fadedb0ba6f8b7c77e6c483"><td class="memItemLeft"><a id="a48e2363d0fadedb0ba6f8b7c77e6c483" name="a48e2363d0fadedb0ba6f8b7c77e6c483"></a>
 int|None&#160;</td><td class="memItemRight"><b>num_ctx</b> = None</td></tr>
@@ -144,10 +144,15 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a3c9c85d4def9ea14fa3d2bb578dfe321" id="r_a3c9c85d4def9ea14fa3d2bb578dfe321"><td class="memItemLeft">Message&#160;</td><td class="memItemRight"><a class="el" href="#a3c9c85d4def9ea14fa3d2bb578dfe321">_build_user_message</a> (self, *, Dict[str, Any] game_state, str player_text)</td></tr>
 <tr class="memitem:aa0c10475e55bead97d9c55162313e689" id="r_aa0c10475e55bead97d9c55162313e689"><td class="memItemLeft">List[Message]&#160;</td><td class="memItemRight"><a class="el" href="#aa0c10475e55bead97d9c55162313e689">_get_history_ref</a> (self, int bot_id)</td></tr>
 <tr class="memitem:aabcf3f02f09ba893606f13d635194d01" id="r_aabcf3f02f09ba893606f13d635194d01"><td class="memItemLeft">None&#160;</td><td class="memItemRight"><a class="el" href="#aabcf3f02f09ba893606f13d635194d01">_trim_history_inplace</a> (self, List[Message] history)</td></tr>
+<tr class="memitem:aa3b5dc6465b1b66a2e3f49294a13df46" id="r_aa3b5dc6465b1b66a2e3f49294a13df46"><td class="memItemLeft">None&#160;</td><td class="memItemRight"><a class="el" href="#aa3b5dc6465b1b66a2e3f49294a13df46">_remove_message_instance</a> (self, List[Message] history, Message message)</td></tr>
 <tr class="memitem:a4cf0f211cdc2e541fae64991e39b873c" id="r_a4cf0f211cdc2e541fae64991e39b873c"><td class="memItemLeft">str&#160;</td><td class="memItemRight"><a class="el" href="#a4cf0f211cdc2e541fae64991e39b873c">_get_system_instructions_text</a> (self)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
+<tr class="memitem:ad7855de35d12c790caad2334214ee9e2" id="r_ad7855de35d12c790caad2334214ee9e2"><td class="memItemLeft"><a id="ad7855de35d12c790caad2334214ee9e2" name="ad7855de35d12c790caad2334214ee9e2"></a>
+str|None&#160;</td><td class="memItemRight"><b>_client_host</b> = None</td></tr>
+<tr class="memitem:a11864c4348d0f961fd4e129ec9e6bc10" id="r_a11864c4348d0f961fd4e129ec9e6bc10"><td class="memItemLeft"><a id="a11864c4348d0f961fd4e129ec9e6bc10" name="a11864c4348d0f961fd4e129ec9e6bc10"></a>
+float|str|None&#160;</td><td class="memItemRight"><b>_client_timeout</b> = None</td></tr>
 <tr class="memitem:a899cb3709b42b0e7f164cbaa8bcf7475" id="r_a899cb3709b42b0e7f164cbaa8bcf7475"><td class="memItemLeft"><a id="a899cb3709b42b0e7f164cbaa8bcf7475" name="a899cb3709b42b0e7f164cbaa8bcf7475"></a>
 str&#160;</td><td class="memItemRight"><b>_system_instructions</b> = &quot;&quot;</td></tr>
 <tr class="memitem:aed0ac850eb6db15b4b401e711aaeea7d" id="r_aed0ac850eb6db15b4b401e711aaeea7d"><td class="memItemLeft"><a id="aed0ac850eb6db15b4b401e711aaeea7d" name="aed0ac850eb6db15b4b401e711aaeea7d"></a>
@@ -295,6 +300,40 @@ context is shared or not</pre>
 Returns:
     str: _description_
 </pre> 
+</div>
+</div>
+<a id="aa3b5dc6465b1b66a2e3f49294a13df46" name="aa3b5dc6465b1b66a2e3f49294a13df46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3b5dc6465b1b66a2e3f49294a13df46">&#9670;&#160;</a></span>_remove_message_instance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"> None ollama_connector.OllamaConnector._remove_message_instance </td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>self</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">List[Message]</td>          <td class="paramname"><span class="paramname"><em>history</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Message</td>          <td class="paramname"><span class="paramname"><em>message</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Remove a specific message object from a history list if it is still present.</pre> 
 </div>
 </div>
 <a id="aabcf3f02f09ba893606f13d635194d01" name="aabcf3f02f09ba893606f13d635194d01"></a>

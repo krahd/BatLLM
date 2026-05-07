@@ -28,7 +28,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo-small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">BatLLM<span id="projectnumber">&#160;0.2.3</span>
    </div>
    <div id="projectbrief">BatLLM: a free and libre AI literacy game for human-vs-human, AI-mediated play</div>
   </td>
@@ -99,18 +99,107 @@ $(function(){initNavTree('namespaceapp__config.html','',''); });
 Classes</h2></td></tr>
 <tr class="memitem:AppConfig" id="r_AppConfig"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classapp__config_1_1_app_config.html">AppConfig</a></td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ad885a174502d7b6b66e08f1ef4db7435" id="r_ad885a174502d7b6b66e08f1ef4db7435"><td class="memItemLeft">dict&#160;</td><td class="memItemRight"><a class="el" href="#ad885a174502d7b6b66e08f1ef4db7435">_read_yaml</a> (Path path)</td></tr>
+<tr class="memitem:a34cf99fa0bee685f6b468aac92340d0d" id="r_a34cf99fa0bee685f6b468aac92340d0d"><td class="memItemLeft">None&#160;</td><td class="memItemRight"><a class="el" href="#a34cf99fa0bee685f6b468aac92340d0d">_merge_config</a> (dict target, dict overlay)</td></tr>
+<tr class="memitem:a6fcc2bd52aba52f0d8e4bc5afcb8f477" id="r_a6fcc2bd52aba52f0d8e4bc5afcb8f477"><td class="memItemLeft">dict&#160;</td><td class="memItemRight"><a class="el" href="#a6fcc2bd52aba52f0d8e4bc5afcb8f477">load_config_data</a> (Path|None path=None, *, Path shipped_path=SHIPPED_CONFIG_PATH)</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a1e8adb381456967a9740c46688d7d024" id="r_a1e8adb381456967a9740c46688d7d024"><td class="memItemLeft"><a id="a1e8adb381456967a9740c46688d7d024" name="a1e8adb381456967a9740c46688d7d024"></a>
 str&#160;</td><td class="memItemRight"><b>APP_NAME</b> = &quot;BatLLM&quot;</td></tr>
-<tr class="memitem:ace67493e0226d379fd4bdffa4af82e3e" id="r_ace67493e0226d379fd4bdffa4af82e3e"><td class="memItemLeft"><a id="ace67493e0226d379fd4bdffa4af82e3e" name="ace67493e0226d379fd4bdffa4af82e3e"></a>
-str&#160;</td><td class="memItemRight"><b>CONFIG_PATH</b> = Path(__file__).parent / &quot;config.yaml&quot;</td></tr>
+<tr class="memitem:a24188b688286dbf9db6d6684e9eb9b85" id="r_a24188b688286dbf9db6d6684e9eb9b85"><td class="memItemLeft"><a id="a24188b688286dbf9db6d6684e9eb9b85" name="a24188b688286dbf9db6d6684e9eb9b85"></a>
+str&#160;</td><td class="memItemRight"><b>SHIPPED_CONFIG_PATH</b> = Path(__file__).parent / &quot;config.yaml&quot;</td></tr>
+<tr class="memitem:ab016ab5e2c75da7d76b488609b4c7f59" id="r_ab016ab5e2c75da7d76b488609b4c7f59"><td class="memItemLeft"><a id="ab016ab5e2c75da7d76b488609b4c7f59" name="ab016ab5e2c75da7d76b488609b4c7f59"></a>
+&#160;</td><td class="memItemRight"><b>CONFIG_PATH</b> = resolve_config_path(SHIPPED_CONFIG_PATH)</td></tr>
 <tr class="memitem:ae53659198152861a832e8ccfb2c38545" id="r_ae53659198152861a832e8ccfb2c38545"><td class="memItemLeft">dict&#160;</td><td class="memItemRight"><a class="el" href="#ae53659198152861a832e8ccfb2c38545">DEFAULTS</a></td></tr>
 <tr class="memitem:a3ecea93eef033c5f2f5ebaf2e961d12b" id="r_a3ecea93eef033c5f2f5ebaf2e961d12b"><td class="memItemLeft"><a id="a3ecea93eef033c5f2f5ebaf2e961d12b" name="a3ecea93eef033c5f2f5ebaf2e961d12b"></a>
 &#160;</td><td class="memItemRight"><b>config</b> = <a class="el" href="classapp__config_1_1_app_config.html">AppConfig</a>()</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><pre class="fragment">Configuration loader module</pre> </div><a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
+<div class="textblock"><pre class="fragment">Configuration loader module</pre> </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="a34cf99fa0bee685f6b468aac92340d0d" name="a34cf99fa0bee685f6b468aac92340d0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34cf99fa0bee685f6b468aac92340d0d">&#9670;&#160;</a></span>_merge_config()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"> None app_config._merge_config </td>
+          <td>(</td>
+          <td class="paramtype">dict</td>          <td class="paramname"><span class="paramname"><em>target</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">dict</td>          <td class="paramname"><span class="paramname"><em>overlay</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Merge a sectioned config mapping into the target mapping.</pre> 
+</div>
+</div>
+<a id="ad885a174502d7b6b66e08f1ef4db7435" name="ad885a174502d7b6b66e08f1ef4db7435"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad885a174502d7b6b66e08f1ef4db7435">&#9670;&#160;</a></span>_read_yaml()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"> dict app_config._read_yaml </td>
+          <td>(</td>
+          <td class="paramtype">Path</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<pre class="fragment">Read a YAML mapping, returning an empty mapping for missing or empty files.</pre> 
+</div>
+</div>
+<a id="a6fcc2bd52aba52f0d8e4bc5afcb8f477" name="a6fcc2bd52aba52f0d8e4bc5afcb8f477"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fcc2bd52aba52f0d8e4bc5afcb8f477">&#9670;&#160;</a></span>load_config_data()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"> dict app_config.load_config_data </td>
+          <td>(</td>
+          <td class="paramtype">Path | None </td>          <td class="paramname"><span class="paramname"><em>path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">None</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Path </td>          <td class="paramname"><span class="paramname"><em>shipped_path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">SHIPPED_CONFIG_PATH</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment">Load defaults, then the shipped config, then an optional user overlay config.</pre> 
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
 <a id="ae53659198152861a832e8ccfb2c38545" name="ae53659198152861a832e8ccfb2c38545"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae53659198152861a832e8ccfb2c38545">&#9670;&#160;</a></span>DEFAULTS</h2>
 
@@ -124,21 +213,30 @@ str&#160;</td><td class="memItemRight"><b>CONFIG_PATH</b> = Path(__file__).paren
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line"><span class="lineno">    1</span>=  {</div>
 <div class="line"><span class="lineno">    2</span>    <span class="stringliteral">&quot;game&quot;</span>: {</div>
-<div class="line"><span class="lineno">    3</span>        <span class="stringliteral">&quot;total_rounds&quot;</span>: 3,</div>
-<div class="line"><span class="lineno">    4</span>        <span class="stringliteral">&quot;turns_per_round&quot;</span>: 5,</div>
+<div class="line"><span class="lineno">    3</span>        <span class="stringliteral">&quot;total_rounds&quot;</span>: 2,</div>
+<div class="line"><span class="lineno">    4</span>        <span class="stringliteral">&quot;turns_per_round&quot;</span>: 8,</div>
 <div class="line"><span class="lineno">    5</span>        <span class="stringliteral">&quot;independent_contexts&quot;</span>: <span class="keyword">True</span>,</div>
-<div class="line"><span class="lineno">    6</span>        <span class="stringliteral">&quot;prompt_augmentation&quot;</span>: <span class="keyword">False</span>,</div>
-<div class="line"><span class="lineno">    7</span>        <span class="stringliteral">&quot;initial_health&quot;</span>: 20,</div>
-<div class="line"><span class="lineno">    8</span>        <span class="stringliteral">&quot;bullet_damage&quot;</span>: 3,</div>
-<div class="line"><span class="lineno">    9</span>        <span class="stringliteral">&quot;shield_size&quot;</span>: 20,</div>
-<div class="line"><span class="lineno">   10</span>    },</div>
-<div class="line"><span class="lineno">   11</span>    <span class="stringliteral">&quot;ui&quot;</span>: {</div>
-<div class="line"><span class="lineno">   12</span>        <span class="stringliteral">&quot;font_size&quot;</span>: 14,</div>
-<div class="line"><span class="lineno">   13</span>        <span class="stringliteral">&quot;frame_rate&quot;</span>: 60,</div>
-<div class="line"><span class="lineno">   14</span>        <span class="stringliteral">&quot;confirm_on_exit&quot;</span>: <span class="keyword">True</span>,</div>
-<div class="line"><span class="lineno">   15</span>        <span class="stringliteral">&quot;prompt_save_on_exit&quot;</span>: <span class="keyword">True</span>,</div>
-<div class="line"><span class="lineno">   16</span>    },</div>
-<div class="line"><span class="lineno">   17</span>}</div>
+<div class="line"><span class="lineno">    6</span>        <span class="stringliteral">&quot;prompt_augmentation&quot;</span>: <span class="keyword">True</span>,</div>
+<div class="line"><span class="lineno">    7</span>        <span class="stringliteral">&quot;initial_health&quot;</span>: 30,</div>
+<div class="line"><span class="lineno">    8</span>        <span class="stringliteral">&quot;bullet_damage&quot;</span>: 5,</div>
+<div class="line"><span class="lineno">    9</span>        <span class="stringliteral">&quot;bullet_diameter&quot;</span>: 0.02,</div>
+<div class="line"><span class="lineno">   10</span>        <span class="stringliteral">&quot;shield_size&quot;</span>: 70,</div>
+<div class="line"><span class="lineno">   11</span>    },</div>
+<div class="line"><span class="lineno">   12</span>    <span class="stringliteral">&quot;ui&quot;</span>: {</div>
+<div class="line"><span class="lineno">   13</span>        <span class="stringliteral">&quot;font_size&quot;</span>: 16,</div>
+<div class="line"><span class="lineno">   14</span>        <span class="stringliteral">&quot;frame_rate&quot;</span>: 60,</div>
+<div class="line"><span class="lineno">   15</span>        <span class="stringliteral">&quot;confirm_on_exit&quot;</span>: <span class="keyword">True</span>,</div>
+<div class="line"><span class="lineno">   16</span>        <span class="stringliteral">&quot;prompt_save_on_exit&quot;</span>: <span class="keyword">False</span>,</div>
+<div class="line"><span class="lineno">   17</span>        <span class="stringliteral">&quot;auto_start_ollama&quot;</span>: <span class="keyword">False</span>,</div>
+<div class="line"><span class="lineno">   18</span>        <span class="stringliteral">&quot;stop_ollama_on_exit&quot;</span>: <span class="keyword">False</span>,</div>
+<div class="line"><span class="lineno">   19</span>    },</div>
+<div class="line"><span class="lineno">   20</span>    <span class="stringliteral">&quot;llm&quot;</span>: {</div>
+<div class="line"><span class="lineno">   21</span>        <span class="stringliteral">&quot;last_served_model&quot;</span>: <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><span class="lineno">   22</span>        <span class="stringliteral">&quot;timeout&quot;</span>: <span class="keywordtype">None</span>,</div>
+<div class="line"><span class="lineno">   23</span>        <span class="stringliteral">&quot;model_timeouts&quot;</span>: {},</div>
+<div class="line"><span class="lineno">   24</span>        <span class="stringliteral">&quot;warmup_timeout&quot;</span>: 30.0,</div>
+<div class="line"><span class="lineno">   25</span>    },</div>
+<div class="line"><span class="lineno">   26</span>}</div>
 </div><!-- fragment -->
 </div>
 </div>

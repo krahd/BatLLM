@@ -13,6 +13,8 @@
 \item 
 \doxymbox{\hyperlink{classhistory__manager_1_1_history_manager_a73970bd3a3b977ed8b98c2a43f4867ba}{end\+\_\+round}} (self)
 \item 
+\doxymbox{\hyperlink{classhistory__manager_1_1_history_manager_a93205f61921f3bc45c8c409ecb8c13eb}{cancel\+\_\+round}} (self, str reason, \texorpdfstring{$\ast$}{*}, int\texorpdfstring{$\vert$}{|}None cancelled\+\_\+by\+\_\+bot\+\_\+id=None)
+\item 
 \doxymbox{\hyperlink{classhistory__manager_1_1_history_manager_a2b51546288d5c667f5a9cc2e8b8f90ca}{start\+\_\+turn}} (self, game)
 \item 
 \doxymbox{\hyperlink{classhistory__manager_1_1_history_manager_a898a8b37374cf9886e2c12093b170635}{record\+\_\+play}} (self, Bot \doxymbox{\hyperlink{namespacebot}{bot}})
@@ -75,7 +77,8 @@ Usage:
 - Instantiate once per session/run.
 - Call start_game(), start_round(), start_turn(), and their corresponding end_* methods at appropriate times.
 - Use record_play()
-- Retrieve history for display, debugging, or saving via to_json(), to_text(), to_compact_text(), etc.
+- Retrieve history for display, debugging, or saving via save_session(), to_text(),
+  to_compact_text(), etc.
 
 Attributes:
     games (list): List of all games played in the session.
@@ -99,7 +102,6 @@ Methods:
 
     save_session(filepath): Save the session history to a JSON file.
 
-    to_json(): Get the full session history as a JSON string.
     to_text(): Get the full session history as a human-readable string.
     to_compact_text(): Get a compact, UI-friendly summary of the session history.
     to_compact_text_for_bot(bot_id): Get a compact, per-bot summary of the session history.
@@ -145,6 +147,13 @@ Returns a dictionary of bot states (keyed by bot name or id).
 history\+\_\+manager.\+History\+Manager.\+\_\+now\+\_\+iso (\begin{DoxyParamCaption}\item[{}]{self}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
 
 \begin{DoxyVerb}Get current timestamp string in ISO 8601 format.\end{DoxyVerb}
+ \Hypertarget{classhistory__manager_1_1_history_manager_a93205f61921f3bc45c8c409ecb8c13eb}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!cancel\_round@{cancel\_round}}
+\index{cancel\_round@{cancel\_round}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
+\doxysubsubsection{\texorpdfstring{cancel\_round()}{cancel\_round()}}
+{\footnotesize\ttfamily \label{classhistory__manager_1_1_history_manager_a93205f61921f3bc45c8c409ecb8c13eb} 
+history\+\_\+manager.\+History\+Manager.\+cancel\+\_\+round (\begin{DoxyParamCaption}\item[{}]{self}{, }\item[{str}]{reason}{, }\item[{\texorpdfstring{$\ast$}{*}}]{}{, }\item[{int \texorpdfstring{$\vert$}{|} None }]{cancelled\+\_\+by\+\_\+bot\+\_\+id}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Abort the active round while keeping a cancelled-round record in history.\end{DoxyVerb}
  \Hypertarget{classhistory__manager_1_1_history_manager_a43180d8d2e5a6fe2f8fcfe6f1de76b72}\index{history\_manager.HistoryManager@{history\_manager.HistoryManager}!end\_game@{end\_game}}
 \index{end\_game@{end\_game}!history\_manager.HistoryManager@{history\_manager.HistoryManager}}
 \doxysubsubsection{\texorpdfstring{end\_game()}{end\_game()}}

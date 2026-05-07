@@ -47,7 +47,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"classtests_1_1test__close__prompt__behavior_1_1_fake_field.html"
+"classollama__connector_1_1_ollama_connector.html#ac99b51bfc3b52f75e81c11b88262cb4d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

@@ -1,0 +1,214 @@
+\doxysection{service Namespace Reference}
+\hypertarget{namespaceservice}{}\label{namespaceservice}\index{service@{service}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Path \doxymbox{\hyperlink{namespaceservice_a7025cef667c2221d58215e9366c2415a}{default\+\_\+config\+\_\+path}} ()
+\item 
+dict\+[str, Any]\+ \doxymbox{\hyperlink{namespaceservice_a7c491e61686ffc8c66f9f1df385bdd10}{load\+\_\+config\+\_\+data}} (Path\texorpdfstring{$\vert$}{|}None path=None)
+\item 
+dict\+[str, Any]\+ \doxymbox{\hyperlink{namespaceservice_a5273bcac11a97b423e46529db0068295}{load\+\_\+llm\+\_\+config}} (Path\texorpdfstring{$\vert$}{|}None path=None)
+\item 
+\Hypertarget{namespaceservice_ac205c8dbdc16d13e14128ff9b7dd3d0e}\label{namespaceservice_ac205c8dbdc16d13e14128ff9b7dd3d0e} 
+float\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+parse\+\_\+positive\+\_\+timeout} (Any raw\+\_\+timeout)
+\item 
+\Hypertarget{namespaceservice_a17b2e5af954df2e7639d4860e0b9e330}\label{namespaceservice_a17b2e5af954df2e7639d4860e0b9e330} 
+float\texorpdfstring{$\vert$}{|}None {\bfseries common\+\_\+model\+\_\+timeout} (str model\+\_\+name)
+\item 
+\Hypertarget{namespaceservice_a1e66852734e4d097ac44643a4d4a65fb}\label{namespaceservice_a1e66852734e4d097ac44643a4d4a65fb} 
+float {\bfseries resolve\+\_\+warmup\+\_\+timeout} (Mapping\+[str, Any]\+ llm, float default=DEFAULT\+\_\+\+WARMUP\+\_\+\+TIMEOUT)
+\item 
+\Hypertarget{namespaceservice_a5153f73b228994c90a1655163d08db36}\label{namespaceservice_a5153f73b228994c90a1655163d08db36} 
+dict\+[str, Any]\+ {\bfseries lookup\+\_\+model\+\_\+metadata} (str\texorpdfstring{$\vert$}{|}None model=None, \texorpdfstring{$\ast$}{*}, str\texorpdfstring{$\vert$}{|}None host=None, int\texorpdfstring{$\vert$}{|}None port=None)
+\item 
+\Hypertarget{namespaceservice_a30ea9712de7dc3d222778024766b941c}\label{namespaceservice_a30ea9712de7dc3d222778024766b941c} 
+dict\+[str, Any]\+ {\bfseries build\+\_\+saved\+\_\+llm\+\_\+metadata\+\_\+snapshot} (Path\texorpdfstring{$\vert$}{|}None path=None)
+\item 
+\Hypertarget{namespaceservice_a78f7e95645b57c4a79a128aec518875a}\label{namespaceservice_a78f7e95645b57c4a79a128aec518875a} 
+dict\+[str, Any]\+ {\bfseries load\+\_\+remote\+\_\+timeout\+\_\+catalog} (Path path=REMOTE\+\_\+\+TIMEOUT\+\_\+\+CATALOG\+\_\+\+PATH)
+\item 
+\Hypertarget{namespaceservice_a21168d05c72e69ffd56d392c8e21d4bc}\label{namespaceservice_a21168d05c72e69ffd56d392c8e21d4bc} 
+float\texorpdfstring{$\vert$}{|}None {\bfseries \+\_\+parse\+\_\+model\+\_\+scale\+\_\+billions} (str size\+\_\+label)
+\item 
+\Hypertarget{namespaceservice_ad924377ba9d2f5222e8858925dcac805}\label{namespaceservice_ad924377ba9d2f5222e8858925dcac805} 
+tuple\+[float, str]\+ {\bfseries estimate\+\_\+remote\+\_\+model\+\_\+timeout\+\_\+details} (str model\+\_\+name, \texorpdfstring{$\ast$}{*}, str size\+\_\+label="{}"{}, float\texorpdfstring{$\vert$}{|}None default=None)
+\item 
+\Hypertarget{namespaceservice_a1f54d7a7825428cb6774345498ffd66e}\label{namespaceservice_a1f54d7a7825428cb6774345498ffd66e} 
+tuple\+[float, str]\+ {\bfseries resolve\+\_\+request\+\_\+timeout\+\_\+details} (Mapping\+[str, Any]\+ llm, float default=120.\+0, \texorpdfstring{$\ast$}{*}, str\texorpdfstring{$\vert$}{|}None model=None)
+\item 
+\Hypertarget{namespaceservice_a494cbca19f1ccf8b6cfbbbac31275209}\label{namespaceservice_a494cbca19f1ccf8b6cfbbbac31275209} 
+float {\bfseries resolve\+\_\+request\+\_\+timeout} (Mapping\+[str, Any]\+ llm, float default=120.\+0, \texorpdfstring{$\ast$}{*}, str\texorpdfstring{$\vert$}{|}None model=None)
+\item 
+\Hypertarget{namespaceservice_a80667eed2b33ce95f8c110bacfe4dfe9}\label{namespaceservice_a80667eed2b33ce95f8c110bacfe4dfe9} 
+str {\bfseries preferred\+\_\+start\+\_\+model} (Mapping\+[str, Any]\+ llm)
+\item 
+\Hypertarget{namespaceservice_ae08ae138a57ce856a1285e2337495479}\label{namespaceservice_ae08ae138a57ce856a1285e2337495479} 
+None {\bfseries save\+\_\+last\+\_\+served\+\_\+model} (str model, Path\texorpdfstring{$\vert$}{|}None path=None)
+\item 
+\Hypertarget{namespaceservice_abf324f6d578f48316fabb197e3a936e6}\label{namespaceservice_abf324f6d578f48316fabb197e3a936e6} 
+list\+[Path]\+ {\bfseries ollama\+\_\+binary\+\_\+candidates} ()
+\item 
+\Hypertarget{namespaceservice_adbe1f900c0ce1ac7099ccf685822769a}\label{namespaceservice_adbe1f900c0ce1ac7099ccf685822769a} 
+str {\bfseries resolve\+\_\+ollama\+\_\+command} ()
+\item 
+\Hypertarget{namespaceservice_a85ae336d7844a96d7f0c145e2363ee0f}\label{namespaceservice_a85ae336d7844a96d7f0c145e2363ee0f} 
+bool {\bfseries ollama\+\_\+installed} ()
+\item 
+\Hypertarget{namespaceservice_a89ac976c2bbe3bada5ccded957ac19be}\label{namespaceservice_a89ac976c2bbe3bada5ccded957ac19be} 
+tuple\+[list\+[str]\+, str]\+ {\bfseries install\+\_\+command\+\_\+for\+\_\+current\+\_\+platform} (str\texorpdfstring{$\vert$}{|}None platform\+\_\+name=None)
+\item 
+\Hypertarget{namespaceservice_a1c704c7b7890811c7a6d9c3d41533350}\label{namespaceservice_a1c704c7b7890811c7a6d9c3d41533350} 
+str {\bfseries ollama\+\_\+version\+\_\+text} (str\texorpdfstring{$\vert$}{|}None host=None)
+\item 
+\Hypertarget{namespaceservice_ac65a517a9569203d1c928df7b326f543}\label{namespaceservice_ac65a517a9569203d1c928df7b326f543} 
+tuple\+[int, str]\+ {\bfseries install\+\_\+service} (bool reinstall=False)
+\item 
+\Hypertarget{namespaceservice_a62b367cb734f6d5952106e928d53bd77}\label{namespaceservice_a62b367cb734f6d5952106e928d53bd77} 
+str {\bfseries endpoint\+\_\+url} (str url, int port, str path)
+\item 
+\Hypertarget{namespaceservice_aa4502ebd66758d5b6ed39a20eb52a376}\label{namespaceservice_aa4502ebd66758d5b6ed39a20eb52a376} 
+dict {\bfseries json\+\_\+get} (str url, float timeout=5.\+0)
+\item 
+\Hypertarget{namespaceservice_ac539fe594a1556d6a843a6dc56e8a289}\label{namespaceservice_ac539fe594a1556d6a843a6dc56e8a289} 
+dict {\bfseries json\+\_\+post} (str url, dict payload, float timeout=60.\+0)
+\item 
+\Hypertarget{namespaceservice_ad42454bc435615f188eda698b63b974a}\label{namespaceservice_ad42454bc435615f188eda698b63b974a} 
+bool {\bfseries server\+\_\+is\+\_\+up} (str url, int port)
+\item 
+\Hypertarget{namespaceservice_ac194b387581c76e7ffd5088bb5378b02}\label{namespaceservice_ac194b387581c76e7ffd5088bb5378b02} 
+dict\+[str, object]\+ {\bfseries inspect\+\_\+service\+\_\+state} (Path\texorpdfstring{$\vert$}{|}None config\+\_\+path=None)
+\item 
+\Hypertarget{namespaceservice_a931270a5cb6868f6e38942e2ac9cdc6d}\label{namespaceservice_a931270a5cb6868f6e38942e2ac9cdc6d} 
+subprocess.\+Completed\+Process {\bfseries run\+\_\+ollama\+\_\+command} (\texorpdfstring{$\ast$}{*}str args, str\texorpdfstring{$\vert$}{|}None host=None)
+\item 
+\Hypertarget{namespaceservice_a42a5cf39e8744a717cb1989628dbd935}\label{namespaceservice_a42a5cf39e8744a717cb1989628dbd935} 
+subprocess.\+Popen {\bfseries start\+\_\+detached\+\_\+ollama\+\_\+serve} (str host)
+\item 
+\Hypertarget{namespaceservice_a7824f3f878e385d055206c7ccdfe36d1}\label{namespaceservice_a7824f3f878e385d055206c7ccdfe36d1} 
+None {\bfseries wait\+\_\+until\+\_\+ready} (str url, int port, float timeout\+\_\+seconds=60.\+0)
+\item 
+\Hypertarget{namespaceservice_a1466a1cf88af1f2ac8db37b338bdaa0d}\label{namespaceservice_a1466a1cf88af1f2ac8db37b338bdaa0d} 
+None {\bfseries preload\+\_\+model} (str url, int port, str model, float timeout=120.\+0)
+\item 
+\Hypertarget{namespaceservice_a3fc95877e7cf7767d4271846180a3c47}\label{namespaceservice_a3fc95877e7cf7767d4271846180a3c47} 
+int {\bfseries start\+\_\+service} (Path\texorpdfstring{$\vert$}{|}None config\+\_\+path=None, float\texorpdfstring{$\vert$}{|}None warmup\+\_\+timeout=None)
+\item 
+\Hypertarget{namespaceservice_a3d5c30e29adc2ab6de030e207f813b97}\label{namespaceservice_a3d5c30e29adc2ab6de030e207f813b97} 
+list\+[str]\+ {\bfseries running\+\_\+model\+\_\+names} (str host)
+\item 
+\Hypertarget{namespaceservice_abe2af6bd6db0108ac2daae8c02777f70}\label{namespaceservice_abe2af6bd6db0108ac2daae8c02777f70} 
+list\+[int]\+ {\bfseries find\+\_\+ollama\+\_\+listener\+\_\+pids} (int port)
+\item 
+\Hypertarget{namespaceservice_a2cac9700409ebb2ecada90af13d875d2}\label{namespaceservice_a2cac9700409ebb2ecada90af13d875d2} 
+int {\bfseries stop\+\_\+service} (Path\texorpdfstring{$\vert$}{|}None config\+\_\+path=None, bool verbose=False)
+\item 
+\Hypertarget{namespaceservice_a064d38a5c0473c5b632064a6b647679b}\label{namespaceservice_a064d38a5c0473c5b632064a6b647679b} 
+ \textquotesingle{}argparse.\+Argument\+Parser\textquotesingle{} {\bfseries build\+\_\+parser} ()
+\item 
+\Hypertarget{namespaceservice_ac8e2b824ff8489cd53701a38b334ba78}\label{namespaceservice_ac8e2b824ff8489cd53701a38b334ba78} 
+int {\bfseries main} (list\+[str]\+\texorpdfstring{$\vert$}{|}None argv=None)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceservice_a91026e724bcd4376c501e97f79235443}\label{namespaceservice_a91026e724bcd4376c501e97f79235443} 
+{\bfseries \+\_\+logger} = logging.\+get\+Logger(\+\_\+\+\_\+name\+\_\+\+\_\+)
+\item 
+\Hypertarget{namespaceservice_a14d1ad7e5e193bea4308427d962b9b03}\label{namespaceservice_a14d1ad7e5e193bea4308427d962b9b03} 
+{\bfseries ROOT} = Path(\+\_\+\+\_\+file\+\_\+\+\_\+).resolve().parents\+[2]\+
+\item 
+\Hypertarget{namespaceservice_a75005b5114a2dfcf0668f323de8168dc}\label{namespaceservice_a75005b5114a2dfcf0668f323de8168dc} 
+str {\bfseries SHIPPED\+\_\+\+CONFIG\+\_\+\+PATH} = ROOT /\+ "{}src"{} /\+ "{}configs"{} /\+ "{}config.\+yaml"{}
+\item 
+\Hypertarget{namespaceservice_a0dc575e51f5c65e37d5ad3ee667fc580}\label{namespaceservice_a0dc575e51f5c65e37d5ad3ee667fc580} 
+str {\bfseries REMOTE\+\_\+\+TIMEOUT\+\_\+\+CATALOG\+\_\+\+PATH} = ROOT /\+ "{}src"{} /\+ "{}assets"{} /\+ "{}ollama\+\_\+remote\+\_\+timeout\+\_\+catalog.\+json"{}
+\item 
+\Hypertarget{namespaceservice_ae8e19f471a72b9453ff73b58372aaa22}\label{namespaceservice_ae8e19f471a72b9453ff73b58372aaa22} 
+str {\bfseries UNIX\+\_\+\+INSTALL\+\_\+\+URL} = "{}https:\+/\+/\+ollama.\+com/\+install.\+sh"{}
+\item 
+\Hypertarget{namespaceservice_a46c2e347be6276ad1fa08638bb0442e8}\label{namespaceservice_a46c2e347be6276ad1fa08638bb0442e8} 
+str {\bfseries WINDOWS\+\_\+\+INSTALL\+\_\+\+URL} = "{}https:\+/\+/\+ollama.\+com/\+install.\+ps1"{}
+\item 
+dict \doxymbox{\hyperlink{namespaceservice_ac68308238a001e879f6c0f854254dcc1}{COMMON\+\_\+\+MODEL\+\_\+\+TIMEOUTS}}
+\item 
+\Hypertarget{namespaceservice_a812dd1b377c520b49cd3a34ae231d4ae}\label{namespaceservice_a812dd1b377c520b49cd3a34ae231d4ae} 
+float {\bfseries DEFAULT\+\_\+\+WARMUP\+\_\+\+TIMEOUT} = 30.\+0
+\item 
+\Hypertarget{namespaceservice_a38f0e960767cad7e581fd07b8acb9df7}\label{namespaceservice_a38f0e960767cad7e581fd07b8acb9df7} 
+{\bfseries CONFIG\+\_\+\+PATH} = resolve\+\_\+config\+\_\+path(SHIPPED\+\_\+\+CONFIG\+\_\+\+PATH)
+\item 
+\Hypertarget{namespaceservice_abedd7c7f269504c9b2acbcc0f53d20de}\label{namespaceservice_abedd7c7f269504c9b2acbcc0f53d20de} 
+{\bfseries psutil} = None
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Centralized Modelito-based Ollama lifecycle helpers and BatLLM LLM helpers.
+
+This module delegates lifecycle operations to `modelito.ollama_service` and
+exposes the small set of BatLLM-specific helper utilities (timeouts, config
+loading, and a few CLI helpers) that the UI and tests expect.
+
+Modelito is required; this module re-exports commonly-used helpers and
+implements BatLLM-specific behaviour where appropriate.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespaceservice_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespaceservice_a7025cef667c2221d58215e9366c2415a}\index{service@{service}!default\_config\_path@{default\_config\_path}}
+\index{default\_config\_path@{default\_config\_path}!service@{service}}
+\doxysubsubsection{\texorpdfstring{default\_config\_path()}{default\_config\_path()}}
+{\footnotesize\ttfamily \label{namespaceservice_a7025cef667c2221d58215e9366c2415a} 
+ Path service.\+default\+\_\+config\+\_\+path (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the active runtime config path for the current process.\end{DoxyVerb}
+ \Hypertarget{namespaceservice_a7c491e61686ffc8c66f9f1df385bdd10}\index{service@{service}!load\_config\_data@{load\_config\_data}}
+\index{load\_config\_data@{load\_config\_data}!service@{service}}
+\doxysubsubsection{\texorpdfstring{load\_config\_data()}{load\_config\_data()}}
+{\footnotesize\ttfamily \label{namespaceservice_a7c491e61686ffc8c66f9f1df385bdd10} 
+ dict\+[str, Any]\+ service.\+load\+\_\+config\+\_\+data (\begin{DoxyParamCaption}\item[{Path \texorpdfstring{$\vert$}{|} None }]{path}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load the shipped config plus any active user overlay config.\end{DoxyVerb}
+ \Hypertarget{namespaceservice_a5273bcac11a97b423e46529db0068295}\index{service@{service}!load\_llm\_config@{load\_llm\_config}}
+\index{load\_llm\_config@{load\_llm\_config}!service@{service}}
+\doxysubsubsection{\texorpdfstring{load\_llm\_config()}{load\_llm\_config()}}
+{\footnotesize\ttfamily \label{namespaceservice_a5273bcac11a97b423e46529db0068295} 
+ dict\+[str, Any]\+ service.\+load\+\_\+llm\+\_\+config (\begin{DoxyParamCaption}\item[{Path \texorpdfstring{$\vert$}{|} None }]{path}{ = {\ttfamily None}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Load the LLM configuration required to manage the local Ollama service.
+
+Behavior:
+- If `path` is None, prefer `modelito.load_llm_config()` to preserve modelito's
+  default behaviour.
+- If `path` is provided, use the local shipped config (`SHIPPED_CONFIG_PATH`)
+  plus any overlay at `path`. This ensures callers (and tests) that monkeypatch
+  `SHIPPED_CONFIG_PATH` get the patched file.
+\end{DoxyVerb}
+ 
+
+\label{doc-var-members}
+\Hypertarget{namespaceservice_doc-var-members}
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespaceservice_ac68308238a001e879f6c0f854254dcc1}\index{service@{service}!COMMON\_MODEL\_TIMEOUTS@{COMMON\_MODEL\_TIMEOUTS}}
+\index{COMMON\_MODEL\_TIMEOUTS@{COMMON\_MODEL\_TIMEOUTS}!service@{service}}
+\doxysubsubsection{\texorpdfstring{COMMON\_MODEL\_TIMEOUTS}{COMMON\_MODEL\_TIMEOUTS}}
+{\footnotesize\ttfamily \label{namespaceservice_ac68308238a001e879f6c0f854254dcc1} 
+dict service.\+COMMON\+\_\+\+MODEL\+\_\+\+TIMEOUTS}
+
+{\bfseries Initial value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ \{}
+\DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{"{}mistral-\/small"{}}:\ 60.0,}
+\DoxyCodeLine{00003\ \ \ \ \ \textcolor{stringliteral}{"{}mistral-\/small:latest"{}}:\ 60.0,}
+\DoxyCodeLine{00004\ \ \ \ \ \textcolor{stringliteral}{"{}smollm2"{}}:\ 35.0,}
+\DoxyCodeLine{00005\ \ \ \ \ \textcolor{stringliteral}{"{}smollm2:latest"{}}:\ 35.0,}
+\DoxyCodeLine{00006\ \ \ \ \ \textcolor{stringliteral}{"{}llama3.2"{}}:\ 75.0,}
+\DoxyCodeLine{00007\ \ \ \ \ \textcolor{stringliteral}{"{}llama3.2:latest"{}}:\ 75.0,}
+\DoxyCodeLine{00008\ \ \ \ \ \textcolor{stringliteral}{"{}phi3"{}}:\ 90.0,}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{stringliteral}{"{}phi3:14b"{}}:\ 90.0,}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{stringliteral}{"{}qwen3:30b"{}}:\ 120.0,}
+\DoxyCodeLine{00011\ \}}
+
+\end{DoxyCode}

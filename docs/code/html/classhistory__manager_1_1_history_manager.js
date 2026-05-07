@@ -4,6 +4,7 @@ var classhistory__manager_1_1_history_manager =
     [ "_determine_winner", "classhistory__manager_1_1_history_manager.html#af90e102f24860bcb5b1d4042f93c08c2", null ],
     [ "_get_bots_state", "classhistory__manager_1_1_history_manager.html#a6d8f10baaeb03f45c51aa8f1614de477", null ],
     [ "_now_iso", "classhistory__manager_1_1_history_manager.html#a1c4a6bcf1989bf682d5a41c82f3f0527", null ],
+    [ "cancel_round", "classhistory__manager_1_1_history_manager.html#a93205f61921f3bc45c8c409ecb8c13eb", null ],
     [ "end_game", "classhistory__manager_1_1_history_manager.html#a43180d8d2e5a6fe2f8fcfe6f1de76b72", null ],
     [ "end_round", "classhistory__manager_1_1_history_manager.html#a73970bd3a3b977ed8b98c2a43f4867ba", null ],
     [ "end_turn", "classhistory__manager_1_1_history_manager.html#a1bba5f6c62258d570cbb28da246be776", null ],

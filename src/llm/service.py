@@ -536,16 +536,7 @@ def start_service(config_path: Path | None = None, warmup_timeout: float | None 
         try:
             starter = getattr(_MODELITO, "start_service", None)
             if callable(starter):
-                # Prefer delegating to modelito, but if it fails (non-zero),
-                # fall back to the local implementation so BatLLM can still
-                # attempt to start the Ollama server.
-                try:
-                    rc = starter(None, warmup_timeout=resolved_warmup_timeout)
-                except Exception:
-                    rc = 1
-                if rc == 0:
-                    return 0
-                # fall through to local start implementation on non-zero rc
+                return int(starter(None, warmup_timeout=resolved_warmup_timeout))
         except Exception:
             pass
     model = preferred_start_model(llm)
@@ -695,6 +686,7 @@ def stop_service(config_path: Path | None = None, verbose: bool = False) -> int:
             print(f"No process is listening on port {port} (already stopped?).")
         return 0
     killed = False
+    terminated_procs = []
     try:
         import psutil as _ps
     except Exception:
@@ -713,8 +705,10 @@ def stop_service(config_path: Path | None = None, verbose: bool = False) -> int:
             print(f"Stopping ollama serve PID {pid} (port {port})")
         proc.terminate()
         killed = True
-    _gone, alive = _ps.wait_procs([_ps.Process(pid)
-                                  for pid in pids if _ps.pid_exists(pid)], timeout=3.0)
+        terminated_procs.append(proc)
+    alive = []
+    if terminated_procs:
+        _gone, alive = _ps.wait_procs(terminated_procs, timeout=3.0)
     for proc in alive:
         try:
             proc.kill()

@@ -1,0 +1,38 @@
+\doxysection{compat Namespace Reference}
+\hypertarget{namespacecompat}{}\label{namespacecompat}\index{compat@{compat}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+None \doxymbox{\hyperlink{namespacecompat_ab74dcc1ba7d2f1481a2633bdeb414d5d}{require\+\_\+supported\+\_\+python}} (str app\+\_\+name="{}Bat\+LLM"{})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacecompat_a3e335b492159e90bfbac7ae0160c437c}\label{namespacecompat_a3e335b492159e90bfbac7ae0160c437c} 
+tuple {\bfseries MIN\+\_\+\+PYTHON} = (3, 10)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Compatibility helpers.
+
+Keep a single place for small runtime checks such as Python version
+requirements so entry scripts can import and run them early.
+\end{DoxyVerb}
+ 
+
+\label{doc-func-members}
+\Hypertarget{namespacecompat_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacecompat_ab74dcc1ba7d2f1481a2633bdeb414d5d}\index{compat@{compat}!require\_supported\_python@{require\_supported\_python}}
+\index{require\_supported\_python@{require\_supported\_python}!compat@{compat}}
+\doxysubsubsection{\texorpdfstring{require\_supported\_python()}{require\_supported\_python()}}
+{\footnotesize\ttfamily \label{namespacecompat_ab74dcc1ba7d2f1481a2633bdeb414d5d} 
+ None compat.\+require\+\_\+supported\+\_\+python (\begin{DoxyParamCaption}\item[{str }]{app\+\_\+name}{ = {\ttfamily "{}BatLLM"{}}}\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Exit early with a clear message on unsupported Python versions.
+
+Args:
+    app_name: Display name used in the error message.
+\end{DoxyVerb}
+ 
