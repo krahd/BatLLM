@@ -10,11 +10,14 @@ from util.utils import _maybe_float, _maybe_int
 from util.paths import resolve_repo_relative
 from configs.app_config import config
 from llm import service as ollama_service
+from modelito import Client as ModelitoClient
+from modelito import Message as ModelitoMessage, OllamaProvider
 
 import json
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional
+from urllib.parse import urlparse
 
 try:
     import httpcore
@@ -26,17 +29,57 @@ try:
 except ImportError:  # pragma: no cover - dependency is normally present via ollama/httpx
     httpx = None
 
-if TYPE_CHECKING:
-    # Only imported for type checking; won't run at runtime.
-    from ollama._types import ChatResponse
+def _normalize_host_and_port(host: str) -> tuple[str, int]:
+    raw_host = str(host or "http://127.0.0.1").strip()
+    parsed = urlparse(raw_host if "://" in raw_host else f"http://{raw_host}")
+    scheme = parsed.scheme or "http"
+    hostname = parsed.hostname or "127.0.0.1"
+    port = int(parsed.port or 11434)
+    return f"{scheme}://{hostname}", port
 
-from llm.adapter import get_client
 
-# Compatibility: previous code imported `Client` from the `ollama` package
-# and many tests monkeypatch `game.ollama_connector.Client`. Provide a
-# `Client` symbol that mirrors the previous constructor API (callable
-# returning an object with `.chat(...)`).
-Client = get_client
+def _to_modelito_messages(messages: List[Dict[str, str]]) -> List[ModelitoMessage]:
+    return [
+        ModelitoMessage(
+            role=str(message.get("role") or "user"),
+            content=str(message.get("content") or ""),
+        )
+        for message in messages
+    ]
+
+
+class Client:
+    """Thin internal seam over modelito for BatLLM gameplay requests."""
+
+    def __init__(self, host: str, timeout: Optional[float | str] = None) -> None:
+        self.host = host.rstrip("/")
+        try:
+            self.timeout = float(timeout) if timeout is not None else None
+        except (TypeError, ValueError):
+            self.timeout = None
+        base_host, port = _normalize_host_and_port(self.host)
+        self._provider = OllamaProvider(host=base_host, port=port)
+        self._client = ModelitoClient(provider=self._provider)
+
+    def chat(
+        self,
+        *,
+        model: str,
+        messages: List[Dict[str, str]],
+        options: Optional[Dict[str, Any]] = None,
+        stream: bool = False,
+    ) -> Dict[str, Any]:
+        settings: Dict[str, Any] = dict(options or {})
+        if self.timeout is not None and "timeout" not in settings:
+            settings["timeout"] = self.timeout
+        self._provider.model = model
+        self._client.model = model
+        normalized_messages = _to_modelito_messages(messages)
+        if stream:
+            text = "".join(self._client.stream(normalized_messages, settings=settings))
+        else:
+            text = self._client.summarize(normalized_messages, settings=settings)
+        return {"message": {"content": text}, "response": text}
 
 
 Message = Dict[str, str]  # {"role": "system"|"user"|"assistant", "content": str}
@@ -401,7 +444,7 @@ class OllamaConnector:
         self._trim_history_inplace(history)
 
         options = self.gen_options()
-        res: "ChatResponse" | dict[str, Any]
+        res: dict[str, Any] | Any
         last_timeout: BaseException | None = None
 
         for attempt in range(1, 3):

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from urllib.error import URLError
-
 import pytest
 
 from tests import smoke_llm_payload
@@ -38,22 +36,20 @@ def test_resolve_chat_timeout_falls_back_to_default() -> None:
     assert smoke_llm_payload._resolve_chat_timeout({"timeout": "invalid"}) == 120.0
 
 
-def test_post_json_reports_timeout_with_context(monkeypatch) -> None:
+def test_invoke_with_timeout_guard_reports_timeout_with_context(monkeypatch) -> None:
     times = iter((100.0, 161.0))
 
     def fake_monotonic() -> float:
         return next(times)
 
-    def fake_urlopen(*_args, **_kwargs):
-        raise URLError(TimeoutError("timed out"))
+    def fake_invoke():
+        raise TimeoutError("timed out")
 
     monkeypatch.setattr(smoke_llm_payload.time, "monotonic", fake_monotonic)
-    monkeypatch.setattr(smoke_llm_payload, "urlopen", fake_urlopen)
 
     with pytest.raises(AssertionError) as exc_info:
-        smoke_llm_payload._post_json(
-            "http://localhost:11434/api/chat",
-            {"model": "qwen3:30b"},
+        smoke_llm_payload._invoke_with_timeout_guard(
+            fake_invoke,
             timeout=60.0,
             description="chat request for model 'qwen3:30b'",
         )
@@ -63,38 +59,43 @@ def test_post_json_reports_timeout_with_context(monkeypatch) -> None:
     assert "timeout=60.0s" in message
 
 
-def test_post_json_raises_for_non_timeout_url_errors(monkeypatch) -> None:
-    def fake_urlopen(*_args, **_kwargs):
-        raise URLError("connection refused")
+def test_invoke_with_timeout_guard_preserves_non_timeout_errors() -> None:
+    def fake_invoke():
+        raise RuntimeError("connection refused")
 
-    monkeypatch.setattr(smoke_llm_payload, "urlopen", fake_urlopen)
-
-    with pytest.raises(URLError, match="connection refused"):
-        smoke_llm_payload._post_json(
-            "http://localhost:11434/api/chat",
-            {"model": "qwen3:30b"},
+    with pytest.raises(RuntimeError, match="connection refused"):
+        smoke_llm_payload._invoke_with_timeout_guard(
+            fake_invoke,
             timeout=60.0,
             description="chat request",
         )
 
 
-def test_post_json_raises_for_malformed_json_payload(monkeypatch) -> None:
-    class FakeResponse:
-        def __enter__(self):
-            return self
+def test_summarize_once_uses_provider_and_timeout(monkeypatch) -> None:
+    calls = {}
 
-        def __exit__(self, *_args):
-            return False
+    class FakeProvider:
+        def __init__(self, host: str, port: int, model: str):
+            calls["init"] = {"host": host, "port": port, "model": model}
 
-        def read(self):
-            return b"{not-json"
+        def summarize(self, messages, settings=None):
+            calls["message"] = messages[0].content
+            calls["settings"] = settings
+            return "OK"
 
-    monkeypatch.setattr(smoke_llm_payload, "urlopen", lambda *_args, **_kwargs: FakeResponse())
+    monkeypatch.setattr(smoke_llm_payload, "OllamaProvider", FakeProvider)
+    monkeypatch.setattr(smoke_llm_payload, "_resolve_chat_timeout", lambda _llm: 88.0)
 
-    with pytest.raises(ValueError):
-        smoke_llm_payload._post_json(
-            "http://localhost:11434/api/chat",
-            {"model": "qwen3:30b"},
-            timeout=60.0,
-            description="chat request",
-        )
+    result = smoke_llm_payload._summarize_once(
+        {"url": "http://localhost", "port": 11434, "model": "qwen3:30b"},
+        "Reply with exactly OK",
+    )
+
+    assert result == "OK"
+    assert calls["init"] == {
+        "host": "http://localhost",
+        "port": 11434,
+        "model": "qwen3:30b",
+    }
+    assert calls["message"] == "Reply with exactly OK"
+    assert calls["settings"] == {"timeout": 88.0}

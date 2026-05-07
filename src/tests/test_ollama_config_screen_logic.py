@@ -12,27 +12,6 @@ class DummyProc:
         self.stderr = stderr
 
 
-def test_parse_remote_models_html_extracts_display_names_with_sizes() -> None:
-    html = """
-    <a href="/library/all-minilm" class="group w-full space-y-5">
-      <span x-test-size>22m</span>
-    </a>
-    <a href="/library/smollm2" class="group w-full space-y-5">
-      <span x-test-size>135m</span>
-    </a>
-    <a href="/library/all-minilm" class="group w-full space-y-5">
-      <span x-test-size>22m</span>
-    </a>
-    """
-
-    entries = screen_module.OllamaConfigScreen._parse_remote_models_html(None, html)
-
-    assert entries == [
-        {"name": "all-minilm", "display": "all-minilm (22m)", "size": "22m"},
-        {"name": "smollm2", "display": "smollm2 (135m)", "size": "135m"},
-    ]
-
-
 def test_open_local_model_selector_refreshes_then_opens_picker() -> None:
     refreshed = {"value": False}
     opened = {"title": None, "entries": None, "selected": None}
@@ -123,7 +102,7 @@ def test_refresh_all_refreshes_status_and_both_lists() -> None:
     assert calls == ["status", "local", "remote"]
 
 
-def test_refresh_remote_models_uses_official_library_html(monkeypatch) -> None:
+def test_refresh_remote_models_uses_modelito_catalog(monkeypatch) -> None:
     fake_screen = SimpleNamespace(
         remote_models=[],
         selected_remote_model="",
@@ -143,29 +122,26 @@ def test_refresh_remote_models_uses_official_library_html(monkeypatch) -> None:
                     model_name, model_name) or "Select remote model",
             ),
         ),
-        _parse_remote_models_html=lambda html: screen_module.OllamaConfigScreen._parse_remote_models_html(
-            None, html
-        ),
     )
 
     def fake_schedule_once(callback, _dt=0):
         callback(0)
 
-    class FakeResponse:
-        text = """
-        <a href="/library/all-minilm" class="group w-full space-y-5">
-          <span x-test-size>22m</span>
-        </a>
-        <a href="/library/smollm2" class="group w-full space-y-5">
-          <span x-test-size>135m</span>
-        </a>
-        """
-
-        def raise_for_status(self):
-            return None
+    class FakeEntry:
+        def __init__(self, name: str, *, installed: bool = False, raw=None):
+            self.name = name
+            self.installed = installed
+            self.raw = raw or {}
 
     monkeypatch.setattr(screen_module.Clock, "schedule_once", fake_schedule_once)
-    monkeypatch.setattr(screen_module.requests, "get", lambda _url, timeout=12: FakeResponse())
+    monkeypatch.setattr(
+        screen_module.modelito_ollama_service,
+        "list_remote_model_catalog",
+        lambda: [
+            FakeEntry("all-minilm", raw={"parameter_size": "22m"}),
+            FakeEntry("smollm2", installed=True, raw={"parameter_size": "135m"}),
+        ],
+    )
 
     screen_module.OllamaConfigScreen.refresh_remote_models(fake_screen)
 
@@ -173,6 +149,7 @@ def test_refresh_remote_models_uses_official_library_html(monkeypatch) -> None:
     assert fake_screen.selected_remote_model == "all-minilm"
     assert fake_screen.selected_remote_model_label == "all-minilm (22m)"
     assert fake_screen._remote_model_entries[0]["display"] == "all-minilm (22m)"
+    assert fake_screen._remote_model_entries[1]["display"] == "smollm2 (135m) [installed]"
 
 
 def test_remote_selection_refreshes_timeout_details(monkeypatch) -> None:
@@ -203,10 +180,6 @@ def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
         _append_log=lambda _text: None,
         _schedule_ui_callback=lambda callback: callback() if callback else None,
         _run_in_thread=lambda fn: fn(),
-        _llm_endpoint=lambda: ("http://localhost", 11434),
-        _json_get=lambda _url, timeout=8: {
-            "models": [{"name": "llama3.2:latest"}, {"name": "mistral-small:latest"}]
-        },
         _set_local_selection=lambda model_name: (
             setattr(fake_screen, "selected_local_model", model_name),
             setattr(fake_screen, "selected_local_model_label", model_name or "Select local model"),
@@ -215,6 +188,11 @@ def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
 
     monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
     monkeypatch.setattr(screen_module.config, "get", lambda _section, _key: "mistral-small:latest")
+    monkeypatch.setattr(
+        screen_module.modelito_ollama_service,
+        "list_local_models",
+        lambda: ["llama3.2:latest", "mistral-small:latest"],
+    )
 
     screen_module.OllamaConfigScreen.refresh_local_models(fake_screen)
 
@@ -300,9 +278,9 @@ def test_build_ollama_install_command_is_platform_specific() -> None:
         "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
     ]
     assert screen_module.build_ollama_install_command("darwin") == [
-        "/bin/sh",
-        "-lc",
-        "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
+        "brew",
+        "install",
+        "ollama",
     ]
     assert screen_module.build_ollama_install_command("win32") == [
         "powershell.exe",
@@ -356,26 +334,19 @@ def test_preload_model_uses_resolved_request_timeout(monkeypatch) -> None:
     calls = []
     resolved = {}
 
-    class FakeResponse:
-        content = b"{}"
-
-        def raise_for_status(self):
-            return None
-
-        def json(self):
-            return {"ok": True}
-
-    def fake_post(url, **kwargs):
-        calls.append((url, kwargs))
-        return FakeResponse()
-
     fake_screen = SimpleNamespace(
         _llm_endpoint=lambda: ("http://localhost", 11434),
         _append_log=lambda _text: None,
         _llm_timeout_config=lambda model_name: {"model": model_name, "timeout": "180"},
     )
 
-    monkeypatch.setattr(screen_module.requests, "post", fake_post)
+    monkeypatch.setattr(
+        screen_module.ollama_service,
+        "preload_model",
+        lambda base_url, port, model_name, timeout=120.0: calls.append(
+            (base_url, port, model_name, timeout)
+        ),
+    )
     monkeypatch.setattr(
         screen_module.ollama_service,
         "resolve_request_timeout",
@@ -384,12 +355,10 @@ def test_preload_model_uses_resolved_request_timeout(monkeypatch) -> None:
 
     result = screen_module.OllamaConfigScreen._preload_model(fake_screen, "test-model")
 
-    assert result == {"ok": True}
+    assert result == {"ok": True, "model": "test-model", "timeout": 180.0}
     assert resolved == {"cfg": {"model": "test-model", "timeout": "180"}, "model": "test-model"}
     assert len(calls) == 1
-    assert calls[0][0] == "http://localhost:11434/api/generate"
-    assert calls[0][1]["timeout"] == 180.0
-    assert calls[0][1]["json"] == {"model": "test-model", "keep_alive": "30m"}
+    assert calls[0] == ("http://localhost", 11434, "test-model", 180.0)
 
 
 def test_local_selection_refreshes_timeout_editor_from_model_override(monkeypatch) -> None:

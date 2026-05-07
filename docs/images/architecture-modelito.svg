@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780" role="img" aria-labelledby="title desc">
+  <title id="title">BatLLM architecture</title>
+  <desc id="desc">Architecture diagram showing BatLLM launchers, gameplay and analyzer surfaces, config and state, the BatLLM llm service facade, modelito, and the local Ollama runtime.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f5ef; }
+      .panel { fill: #fffdf8; stroke: #2f3a44; stroke-width: 2; }
+      .accent { fill: #e9f2ff; stroke: #335c81; stroke-width: 2; }
+      .runtime { fill: #eef8ea; stroke: #44633f; stroke-width: 2; }
+      .storage { fill: #fff2df; stroke: #8a5a14; stroke-width: 2; }
+      .title { font: 700 30px 'Avenir Next', 'Segoe UI', sans-serif; fill: #1d2730; }
+      .subtitle { font: 500 16px 'Avenir Next', 'Segoe UI', sans-serif; fill: #52606d; }
+      .box-title { font: 700 20px 'Avenir Next', 'Segoe UI', sans-serif; fill: #14202b; }
+      .box-text { font: 500 15px 'Avenir Next', 'Segoe UI', sans-serif; fill: #26323d; }
+      .arrow { stroke: #2f3a44; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+      .label { font: 600 14px 'Avenir Next', 'Segoe UI', sans-serif; fill: #2f3a44; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2f3a44" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="780" />
+  <text class="title" x="60" y="60">BatLLM Architecture After The Modelito 1.2.2 Cleanup</text>
+  <text class="subtitle" x="60" y="92">Gameplay, UI, timeout policy, and config-overlay rules stay inside BatLLM. Generic provider and model-management behaviour now routes through modelito.</text>
+
+  <rect class="panel" x="60" y="150" width="260" height="140" rx="18" ry="18" />
+  <text class="box-title" x="84" y="188">Launchers</text>
+  <text class="box-text" x="84" y="220">
+    <tspan x="84" dy="0">run_batllm.py</tspan>
+    <tspan x="84" dy="24">run_game_analyzer.py</tspan>
+    <tspan x="84" dy="24">editor and task wrappers</tspan>
+  </text>
+
+  <rect class="storage" x="60" y="360" width="260" height="180" rx="18" ry="18" />
+  <text class="box-title" x="84" y="398">Config And State</text>
+  <text class="box-text" x="84" y="430">
+    <tspan x="84" dy="0">src/configs/config.yaml</tspan>
+    <tspan x="84" dy="24">src/configs/app_config.py</tspan>
+    <tspan x="84" dy="24">saved sessions and analyzer data</tspan>
+    <tspan x="84" dy="24">timeout overrides and last_served_model</tspan>
+  </text>
+
+  <rect class="panel" x="60" y="610" width="260" height="120" rx="18" ry="18" />
+  <text class="box-title" x="84" y="648">Configurator Tooling</text>
+  <text class="box-text" x="84" y="680">
+    <tspan x="84" dy="0">src/configs/configurator.py</tspan>
+    <tspan x="84" dy="24">local model utilities and console stream</tspan>
+  </text>
+
+  <rect class="panel" x="420" y="140" width="340" height="170" rx="18" ry="18" />
+  <text class="box-title" x="444" y="178">Gameplay Surface</text>
+  <text class="box-text" x="444" y="210">
+    <tspan x="444" dy="0">src/main.py and Kivy screens</tspan>
+    <tspan x="444" dy="24">src/game/game_board.py</tspan>
+    <tspan x="444" dy="24">src/game/ollama_connector.py</tspan>
+    <tspan x="444" dy="24">HistoryManager and session schema</tspan>
+  </text>
+
+  <rect class="panel" x="420" y="380" width="340" height="140" rx="18" ry="18" />
+  <text class="box-title" x="444" y="418">Analyzer Surface</text>
+  <text class="box-text" x="444" y="450">
+    <tspan x="444" dy="0">src/analyzer_main.py</tspan>
+    <tspan x="444" dy="24">analyzer screens and review workflow</tspan>
+    <tspan x="444" dy="24">shared replay engine over saved sessions</tspan>
+  </text>
+
+  <rect class="accent" x="860" y="150" width="300" height="210" rx="18" ry="18" />
+  <text class="box-title" x="884" y="188">BatLLM LLM Facade</text>
+  <text class="box-text" x="884" y="220">
+    <tspan x="884" dy="0">src/llm/service.py</tspan>
+    <tspan x="884" dy="24">shipped-config overlay resolution</tspan>
+    <tspan x="884" dy="24">common-model timeout defaults</tspan>
+    <tspan x="884" dy="24">remote timeout catalog logic</tspan>
+    <tspan x="884" dy="24">CLI lifecycle helper entrypoint</tspan>
+  </text>
+
+  <rect class="accent" x="1200" y="150" width="150" height="210" rx="18" ry="18" />
+  <text class="box-title" x="1224" y="188">modelito</text>
+  <text class="box-text" x="1224" y="220">
+    <tspan x="1224" dy="0">OllamaProvider</tspan>
+    <tspan x="1224" dy="24">Client</tspan>
+    <tspan x="1224" dy="24">inspect_service_state</tspan>
+    <tspan x="1224" dy="24">list_local_models</tspan>
+    <tspan x="1224" dy="24">ensure_model_ready</tspan>
+    <tspan x="1224" dy="24">download_model_progress</tspan>
+  </text>
+
+  <rect class="runtime" x="980" y="500" width="300" height="160" rx="18" ry="18" />
+  <text class="box-title" x="1004" y="538">Local Ollama Runtime</text>
+  <text class="box-text" x="1004" y="570">
+    <tspan x="1004" dy="0">real local ollama CLI and server</tspan>
+    <tspan x="1004" dy="24">installed models and serving state</tspan>
+    <tspan x="1004" dy="24">warmup, download, delete, stop, start</tspan>
+    <tspan x="1004" dy="24">hosted at llm.url and llm.port</tspan>
+  </text>
+
+  <path class="arrow" d="M320 220 H420" />
+  <path class="arrow" d="M320 250 C360 250 360 450 420 450" />
+  <path class="arrow" d="M320 450 H420" />
+  <path class="arrow" d="M320 670 C470 670 700 670 860 320" />
+
+  <path class="arrow" d="M760 220 H860" />
+  <path class="arrow" d="M760 450 C820 450 820 290 860 290" />
+  <path class="arrow" d="M1160 255 H1200" />
+  <path class="arrow" d="M1275 360 V500" />
+  <path class="arrow" d="M1020 360 V500" />
+  <path class="arrow" d="M760 260 C860 260 900 580 980 580" />
+
+  <text class="label" x="338" y="210">launch</text>
+  <text class="label" x="334" y="350">launch</text>
+  <text class="label" x="336" y="440">shared config</text>
+  <text class="label" x="458" y="646">config-driven tooling</text>
+  <text class="label" x="794" y="210">timeouts and lifecycle policy</text>
+  <text class="label" x="792" y="432">replay compatibility</text>
+  <text class="label" x="1172" y="244">delegate generic behaviour</text>
+  <text class="label" x="1288" y="438">service and provider calls</text>
+  <text class="label" x="1034" y="438">status and CLI routing</text>
+  <text class="label" x="846" y="560">prompt and model operations</text>
+</svg>

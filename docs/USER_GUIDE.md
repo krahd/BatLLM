@@ -270,7 +270,7 @@ It includes:
 
 Press the local-model selector to:
 
-1. refresh the local list from `/api/tags`
+1. refresh the local list through `modelito`'s local-model inventory helper
 2. open the `Local Models` picker
 3. choose a model from the modal list
 
@@ -300,7 +300,7 @@ After choosing a local model:
 
 Press the remote-model selector to:
 
-1. refresh the remote list from `https://ollama.com/library`
+1. refresh the remote list through `modelito`'s remote catalog helper
 2. open the `Remote Models` picker
 3. choose a remote model candidate
 
@@ -315,17 +315,16 @@ Remote-model names are not immediately playable. They become local models only a
 
 ## Ollama And Model Management
 
-BatLLM uses Ollama in two ways:
+BatLLM uses `modelito` for both gameplay requests and Ollama lifecycle/model-management flows.
 
-- the Python `ollama` package for gameplay chat requests
-- the `ollama` CLI and local HTTP endpoints for model and service management
+The app routes gameplay prompts through `modelito`'s Ollama provider surface and uses `modelito`'s Ollama service helpers for local model discovery, warmup, download, delete, and readiness checks.
 
 If you already manage Ollama elsewhere, you can keep doing that. The in-app Ollama screen is recommended, but it is not the only possible workflow.
 
 Required: `modelito`
 --------------------
 
-BatLLM requires the lightweight `modelito` package for Ollama lifecycle and model-management helpers. Install `modelito` (for example `pip install modelito==1.0.7`) to enable the in-app Ollama controls and lifecycle management.
+BatLLM requires the lightweight `modelito` package for gameplay and Ollama lifecycle/model-management helpers. Install `modelito` with the repository-supported version: `pip install modelito==1.2.2`.
 
 ## Safety Notes
 

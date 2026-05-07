@@ -76,13 +76,13 @@ BatLLM is now maintained for:
 
 ### Python Dependencies
 
-The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports, including `requests` and the Python `ollama` client.
+The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports. BatLLM's maintained Ollama integration depends on `modelito==1.2.2`.
 
 ### Ollama Requirements
 
 BatLLM uses both:
 
-- the Python `ollama` package during gameplay
+- the `modelito` Python package for gameplay requests and model-management helpers
 - the `ollama` CLI for the in-app start/stop/version workflow and helper scripts
 
 If the CLI is missing, the app can offer to install Ollama from the Ollama screen or during app startup.
@@ -247,7 +247,7 @@ The `Local Models` and `Remote Models` controls open modal pickers. Those picker
 - close on `Esc`
 - close when the user clicks outside the popup
 
-Remote models are loaded from `https://ollama.com/library`.
+Remote models are loaded through `modelito`'s remote catalog helper.
 
 ### Local vs Remote Models
 

@@ -21,9 +21,6 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
-
 import yaml
 import argparse
 
@@ -33,6 +30,7 @@ _logger = logging.getLogger(__name__)
 
 try:
     from modelito import ollama_service as _MODELITO  # type: ignore
+    from modelito import ErrorEnvelope, ResponseEnvelope, TransportPolicy  # type: ignore
 except Exception as exc:  # pragma: no cover - environment misconfiguration
     raise RuntimeError("`modelito` is required for `llm.service`; install modelito") from exc
 
@@ -368,35 +366,31 @@ def install_service(reinstall: bool = False) -> tuple[int, str]:
 
 
 def endpoint_url(url: str, port: int, path: str) -> str:
-    try:
-        fn = getattr(_MODELITO, "endpoint_url", None)
-        if callable(fn):
-            return fn(url, port, path)
-    except Exception:
-        pass
+    fn = getattr(_MODELITO, "endpoint_url", None)
+    if callable(fn):
+        return fn(url, port, path)
     return f"{url}:{port}{path}"
 
 
 def json_get(url: str, timeout: float = 5.0) -> dict:
-    with urlopen(url, timeout=timeout) as response:
-        body = response.read().decode("utf-8")
-    return json.loads(body) if body else {}
+    fn = getattr(_MODELITO, "json_get", None)
+    if callable(fn):
+        return fn(url, timeout=timeout)
+    raise RuntimeError("modelito.json_get is unavailable")
 
 
 def json_post(url: str, payload: dict, timeout: float = 60.0) -> dict:
-    request = Request(url, data=json.dumps(payload).encode("utf-8"),
-                      headers={"Content-Type": "application/json"}, method="POST")
-    with urlopen(request, timeout=timeout) as response:
-        body = response.read().decode("utf-8")
-    return json.loads(body) if body else {}
+    fn = getattr(_MODELITO, "json_post", None)
+    if callable(fn):
+        return fn(url, payload, timeout=timeout)
+    raise RuntimeError("modelito.json_post is unavailable")
 
 
 def server_is_up(url: str, port: int) -> bool:
-    try:
-        json_get(endpoint_url(url, port, "/api/version"), timeout=2.0)
-        return True
-    except (URLError, HTTPError, ValueError):
-        return False
+    fn = getattr(_MODELITO, "server_is_up", None)
+    if callable(fn):
+        return bool(fn(url, port))
+    return False
 
 
 def inspect_service_state(config_path: Path | None = None) -> dict[str, object]:
@@ -448,20 +442,22 @@ def start_detached_ollama_serve(host: str) -> subprocess.Popen:
 
 
 def wait_until_ready(url: str, port: int, timeout_seconds: float = 60.0) -> None:
-    deadline = time.monotonic() + timeout_seconds
-    while time.monotonic() < deadline:
-        if server_is_up(url, port):
-            return
-        time.sleep(1)
-    raise RuntimeError(f"ollama serve did not become ready at {url}:{port}/api/version")
+    fn = getattr(_MODELITO, "wait_until_ready", None)
+    if callable(fn):
+        fn(url, port, timeout_seconds=timeout_seconds)
+        return
+    raise RuntimeError("modelito.wait_until_ready is unavailable")
 
 
 def preload_model(url: str, port: int, model: str, timeout: float = 120.0) -> None:
-    json_post(endpoint_url(url, port, "/api/generate"),
-              {"model": model, "keep_alive": "30m"}, timeout=timeout)
+    fn = getattr(_MODELITO, "preload_model", None)
+    if callable(fn):
+        fn(url, port, model, timeout=timeout)
+        return
+    raise RuntimeError("modelito.preload_model is unavailable")
 
 
-def start_service(config_path: Path | None = None) -> int:
+def start_service(config_path: Path | None = None, warmup_timeout: float = 30.0) -> int:
     # Prefer delegating to modelito when no explicit config path is provided; when
     # a `config_path` is given, run the local implementation so callers and tests
     # that monkeypatch module-level helpers are respected.
@@ -473,7 +469,7 @@ def start_service(config_path: Path | None = None) -> int:
                 # fall back to the local implementation so BatLLM can still
                 # attempt to start the Ollama server.
                 try:
-                    rc = starter(None)
+                    rc = starter(None, warmup_timeout=warmup_timeout)
                 except Exception:
                     rc = 1
                 if rc == 0:
@@ -533,16 +529,10 @@ def start_service(config_path: Path | None = None) -> int:
 
 
 def running_model_names(host: str) -> list[str]:
-    proc = run_ollama_command("ps", host=host)
-    if proc.returncode != 0:
-        return []
-    names: list[str] = []
-    for line in (proc.stdout or "").splitlines()[1:]:
-        line = line.strip()
-        if not line:
-            continue
-        names.append(line.split()[0])
-    return names
+    fn = getattr(_MODELITO, "running_model_names", None)
+    if callable(fn):
+        return fn(host)
+    return []
 
 
 def find_ollama_listener_pids(port: int) -> list[int]:

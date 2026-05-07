@@ -18,8 +18,9 @@ import json
 import shutil
 import threading
 from typing import Any, Dict, List, Optional
-import requests
 import yaml
+from modelito import Message, OllamaProvider
+from modelito import ollama_service as modelito_ollama_service
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -131,54 +132,55 @@ class OllamaClient:
         self.timeout = timeout
     def _u(self, path: str) -> str: return f"{self.base_url}:{self.port}{path}"
     def list_local_models(self) -> List[Dict[str, Any]]:
-        r = requests.get(self._u('/api/tags'), timeout=self.timeout)
-        r.raise_for_status()
-        return r.json().get('models', [])
+        return [{"name": name} for name in modelito_ollama_service.list_local_models()]
     def run_once(self, model: str, prompt: str = 'test', num_predict: Optional[int] = 8) -> str:
-        payload = {'model': model, 'prompt': prompt}
+        provider = OllamaProvider(host=self.base_url, port=self.port, model=model)
+        settings: Dict[str, Any] = {"timeout": self.timeout}
         if num_predict is not None:
-            payload['options'] = {'num_predict': num_predict}
-        r = requests.post(self._u('/api/generate'), json=payload, timeout=self.timeout, stream=True)
-        r.raise_for_status()
-        out = ''
-        for line in r.iter_lines():
-            if not line:
-                continue
-            obj = json.loads(line.decode('utf-8'))
-            out += obj.get('response', '')
-            if obj.get('done'):
-                break
-        return out
+            settings["num_predict"] = num_predict
+        return provider.summarize([Message(role="user", content=prompt)], settings=settings)
+    def stream_generate(self, model: str, prompt: str, num_predict: Optional[int] = None):
+        provider = OllamaProvider(host=self.base_url, port=self.port, model=model)
+        settings: Dict[str, Any] = {"timeout": self.timeout}
+        if num_predict is not None:
+            settings["num_predict"] = num_predict
+        return provider.stream([Message(role="user", content=prompt)], settings=settings)
     def stop(self, model: Optional[str] = None) -> Dict[str, Any]:
-        payload = {'model': model} if model else {}
-        r = requests.post(self._u('/api/stop'), json=payload, timeout=self.timeout)
-        if r.status_code >= 400:
-            return {'error': f'stop failed {r.status_code}', 'text': r.text}
-        return r.json() if r.text else {'ok': True}
+        if model:
+            host = f"{self.base_url.replace('http://', '').replace('https://', '')}:{self.port}"
+            proc = modelito_ollama_service.run_ollama_command("stop", model, host=host)
+            if proc.returncode != 0:
+                return {'error': f'stop failed {proc.returncode}', 'text': (proc.stdout or '') + (proc.stderr or '')}
+            return {'ok': True}
+        ok = modelito_ollama_service.stop_service(host=self.base_url, port=self.port) == 0
+        return {'ok': ok}
     def delete_model(self, name: str) -> Dict[str, Any]:
-        r = requests.delete(self._u('/api/delete'), json={'name': name}, timeout=self.timeout)
-        if r.status_code >= 400:
-            return {'error': f'delete failed {r.status_code}', 'text': r.text}
-        return r.json() if r.text else {'ok': True}
+        ok = modelito_ollama_service.delete_model(name)
+        return {'ok': ok} if ok else {'error': 'delete failed'}
     def pull_model(self, name: str, stream_callback=None) -> Dict[str, Any]:
-        r = requests.post(self._u('/api/pull'),
-                          json={'name': name}, timeout=self.timeout, stream=True)
-        r.raise_for_status()
-        last = {}
-        for line in r.iter_lines():
-            if not line:
-                continue
-            obj = json.loads(line.decode('utf-8'))
-            last = obj
+        last: Dict[str, Any] = {}
+        for state in modelito_ollama_service.download_model_progress(name, timeout=self.timeout):
+            last = {
+                'model': state.model,
+                'phase': state.phase,
+                'message': state.message,
+                'progress': state.progress,
+                'error': state.error,
+            }
             if stream_callback:
-                stream_callback(obj)
+                stream_callback(last)
         return last
     @staticmethod
     def list_remote_models() -> List[Dict[str, Any]]:
-        r = requests.get('https://ollamadb.dev/api/v1/models', timeout=12)
-        r.raise_for_status()
-        data = r.json()
-        return data.get('data', []) if isinstance(data, dict) else []
+        return [
+            {
+                'name': entry.name,
+                'family': entry.family,
+                'installed': entry.installed,
+                'raw': entry.raw,
+            }
+            for entry in modelito_ollama_service.list_remote_model_catalog()
+        ]
 
 LLM_FIELDS = [
     ('url', str), ('port', int), ('model', str),
@@ -562,22 +564,12 @@ class ConsolePanel(BoxLayout):
         self._stop_flag = False
         def work():
             try:
-                url = self.app_ref.ollama._u('/api/generate')
-                payload = {'model': model, 'prompt': prompt, 'stream': True}
-                r = requests.post(url, json=payload,
-                                  timeout=self.app_ref.ollama.timeout, stream=True)
-                r.raise_for_status()
-                for line in r.iter_lines():
+                for fragment in self.app_ref.ollama.stream_generate(model, prompt):
                     if self._stop_flag:
                         break
-                    if not line:
+                    if not fragment:
                         continue
-                    obj = json.loads(line.decode('utf-8'))
-                    if 'response' in obj:
-                        frag = obj['response']
-                        Clock.schedule_once(lambda _dt, _frag=frag: self._append(_frag))
-                    if obj.get('done'):
-                        break
+                    Clock.schedule_once(lambda _dt, _frag=str(fragment): self._append(_frag))
             except Exception as e:
                 Clock.schedule_once(lambda *_: info_popup('Error', f'Generate failed: {e}'))
         self._gen_thread = threading.Thread(target=work, daemon=True)

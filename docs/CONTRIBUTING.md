@@ -68,7 +68,7 @@ pip install -r requirements.txt
 
 The codebase depends on two different Ollama surfaces:
 
-- the Python `ollama` package for gameplay chat requests
+- the `modelito` Python package for gameplay chat requests and model-management helpers
 - the `ollama` CLI for the local service-management helpers and the Ollama config screen
 
 For non-live unit work, the CLI is not required. For live gameplay or `run_tests.py full`, it is required.
@@ -100,11 +100,11 @@ Core runtime modules:
 - `src/game/game_board.py`: match flow, rendering hooks, and UI coordination
 - `src/game/bot.py`: bot state and command execution
 - `src/game/bullet.py`: bullet movement and collision logic
-- `src/game/ollama_connector.py`: chat/history request builder using the Python `ollama` client
+- `src/game/ollama_connector.py`: chat/history request builder using `modelito`'s Ollama provider
 - `src/game/history_manager.py`: authoritative game and chat history
 - `src/game/replay_engine.py`: Kivy-free replay and rules helpers shared by gameplay and the analyzer
 - `src/game/session_schema.py`: saved-session schema validation and v2 envelope helpers
-- `src/ollama_service.py`: cross-platform Ollama lifecycle helper used by the app and test runner
+- `src/llm/service.py`: BatLLM-specific Ollama/runtime facade over `modelito`, including config overlay and timeout policy
 - `src/analyzer_main.py`: standalone Game Analyzer app entrypoint
 - `src/analyzer_model.py`: session navigation and replay-step model for the analyzer UI
 - `src/configs/`: YAML config files and config loader
@@ -136,7 +136,7 @@ The current gameplay stack works like this:
 1. `HomeScreen` owns the high-level UI and delegates game actions to `GameBoard`.
 2. `GameBoard` owns the active `Bot` instances, the prompt store, and the live round/turn flow.
 3. `Bot` instances execute movement, rotation, shield, and bullet actions.
-4. `GameBoard` uses `OllamaConnector` to send synchronous chat requests through the Python `ollama` client.
+4. `GameBoard` uses `OllamaConnector` to send synchronous chat requests through `modelito`'s Ollama provider.
 5. `HistoryManager` records game history and chat history as the single source of truth.
 
 The current replay/analyzer stack works like this:
@@ -149,10 +149,9 @@ The current replay/analyzer stack works like this:
 
 The current model-management stack works like this:
 
-1. `OllamaConfigScreen` checks server state using local HTTP endpoints such as `/api/version`, `/api/ps`, and `/api/tags`.
-2. It uses `src/ollama_service.py` for cross-platform service lifecycle actions.
-3. It uses `https://ollama.com/library` as the remote-library source for downloadable model names.
-4. It uses `/api/pull` and `/api/generate` for pull and preload operations.
+1. `OllamaConfigScreen` uses `src/llm/service.py` and `modelito` service helpers for install/start/stop/status operations.
+2. It uses `modelito` model listing, readiness, pull, and delete helpers for model management.
+3. BatLLM-specific timeout resolution and config overlay behavior remain in `src/llm/service.py`.
 
 Important implementation notes:
 
@@ -571,18 +570,18 @@ What to check:
 
 ### Gameplay Fails To Talk To The Model
 
-BatLLM gameplay uses the Python `ollama` package plus the configured chat endpoint.
+BatLLM gameplay uses `modelito` plus the configured Ollama host, port, and model.
 
 Check:
 
 1. `pip install -r requirements.txt` completed successfully
-2. the virtual environment contains the `ollama` Python package
-3. `llm.path` is correct for the server you are using
+2. the virtual environment contains `modelito==1.2.2`
+3. `llm.url` and `llm.port` point to the intended Ollama service
 4. the configured model name in `llm.model` exists locally
 
 ### The Remote Model List Will Not Load
 
-The remote picker fetches model names from `https://ollama.com/library`.
+The remote picker fetches model names through `modelito`'s remote catalog helper.
 
 If refresh fails:
 
@@ -594,7 +593,7 @@ Existing local selections are preserved if the remote refresh fails.
 
 ### The Local Model List Is Empty
 
-The local picker loads from `/api/tags` on the configured Ollama host.
+The local picker loads through `modelito`'s local-model inventory helper.
 
 Check:
 

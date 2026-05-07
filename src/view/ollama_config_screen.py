@@ -4,18 +4,15 @@ from __future__ import annotations
 
 from datetime import datetime
 import json
-import re
 import subprocess
 import sys
 import threading
 import os
 from pathlib import Path
 from typing import Any
-from urllib.error import HTTPError, URLError
-from urllib.request import urlopen
 
 from llm import service as ollama_service
-import requests
+from modelito import ollama_service as modelito_ollama_service
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.metrics import dp
@@ -38,12 +35,6 @@ from util.utils import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REMOTE_LIBRARY_URL = "https://ollama.com/library"
-REMOTE_MODEL_CARD_RE = re.compile(
-    r'<a href="/library/([^"/:?#]+)"\s+class="group w-full space-y-5">(.*?)</a>',
-    re.S,
-)
-REMOTE_MODEL_SIZE_RE = re.compile(r'<span x-test-size[^>]*>([^<]+)</span>')
 
 
 def build_ollama_install_command(platform_name: str | None = None) -> list[str]:
@@ -370,52 +361,101 @@ class OllamaConfigScreen(Screen):
         config.set("llm", "last_served_model", model_name)
         config.save()
 
-    def _collect_ollama_status(self) -> dict[str, Any]:
+    def _list_local_models_via_modelito(self) -> list[str]:
+        return [name for name in ollama_service.list_local_models() if str(name).strip()]
+
+    def _list_remote_model_catalog_via_modelito(self) -> list[dict[str, str]]:
+        entries = []
+        for entry in ollama_service.list_remote_model_catalog():
+            display = entry.name
+            if entry.installed:
+                display = f"{display} (installed)"
+            entries.append({"name": entry.name, "display": display, "size": ""})
+        return entries
+
+    def _running_model_names_via_modelito(self) -> list[str]:
         base_url, port = self._llm_endpoint()
-        configured_model = str(config.get("llm", "model") or "")
+        host = f"{base_url.removeprefix('http://').removeprefix('https://')}:{port}"
+        return ollama_service.running_model_names(host)
+
+    def _preload_model_via_modelito(self, model_name: str) -> dict[str, Any]:
+        base_url, port = self._llm_endpoint()
+        request_timeout = ollama_service.resolve_request_timeout(
+            self._llm_timeout_config(model_name),
+            model=model_name,
+        )
+        ollama_service.preload_model(base_url, port, model_name, timeout=request_timeout)
+        self._append_log(
+            f"modelito preload_model({base_url}, {port}, {model_name}, timeout={request_timeout:g})"
+        )
+        return {"ok": True}
+
+    def _stop_serving_model_via_modelito(self, model_name: str) -> dict[str, Any]:
+        base_url, port = self._llm_endpoint()
+        host = f"{base_url.removeprefix('http://').removeprefix('https://')}:{port}"
+        proc = ollama_service.run_ollama_command("stop", model_name, host=host)
+        combined = ((proc.stdout or "") + (proc.stderr or "")).strip()
+        self._append_log(f"$ ollama stop {model_name}\n{combined or f'exit {proc.returncode}'}")
+        if proc.returncode != 0:
+            raise RuntimeError(combined or f"Failed to stop model {model_name}")
+        return {"ok": True}
+
+    def _ensure_model_serving_via_modelito(self, model_name: str) -> dict[str, Any]:
+        base_url, port = self._llm_endpoint()
+        request_timeout = ollama_service.resolve_request_timeout(
+            self._llm_timeout_config(model_name),
+            model=model_name,
+        )
+        result = ollama_service.ensure_model_ready_detailed(
+            model_name,
+            host=base_url,
+            port=port,
+            auto_start=True,
+            allow_download=False,
+            timeout=request_timeout,
+        )
+        if not result.success:
+            detail = result.error or result.message or "Model readiness check failed"
+            raise RuntimeError(detail)
+        self._append_log(
+            f"modelito ensure_model_ready_detailed -> phase={result.phase} elapsed={result.elapsed_seconds:.2f}s message={result.message or 'ready'} source={result.source}"
+        )
+        return {"ready": True}
+
+    def _pull_model_via_modelito(self, model_name: str):
+        for state in ollama_service.download_model_progress(model_name, timeout=600.0):
+            status = state.message or state.phase or "working"
+            self._set_status(f"Pull {model_name}: {status}")
+            self._append_log(
+                f"modelito download_model_progress -> phase={state.phase} progress={state.progress} message={status}"
+            )
+
+    def _delete_model_via_modelito(self, model_name: str):
+        ok = ollama_service.delete_model(model_name)
+        self._append_log(f"modelito delete_model({model_name}) -> {ok}")
+        if not ok:
+            raise RuntimeError(f"Failed to delete model {model_name}")
+
+    def _collect_ollama_status(self) -> dict[str, Any]:
+        state = ollama_service.inspect_service_state()
+        base_url, port = self._llm_endpoint()
         snapshot: dict[str, Any] = {
-            "found": False,
-            "version": "",
-            "running": False,
-            "server_version": "",
-            "running_models": [],
-            "configured_model": configured_model,
+            "found": bool(state.get("installed")),
+            "version": str(state.get("version") or "unknown"),
+            "running": bool(state.get("running")),
+            "server_version": str(state.get("version") or ""),
+            "running_models": self._running_model_names_via_modelito() if state.get("running") else [],
+            "configured_model": str(state.get("configured_model") or config.get("llm", "model") or ""),
             "endpoint": f"{base_url}:{port}",
         }
-
-        try:
-            version_proc = self._run_ollama_command("--version")
-        except FileNotFoundError:
-            self._append_log("$ ollama --version\nollama not found")
-            return snapshot
-
-        version_output = (version_proc.stdout or version_proc.stderr).strip()
-        snapshot["found"] = version_proc.returncode == 0 or bool(version_output)
-        snapshot["version"] = version_output or "unknown"
         self._append_log(
-            f"$ ollama --version\n{version_output or f'exit {version_proc.returncode}'}")
-
-        version_url = f"{base_url}:{port}/api/version"
-        try:
-            version_payload = self._json_get(version_url, timeout=5)
-            snapshot["running"] = True
-            if isinstance(version_payload, dict):
-                snapshot["server_version"] = str(version_payload.get("version", ""))
-            self._append_log(f"GET {version_url}\n{json.dumps(version_payload)}")
-
-            ps_url = f"{base_url}:{port}/api/ps"
-            ps_payload = self._json_get(ps_url, timeout=5)
-            self._append_log(f"GET {ps_url}\n{json.dumps(ps_payload)}")
-            if isinstance(ps_payload, dict):
-                models = ps_payload.get("models", [])
-                snapshot["running_models"] = [
-                    model.get("name", "")
-                    for model in models
-                    if isinstance(model, dict) and model.get("name")
-                ]
-        except (URLError, HTTPError, ValueError) as exc:
-            self._append_log(f"GET {version_url}\n{exc}")
-
+            "modelito inspect_service_state -> "
+            f"installed={snapshot['found']} running={snapshot['running']} version={snapshot['version']}"
+        )
+        if snapshot["running_models"]:
+            self._append_log(
+                f"modelito running_model_names -> {', '.join(snapshot['running_models'])}"
+            )
         return snapshot
 
     def _format_status_report(self, snapshot: dict[str, Any]) -> str:
@@ -609,11 +649,6 @@ class OllamaConfigScreen(Screen):
 
         self._run_in_thread(work)
 
-    def _json_get(self, url: str, timeout: float = 10.0) -> dict[str, Any]:
-        with urlopen(url, timeout=timeout) as response:
-            body = response.read().decode("utf-8")
-            return json.loads(body) if body else {}
-
     def _current_model_entries(self, entries: list[dict[str, str]], model_names: list[str]):
         return entries if entries else [{"name": name, "display": name} for name in model_names]
 
@@ -659,12 +694,10 @@ class OllamaConfigScreen(Screen):
         self._set_status("Refreshing local models...")
 
         def work():
-            base_url, port = self._llm_endpoint()
-            tags_url = f"{base_url}:{port}/api/tags"
             try:
-                payload = self._json_get(tags_url, timeout=8)
-                models = payload.get("models", []) if isinstance(payload, dict) else []
-                names = [m.get("name", "") for m in models if isinstance(m, dict) and m.get("name")]
+                names = [
+                    name for name in modelito_ollama_service.list_local_models() if str(name).strip()
+                ]
 
                 def update(*_):
                     self._local_model_entries = [{"name": name, "display": name} for name in names]
@@ -674,41 +707,39 @@ class OllamaConfigScreen(Screen):
                         current if current in names else (names[0] if names else ""))
                     self._set_status(f"Loaded {len(names)} local model(s).")
                     models_text = ", ".join(names) if names else "none"
-                    self._append_log(f"GET {tags_url}\nLoaded local models: {models_text}")
+                    self._append_log(
+                        f"modelito list_local_models\nLoaded local models: {models_text}"
+                    )
                     self._schedule_ui_callback(on_complete)
 
                 Clock.schedule_once(update, 0)
-            except (URLError, HTTPError, ValueError) as exc:
+            except Exception as exc:
                 self._set_status(f"Unable to list local models: {exc}")
-                self._append_log(f"GET {tags_url}\n{exc}")
+                self._append_log(f"Local model refresh failed\n{exc}")
                 self._schedule_ui_callback(on_complete)
 
         self._run_in_thread(work)
-
-    def _parse_remote_models_html(self, html: str) -> list[dict[str, str]]:
-        seen = set()
-        entries: list[dict[str, str]] = []
-
-        for name, block in REMOTE_MODEL_CARD_RE.findall(html):
-            name = name.strip()
-            if not name or name in seen:
-                continue
-            seen.add(name)
-            size_match = REMOTE_MODEL_SIZE_RE.search(block)
-            size = size_match.group(1).strip() if size_match else ""
-            display = f"{name} ({size})" if size else name
-            entries.append({"name": name, "display": display, "size": size})
-
-        return entries
 
     def refresh_remote_models(self, on_complete=None):
         self._set_status("Refreshing remote model list...")
 
         def work():
             try:
-                resp = requests.get(REMOTE_LIBRARY_URL, timeout=12)
-                resp.raise_for_status()
-                entries = self._parse_remote_models_html(resp.text)
+                entries: list[dict[str, str]] = []
+                for entry in modelito_ollama_service.list_remote_model_catalog():
+                    raw = entry.raw if isinstance(entry.raw, dict) else {}
+                    size = str(
+                        raw.get("parameter_size")
+                        or raw.get("size")
+                        or raw.get("size_label")
+                        or ""
+                    ).strip()
+                    display = entry.name
+                    if size:
+                        display = f"{display} ({size})"
+                    if entry.installed:
+                        display = f"{display} [installed]"
+                    entries.append({"name": entry.name, "display": display, "size": size})
                 names = [entry["name"] for entry in entries]
 
                 def update(*_):
@@ -723,76 +754,77 @@ class OllamaConfigScreen(Screen):
                     self._set_remote_selection(selected)
                     self._set_status(f"Loaded {len(names)} remote model(s).")
                     self._append_log(
-                        f"GET {REMOTE_LIBRARY_URL}\nLoaded {len(names)} remote models"
+                        f"modelito list_remote_model_catalog\nLoaded {len(names)} remote models"
                     )
                     self._schedule_ui_callback(on_complete)
 
                 Clock.schedule_once(update, 0)
-            except requests.RequestException as exc:
+            except Exception as exc:
                 self._set_status(f"Unable to load remote models: {exc}")
-                self._append_log(f"GET {REMOTE_LIBRARY_URL}\n{exc}")
+                self._append_log(f"Remote model refresh failed\n{exc}")
                 self._schedule_ui_callback(on_complete)
 
         self._run_in_thread(work)
 
     def _get_running_model_names(self) -> list[str]:
         base_url, port = self._llm_endpoint()
-        ps_url = f"{base_url}:{port}/api/ps"
+        host = f"{base_url.removeprefix('http://').removeprefix('https://')}:{port}"
         try:
-            payload = self._json_get(ps_url, timeout=5)
-        except (URLError, HTTPError, ValueError):
+            return modelito_ollama_service.running_model_names(host)
+        except Exception:
             return []
-
-        models = payload.get("models", []) if isinstance(payload, dict) else []
-        return [
-            model.get("name", "")
-            for model in models
-            if isinstance(model, dict) and model.get("name")
-        ]
 
     def _preload_model(self, model_name: str):
         base_url, port = self._llm_endpoint()
-        url = f"{base_url}:{port}/api/generate"
         request_timeout = ollama_service.resolve_request_timeout(
             self._llm_timeout_config(model_name),
             model=model_name,
         )
-        resp = requests.post(
-            url,
-            json={"model": model_name, "keep_alive": "30m"},
+        ollama_service.preload_model(
+            base_url,
+            port,
+            model_name,
             timeout=request_timeout,
         )
-        resp.raise_for_status()
-        payload = resp.json() if resp.content else {}
-        self._append_log(f"POST {url}\n{json.dumps(payload)}")
+        payload = {"ok": True, "model": model_name, "timeout": request_timeout}
+        self._append_log(f"modelito preload_model\n{json.dumps(payload)}")
         return payload
 
     def _stop_serving_model(self, model_name: str):
         base_url, port = self._llm_endpoint()
-        url = f"{base_url}:{port}/api/generate"
-        resp = requests.post(
-            url,
-            json={"model": model_name, "keep_alive": 0},
-            timeout=30,
-        )
-        resp.raise_for_status()
-        payload = resp.json() if resp.content else {}
-        self._append_log(f"POST {url}\n{json.dumps(payload)}")
-        return payload
+        host = f"{base_url.removeprefix('http://').removeprefix('https://')}:{port}"
+        proc = ollama_service.run_ollama_command("stop", model_name, host=host)
+        combined = ((proc.stdout or "") + (proc.stderr or "")).strip()
+        self._append_log(f"$ ollama stop {model_name}\n{combined or f'exit {proc.returncode}'}")
+        if proc.returncode != 0:
+            raise RuntimeError(combined or f"Failed to stop model {model_name}")
+        return {"ok": True}
 
     def _ensure_model_serving(self, model_name: str):
+        base_url, port = self._llm_endpoint()
+        request_timeout = ollama_service.resolve_request_timeout(
+            self._llm_timeout_config(model_name),
+            model=model_name,
+        )
         try:
-            return self._preload_model(model_name)
-        except requests.RequestException as exc:
-            self._append_log(f"Preload failed for {model_name}: {exc}")
-            proc = self._run_ollama_helper("start")
-            combined = f"{proc.stdout}\n{proc.stderr}".strip()
-            self._append_log(f"$ python -m llm.service start\n{combined or '(no output)'}")
-            if proc.returncode != 0:
-                raise RuntimeError(
-                    combined or f"ollama_service.py start exited {proc.returncode}"
-                ) from exc
-            return {"started_via_script": True}
+            result = modelito_ollama_service.ensure_model_ready_detailed(
+                model_name,
+                host=base_url,
+                port=port,
+                auto_start=True,
+                allow_download=False,
+                timeout=request_timeout,
+            )
+        except Exception as exc:
+            self._append_log(f"Model readiness check failed for {model_name}: {exc}")
+            raise RuntimeError(str(exc)) from exc
+        if not result.success:
+            detail = result.error or result.message or f"modelito could not make {model_name} ready"
+            raise RuntimeError(detail)
+        self._append_log(
+            f"modelito ensure_model_ready_detailed\nmodel={model_name} phase={result.phase} elapsed={result.elapsed_seconds:.2f}s source={result.source}"
+        )
+        return {"ready": True}
 
     def set_model_from_selection(self):
         model = self.selected_local_model.strip()
@@ -905,21 +937,17 @@ class OllamaConfigScreen(Screen):
             self._append_log(f"No model timeout override to clear: {model}")
 
     def _pull_model(self, model_name: str):
-        base_url, port = self._llm_endpoint()
-        url = f"{base_url}:{port}/api/pull"
-
-        with requests.post(url, json={"name": model_name}, timeout=30, stream=True) as resp:
-            resp.raise_for_status()
-            for line in resp.iter_lines():
-                if not line:
-                    continue
-                try:
-                    event = json.loads(line.decode("utf-8"))
-                    status = event.get("status") or event.get("error") or "working"
-                    self._set_status(f"Pull {model_name}: {status}")
-                    self._append_log(f"POST {url}\n{json.dumps(event)}")
-                except ValueError:
-                    continue
+        for state in modelito_ollama_service.download_model_progress(model_name, timeout=600.0):
+            status = state.message or state.phase or state.error or "working"
+            self._set_status(f"Pull {model_name}: {status}")
+            event = {
+                "model": state.model,
+                "phase": state.phase,
+                "message": state.message,
+                "progress": state.progress,
+                "error": state.error,
+            }
+            self._append_log(f"modelito download_model_progress\n{json.dumps(event)}")
 
     def request_pull_selected_model(self):
         model = self.selected_remote_model.strip()
@@ -938,7 +966,7 @@ class OllamaConfigScreen(Screen):
                     self._set_status(f"Model downloaded: {model}")
                     self._append_log(f"Model downloaded: {model}")
                     self.refresh_local_models()
-                except requests.RequestException as exc:
+                except Exception as exc:
                     self._set_status(f"Download failed: {exc}")
                     self._append_log(f"Download failed for {model}: {exc}")
 
@@ -953,11 +981,10 @@ class OllamaConfigScreen(Screen):
         )
 
     def _delete_model(self, model_name: str):
-        base_url, port = self._llm_endpoint()
-        url = f"{base_url}:{port}/api/delete"
-        resp = requests.delete(url, json={"name": model_name}, timeout=10)
-        resp.raise_for_status()
-        self._append_log(f"DELETE {url}\nDeleted model request: {model_name}")
+        deleted = modelito_ollama_service.delete_model(model_name)
+        self._append_log(f"modelito delete_model\n{model_name} -> {deleted}")
+        if not deleted:
+            raise RuntimeError(f"Failed to delete model {model_name}")
 
     def request_delete_selected_model(self):
         model = self.selected_local_model.strip()
@@ -981,7 +1008,7 @@ class OllamaConfigScreen(Screen):
                     self._set_status(f"Model deleted: {model}")
                     self._append_log(f"Model deleted: {model}")
                     self.refresh_local_models()
-                except requests.RequestException as exc:
+                except Exception as exc:
                     self._set_status(f"Delete failed: {exc}")
                     self._append_log(f"Delete failed for {model}: {exc}")
 
