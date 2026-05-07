@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 18:31
+Last updated: 2026-05-07 19:26
 
 ## Project Purpose
 
@@ -102,6 +102,8 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Narrowed default-path service-state orchestration by delegating `inspect_service_state(None)` directly to `modelito.inspect_service_state(None)`.
 - Hardened Homebrew install smoke to report a clear error when `brew` is unavailable on `PATH`.
 - Added regression coverage for the new service-state delegation path and missing-`brew` handling.
+- Ran a comprehensive repository audit pass across working tree state, core documentation, source and packaging scripts, and automated verification commands.
+- Updated `docs/code/dox_config.properties` `PROJECT_NUMBER` from `0.2.3` to `0.3.4` and regenerated `docs/code/` so generated API docs match the current repository version.
 
 ## Tests And Verification Status
 
@@ -126,16 +128,22 @@ Executed in this work session:
 - `pytest -q src/tests/test_multiplatform_support.py src/tests/test_packaging_smoke.py` -> `38 passed`
 - `pytest -q` -> `149 passed, 2 skipped`
 - `pytest -q src/tests/test_multiplatform_support.py src/tests/test_packaging_smoke.py` -> `40 passed`
+- `pytest -q` -> `151 passed, 2 skipped`
+- `pytest -q src/tests/test_homebrew_packaging.py src/tests/test_packaging_smoke.py` -> `16 passed`
+- `python -m py_compile run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py src/llm/service.py src/util/packaging_smoke.py` -> completed successfully (no syntax errors)
+- `doxygen docs/code/dox_config.properties` -> completed successfully after updating `PROJECT_NUMBER` to `0.3.4`
 
 ## Known Issues, Risks, And Limitations
 
 - `src/llm/service.py` still owns BatLLM-specific overlay logic and timeout policy; avoid re-expanding it into a generic provider abstraction already handled by `modelito`.
 - Homebrew install-level smoke now depends on temporary local tap setup because current Homebrew rejects direct file-based formula installs outside a tap.
+- Two tests remain intentionally skipped in the default suite; they are the gated live-Ollama paths and were not executed in this audit pass.
 
 ## Recurring Tasks
 
 - Keep hygiene checks current as packaging and release scripts evolve.
 - Keep STATUS and maintained docs aligned with any additional runtime or packaging changes.
+- Keep maintenance-level monitoring in place for future `modelito` and Homebrew policy changes.
 
 ## Pending Tasks
 
@@ -143,17 +151,17 @@ Executed in this work session:
 
 ## Next Steps
 
-1. No open next steps from the previous status cycle.
-2. Continue maintenance-level monitoring for future `modelito` and Homebrew policy changes.
+1. Run the live-Ollama gated smoke paths when environment and runtime budget permit to close the remaining test-execution gap.
 
 ## Longer-Term Steps
 
-1. Decide GUI direction for web-app surface versus Kivy-only roadmap. Analysis: this is the highest leverage product decision because multiplayer, prompt sharing, and deployment choices depend on whether Kivy remains the only client or becomes one client among several.
-2. LAN multiplayer support. Analysis: best first networking milestone; keep deterministic replay by introducing an authoritative turn-order protocol and schema-stable event log before any internet exposure.
-3. Internet multiplayer support. Analysis: should follow LAN once identity, matchmaking, and anti-abuse controls are defined; otherwise operational/security complexity will exceed current release hardening capacity.
-4. Prompt library/repository and examples. Analysis: implement only after session schema/version governance is final so shared prompts reference stable command/round semantics across versions.
-5. Additional computer-controlled player modes. Analysis: lowest infrastructure risk and can progress in parallel with 1.x maintenance; useful as a short-cycle track while larger network architecture work is planned.
+1. Decide GUI direction for web-app surface versus Kivy-only roadmap. Analysis: this is the highest leverage product decision because multiplayer, prompt sharing, and deployment choices depend on whether Kivy remains the only client or becomes one client among several. Note: Kivy and webapps can coexist, however it would increase the complexity of the project for no apparent gain.
+2. LAN multiplayer support. Analysis: best first networking milestone; keep deterministic replay by introducing an authoritative turn-order protocol and schema-stable event log before any internet exposure. Note: Multiplayer mode will need to create new GUI modes or versions.
+3. Internet multiplayer support. Analysis: should follow LAN once identity, matchmaking, and anti-abuse controls are defined; otherwise operational/security complexity will exceed current release hardening capacity. 
+4. Prompt library/repository and examples. Analysis: implement only after session schema/version governance is final so shared prompts reference stable command/round semantics across versions. Note: We need to strengthen the educative component of the project.
+5. Additional computer-controlled player modes. Analysis: lowest infrastructure risk and can progress in parallel with 1.x maintenance; useful as a short-cycle track while larger network architecture work is planned. Note: This will also impact the GUI.
+6. GUI improvements or redesigns. Note: It could be reasonable to reach 1.0 without webapp and multiplayer and then start working on 1.1 with webapp, multiplayer, and most importantly a re-thinking of the UI/UX of the project.
 
 ---
 
-Last updated: 2026-05-07 18:31
+Last updated: 2026-05-07 19:26
