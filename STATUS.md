@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 18:12
+Last updated: 2026-05-07 18:31
 
 ## Project Purpose
 
@@ -99,6 +99,9 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Regenerated generated API docs under `docs/code/` with `doxygen docs/code/dox_config.properties`.
 - Narrowed `src/llm/service.py` startup orchestration by delegating the no-config path directly to `modelito.start_service()` instead of falling back to the local startup branch.
 - Added regression coverage in `src/tests/test_multiplatform_support.py` for the no-config startup delegation path.
+- Narrowed default-path service-state orchestration by delegating `inspect_service_state(None)` directly to `modelito.inspect_service_state(None)`.
+- Hardened Homebrew install smoke to report a clear error when `brew` is unavailable on `PATH`.
+- Added regression coverage for the new service-state delegation path and missing-`brew` handling.
 
 ## Tests And Verification Status
 
@@ -122,6 +125,7 @@ Executed in this work session:
 - `doxygen docs/code/dox_config.properties` -> completed successfully; regenerated `docs/code/` HTML/LaTeX outputs.
 - `pytest -q src/tests/test_multiplatform_support.py src/tests/test_packaging_smoke.py` -> `38 passed`
 - `pytest -q` -> `149 passed, 2 skipped`
+- `pytest -q src/tests/test_multiplatform_support.py src/tests/test_packaging_smoke.py` -> `40 passed`
 
 ## Known Issues, Risks, And Limitations
 
@@ -139,8 +143,8 @@ Executed in this work session:
 
 ## Next Steps
 
-1. Keep narrowing local orchestration in `src/llm/service.py` only for explicit BatLLM overlay/config-path behaviour; continue delegating default-path lifecycle calls to `modelito`.
-2. Keep packaging smoke paths and release docs aligned as Homebrew policy evolves.
+1. No open next steps from the previous status cycle.
+2. Continue maintenance-level monitoring for future `modelito` and Homebrew policy changes.
 
 ## Longer-Term Steps
 
@@ -152,4 +156,4 @@ Executed in this work session:
 
 ---
 
-Last updated: 2026-05-07 18:12
+Last updated: 2026-05-07 18:31

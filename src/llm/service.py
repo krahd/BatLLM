@@ -462,8 +462,10 @@ def server_is_up(url: str, port: int) -> bool:
 
 
 def inspect_service_state(config_path: Path | None = None) -> dict[str, object]:
+    inspector = getattr(_MODELITO, "inspect_service_state", None)
+    if config_path is None and callable(inspector):
+        return inspector(None)
     try:
-        inspector = getattr(_MODELITO, "inspect_service_state", None)
         if callable(inspector):
             return inspector(str(config_path) if config_path is not None else None)
     except Exception:

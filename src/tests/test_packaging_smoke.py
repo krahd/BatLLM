@@ -139,3 +139,21 @@ def test_run_packaging_smoke_calls_homebrew_install_smoke_when_enabled(monkeypat
 
     assert errors == []
     assert called == {"formula_exists": True, "install_timeout_seconds": 456.0}
+
+
+def test_run_homebrew_install_smoke_reports_missing_brew(monkeypatch, tmp_path: Path) -> None:
+    formula_path = tmp_path / "batllm.rb"
+    formula_path.write_text("class Batllm < Formula\nend\n", encoding="utf-8")
+
+    def _missing_brew(*_args, **_kwargs):
+        raise FileNotFoundError("brew")
+
+    monkeypatch.setattr(packaging_smoke, "run_command", _missing_brew)
+
+    errors = packaging_smoke.run_homebrew_install_smoke(
+        tmp_path,
+        formula_path=formula_path,
+        install_timeout_seconds=60.0,
+    )
+
+    assert errors == ["homebrew install smoke failed: brew command not found on PATH"]

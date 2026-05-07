@@ -469,6 +469,25 @@ def test_start_service_without_config_uses_modelito_path(monkeypatch) -> None:
     assert called == {"path": None, "warmup_timeout": 12.0}
 
 
+def test_inspect_service_state_without_config_uses_modelito_path(monkeypatch) -> None:
+    monkeypatch.setattr(
+        ollama_service,
+        "load_llm_config",
+        lambda _path=None: (_ for _ in ()).throw(AssertionError("local fallback should not run")),
+    )
+    monkeypatch.setattr(
+        ollama_service._MODELITO,
+        "inspect_service_state",
+        lambda _path=None: {"installed": True, "running": True, "startup_model": "smollm2"},
+    )
+
+    assert ollama_service.inspect_service_state(None) == {
+        "installed": True,
+        "running": True,
+        "startup_model": "smollm2",
+    }
+
+
 def test_stop_service_only_force_kills_ollama_processes(monkeypatch, tmp_path: Path) -> None:
     config_path = tmp_path / "config.yaml"
     config_path.write_text(

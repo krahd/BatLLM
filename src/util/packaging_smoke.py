@@ -212,7 +212,13 @@ def run_homebrew_install_smoke(
         "HOMEBREW_NO_ENV_HINTS": "1",
     }
 
-    code, out, err = run_command(["brew", "--repository"], cwd=root, env=brew_env)
+    def _brew_command(args: list[str], *, timeout: float | None = None) -> tuple[int, str, str]:
+        return run_command(["brew", *args], cwd=root, env=brew_env, timeout=timeout)
+
+    try:
+        code, out, err = _brew_command(["--repository"])
+    except FileNotFoundError:
+        return ["homebrew install smoke failed: brew command not found on PATH"]
     if code != 0:
         errors.append("homebrew install smoke failed: unable to resolve Homebrew repository")
         if out.strip():
@@ -227,11 +233,10 @@ def run_homebrew_install_smoke(
     tap_formula_dir = tap_repo / "Formula"
     tap_formula_path = tap_formula_dir / "batllm.rb"
 
-    run_command(["brew", "untap", tap_name], cwd=root, env=brew_env)
+    _brew_command(["untap", tap_name])
 
     try:
-        code, out, err = run_command(
-            ["brew", "tap-new", "--no-git", tap_name], cwd=root, env=brew_env)
+        code, out, err = _brew_command(["tap-new", "--no-git", tap_name])
         if code != 0:
             errors.append(f"homebrew install smoke failed: brew tap-new failed for {tap_name}")
             if out.strip():
@@ -243,13 +248,11 @@ def run_homebrew_install_smoke(
         tap_formula_dir.mkdir(parents=True, exist_ok=True)
         tap_formula_path.write_text(formula_path.read_text(encoding="utf-8"), encoding="utf-8")
 
-        run_command(["brew", "uninstall", "--force", "batllm"], cwd=root, env=brew_env)
+        _brew_command(["uninstall", "--force", "batllm"])
 
         try:
-            code, out, err = run_command(
-                ["brew", "install", f"{tap_name}/batllm"],
-                cwd=root,
-                env=brew_env,
+            code, out, err = _brew_command(
+                ["install", f"{tap_name}/batllm"],
                 timeout=install_timeout_seconds,
             )
         except subprocess.TimeoutExpired:
@@ -265,7 +268,7 @@ def run_homebrew_install_smoke(
                 errors.append(err.strip())
             return errors
 
-        code, out, err = run_command(["brew", "test", "batllm"], cwd=root, env=brew_env)
+        code, out, err = _brew_command(["test", "batllm"])
         if code != 0:
             errors.append("homebrew install smoke failed: brew test batllm returned non-zero")
             if out.strip():
@@ -273,9 +276,14 @@ def run_homebrew_install_smoke(
             if err.strip():
                 errors.append(err.strip())
             return errors
+    except FileNotFoundError:
+        return ["homebrew install smoke failed: brew command not found on PATH"]
     finally:
-        run_command(["brew", "uninstall", "--force", "batllm"], cwd=root, env=brew_env)
-        run_command(["brew", "untap", tap_name], cwd=root, env=brew_env)
+        try:
+            _brew_command(["uninstall", "--force", "batllm"])
+            _brew_command(["untap", tap_name])
+        except FileNotFoundError:
+            pass
 
     return errors
 
