@@ -1,97 +1,141 @@
 # AGENTS.md
 
-Canonical guidance for automated coding agents working in this repository.
-These instructions are intended to be directly usable by GitHub Copilot, OpenAI Codex, Claude, and other compatible agents.
+Canonical operating instructions for AI coding agents working in this repository. These instructions apply to GitHub Copilot, OpenAI Codex, Anthropic Claude, and compatible agents.
 
-Compatibility note:
+## Repository purpose
 
-- This file is the source of truth for agent behavior in this repository.
-- Tool-specific compatibility files may point here, but this document must remain complete on its own.
+BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local model workflows. Agents must preserve the project's practical, critical, and educational framing while keeping the application runnable across supported platforms.
 
-## Project Shape
+## Important paths
 
-BatLLM is a Python/Kivy local-LLM game application with two main user-facing surfaces:
+- `run_batllm.py`: main application launcher.
+- `run_game_analyzer.py`: standalone game-analyser launcher.
+- `src/`: application source code.
+- `src/configs/`: configuration files and defaults.
+- `requirements.txt`: Python dependencies.
+- `docs/README.md`: canonical project overview.
+- `docs/USER_GUIDE.md`: user-facing manual.
+- `docs/CONTRIBUTING.md`: developer setup, architecture, and testing guide.
+- `docs/ROADMAP.md`: planned product direction.
+- `docs/RELEASE_CRITERIA_1_0.md`: release gates.
+- `STATUS.md`: complete current project status report; mandatory upkeep.
 
-- the main BatLLM gameplay app launched through `run_batllm.py`
-- the read-only game analyzer launched through `run_game_analyzer.py`
-
-The repository also includes packaging helpers, documentation, and test coverage for local runtime behavior.
-
-The LLM/Ollama integration should be implemented through `modelito` functionality. Keep BatLLM-specific logic in BatLLM, but do not reintroduce generic Ollama lifecycle, model-management, or provider behavior that `modelito` already provides.
-
-## Important Paths
-
-- `run_batllm.py`: primary launcher for the app
-- `run_game_analyzer.py`: launcher for the analyzer surface
-- `src/main.py`: main Kivy application entrypoint
-- `src/game/`: gameplay logic, connectors, replay/session data
-- `src/view/`: Kivy screens and dialogs
-- `src/llm/`: BatLLM LLM integration layer and BatLLM-specific runtime facade over `modelito`
-- `src/configs/`: app config handling and configurator tooling
-- `src/tests/`: pytest coverage
-- `docs/`: user and maintainer documentation
-- `STATUS.md`: complete current project status report; mandatory upkeep
-
-## Development Rules
-
-- Prefer focused edits over broad rewrites or formatting churn.
-- Preserve existing public behavior unless the task explicitly changes it.
-- Keep generic Ollama/provider behavior in `modelito`; BatLLM should call into it rather than duplicate it.
-- Do not add backward-compatibility wrappers unless they solve a current in-repo need. This repository is pre-release; prefer the direct architecture.
-- When changing model-management behavior, update both runtime code and the affected documentation.
-- Do not commit generated artifacts, cache folders, build outputs, logs, or temporary files.
-- Keep Homebrew/package-facing behavior aligned with the shipped docs and requirements.
-
-## STATUS.md Mandatory Upkeep
+## Mandatory STATUS.md upkeep
 
 `STATUS.md` must be kept up to date at all times.
 
-After every non-trivial change, investigation result, bug fix, feature, refactor, validation update, or release-relevant doc update, update `STATUS.md` in the same work session.
+Agents must review `STATUS.md` before making changes and update it whenever project state changes. This includes changes to code, architecture, dependencies, configuration, documentation, tests, known issues, setup instructions, pending tasks, release state, or repository structure.
 
-`STATUS.md` is required to be a complete project status report. At minimum it must include:
+Agents must not finish a task that changes the project without ensuring that `STATUS.md` is accurate.
 
-- current state and active focus
-- what changed recently
-- validation performed and validation gaps
-- known risks, limitations, or open issues
-- next prioritized steps
+`STATUS.md` must be a complete project status report, not a short changelog. It must include, where relevant:
 
-Timestamp requirement:
+- project purpose
+- setup and run instructions
+- current implementation state
+- architecture overview
+- important files and directories
+- recent changes
+- tests and verification status
+- known issues, risks, and limitations
+- pending tasks
+- next steps
+- longer-term steps
 
-- include a top-level timestamp line using this format: `Last updated: YYYY-MM-DD HH:MM`
-- include the same `Last updated: YYYY-MM-DD HH:MM` line again at the very bottom of `STATUS.md` as a footer
-- use the user's local wall-clock time and timezone context
-- never leave the timestamp stale when the report content changes
+Timestamp requirements:
 
-Agents must not mark work complete until `STATUS.md` accurately reflects the project state.
+- Include a `Last updated` line near the top using exactly this format: `Last updated: YYYY-MM-DD HH:MM`.
+- Use local wall-clock time.
+- Repeat the exact same `Last updated` line as the final line at the bottom of `STATUS.md`.
+- The top and bottom lines must match exactly.
+- Treat a stale, missing, mismatched, or incorrectly formatted timestamp as a blocking documentation error.
+
+## Diagrams in STATUS.md
+
+`STATUS.md` should include useful architecture diagram(s) and flow chart(s) as inline SVG when the repository structure, execution flow, or data flow is complex enough to benefit from visual documentation.
+
+SVG requirements:
+
+- Use inline SVG directly in `STATUS.md` when practical.
+- Ensure text remains inside boxes and inside the SVG canvas.
+- Ensure arrows and connector lines do not pass through unrelated boxes or labels.
+- Make the canvas larger when needed for correctness and legibility.
+- Prefer generous spacing over compactness.
+- Keep labels concise and readable.
+- Update diagrams when architecture, data flow, execution flow, or module relationships meaningfully change.
+- Avoid trivial diagram updates when no relevant structural change has occurred.
+
+## Communication style
+
+Do not use playful, whimsical, cute, or filler progress phrases.
+
+Do not say things like:
+
+- “combobulating”
+- “cooking”
+- “thinking...”
+- “working on it”
+- “let me dive in”
+- “I’ll get started”
+
+When doing work, either provide the result directly or, for long tasks, give terse factual status updates only.
+
+Allowed status style:
+
+- “Reading files.”
+- “Found the issue.”
+- “Applying patch.”
+- “Tests passed.”
+- “Tests failed: <reason>.”
+
+Do not anthropomorphise the process. Do not perform fake enthusiasm.
+
+Additional communication rules:
+
+- No decorative progress messages.
+- No jokes, metaphors, or playful status words.
+- No “I’m going to...” unless asking for confirmation.
+- Prefer concise technical updates in plain present tense.
+- When using tools, report only meaningful findings, blockers, or completed changes.
+
+## Development rules
+
+- Inspect relevant files and tests before editing.
+- Prefer small, focused changes over broad rewrites.
+- Preserve public behaviour and compatibility unless explicitly asked to change them.
+- Do not delete or overwrite user-authored work unless explicitly requested.
+- Keep generated artifacts, caches, build outputs, local virtual environments, and temporary files out of git.
+- Do not commit secrets, API keys, local credentials, machine-specific absolute paths, or private data.
+- Use British English in prose documentation unless a file already follows another convention.
+- Keep user-facing documentation aligned with behaviour changes.
+- Keep release/version references consistent across all relevant files when changing versions.
+
+## Safety rules
+
+BatLLM can interact with a real local Ollama installation and user-created saved sessions. Treat these as real user state.
+
+- Preserve confirmation prompts for destructive or expensive operations.
+- Do not weaken safeguards around model deletion, downloads, local service control, saved-session handling, or configuration writes.
+- Do not make tests mutate repository defaults or user configuration unless the test uses an isolated temporary path.
+- Be explicit in `STATUS.md` about validation that was not run.
 
 ## Validation
 
-Run the narrowest checks that cover the change first, then broaden when the change touches shared flows.
+Run the narrowest checks that cover the change, then broaden when shared behaviour may be affected. Prefer commands documented in `docs/CONTRIBUTING.md` when present.
 
-Common commands for this repository:
+Typical checks may include:
 
 ```bash
-pytest -q
-/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python run_tests.py full
+python -m pytest -q
+python run_batllm.py
+python run_game_analyzer.py
 ```
 
-For packaging-sensitive changes, also validate the relevant packaging script or build flow that was touched.
+Only claim tests passed when they were actually run. Record tests run, tests not run, failures, and external validation gaps in `STATUS.md`.
 
-Document what was run and what was not run in `STATUS.md`.
+## Git hygiene
 
-## Documentation Expectations
-
-When runtime behavior, package requirements, model-management behavior, or UX changes, update the relevant docs in the same change set. Typically this includes:
-
-- `docs/README.md` or root overview docs when install/runtime expectations change
-- `docs/USER_GUIDE.md` for user-visible model/runtime behavior
-- `docs/CHANGELOG.md` when the change is release-relevant
-- `STATUS.md`
-
-## Git Hygiene
-
-- Check `git status --short` before and after edits.
-- Do not revert user-authored changes unless explicitly asked.
-- Keep commits atomic and stage only intended paths when the worktree is mixed.
+- Check the worktree before and after edits.
+- Do not revert user changes unless explicitly requested.
+- Stage only intended paths when the worktree is mixed.
 - Commit or push only when explicitly requested.

@@ -1,93 +1,211 @@
-# BatLLM Status
+# BatLLM – Project Status
 
-Last updated: 2026-05-06 22:15
+Last updated: 2026-05-06 23:41
 
-## Current State
+## Project purpose
 
-BatLLM is currently at repository version `0.3.3` and remains centered on two maintained Python/Kivy surfaces:
+BatLLM is a free/libre Python/Kivy research, education, and game project for exploring AI-mediated gameplay, prompt quality, LLM behaviour, context design, and local model operation. It provides a turn-based battle game in which players use LLMs to act on their behalf, plus tools for replaying and analysing saved sessions.
 
-- the main BatLLM gameplay application
-- the read-only Game Analyzer for replay and review workflows
+## Current implementation state
 
-The repository now routes maintained Ollama lifecycle/model-management behavior through `modelito 1.4.0`, with high-priority features for structured model readiness results and configurable service warmup timeout.
+The repository currently provides:
 
-## Current Focus
+- main BatLLM gameplay launcher via `run_batllm.py`
+- standalone game analyser via `run_game_analyzer.py`
+- Kivy-based application code under `src/`
+- local Ollama-oriented workflow for model selection, startup, teardown, download, and deletion
+- prompt/history/session handling and v2 saved-session replay support
+- cross-platform release-bundle generation
+- Homebrew packaging support for macOS Apple Silicon
+- project documentation under `docs/`
 
-- Upgraded BatLLM to `modelito 1.4.0` with high-priority feature integration.
-- Implemented `ensure_model_ready_detailed()` for structured lifecycle feedback.
-- Added `warmup_timeout` parameter support through service layer.
-- Keep the maintained docs aligned with the enhanced `modelito 1.4.0` architecture.
+Root-level `AGENTS.md` and `STATUS.md` governance is being introduced so humans and agents have a consistent current-state reference.
 
-## Architecture Notes
+## Active focus
 
-- Launchers: `run_batllm.py`, `run_game_analyzer.py`
-- Main app entrypoint: `src/main.py`
-- Gameplay and LLM request orchestration: `src/game/`, `src/llm/`
-- Ollama/runtime service surface: `src/llm/service.py`
-- UI/runtime model management: `src/view/ollama_config_screen.py`
-- Config tooling: `src/configs/configurator.py`
-- Tests: `src/tests/`
+Current project focus is stabilising the pre-1.0 application experience, especially first-run behaviour, Ollama configuration, saved-session replay, cross-platform packaging, and documentation alignment.
 
-## Architecture Diagram
+## Architecture overview
 
-![BatLLM architecture](docs/images/architecture-modelito.svg)
+BatLLM is organised as a Python desktop application with documentation and packaging helpers around it. The main launcher starts the Kivy app, which reads configuration from `src/configs/`, interacts with local Ollama tooling, records gameplay/session data, and can hand saved sessions to the analyser.
 
-## Runtime Flow Diagram
+### Architecture diagram
 
-![BatLLM runtime flow](docs/images/request-flow-modelito.svg)
+The diagram summarises the current repository-level architecture.
 
-## Recent Changes In This Work Session
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="420" viewBox="0 0 980 420" role="img" aria-labelledby="batllm-arch-title batllm-arch-desc">
+  <title id="batllm-arch-title">BatLLM architecture overview</title>
+  <desc id="batllm-arch-desc">Launchers start the Kivy application and analyser, which use source modules, configuration, saved sessions, Ollama integration, documentation, and packaging helpers.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect x="30" y="40" width="200" height="70" rx="10" fill="none" stroke="black" />
+  <text x="130" y="70" text-anchor="middle" font-size="14">run_batllm.py</text>
+  <text x="130" y="90" text-anchor="middle" font-size="12">main launcher</text>
+  <rect x="30" y="160" width="200" height="70" rx="10" fill="none" stroke="black" />
+  <text x="130" y="190" text-anchor="middle" font-size="14">run_game_analyzer.py</text>
+  <text x="130" y="210" text-anchor="middle" font-size="12">analyser launcher</text>
+  <rect x="310" y="80" width="220" height="90" rx="10" fill="none" stroke="black" />
+  <text x="420" y="115" text-anchor="middle" font-size="14">src/ application</text>
+  <text x="420" y="137" text-anchor="middle" font-size="12">Kivy UI, game logic,</text>
+  <text x="420" y="155" text-anchor="middle" font-size="12">history, sessions</text>
+  <rect x="610" y="40" width="230" height="70" rx="10" fill="none" stroke="black" />
+  <text x="725" y="70" text-anchor="middle" font-size="14">src/configs/</text>
+  <text x="725" y="90" text-anchor="middle" font-size="12">settings and defaults</text>
+  <rect x="610" y="145" width="230" height="80" rx="10" fill="none" stroke="black" />
+  <text x="725" y="175" text-anchor="middle" font-size="14">Local Ollama</text>
+  <text x="725" y="197" text-anchor="middle" font-size="12">models and service</text>
+  <rect x="610" y="260" width="230" height="80" rx="10" fill="none" stroke="black" />
+  <text x="725" y="290" text-anchor="middle" font-size="14">Saved sessions</text>
+  <text x="725" y="312" text-anchor="middle" font-size="12">gameplay replay data</text>
+  <rect x="310" y="250" width="220" height="70" rx="10" fill="none" stroke="black" />
+  <text x="420" y="280" text-anchor="middle" font-size="14">docs/ and packaging</text>
+  <text x="420" y="300" text-anchor="middle" font-size="12">guides, bundles, Homebrew</text>
+  <line x1="230" y1="75" x2="310" y2="115" stroke="black" marker-end="url(#arrow)" />
+  <line x1="230" y1="195" x2="310" y2="145" stroke="black" marker-end="url(#arrow)" />
+  <line x1="530" y1="115" x2="610" y2="75" stroke="black" marker-end="url(#arrow)" />
+  <line x1="530" y1="135" x2="610" y2="185" stroke="black" marker-end="url(#arrow)" />
+  <line x1="530" y1="155" x2="610" y2="300" stroke="black" marker-end="url(#arrow)" />
+  <line x1="420" y1="170" x2="420" y2="250" stroke="black" marker-end="url(#arrow)" />
+</svg>
 
-- Upgraded `modelito` dependency from `1.2.2` to `1.4.0` in `requirements.txt`.
-- Implemented high-priority features from modelito 1.4.0:
-  - **Structured readiness results**: Migrated from `ensure_model_ready()` (boolean) to `ensure_model_ready_detailed()` returning `ReadinessResult` with `success`, `phase`, `message`, `source`, `elapsed_seconds`, and `error` fields.
-  - **Configurable warmup timeout**: Added `warmup_timeout` parameter (default 30.0s) to `start_service()` call to allow customization of server startup timeout.
-  - **Error envelope support**: Imported `ErrorEnvelope`, `ResponseEnvelope`, `TransportPolicy` from modelito for improved error normalization.
-- Updated `src/view/ollama_config_screen.py`:
-  - Changed `_ensure_model_serving_via_modelito()` and `_ensure_model_serving()` to use `ensure_model_ready_detailed()`.
-  - Enriched lifecycle logging with `elapsed_seconds`, `phase`, and `source` information from the result object.
-  - Simplified error handling by checking `result.success` and accessing structured error/message fields.
-- Updated `src/llm/service.py`:
-  - Modified `start_service()` signature to accept `warmup_timeout: float = 30.0` parameter.
-  - Added error envelope imports for future error handling improvements.
-  - Passed `warmup_timeout` through to modelito's `start_service()` call.
-- Updated `docs/CHANGELOG.md` with modelito 1.4.0 upgrade notes.
+### Flow chart
 
-## Validation
+The flow chart shows the normal local gameplay and analysis loop.
 
-Completed in this work session:
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="360" viewBox="0 0 980 360" role="img" aria-labelledby="batllm-flow-title batllm-flow-desc">
+  <title id="batllm-flow-title">BatLLM gameplay flow</title>
+  <desc id="batllm-flow-desc">A player launches BatLLM, configures the game and model, submits prompts, receives model commands, advances rounds, saves sessions, and optionally replays them in the analyser.</desc>
+  <defs>
+    <marker id="flow-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+  </defs>
+  <rect x="30" y="130" width="130" height="70" rx="10" fill="none" stroke="black" />
+  <text x="95" y="160" text-anchor="middle" font-size="13">Launch</text>
+  <text x="95" y="180" text-anchor="middle" font-size="12">BatLLM</text>
+  <rect x="210" y="130" width="150" height="70" rx="10" fill="none" stroke="black" />
+  <text x="285" y="157" text-anchor="middle" font-size="13">Configure game</text>
+  <text x="285" y="178" text-anchor="middle" font-size="12">and Ollama</text>
+  <rect x="410" y="130" width="150" height="70" rx="10" fill="none" stroke="black" />
+  <text x="485" y="157" text-anchor="middle" font-size="13">Submit prompt</text>
+  <text x="485" y="178" text-anchor="middle" font-size="12">with context</text>
+  <rect x="610" y="130" width="150" height="70" rx="10" fill="none" stroke="black" />
+  <text x="685" y="157" text-anchor="middle" font-size="13">Parse command</text>
+  <text x="685" y="178" text-anchor="middle" font-size="12">and update game</text>
+  <rect x="810" y="130" width="140" height="70" rx="10" fill="none" stroke="black" />
+  <text x="880" y="157" text-anchor="middle" font-size="13">Save session</text>
+  <text x="880" y="178" text-anchor="middle" font-size="12">or continue</text>
+  <rect x="610" y="255" width="150" height="65" rx="10" fill="none" stroke="black" />
+  <text x="685" y="282" text-anchor="middle" font-size="13">Replay in</text>
+  <text x="685" y="302" text-anchor="middle" font-size="12">analyser</text>
+  <line x1="160" y1="165" x2="210" y2="165" stroke="black" marker-end="url(#flow-arrow)" />
+  <line x1="360" y1="165" x2="410" y2="165" stroke="black" marker-end="url(#flow-arrow)" />
+  <line x1="560" y1="165" x2="610" y2="165" stroke="black" marker-end="url(#flow-arrow)" />
+  <line x1="760" y1="165" x2="810" y2="165" stroke="black" marker-end="url(#flow-arrow)" />
+  <path d="M 880 200 L 880 230 L 685 230 L 685 255" fill="none" stroke="black" marker-end="url(#flow-arrow)" />
+  <path d="M 685 130 L 685 85 L 485 85 L 485 130" fill="none" stroke="black" marker-end="url(#flow-arrow)" />
+</svg>
 
-- Upgraded `modelito` from `1.2.2` to `1.4.0` in requirements.txt.
-- Updated `src/llm/service.py` with warmup_timeout parameter and error envelope imports.
-- Updated both `_ensure_model_serving_via_modelito()` and `_ensure_model_serving()` methods to use `ensure_model_ready_detailed()`.
-- Python syntax validation with py_compile pending after this session.
-- Pytest validation pending after this session.
+## Setup and run instructions
 
-Not yet completed in this work session:
+macOS/Linux:
 
-- Running pytest suite to validate ensure_model_ready_detailed() integration
-- Broader full-suite pytest validation
-- Packaging or release-flow validation
-- Doxygen/code-doc regeneration for `docs/code/`
+```bash
+git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
+python3 -m venv .venv_BatLLM
+source .venv_BatLLM/bin/activate
+pip install -r requirements.txt
+python run_batllm.py
+```
 
-## Known Risks And Gaps
+Windows:
 
-- `src/llm/service.py` still owns BatLLM-specific config overlay and timeout policy; that module should stay narrow and should not grow back into a generic Ollama abstraction layer.
-- Kivy/UI behavior around model-management flows needs regression coverage whenever service helpers or model lifecycle logic changes.
-- Generated `docs/code/` output still reflects older code snapshots until Doxygen is rerun.
+```powershell
+git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
+py -m venv .venv_BatLLM
+.\.venv_BatLLM\Scripts\Activate.ps1
+pip install -r requirements.txt
+python run_batllm.py
+```
 
-## Next Prioritized Steps
+Standalone analyser:
 
-1. Run broader full-suite pytest coverage and any packaging-sensitive validation needed for release confidence.
-2. Regenerate `docs/code/` if the generated API docs are expected to ship with this refactor.
-3. Evaluate whether `src/llm/service.py` startup orchestration should further collapse to direct `modelito.start_service/stop_service` calls in all code paths.
+```bash
+python run_game_analyzer.py
+```
 
-## Longer-term Steps and Decisions
+## Configuration and environment variables
 
-1. GUI: webapp surface? Yes/no? If Yes: in addition to or instead of Kivy?
-2. LAN multiplayer
-3. Internet multiplayer
-4. Library / repo / examples of prompts
-5. Computer-controlled player (flavours: prompted, AI-directly, programatically)
+- `src/configs/`: application configuration and defaults.
+- `requirements.txt`: Python dependency list.
+- local Ollama CLI/service: required for the default local-model workflow.
+- `llm.model` and `llm.last_served_model`: documented model-selection settings in the project README.
+- `BATLLM_HOME`: Homebrew install uses this user-writable directory; default is `~/Library/Application Support/BatLLM`.
 
-Last updated: 2026-05-06 22:15
+## Important files and directories
+
+- `run_batllm.py`: main app launcher.
+- `run_game_analyzer.py`: standalone analyser launcher.
+- `src/`: application source.
+- `src/configs/`: configuration files.
+- `docs/README.md`: canonical overview and quick start.
+- `docs/USER_GUIDE.md`: user manual.
+- `docs/CONTRIBUTING.md`: developer guide.
+- `docs/ROADMAP.md`: planned 1.0 and 2.0 direction.
+- `docs/RELEASE_CRITERIA_1_0.md`: 1.0 release gates.
+- `create_release_bundles.py`: cross-platform bundle generator.
+- `create_homebrew_formula.py`: Homebrew formula generator.
+- `scripts/cmr-r`: convenience wrapper for local launch.
+
+## Recent changes
+
+- Added root-level agent governance instructions.
+- Added this root-level status report snapshot.
+- Current documentation describes BatLLM `0.3.2` as the active repository version line.
+- Current documentation describes modelito-backed Ollama service helper migration and single-Ollama workflow work as already present in recent commits.
+
+## Tests and verification status
+
+Not run while creating this documentation-only snapshot.
+
+The repository documentation describes test and validation workflows in `docs/CONTRIBUTING.md`; future implementation changes should run the narrowest relevant checks and record them here.
+
+## Known issues, risks, and limitations
+
+- Local Ollama operations affect the user's real local Ollama installation.
+- Cross-platform release launchers require platform-specific validation.
+- Saved-session replay intentionally targets v2 session envelopes; legacy top-level list exports are rejected.
+- Some current-state details should be refreshed after a full code and test audit.
+
+## Pending tasks
+
+- Review `docs/CONTRIBUTING.md` and align this status report with its exact validation commands.
+- Confirm current version metadata across `VERSION`, docs, package/build files, and release helpers.
+- Replace any remaining placeholder or stale documentation found during the next repository audit.
+
+## Next steps
+
+1. Run the documented test suite and record results here.
+2. Verify first-run behaviour with a clean config directory.
+3. Validate the analyser against representative v2 saved-session exports.
+
+## Longer-term steps
+
+1. Complete explicit 1.0 release criteria.
+2. Continue tightening cross-platform packaging validation.
+3. Keep documentation focused on current user and maintainer workflows.
+
+## Decisions and rationale
+
+- BatLLM remains centred on local, practical, AI-mediated gameplay rather than direct manual control.
+- The default workflow assumes local Ollama integration, with clear warnings because model and service operations have real effects.
+- `STATUS.md` is now the canonical current-state snapshot for agents and human maintainers.
+
+---
+
+Last updated: 2026-05-06 23:41
