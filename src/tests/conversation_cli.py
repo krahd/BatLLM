@@ -22,11 +22,11 @@ Classes:
 
 from __future__ import annotations
 
-import json
-from typing import Any, Dict, List, Optional
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from typing import Dict, List, Optional
+
 from configs.app_config import config
+from llm import service as ollama_service
+from modelito import Message, OllamaProvider
 
 
 
@@ -49,36 +49,22 @@ class ConversationCLI():
         self.model: str = str(config.get("llm", "model"))
         self.num_ctx: int = int(config.get("llm", "num_ctx"))
 
-        base: str = str(config.get("llm", "url"))
-        port: str = str(config.get("llm", "port"))
-        path: str = str(config.get("llm", "path"))
-
-        self.endpoint: str = f"{base}:{port}{path}"
+        self.base_url: str = str(config.get("llm", "url")).rstrip("/")
+        self.port: int = int(config.get("llm", "port"))
+        self.timeout: float = ollama_service.resolve_request_timeout(
+            {
+                "model": self.model,
+                "model_timeouts": config.get("llm", "model_timeouts") or {},
+                "timeout": config.get("llm", "timeout"),
+            },
+            model=self.model,
+        )
+        self.provider = OllamaProvider(
+            host=self.base_url,
+            port=self.port,
+            model=self.model,
+        )
         self.history: List[Dict[str, str]] = []
-
-
-
-
-    def _post(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        data = json.dumps(payload).encode("utf-8")
-        req = Request(self.endpoint, data=data, headers={
-            "Content-Type": "application/json"}, method="POST")
-
-        try:
-            with urlopen(req, timeout=60) as resp:
-                body = resp.read().decode("utf-8")
-                return json.loads(body) if body else {}
-
-        except HTTPError as e:
-            try:
-                body_bytes = e.read()
-                body = body_bytes.decode("utf-8", errors="replace")
-            except (OSError, AttributeError):
-                body = str(e)
-            return {"error": f"HTTP {e.code}", "details": body}
-
-        except URLError as e:
-            return {"error": "Network error", "details": str(e)}
 
 
 
@@ -91,18 +77,6 @@ class ConversationCLI():
 
         else:
             self.history.insert(0, {"role": "system", "content": text})
-
-
-    def _build_payload(self) -> Dict[str, Any]:
-        payload: Dict[str, Any] = {"model": self.model,
-                                   "messages": self.history, "stream": False}
-
-        if self.num_ctx:
-            payload["options"] = {"num_ctx": self.num_ctx}
-
-        return payload
-
-
     def send_prompt_to_llm(self, user_input: str) -> Optional[str]:
         """Send a request
 
@@ -113,26 +87,20 @@ class ConversationCLI():
             Optional[str]: the response
         """
         self.history.append({"role": "user", "content": user_input})
-        res = self._post(self._build_payload())
-
-        if "error" in res:
-            print(f"[error] {res['error']}: {res.get('details', '')}")
+        try:
+            settings = {"timeout": self.timeout}
+            if self.num_ctx:
+                settings["num_ctx"] = self.num_ctx
+            content = self.provider.summarize(
+                [
+                    Message(role=msg.get("role", "user"), content=msg.get("content", ""))
+                    for msg in self.history
+                ],
+                settings=settings,
+            ).strip()
+        except Exception as exc:
+            print(f"[error] {exc}")
             return None
-
-
-        # Support common response shapes
-        content = ""
-        if isinstance(res.get("message"), dict) and isinstance(res["message"].get("content"), str):
-            content = res["message"]["content"]
-
-        elif isinstance(res.get("response"), str):
-            content = res["response"]
-
-        elif isinstance(res.get("choices"), list) and res["choices"]:
-            msg = (res["choices"][0] or {}).get("message") or {}
-            content = msg.get("content", "")
-
-        content = (content or "").strip()
 
         if content:
             self.history.append({"role": "assistant", "content": content})
@@ -157,7 +125,7 @@ class ConversationCLI():
         Returns:
             str: a string with the available commands
         """
-        print(f"Endpoint: {self.endpoint}")
+        print(f"Ollama host: {self.base_url}:{self.port}")
         print("Commands: /exit, /reset, /sys [text], /history, /help, /?\n\n")
 
 

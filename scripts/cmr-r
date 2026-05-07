@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# scripts/cmr-r
+# Convenience wrapper to run BatLLM using the project's virtualenv Python
+# and ensure local imports work for helper subprocesses by exporting PYTHONPATH.
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Prefer the project virtualenv Python when available
+VENV_PY="$REPO_ROOT/.venv_BatLLM/bin/python"
+if [ -x "$VENV_PY" ]; then
+  PYTHON="$VENV_PY"
+else
+  PYTHON="$(command -v python3 || command -v python)"
+fi
+
+# Ensure local package import works for helper module invocations
+export PYTHONPATH="$REPO_ROOT/src${PYTHONPATH:+:}${PYTHONPATH:-}"
+
+# Dry-run support for testing without launching the GUI
+if [ "${1:-}" = "--dry-run" ] || [ -n "${DRY_RUN:-}" ]; then
+  echo "PYTHON=$PYTHON"
+  echo "PYTHONPATH=$PYTHONPATH"
+  echo "RUNNER=$REPO_ROOT/run_batllm.py"
+  exit 0
+fi
+
+exec "$PYTHON" "$REPO_ROOT/run_batllm.py" "$@"

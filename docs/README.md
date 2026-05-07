@@ -50,6 +50,10 @@ README is the canonical overview and start-here page. The rest of the maintained
 
 - [CHANGELOG.md](CHANGELOG.md): release history and notable documentation changes
 - [CREDITS.md](CREDITS.md): project attribution and support context
+- [ROADMAP.md](ROADMAP.md): planned 1.0 and 2.0 product direction
+- [RELEASE_CRITERIA_1_0.md](RELEASE_CRITERIA_1_0.md): explicit 1.0 release gates
+- [FIRST_RUN_RELEASE_CHECKLIST.md](FIRST_RUN_RELEASE_CHECKLIST.md): pre-release first-run and bundle validation checklist
+- [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md): concrete UI unification workstreams for 1.0
 - [code/html/index.html](code/html/index.html): generated API reference
 
 The FAQ is intentionally a mixed-audience page. Routine screen instructions stay in the user guide, while recurring non-trivial questions that matter to both players and contributors live in the FAQ.
@@ -72,13 +76,13 @@ BatLLM is now maintained for:
 
 ### Python Dependencies
 
-The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports, including `requests` and the Python `ollama` client.
+The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports. BatLLM's maintained Ollama integration depends on `modelito==1.2.2`.
 
 ### Ollama Requirements
 
 BatLLM uses both:
 
-- the Python `ollama` package during gameplay
+- the `modelito` Python package for gameplay requests and model-management helpers
 - the `ollama` CLI for the in-app start/stop/version workflow and helper scripts
 
 If the CLI is missing, the app can offer to install Ollama from the Ollama screen or during app startup.
@@ -122,6 +126,28 @@ To launch the standalone analyzer directly:
 ```bash
 python run_game_analyzer.py
 ```
+
+### Wrapper script (optional)
+
+The repository includes a small convenience wrapper at `scripts/cmr-r` that prefers the project's
+virtualenv Python and sets `PYTHONPATH` so helper subprocesses can import the local `src` package
+reliably. Use it to start BatLLM from the repo root.
+
+Make it executable and run:
+
+```bash
+chmod +x scripts/cmr-r
+./scripts/cmr-r
+```
+
+Or add a shell alias for convenience:
+
+```bash
+echo "alias cmr-r='(cd /path/to/BatLLM && ./scripts/cmr-r)'" >> ~/.zshrc
+```
+
+VS Code: a task/keybinding named `cmr-r` is available to run the same command from the editor.
+
 
 ### Homebrew Packaging
 
@@ -221,7 +247,7 @@ The `Local Models` and `Remote Models` controls open modal pickers. Those picker
 - close on `Esc`
 - close when the user clicks outside the popup
 
-Remote models are loaded from `https://ollama.com/library`.
+Remote models are loaded through `modelito`'s remote catalog helper.
 
 ### Local vs Remote Models
 

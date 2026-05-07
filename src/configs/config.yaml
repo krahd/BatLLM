@@ -1,24 +1,32 @@
-data:
-  saved_sessions_folder: saved_sessions
 game:
-  bot_diameter: 0.1
-  bot_step_length: 0.03
-  bullet_damage: 5
-  bullet_diameter: 0.02
-  bullet_step_length: 0.01
-  independent_contexts: true
-  initial_health: 30
-  prompt_augmentation: true
-  shield_initial_state: true
-  shield_size: 70
   total_rounds: 2
   turns_per_round: 8
+  independent_contexts: true
+  prompt_augmentation: true
+  initial_health: 30
+  bullet_damage: 5
+  bullet_diameter: 0.02
+  shield_size: 70
+  bot_diameter: 0.1
+  bot_step_length: 0.03
+  bullet_step_length: 0.01
+  shield_initial_state: true
+ui:
+  font_size: 16
+  frame_rate: 60
+  confirm_on_exit: true
+  prompt_save_on_exit: false
+  auto_start_ollama: false
+  stop_ollama_on_exit: false
+  primary_color: '#0b0b0b'
+  title: BatLLM
 llm:
+  last_served_model: ""
+  timeout: null
+  model_timeouts: {}
   debug_requests: false
-  last_served_model: ''
   max_tokens: null
   model: smollm2
-  model_timeouts: {}
   num_ctx: 4096
   num_predict: null
   num_thread: null
@@ -31,16 +39,8 @@ llm:
   system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
   system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
   temperature: null
-  timeout: null
   top_k: null
   top_p: null
   url: http://localhost
-ui:
-  auto_start_ollama: false
-  stop_ollama_on_exit: false
-  confirm_on_exit: true
-  font_size: 16
-  frame_rate: 60
-  primary_color: '#0b0b0b'
-  prompt_save_on_exit: false
-  title: BatLLM
+data:
+  saved_sessions_folder: saved_sessions

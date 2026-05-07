@@ -22,7 +22,7 @@ The model has to translate the player's intent into BatLLM's strict command form
 
 ## What role does Ollama play in BatLLM?
 
-BatLLM uses the Python `ollama` client for gameplay chat requests. The `Ollama Config` screen uses the `ollama` CLI plus local HTTP endpoints for lifecycle actions, model inventory, downloads, deletions, and warm-up.
+BatLLM uses `modelito` for gameplay chat requests and for the in-app model-management helpers. The `Ollama Config` screen still relies on the real local `ollama` CLI for install, start, stop, and status-sensitive lifecycle work.
 
 ## What happens if Ollama is missing or not running?
 
@@ -31,7 +31,7 @@ If the CLI is missing, BatLLM can ask whether to launch the official installer. 
 ## What is the difference between local and remote models?
 
 - local models already exist in the local Ollama installation and can be selected for gameplay immediately
-- remote models are names discovered from `https://ollama.com/library` and only become playable after download
+- remote models are names discovered through `modelito`'s remote catalog and only become playable after download
 
 ## Does BatLLM change my real Ollama installation?
 

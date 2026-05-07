@@ -1,20 +1,49 @@
+from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
+from view.save_dialog import SaveDialog
+from view.load_text_dialog import LoadTextDialog
+from util.paths import prompt_asset_dir, resolve_saved_sessions_dir
+from game.history_manager import HistoryManager
+from game.game_board import GameBoard
+from game.bot import Bot
+from configs.app_config import config
+from kivy.uix.screenmanager import Screen
 import datetime
 import sys
 
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.core.window import Window
-from kivy.uix.screenmanager import Screen
+# Window handling: prefer the project's `util.utils.Window` (so tests can monkeypatch it),
+# otherwise fall back to Kivy's Window. If neither is importable, provide a safe no-op proxy.
+_window = None
+try:
+    # prefer the project's util proxy when available and non-None
+    from util.utils import Window as _w
+    if _w is not None:
+        _window = _w
+except Exception:
+    _window = None
 
-from configs.app_config import config
-from game.bot import Bot
+if _window is None:
+    try:
+        from kivy.core.window import Window as _kivy_w
+        if _kivy_w is not None:
+            _window = _kivy_w
+    except Exception:
+        _window = None
+
+if _window is None:
+    from types import SimpleNamespace
+
+    _window = SimpleNamespace(
+        bind=lambda *a, **k: None,
+        unbind=lambda *a, **k: None,
+        request_keyboard=lambda *a, **k: None,
+    )
+
+# Expose module-level `Window` name
+Window = _window
+
 # from game.game_board import GameBoard
-from game.game_board import GameBoard
-from game.history_manager import HistoryManager
-from util.paths import prompt_asset_dir, resolve_saved_sessions_dir
-from view.load_text_dialog import LoadTextDialog
-from view.save_dialog import SaveDialog
-from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
 
 
 class HomeScreen(Screen):

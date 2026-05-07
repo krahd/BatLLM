@@ -2,6 +2,33 @@
 
 # Changelog
 
+## Unreleased
+
+### Modelito 1.4.0 Integration
+
+- upgraded `modelito` dependency from `1.2.2` to `1.4.0`
+- implemented `ensure_model_ready_detailed()` for structured `ReadinessResult` objects instead of boolean polling
+- added configurable `warmup_timeout` parameter to `start_service()` orchestration (default 30.0s)
+- imported transport error handling types (`ErrorEnvelope`, `ResponseEnvelope`, `TransportPolicy`) from `modelito` for improved error normalization
+- updated Ollama config screen to use the new readiness result object for richer UI lifecycle feedback (phase, elapsed time, source details, error information)
+- updated service layer to pass `warmup_timeout` through to modelito's `start_service()` call
+
+### Modelito 1.2.2 Direct Integration
+
+- pinned BatLLM to `modelito==1.2.2`
+- moved gameplay requests to direct `modelito` usage in `src/game/ollama_connector.py`
+- switched the Ollama screen, configurator console, smoke helpers, and test CLI to direct `modelito` service and provider helpers
+- removed the remaining pre-release compatibility and stale backup files that kept obsolete non-gameplay HTTP paths alive
+- updated the maintained docs and status report to describe the direct `modelito 1.2.2` architecture consistently
+
+## v0.3.3 - 2026-04-21
+
+### Modelito migration
+
+- migrated generic Ollama lifecycle and helper functions to the published `modelito` package and routed the then-current compatibility wrapper through `modelito.ollama_service`
+- removed legacy migration documentation (`docs/MIGRATION_TO_MODELITO.md`)
+- bumped repository `VERSION` to 0.3.3
+
 ## v0.3.2 - 2026-04-06
 
 ### Homebrew Tap Automation
@@ -161,5 +188,5 @@
 
 ### Repository Consistency
 
-- added the missing `requests` and Python `ollama` dependencies to `requirements.txt`
+- added the missing dependencies required by the then-current Ollama integration to `requirements.txt`
 - removed the stray space-prefixed `primary_color` key from config defaults and sample configs

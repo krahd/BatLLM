@@ -233,8 +233,8 @@ def test_install_command_for_current_platform_is_platform_specific() -> None:
         "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
     )
     assert ollama_service.install_command_for_current_platform("darwin") == (
-        ["/bin/sh", "-lc", "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh"],
-        "export OLLAMA_NO_START=1; curl -fsSL https://ollama.com/install.sh | sh",
+        ["brew", "install", "ollama"],
+        "brew install ollama",
     )
     assert ollama_service.install_command_for_current_platform("win32") == (
         [

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1340" height="860" viewBox="0 0 1340 860" role="img" aria-labelledby="title desc">
+  <title id="title">BatLLM request and model flow</title>
+  <desc id="desc">Flow chart showing model selection, local readiness, remote downloads, gameplay prompt execution, and history persistence using modelito and the local Ollama runtime.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f6f7fb; }
+      .box { fill: #ffffff; stroke: #324154; stroke-width: 2; }
+      .decision { fill: #fff5dd; stroke: #8a6416; stroke-width: 2; }
+      .runtime { fill: #edf7ee; stroke: #44633f; stroke-width: 2; }
+      .accent { fill: #e9f1ff; stroke: #335c81; stroke-width: 2; }
+      .title { font: 700 30px 'Avenir Next', 'Segoe UI', sans-serif; fill: #15202b; }
+      .subtitle { font: 500 16px 'Avenir Next', 'Segoe UI', sans-serif; fill: #55626f; }
+      .box-title { font: 700 20px 'Avenir Next', 'Segoe UI', sans-serif; fill: #14202b; }
+      .box-text { font: 500 15px 'Avenir Next', 'Segoe UI', sans-serif; fill: #27323b; }
+      .label { font: 600 14px 'Avenir Next', 'Segoe UI', sans-serif; fill: #2f3a44; }
+      .arrow { stroke: #2f3a44; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#2f3a44" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1340" height="860" />
+  <text class="title" x="60" y="60">BatLLM Runtime Flow With Direct Modelito Integration</text>
+  <text class="subtitle" x="60" y="92">The same `modelito` toolchain now drives local selection, remote downloads, smoke validation, the configurator console, and live gameplay requests.</text>
+
+  <rect class="box" x="60" y="160" width="280" height="130" rx="18" ry="18" />
+  <text class="box-title" x="84" y="198">1. Select Or Refresh A Model</text>
+  <text class="box-text" x="84" y="230">
+    <tspan x="84" dy="0">Ollama screen or configurator</tspan>
+    <tspan x="84" dy="24">asks modelito for local or remote inventory</tspan>
+  </text>
+
+  <polygon class="decision" points="470,160 590,250 470,340 350,250" />
+  <text class="box-title" x="408" y="238">Local model?</text>
+  <text class="box-text" x="394" y="264">choose local or remote path</text>
+
+  <rect class="accent" x="700" y="140" width="320" height="170" rx="18" ry="18" />
+  <text class="box-title" x="724" y="178">2A. Local Model Path</text>
+  <text class="box-text" x="724" y="210">
+    <tspan x="724" dy="0">save llm.model</tspan>
+    <tspan x="724" dy="24">resolve timeout through src/llm/service.py</tspan>
+    <tspan x="724" dy="24">run modelito ensure_model_ready</tspan>
+    <tspan x="724" dy="24">record last_served_model on success</tspan>
+  </text>
+
+  <rect class="accent" x="700" y="380" width="320" height="170" rx="18" ry="18" />
+  <text class="box-title" x="724" y="418">2B. Remote Model Path</text>
+  <text class="box-text" x="724" y="450">
+    <tspan x="724" dy="0">run modelito download_model_progress</tspan>
+    <tspan x="724" dy="24">update status and output log</tspan>
+    <tspan x="724" dy="24">refresh local models after completion</tspan>
+    <tspan x="724" dy="24">selection becomes usable locally</tspan>
+  </text>
+
+  <rect class="runtime" x="1090" y="250" width="190" height="170" rx="18" ry="18" />
+  <text class="box-title" x="1114" y="288">Local Ollama</text>
+  <text class="box-text" x="1114" y="320">
+    <tspan x="1114" dy="0">real server</tspan>
+    <tspan x="1114" dy="24">installed models</tspan>
+    <tspan x="1114" dy="24">warm model</tspan>
+    <tspan x="1114" dy="24">download or delete</tspan>
+  </text>
+
+  <rect class="box" x="60" y="600" width="300" height="150" rx="18" ry="18" />
+  <text class="box-title" x="84" y="638">3. Player Prompt</text>
+  <text class="box-text" x="84" y="670">
+    <tspan x="84" dy="0">GameBoard builds prompt and history</tspan>
+    <tspan x="84" dy="24">OllamaConnector maps messages to modelito</tspan>
+    <tspan x="84" dy="24">shared timeout policy is applied</tspan>
+  </text>
+
+  <rect class="accent" x="440" y="600" width="320" height="150" rx="18" ry="18" />
+  <text class="box-title" x="464" y="638">4. modelito Provider Call</text>
+  <text class="box-text" x="464" y="670">
+    <tspan x="464" dy="0">OllamaProvider or Client.summarize</tspan>
+    <tspan x="464" dy="24">same path used by smoke helpers and CLI</tspan>
+    <tspan x="464" dy="24">returns assistant text</tspan>
+  </text>
+
+  <rect class="box" x="840" y="600" width="340" height="150" rx="18" ry="18" />
+  <text class="box-title" x="864" y="638">5. Parse And Persist</text>
+  <text class="box-text" x="864" y="670">
+    <tspan x="864" dy="0">gameplay response is parsed into actions</tspan>
+    <tspan x="864" dy="24">HistoryManager stores prompts and outcomes</tspan>
+    <tspan x="864" dy="24">saved sessions remain replayable in the analyzer</tspan>
+  </text>
+
+  <path class="arrow" d="M340 225 H350" />
+  <path class="arrow" d="M590 215 H700" />
+  <path class="arrow" d="M470 340 V465 H700" />
+  <path class="arrow" d="M1020 225 H1090" />
+  <path class="arrow" d="M1020 465 H1090" />
+  <path class="arrow" d="M1185 420 V560 H760" />
+  <path class="arrow" d="M360 675 H440" />
+  <path class="arrow" d="M760 675 H840" />
+  <path class="arrow" d="M700 285 C610 285 610 560 210 560 V600" />
+
+  <text class="label" x="374" y="214">refresh</text>
+  <text class="label" x="628" y="204">yes</text>
+  <text class="label" x="492" y="454">no</text>
+  <text class="label" x="1034" y="214">warm or inspect</text>
+  <text class="label" x="1042" y="454">download</text>
+  <text class="label" x="1140" y="548">response text</text>
+  <text class="label" x="392" y="664">prompt</text>
+  <text class="label" x="786" y="664">record outcome</text>
+  <text class="label" x="420" y="536">after model is ready</text>
+</svg>

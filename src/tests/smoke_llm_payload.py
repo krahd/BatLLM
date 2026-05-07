@@ -1,22 +1,24 @@
 from __future__ import annotations
 
-import json
 import os
 import time
+from collections.abc import Callable
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import Request, urlopen
+from typing import TypeVar
 
 import pytest
 import yaml
 
 from llm import service as ollama_service
+from modelito import Message, OllamaProvider
+from modelito import ollama_service as modelito_ollama_service
 
 ROOT = Path(__file__).resolve().parents[2]
 # Allow overriding the config used by smoke tests via env var for CI/local flexibility
 CONFIG_PATH = Path(os.getenv("BATLLM_CONFIG_PATH") or str(ROOT / "src/configs/config.yaml"))
 RUN_OLLAMA_SMOKE = os.getenv("BATLLM_RUN_OLLAMA_SMOKE") == "1"
 DEFAULT_CHAT_TIMEOUT = 120.0
+ResultT = TypeVar("ResultT")
 
 pytestmark = pytest.mark.skipif(
     not RUN_OLLAMA_SMOKE,
@@ -37,65 +39,45 @@ def _resolve_chat_timeout(llm: dict) -> float:
     )
 
 
-def _post_json(url: str, payload: dict, *, timeout: float, description: str) -> dict:
-    req = Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
+def _invoke_with_timeout_guard(
+    invoke: Callable[[], ResultT], *, timeout: float, description: str
+) -> ResultT:
     started = time.monotonic()
     try:
-        with urlopen(req, timeout=timeout) as response:
-            body = response.read().decode("utf-8")
-            return json.loads(body) if body else {}
+        return invoke()
     except TimeoutError as exc:
         elapsed = time.monotonic() - started
         raise AssertionError(
             f"Ollama {description} timed out after {elapsed:.1f}s (timeout={timeout:.1f}s)."
         ) from exc
-    except URLError as exc:
-        if isinstance(exc.reason, TimeoutError):
-            elapsed = time.monotonic() - started
-            raise AssertionError(
-                f"Ollama {description} timed out after {elapsed:.1f}s (timeout={timeout:.1f}s)."
-            ) from exc
-        raise
 
 
-def test_ollama_health_endpoint_responds() -> None:
-    llm = _load_llm_config()
-    url = str(llm["url"]).rstrip("/")
-    port = llm["port"]
-    health_url = f"{url}:{port}/api/version"
-
-    with urlopen(health_url, timeout=10) as response:
-        payload = json.loads(response.read().decode("utf-8"))
-
-    assert "version" in payload
-
-
-def test_ollama_chat_returns_non_empty_content() -> None:
-    llm = _load_llm_config()
-    endpoint = f"{str(llm['url']).rstrip('/')}:{llm['port']}{llm['path']}"
+def _summarize_once(llm: dict, prompt: str) -> str:
     timeout = _resolve_chat_timeout(llm)
-
-    payload = {
-        "model": llm["model"],
-        "messages": [{"role": "user", "content": "Reply with exactly OK"}],
-        "stream": False,
-    }
-    res = _post_json(
-        endpoint,
-        payload,
+    provider = OllamaProvider(
+        host=str(llm["url"]).rstrip("/"),
+        port=int(llm["port"]),
+        model=str(llm["model"]),
+    )
+    return _invoke_with_timeout_guard(
+        lambda: provider.summarize(
+            [Message(role="user", content=prompt)],
+            settings={"timeout": timeout},
+        ),
         timeout=timeout,
         description=f"chat request for model '{llm['model']}'",
     )
 
-    content = ""
-    if isinstance(res.get("message"), dict):
-        content = str(res["message"].get("content", "")).strip()
-    elif isinstance(res.get("response"), str):
-        content = res["response"].strip()
+
+def test_ollama_health_endpoint_responds() -> None:
+    state = modelito_ollama_service.inspect_service_state(str(CONFIG_PATH))
+
+    assert state.get("running") is True
+    assert state.get("version")
+
+
+def test_ollama_chat_returns_non_empty_content() -> None:
+    llm = _load_llm_config()
+    content = _summarize_once(llm, "Reply with exactly OK").strip()
 
     assert content != ""
