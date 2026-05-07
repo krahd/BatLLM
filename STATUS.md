@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 00:40
+Last updated: 2026-05-07 17:10
 
 ## Project Purpose
 
@@ -84,6 +84,9 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Homebrew packaging test collection fixed by ensuring repo-root path bootstrap happens before repo-root imports.
 - Root `requirements.txt` now includes `requests==2.32.4` to remain a superset of Homebrew runtime requirements.
 - Legacy start/stop UI test updated to match the warmup-timeout argument now passed at service start.
+- Repaired a reintroduced import-order regression in `src/tests/test_homebrew_packaging.py` and `src/tests/test_multiplatform_support.py` so pytest collection remains stable.
+- Ran packaging smoke validation for release bundles and Homebrew formula generation.
+- Hardened the same two test modules to use dynamic post-bootstrap imports so formatter/isort reordering cannot reintroduce collection-time import failures.
 
 ## Tests And Verification Status
 
@@ -92,22 +95,28 @@ Executed in this work session:
 - `pytest -q src/tests/test_ollama_config_screen_logic.py src/tests/test_multiplatform_support.py src/tests/test_game_analyzer.py` -> `57 passed`
 - `pytest -q src/tests/test_homebrew_packaging.py` -> `7 passed`
 - `pytest -q` -> `138 passed, 2 skipped`
+- `python create_release_bundles.py` -> generated all expected archives under `dist/releases/`.
+- `python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb` -> completed successfully and wrote `/tmp/batllm.rb`.
 
 ## Known Issues, Risks, And Limitations
 
 - `src/llm/service.py` still owns BatLLM-specific overlay logic and timeout policy; avoid re-expanding it into a generic provider abstraction already handled by `modelito`.
-- Packaging-sensitive tests are clean, but no actual release-bundle or Homebrew install smoke run was executed in this session.
+- Packaging helpers execute successfully, but an end-to-end install smoke run of the generated release bundle or Homebrew formula was not executed in this session.
 - Generated API docs in `docs/code/` have not been regenerated in this session.
+
+## Recurring Tasks
+
+- Keep hygiene checks current as packaging and release scripts evolve.
 
 ## Pending Tasks
 
-- Run a real release-bundle or Homebrew build/install smoke validation before a publish step.
+- Run an end-to-end install smoke validation using the generated release bundle or generated Homebrew formula before a publish step.
 - Regenerate `docs/code/` if generated API docs are intended to ship with this update.
 - Continue narrowing `src/llm/service.py` where direct `modelito` calls can replace local orchestration branches without changing BatLLM-specific behaviour.
 
 ## Next Steps
 
-1. Run packaging smoke validation (`create_release_bundles.py` and/or Homebrew formula install path) when preparing release.
+1. Run end-to-end install smoke validation for either generated release bundles or a local Homebrew formula install before publish.
 2. Regenerate and review generated docs under `docs/code/` if required for release artefacts.
 3. Keep STATUS and maintained docs aligned with any additional runtime or packaging changes.
 
@@ -121,4 +130,4 @@ Executed in this work session:
 
 ---
 
-Last updated: 2026-05-07 00:40
+Last updated: 2026-05-07 17:10

@@ -1,26 +1,25 @@
 from __future__ import annotations
 
+from importlib import import_module
 import sys
 import tarfile
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import yaml
-from configs.app_config import AppConfig
-from create_homebrew_formula import (
-    create_worktree_archive,
-    parse_downloaded_artifact_name,
-    read_requirements,
-    read_version,
-    render_formula,
-)
-from llm import service as ollama_service
-from util import paths
-
-
+paths = import_module("util.paths")
+ollama_service = import_module("llm.service")
+AppConfig = import_module("configs.app_config").AppConfig
+_homebrew_formula = import_module("create_homebrew_formula")
+create_worktree_archive = _homebrew_formula.create_worktree_archive
+parse_downloaded_artifact_name = _homebrew_formula.parse_downloaded_artifact_name
+read_requirements = _homebrew_formula.read_requirements
+read_version = _homebrew_formula.read_version
+render_formula = _homebrew_formula.render_formula
 
 
 

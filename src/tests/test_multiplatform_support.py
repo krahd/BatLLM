@@ -1,19 +1,20 @@
 from __future__ import annotations
 
+from importlib import import_module
 import py_compile
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import yaml
-from configs.app_config import DEFAULTS
-from llm import service as ollama_service
-from util import paths
-
+DEFAULTS = import_module("configs.app_config").DEFAULTS
+ollama_service = import_module("llm.service")
+paths = import_module("util.paths")
 
 
 def test_resolve_repo_relative_finds_system_instruction_file() -> None:
