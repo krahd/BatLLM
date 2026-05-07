@@ -63,7 +63,8 @@ class OllamaConfigScreen(Screen):
     selected_local_timeout_text = StringProperty("")
     selected_local_timeout_details = StringProperty("Select a local model to edit its timeout.")
     warmup_timeout_text = StringProperty("")
-    warmup_timeout_details = StringProperty("Configure how long BatLLM waits for Ollama to finish starting.")
+    warmup_timeout_details = StringProperty(
+        "Configure how long BatLLM waits for Ollama to finish starting.")
     selected_remote_model_label = StringProperty("Select remote model")
     selected_remote_timeout_details = StringProperty(
         "Select a remote model to see its estimated timeout."
@@ -181,7 +182,8 @@ class OllamaConfigScreen(Screen):
         timeout_seconds = ollama_service.resolve_warmup_timeout(self._warmup_timeout_config())
         configured = config.get("llm", "warmup_timeout")
         self.warmup_timeout_text = self._format_timeout_seconds(timeout_seconds)
-        source = "saved warmup timeout override" if configured not in (None, "") else "BatLLM/modelito default"
+        source = "saved warmup timeout override" if configured not in (
+            None, "") else "BatLLM/modelito default"
         self.warmup_timeout_details = (
             f"Service warmup timeout: {self._format_timeout_seconds(timeout_seconds)}s from {source}."
         )
@@ -484,12 +486,14 @@ class OllamaConfigScreen(Screen):
             lines.append("Installed version: unavailable")
             lines.append("Server status: not running")
             lines.append(f"BatLLM model: {configured_model}")
-            lines.append(f"Warmup timeout: {self._format_timeout_seconds(snapshot.get('warmup_timeout') or 0)}s")
+            lines.append(
+                f"Warmup timeout: {self._format_timeout_seconds(snapshot.get('warmup_timeout') or 0)}s")
             return "\n".join(lines)
 
         lines.append("Ollama CLI: found")
         lines.append(f"Installed version: {snapshot.get('version') or 'unknown'}")
-        lines.append(f"Warmup timeout: {self._format_timeout_seconds(snapshot.get('warmup_timeout') or 0)}s")
+        lines.append(
+            f"Warmup timeout: {self._format_timeout_seconds(snapshot.get('warmup_timeout') or 0)}s")
 
         if snapshot.get("running"):
             lines.append("Server status: running")

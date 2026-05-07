@@ -63,7 +63,8 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
         rounds = game.get("rounds")
         _ensure(isinstance(rounds, list), f"Game {game_index} must contain rounds.")
         for round_index, round_entry in enumerate(rounds, start=1):
-            _ensure(isinstance(round_entry, dict), f"Game {game_index} round {round_index} must be an object.")
+            _ensure(isinstance(round_entry, dict),
+                    f"Game {game_index} round {round_index} must be an object.")
             _ensure(
                 isinstance(round_entry.get("gameplay_settings_snapshot"), dict),
                 f"Game {game_index} round {round_index} is missing gameplay_settings_snapshot.",
@@ -73,11 +74,14 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
                 f"Game {game_index} round {round_index} is missing initial_state.",
             )
             turns = round_entry.get("turns")
-            _ensure(isinstance(turns, list), f"Game {game_index} round {round_index} must contain turns.")
+            _ensure(isinstance(turns, list),
+                    f"Game {game_index} round {round_index} must contain turns.")
             for turn_index, turn in enumerate(turns, start=1):
                 _ensure(isinstance(turn, dict), f"Turn {turn_index} must be an object.")
-                _ensure(isinstance(turn.get("pre_state"), dict), f"Turn {turn_index} missing pre_state.")
-                _ensure(isinstance(turn.get("post_state"), dict), f"Turn {turn_index} missing post_state.")
+                _ensure(isinstance(turn.get("pre_state"), dict),
+                        f"Turn {turn_index} missing pre_state.")
+                _ensure(isinstance(turn.get("post_state"), dict),
+                        f"Turn {turn_index} missing post_state.")
                 _ensure(isinstance(turn.get("plays"), list), f"Turn {turn_index} missing plays.")
 
     return payload

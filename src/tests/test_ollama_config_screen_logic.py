@@ -483,7 +483,8 @@ def test_save_warmup_timeout_persists_override(monkeypatch) -> None:
     save_calls = []
 
     monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
-    monkeypatch.setattr(screen_module.config, "get", lambda section, key: config_state.get((section, key)))
+    monkeypatch.setattr(screen_module.config, "get", lambda section,
+                        key: config_state.get((section, key)))
     monkeypatch.setattr(
         screen_module.config,
         "set",
@@ -512,7 +513,8 @@ def test_reset_warmup_timeout_uses_default(monkeypatch) -> None:
     save_calls = []
 
     monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
-    monkeypatch.setattr(screen_module.config, "get", lambda section, key: config_state.get((section, key)))
+    monkeypatch.setattr(screen_module.config, "get", lambda section,
+                        key: config_state.get((section, key)))
     monkeypatch.setattr(
         screen_module.config,
         "set",
@@ -537,7 +539,8 @@ def test_start_ollama_passes_configured_warmup_timeout(monkeypatch) -> None:
         _managed_model_name=None,
         _set_status=lambda text: statuses.append(text),
         _append_log=lambda _text: None,
-        _run_ollama_helper=lambda *args: helper_calls.append(args) or DummyProc(returncode=0, stdout="ok"),
+        _run_ollama_helper=lambda *args: helper_calls.append(
+            args) or DummyProc(returncode=0, stdout="ok"),
         _remember_served_model=lambda model: remembered.append(model),
         refresh_ollama_status=lambda: None,
         refresh_local_models=lambda: None,
@@ -571,7 +574,8 @@ def test_ensure_model_serving_uses_detailed_result_success(monkeypatch) -> None:
         _append_log=lambda text: logs.append(text),
     )
 
-    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout", lambda _cfg, *, model=None: 120.0)
+    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout",
+                        lambda _cfg, *, model=None: 120.0)
     monkeypatch.setattr(
         screen_module.modelito_ollama_service,
         "ensure_model_ready_detailed",
@@ -598,7 +602,8 @@ def test_ensure_model_serving_uses_detailed_result_failure(monkeypatch) -> None:
         _append_log=lambda _text: None,
     )
 
-    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout", lambda _cfg, *, model=None: 120.0)
+    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout",
+                        lambda _cfg, *, model=None: 120.0)
     monkeypatch.setattr(
         screen_module.modelito_ollama_service,
         "ensure_model_ready_detailed",

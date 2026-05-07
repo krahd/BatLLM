@@ -1,18 +1,19 @@
 from __future__ import annotations
 
 import py_compile
+import sys
 from pathlib import Path
 from types import SimpleNamespace
-import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import yaml
 from configs.app_config import DEFAULTS
 from llm import service as ollama_service
-import yaml
 from util import paths
+
 
 
 def test_resolve_repo_relative_finds_system_instruction_file() -> None:
@@ -290,7 +291,8 @@ def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_p
     monkeypatch.setattr(ollama_service, "run_ollama_command", fake_run_ollama_command)
     monkeypatch.setattr(ollama_service, "server_is_up", lambda _url, _port: False)
     monkeypatch.setattr(ollama_service, "start_detached_ollama_serve", lambda _host: None)
-    monkeypatch.setattr(ollama_service, "wait_until_ready", lambda _url, _port, timeout_seconds=60.0: None)
+    monkeypatch.setattr(ollama_service, "wait_until_ready",
+                        lambda _url, _port, timeout_seconds=60.0: None)
     monkeypatch.setattr(
         ollama_service,
         "preload_model",
@@ -334,7 +336,8 @@ def test_start_service_uses_model_specific_timeout_override(monkeypatch, tmp_pat
     )
     monkeypatch.setattr(ollama_service, "server_is_up", lambda _url, _port: False)
     monkeypatch.setattr(ollama_service, "start_detached_ollama_serve", lambda _host: None)
-    monkeypatch.setattr(ollama_service, "wait_until_ready", lambda _url, _port, timeout_seconds=60.0: None)
+    monkeypatch.setattr(ollama_service, "wait_until_ready",
+                        lambda _url, _port, timeout_seconds=60.0: None)
     monkeypatch.setattr(
         ollama_service,
         "preload_model",
@@ -373,7 +376,8 @@ def test_start_service_uses_configured_model_for_fresh_install(monkeypatch, tmp_
     monkeypatch.setattr(ollama_service, "run_ollama_command", fake_run_ollama_command)
     monkeypatch.setattr(ollama_service, "server_is_up", lambda _url, _port: False)
     monkeypatch.setattr(ollama_service, "start_detached_ollama_serve", lambda _host: None)
-    monkeypatch.setattr(ollama_service, "wait_until_ready", lambda _url, _port, timeout_seconds=60.0: None)
+    monkeypatch.setattr(ollama_service, "wait_until_ready",
+                        lambda _url, _port, timeout_seconds=60.0: None)
     monkeypatch.setattr(
         ollama_service,
         "preload_model",
@@ -420,7 +424,8 @@ def test_start_service_uses_configured_warmup_timeout(monkeypatch, tmp_path: Pat
     monkeypatch.setattr(
         ollama_service,
         "wait_until_ready",
-        lambda _url, _port, timeout_seconds=60.0: ready.update({"timeout_seconds": timeout_seconds}),
+        lambda _url, _port, timeout_seconds=60.0: ready.update(
+            {"timeout_seconds": timeout_seconds}),
     )
     monkeypatch.setattr(ollama_service, "preload_model", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(ollama_service, "save_last_served_model", lambda *_args, **_kwargs: None)

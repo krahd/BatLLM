@@ -530,7 +530,8 @@ def start_service(config_path: Path | None = None, warmup_timeout: float | None 
     # a `config_path` is given, run the local implementation so callers and tests
     # that monkeypatch module-level helpers are respected.
     llm = load_llm_config(config_path)
-    resolved_warmup_timeout = resolve_warmup_timeout(llm, default=DEFAULT_WARMUP_TIMEOUT) if warmup_timeout is None else float(warmup_timeout)
+    resolved_warmup_timeout = resolve_warmup_timeout(
+        llm, default=DEFAULT_WARMUP_TIMEOUT) if warmup_timeout is None else float(warmup_timeout)
     if config_path is None:
         try:
             starter = getattr(_MODELITO, "start_service", None)
