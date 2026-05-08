@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-08 17:02
+Last updated: 2026-05-08 17:06
 
 ## Project Purpose
 
@@ -113,7 +113,7 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Bumped repository version metadata to `1.0.0` (`VERSION`, Doxygen `PROJECT_NUMBER`) and regenerated `docs/code/`.
 - Fixed import-order regressions in all three root entry scripts (`run_batllm.py`, `run_game_analyzer.py`, `run_tests.py`) by inserting `src/` on `sys.path` before importing `util.compat`.
 - Verified GitHub branch-protection status for `main`: currently not protected (`gh api` returns HTTP 404 for branch protection).
-- Bumped repository version metadata from `1.0.0` to `1.0.1` to continue release hardening without creating tag `v1.0.0`.
+- Bumped repository version metadata back to `0.3.5` so the project remains on the `0.x` line pending maintainer testing.
 
 ## Tests And Verification Status
 
@@ -168,14 +168,14 @@ Executed in this work session:
 
 - Configure GitHub branch protection on `main` to enforce `Multiplatform Validation / test`, `Multiplatform Validation / homebrew`, and `Multiplatform Validation / smoke`.
 - Complete manual first-run checklist execution on Linux and Windows hosts and update `docs/FIRST_RUN_RELEASE_CHECKLIST.md` sign-off to fully complete.
-- Final maintainer release actions: freeze scope on release branch, rerun required CI checks, and tag `v1.0.1` when external gates are complete.
+- Final maintainer release actions: freeze scope on release branch, rerun required CI checks, and tag a `0.x` release candidate (`v0.3.5`) when external gates are complete.
 
-## Next Steps — Remaining Before Tagging 1.0.1
+## Next Steps — Remaining Before Tagging v0.3.5
 
 Implemented from the previous cycle in this session:
 
 1. Criterion 3 UX gaps addressed for 1.0 tracking: overlay workaround documented, debug print removed, and UI unification workstreams marked done/deferred in `docs/UI_UNIFICATION_PLAN_1_0.md`.
-2. Criterion 5 documentation/versioning addressed: `docs/CHANGELOG.md` keeps the `v1.0.0` release notes baseline while active repository versioning now continues at `1.0.1`; Doxygen metadata and generated API docs are aligned to `1.0.1`.
+2. Criterion 5 documentation/versioning addressed: draft `v1.0.0` notes are kept as non-released reference only; active repository versioning is `0.3.5`; Doxygen metadata and generated API docs are aligned to `0.3.5`.
 3. Release-signoff command set executed locally: release bundles built, Homebrew formula rendered, Homebrew packaging tests passed, full test suite and `run_tests.py full` passed.
 4. Criterion 1 verification completed: branch protection was checked and is currently not enabled.
 
@@ -183,7 +183,7 @@ Remaining external maintainer actions (not fully automatable from this workspace
 
 1. Enable required branch protection checks on GitHub repository settings for `main`.
 2. Complete Linux and Windows manual first-run checklist execution and finalise checklist sign-off as complete.
-3. Perform final release branch freeze/tag workflow (`v1.0.1`) once the two items above are complete.
+3. Perform final release branch freeze/tag workflow (`v0.3.5`) once the two items above are complete.
 
 ## Longer-Term Steps
 
@@ -197,4 +197,4 @@ Remaining external maintainer actions (not fully automatable from this workspace
 
 ---
 
-Last updated: 2026-05-08 17:02
+Last updated: 2026-05-08 17:06

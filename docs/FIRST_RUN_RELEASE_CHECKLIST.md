@@ -54,11 +54,11 @@ Use this checklist before each release candidate.
 
 - checklist completed by maintainer: in progress (Copilot-assisted local run)
 - date: 2026-05-08
-- release candidate tag: v1.0.1-rc1
+- release candidate tag: v0.3.5-rc1
 
 ## Current Execution Record (2026-05-08)
 
 - macOS: command-level checks completed (`create_release_bundles.py`, Homebrew formula render, Homebrew packaging tests, `run_tests.py full`).
 - Linux: pending manual first-run checklist execution on a Linux host.
 - Windows: pending manual first-run checklist execution on a Windows host.
-- Release policy note: do not create tag `v1.0.0`; continue with version `1.0.1` release-candidate flow.
+- Release policy note: keep the project on the `0.x` line pending maintainer testing sign-off.

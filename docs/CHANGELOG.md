@@ -4,9 +4,10 @@
 
 ## Unreleased
 
-- bumped repository version to `1.0.1` to continue release hardening without tagging `v1.0.0`
+- keeping release line on `0.x` pending maintainer validation; repository `VERSION` is now `0.3.5`
+- continue release hardening and checklist execution before any `1.0.0` tag decision
 
-## v1.0.0 - 2026-05-08
+## Draft v1.0.0 Release Notes (not released)
 
 ### Modelito 1.4.0 Integration
 
