@@ -21,9 +21,6 @@ if str(SRC) not in sys.path:
 from util.compat import require_supported_python
 
 
-
-
-
 def build_parser() -> argparse.ArgumentParser:
     """Create the CLI argument parser."""
     parser = argparse.ArgumentParser(description="Cross-platform BatLLM test runner")
