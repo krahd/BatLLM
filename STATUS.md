@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-08 18:34
+Last updated: 2026-05-08 20:35
 
 ## Project Purpose
 
@@ -114,6 +114,10 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Fixed import-order regressions in all three root entry scripts (`run_batllm.py`, `run_game_analyzer.py`, `run_tests.py`) by inserting `src/` on `sys.path` before importing `util.compat`.
 - Enabled GitHub branch protection on `main` with required checks (`Multiplatform Validation / test`, `Multiplatform Validation / homebrew`, `Multiplatform Validation / smoke`), strict up-to-date enforcement, required conversation resolution, and one required approving review.
 - Bumped repository version metadata back to `0.3.5` so the project remains on the `0.x` line pending maintainer testing.
+- Made explicit-platform install-command resolution deterministic in `src/llm/service.py` while preserving modelito delegation for runtime auto-detection.
+- Repaired reintroduced import-order regressions in the root launchers (`run_batllm.py`, `run_game_analyzer.py`, `run_tests.py`) so `src/` path bootstrap happens before importing `util.compat`.
+- Updated `.github/workflows/multiplatform.yml` Homebrew job environment to use the same headless Kivy/PYTHONPATH settings as other CI jobs.
+- Relaxed `src/tests/smoke_llm_payload.py` health-check assertion for mock-only CI runs where service state can be running with `installed=False` and an empty version string.
 
 ## Tests And Verification Status
 
@@ -151,6 +155,8 @@ Executed in this work session:
 - `doxygen docs/code/dox_config.properties` -> completed successfully with `DOXYGEN_EXIT:0`; regenerated HTML/LaTeX docs for version `0.3.5`.
 - `gh api -X PUT repos/krahd/BatLLM/branches/main/protection --input ...` -> completed successfully; protection now enforces required checks and review policy on `main`.
 - `gh api repos/krahd/BatLLM/branches/main/protection` -> completed successfully; verified active protection settings.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python -m pytest -q src/tests/test_multiplatform_support.py::test_install_command_for_current_platform_is_platform_specific src/tests/test_ollama_config_screen_logic.py::test_build_ollama_install_command_is_platform_specific src/tests/test_homebrew_packaging.py` -> `9 passed`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python -m py_compile run_batllm.py run_game_analyzer.py run_tests.py src/llm/service.py` -> completed successfully (no syntax errors).
 
 ## Known Issues, Risks, And Limitations
 
@@ -195,4 +201,4 @@ Remaining external maintainer actions (not fully automatable from this workspace
 
 ---
 
-Last updated: 2026-05-08 18:34
+Last updated: 2026-05-08 20:35
