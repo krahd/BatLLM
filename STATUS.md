@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 19:26
+Last updated: 2026-05-07 23:09
 
 ## Project Purpose
 
@@ -104,6 +104,8 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Added regression coverage for the new service-state delegation path and missing-`brew` handling.
 - Ran a comprehensive repository audit pass across working tree state, core documentation, source and packaging scripts, and automated verification commands.
 - Updated `docs/code/dox_config.properties` `PROJECT_NUMBER` from `0.2.3` to `0.3.4` and regenerated `docs/code/` so generated API docs match the current repository version.
+- Fixed `run_tests.py` import-order and module-resolution issues so `python run_tests.py full` now works from the repository root without ad-hoc `PYTHONPATH` setup.
+- Completed the live-Ollama gated smoke next step via `python run_tests.py full`.
 
 ## Tests And Verification Status
 
@@ -132,12 +134,12 @@ Executed in this work session:
 - `pytest -q src/tests/test_homebrew_packaging.py src/tests/test_packaging_smoke.py` -> `16 passed`
 - `python -m py_compile run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py src/llm/service.py src/util/packaging_smoke.py` -> completed successfully (no syntax errors)
 - `doxygen docs/code/dox_config.properties` -> completed successfully after updating `PROJECT_NUMBER` to `0.3.4`
+- `python run_tests.py full` -> core smoke `4 passed`; full suite with live-Ollama gating `153 passed`; runner successfully started and stopped local Ollama through `llm.service`.
 
 ## Known Issues, Risks, And Limitations
 
 - `src/llm/service.py` still owns BatLLM-specific overlay logic and timeout policy; avoid re-expanding it into a generic provider abstraction already handled by `modelito`.
 - Homebrew install-level smoke now depends on temporary local tap setup because current Homebrew rejects direct file-based formula installs outside a tap.
-- Two tests remain intentionally skipped in the default suite; they are the gated live-Ollama paths and were not executed in this audit pass.
 
 ## Recurring Tasks
 
@@ -151,7 +153,7 @@ Executed in this work session:
 
 ## Next Steps
 
-1. Run the live-Ollama gated smoke paths when environment and runtime budget permit to close the remaining test-execution gap.
+1. Keep live-Ollama smoke execution available as a release-readiness check when runtime budget permits.
 
 ## Longer-Term Steps
 
@@ -164,4 +166,4 @@ Executed in this work session:
 
 ---
 
-Last updated: 2026-05-07 19:26
+Last updated: 2026-05-07 23:09

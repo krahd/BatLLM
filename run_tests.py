@@ -1,7 +1,6 @@
 """Cross-platform test runner for BatLLM."""
 
 from __future__ import annotations
-from util.compat import require_supported_python
 
 import argparse
 import os
@@ -18,6 +17,8 @@ OLLAMA_HELPER = ROOT / "src" / "ollama_service.py"
 
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+
+from util.compat import require_supported_python
 
 
 
@@ -49,6 +50,19 @@ def run_pytest(*args: str, env: dict[str, str] | None = None) -> subprocess.Comp
     )
 
 
+def run_llm_service(*args: str) -> subprocess.CompletedProcess:
+    """Run llm.service through the project virtual environment with src on PYTHONPATH."""
+    env = os.environ.copy()
+    env.setdefault("PYTHONPATH", "src")
+    return subprocess.run(
+        [str(VENV_PYTHON), "-m", "llm.service", *args],
+        cwd=ROOT,
+        text=True,
+        check=False,
+        env=env,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     """Entry point for the cross-platform test runner."""
     require_supported_python()
@@ -69,12 +83,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stderr.write(core.stderr or "")
         return core.returncode
 
-    start_proc = subprocess.run(
-        [str(VENV_PYTHON), "-m", "llm.service", "start"],
-        cwd=ROOT,
-        text=True,
-        check=False,
-    )
+    start_proc = run_llm_service("start")
     if start_proc.returncode != 0:
         sys.stdout.write(start_proc.stdout or "")
         sys.stderr.write(start_proc.stderr or "")
@@ -86,12 +95,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.stderr.write(full.stderr or "")
         return full.returncode
     finally:
-        subprocess.run(
-            [str(VENV_PYTHON), "-m", "llm.service", "stop", "-v"],
-            cwd=ROOT,
-            text=True,
-            check=False,
-        )
+        run_llm_service("stop", "-v")
 
 
 if __name__ == "__main__":
