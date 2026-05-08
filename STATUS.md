@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 23:09
+Last updated: 2026-05-07 23:54
 
 ## Project Purpose
 
@@ -157,13 +157,14 @@ Executed in this work session:
 
 ## Longer-Term Steps
 
-1. Decide GUI direction for web-app surface versus Kivy-only roadmap. Analysis: this is the highest leverage product decision because multiplayer, prompt sharing, and deployment choices depend on whether Kivy remains the only client or becomes one client among several. Note: Kivy and webapps can coexist, however it would increase the complexity of the project for no apparent gain.
-2. LAN multiplayer support. Analysis: best first networking milestone; keep deterministic replay by introducing an authoritative turn-order protocol and schema-stable event log before any internet exposure. Note: Multiplayer mode will need to create new GUI modes or versions.
-3. Internet multiplayer support. Analysis: should follow LAN once identity, matchmaking, and anti-abuse controls are defined; otherwise operational/security complexity will exceed current release hardening capacity. 
-4. Prompt library/repository and examples. Analysis: implement only after session schema/version governance is final so shared prompts reference stable command/round semantics across versions. Note: We need to strengthen the educative component of the project.
-5. Additional computer-controlled player modes. Analysis: lowest infrastructure risk and can progress in parallel with 1.x maintenance; useful as a short-cycle track while larger network architecture work is planned. Note: This will also impact the GUI.
-6. GUI improvements or redesigns. Note: It could be reasonable to reach 1.0 without webapp and multiplayer and then start working on 1.1 with webapp, multiplayer, and most importantly a re-thinking of the UI/UX of the project.
+1. Decide GUI direction for web-app surface versus Kivy-only roadmap. Analysis: this is the highest-leverage product decision because multiplayer, prompt sharing, and deployment choices all depend on whether Kivy remains the only client. Kivy and a web surface can coexist, but the added complexity yields no clear gain before 1.0. Decision: defer a web surface until after 1.0; revisit only if cross-device or teacher-mode use cases demand it. Comparable projects (Jan, GPT4All) gained traction without a web surface first.
+2. LAN multiplayer support. Analysis: best first networking milestone; deterministic replay must be preserved by introducing an authoritative turn-order protocol and a schema-stable, versioned event log before any socket code is written. The replay schema must be frozen (versioned and migration-tested) as a hard precondition — any multiplayer session that references an unstable schema is fragile. Multiplayer will also require new GUI modes.
+3. Internet multiplayer support. Analysis: should follow LAN once identity, matchmaking, and anti-abuse controls are defined. Additional precondition not in earlier steps: once strangers can play together, prompt injection into the LLM path becomes a meaningful attack surface and must be explicitly scoped and mitigated before public exposure.
+4. Prompt library/repository and examples. Analysis: the session schema/version governance precondition remains correct, but this item is strategically more important than its position implies. A shared prompt library is the primary educational centrepiece of the project — the mechanism by which players compare model behaviours across scenarios. Promptfoo, DeepEval, and Langfuse build their community value around shared test cases; BatLLM's equivalent is game-framed prompts. Schema stability is a precondition, not the goal.
+5. Additional computer-controlled player modes. Analysis: lowest infrastructure risk; can progress in parallel with 1.x maintenance. Educational value is higher than it appears: distinct bot personalities (aggressive, defensive, random, rules-only) give players a direct way to observe and compare model behavioural differences, which ties directly to the core learning loop. GUI impact is manageable within the existing screen structure.
+6. Experiment/Evaluation Mode. Analysis: batch-run scenarios with fixed seeds across model and prompt configurations and produce a scored outcome log. This is the highest-differentiating capability BatLLM could offer that no comparable project provides in a game context. A scoped first version is achievable before 1.0 because seed-based replay and outcome logging are already partially implied by the existing replay engine. Precondition: deterministic seed propagation must be verified across the full game loop.
+7. GUI improvements and redesigns (two separate tracks). Track A — incremental polish: can happen continuously within the 1.x cycle without a discrete decision point. Track B — UI/UX redesign: a discrete strategic decision, best deferred to 1.1 alongside any webapp or multiplayer work. A reasonable sequencing is: reach 1.0 with Kivy-only, polished incrementally; then plan 1.1 around a unified rethink of UI/UX, webapp surface, and multiplayer simultaneously.
 
 ---
 
-Last updated: 2026-05-07 23:09
+Last updated: 2026-05-07 23:54
