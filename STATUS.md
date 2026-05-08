@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-07 23:54
+Last updated: 2026-05-08 17:02
 
 ## Project Purpose
 
@@ -106,6 +106,14 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 - Updated `docs/code/dox_config.properties` `PROJECT_NUMBER` from `0.2.3` to `0.3.4` and regenerated `docs/code/` so generated API docs match the current repository version.
 - Fixed `run_tests.py` import-order and module-resolution issues so `python run_tests.py full` now works from the repository root without ad-hoc `PYTHONPATH` setup.
 - Completed the live-Ollama gated smoke next step via `python run_tests.py full`.
+- Replaced home-screen overlay TODO markers with an explicit rationale so the workaround is documented and tracked without ambiguous TODO debt.
+- Removed debug-only prompt-history prints from `src/view/home_screen.py`.
+- Updated `docs/UI_UNIFICATION_PLAN_1_0.md` with explicit 1.0 status per workstream (done versus deferred to 1.1).
+- Added `v1.0.0` release notes in `docs/CHANGELOG.md` and reset `Unreleased` to an empty placeholder.
+- Bumped repository version metadata to `1.0.0` (`VERSION`, Doxygen `PROJECT_NUMBER`) and regenerated `docs/code/`.
+- Fixed import-order regressions in all three root entry scripts (`run_batllm.py`, `run_game_analyzer.py`, `run_tests.py`) by inserting `src/` on `sys.path` before importing `util.compat`.
+- Verified GitHub branch-protection status for `main`: currently not protected (`gh api` returns HTTP 404 for branch protection).
+- Bumped repository version metadata from `1.0.0` to `1.0.1` to continue release hardening without creating tag `v1.0.0`.
 
 ## Tests And Verification Status
 
@@ -135,11 +143,20 @@ Executed in this work session:
 - `python -m py_compile run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py src/llm/service.py src/util/packaging_smoke.py` -> completed successfully (no syntax errors)
 - `doxygen docs/code/dox_config.properties` -> completed successfully after updating `PROJECT_NUMBER` to `0.3.4`
 - `python run_tests.py full` -> core smoke `4 passed`; full suite with live-Ollama gating `153 passed`; runner successfully started and stopped local Ollama through `llm.service`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python create_release_bundles.py` -> generated source and platform release archives under `dist/releases/`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb` -> completed successfully and wrote `/tmp/batllm.rb`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python -m pytest -q src/tests/test_homebrew_packaging.py` -> `7 passed`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python run_tests.py full` -> core smoke `4 passed`; full suite `153 passed`; live-Ollama lifecycle start/stop verified.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python -m pytest -q` -> `151 passed, 2 skipped`.
+- `doxygen docs/code/dox_config.properties` -> completed successfully with `DOXYGEN_EXIT:0`; regenerated HTML/LaTeX docs for version `1.0.0`.
+- `gh api repos/krahd/BatLLM/branches/main/protection` -> `404 Branch not protected`.
 
 ## Known Issues, Risks, And Limitations
 
 - `src/llm/service.py` still owns BatLLM-specific overlay logic and timeout policy; avoid re-expanding it into a generic provider abstraction already handled by `modelito`.
 - Homebrew install-level smoke now depends on temporary local tap setup because current Homebrew rejects direct file-based formula installs outside a tap.
+- `main` branch protection is not enabled yet; required 1.0 checks are defined in workflow but not enforced by repository settings.
+- First-run checklist execution is complete for command-level macOS validation but still requires manual Linux and Windows first-run pass/sign-off.
 
 ## Recurring Tasks
 
@@ -149,11 +166,24 @@ Executed in this work session:
 
 ## Pending Tasks
 
-- No open pending tasks from the previous status cycle.
+- Configure GitHub branch protection on `main` to enforce `Multiplatform Validation / test`, `Multiplatform Validation / homebrew`, and `Multiplatform Validation / smoke`.
+- Complete manual first-run checklist execution on Linux and Windows hosts and update `docs/FIRST_RUN_RELEASE_CHECKLIST.md` sign-off to fully complete.
+- Final maintainer release actions: freeze scope on release branch, rerun required CI checks, and tag `v1.0.1` when external gates are complete.
 
-## Next Steps
+## Next Steps — Remaining Before Tagging 1.0.1
 
-1. Keep live-Ollama smoke execution available as a release-readiness check when runtime budget permits.
+Implemented from the previous cycle in this session:
+
+1. Criterion 3 UX gaps addressed for 1.0 tracking: overlay workaround documented, debug print removed, and UI unification workstreams marked done/deferred in `docs/UI_UNIFICATION_PLAN_1_0.md`.
+2. Criterion 5 documentation/versioning addressed: `docs/CHANGELOG.md` keeps the `v1.0.0` release notes baseline while active repository versioning now continues at `1.0.1`; Doxygen metadata and generated API docs are aligned to `1.0.1`.
+3. Release-signoff command set executed locally: release bundles built, Homebrew formula rendered, Homebrew packaging tests passed, full test suite and `run_tests.py full` passed.
+4. Criterion 1 verification completed: branch protection was checked and is currently not enabled.
+
+Remaining external maintainer actions (not fully automatable from this workspace):
+
+1. Enable required branch protection checks on GitHub repository settings for `main`.
+2. Complete Linux and Windows manual first-run checklist execution and finalise checklist sign-off as complete.
+3. Perform final release branch freeze/tag workflow (`v1.0.1`) once the two items above are complete.
 
 ## Longer-Term Steps
 
@@ -167,4 +197,4 @@ Executed in this work session:
 
 ---
 
-Last updated: 2026-05-07 23:54
+Last updated: 2026-05-08 17:02

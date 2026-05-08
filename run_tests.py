@@ -1,7 +1,6 @@
 """Cross-platform test runner for BatLLM."""
 
 from __future__ import annotations
-from util.compat import require_supported_python
 
 import argparse
 import os
@@ -18,6 +17,9 @@ OLLAMA_HELPER = ROOT / "src" / "ollama_service.py"
 
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+
+from util.compat import require_supported_python
+
 
 
 

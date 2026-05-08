@@ -248,10 +248,6 @@ class HomeScreen(Screen):
         """
 
         input_id = f"prompt_input_{bot_id}"
-
-
-        print(f"setting prompt input text for id {input_id} to: {text}")
-
         self.ids.get(input_id).text = text
 
 
@@ -291,9 +287,8 @@ class HomeScreen(Screen):
 
         if text_input:
             return text_input.text
-        else:
-            print(f"No TextInput found for id: {input_id}")
-            return ""
+
+        return ""
 
 
     def prompt_store_gui_set_text(self, bot_id, text):
@@ -321,17 +316,10 @@ class HomeScreen(Screen):
         """
         store = self.get_game_board().prompt_store
 
-        print("********** CLICK ON REWIND PROMPT STORE FOR BOT", bot_id)
-
         new_prompt = (store.rewind(bot_id))
-        print(f"New prompt: {new_prompt}")
 
         if (new_prompt is not None):
             self.prompt_store_gui_set_text(bot_id, new_prompt)
-
-        else:
-            print("**** EERR can't rewind prompt store any more :()")
-            # TODO delete this print
 
 
 
@@ -359,8 +347,6 @@ class HomeScreen(Screen):
 
         # get the current prompt from the prompt store
         new_prompt = self.get_game_board().prompt_store.get_current_prompt(bot_id)
-        # it should be the same than the one being shown in the prompt store viewer
-        print("$$$$$$ new prompt:", new_prompt)
 
         #  set it as the current prompt being edited
         self.set_prompt_gui_input_text(bot_id, new_prompt)

@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+- bumped repository version to `1.0.1` to continue release hardening without tagging `v1.0.0`
+
+## v1.0.0 - 2026-05-08
+
 ### Modelito 1.4.0 Integration
 
 - upgraded `modelito` dependency from `1.2.2` to `1.4.0`
@@ -15,6 +19,14 @@
 - added a user-editable warmup-timeout control to the Ollama screen and CLI support for `python -m llm.service start --warmup-timeout ...`
 - added focused tests for detailed readiness success/failure handling and warmup-timeout config persistence
 - added saved `llm_metadata` snapshots to exported sessions and exposed that metadata in a new Game Analyzer inspector tab
+
+### 1.0 Release Hardening
+
+- fixed `run_tests.py` path bootstrap so full mode works from repository root without ad-hoc environment setup
+- added unified packaging smoke validation with installer and Homebrew install-level smoke modes
+- tightened service stop behaviour so force-kill escalation only targets processes already terminated by BatLLM
+- regenerated API docs and aligned Doxygen metadata to the repository release version
+- verified full-suite test execution including live-Ollama gated smoke path
 
 ### Modelito 1.2.2 Direct Integration
 

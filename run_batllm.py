@@ -1,7 +1,6 @@
 """Cross-platform launcher for BatLLM."""
 
 from __future__ import annotations
-from util.compat import require_supported_python
 
 import sys
 from pathlib import Path
@@ -11,6 +10,9 @@ SRC = ROOT / "src"
 
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+
+from util.compat import require_supported_python
+
 
 
 require_supported_python("BatLLM")
