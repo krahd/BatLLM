@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+remote_name="${1:-}"
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# Prevent server-side protected-branch push failures with a clear local message.
+if [[ "$current_branch" == "main" && "$remote_name" == "origin" && "${ALLOW_MAIN_PUSH:-}" != "1" ]]; then
+  cat <<'MSG' >&2
+Blocked push to origin/main.
+Use protected-branch workflow:
+1) git switch -c <branch-name>
+2) git push -u origin <branch-name>
+3) open a PR to main
+
+To bypass once, run:
+ALLOW_MAIN_PUSH=1 git push origin main
+MSG
+  exit 1
+fi
