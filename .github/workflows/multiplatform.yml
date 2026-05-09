@@ -62,6 +62,11 @@ jobs:
     name: "Homebrew dry-run"
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      KIVY_WINDOW: mock
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+      PYTHONPATH: src
 
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5

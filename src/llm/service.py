@@ -389,14 +389,16 @@ def ollama_installed() -> bool:
 
 
 def install_command_for_current_platform(platform_name: str | None = None) -> tuple[list[str], str]:
-    try:
-        helper = getattr(_MODELITO, "install_command_for_current_platform", None)
-        if callable(helper):
-            return helper(platform_name)
-    except Exception:
-        pass
-    platform_name = platform_name or sys.platform
-    if platform_name.startswith("win"):
+    selected_platform = platform_name or sys.platform
+    if platform_name is None:
+        try:
+            helper = getattr(_MODELITO, "install_command_for_current_platform", None)
+            if callable(helper):
+                return helper(None)
+        except Exception:
+            pass
+
+    if selected_platform.startswith("win"):
         command = [
             "powershell.exe",
             "-NoExit",
@@ -406,6 +408,8 @@ def install_command_for_current_platform(platform_name: str | None = None) -> tu
             f"irm {WINDOWS_INSTALL_URL} | iex",
         ]
         return command, f"irm {WINDOWS_INSTALL_URL} | iex"
+    if selected_platform == "darwin":
+        return ["brew", "install", "ollama"], "brew install ollama"
     install_command = f"export OLLAMA_NO_START=1; curl -fsSL {shlex.quote(UNIX_INSTALL_URL)} | sh"
     return ["/bin/sh", "-lc", install_command], install_command
 

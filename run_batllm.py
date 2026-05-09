@@ -13,8 +13,6 @@ if str(SRC) not in sys.path:
 
 from util.compat import require_supported_python
 
-
-
 require_supported_python("BatLLM")
 
 from main import main  # noqa: E402
