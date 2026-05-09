@@ -10,9 +10,11 @@ A 1.0 candidate is ready only when all sections below are complete.
 
 Required checks on `main` pull requests:
 
-- `Multiplatform Validation / test`
-- `Multiplatform Validation / homebrew`
-- `Multiplatform Validation / smoke`
+- `ubuntu-latest`
+- `windows-latest`
+- `macos-latest`
+- `Homebrew dry-run`
+- `Smoke: Ollama integration`
 
 Required workflow expectations:
 
