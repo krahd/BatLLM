@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-09 23:25
+Last updated: 2026-05-09 20:46
 
 ## Project Purpose
 
@@ -81,13 +81,12 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 ### Notable Audit Findings
 
-- `STATUS.md` previously used external SVG image links for diagrams. This update replaces that with inline SVG diagrams to match repository agent instructions.
-- `src/configs/config-llama.yaml` still contains two stale `src/headers/system_instructions/...` paths for augmented modes. The shipped default `src/configs/config.yaml` points to existing `src/assets/system_instructions/...` files.
-- `src/configs/config.yaml.bak` is tracked and appears to be a mutable configurator backup with a different model (`mistral-small:latest`) and altered gameplay values. It should be reviewed before release because backup/config artefacts are normally risky to keep in source control.
-- A tracked top-level file named `sdf` appears to contain captured Ollama/model-pull terminal output with ANSI control sequences and model warm-up text. It is not referenced by the audited launchers, docs, or tests and should be reviewed for removal or archival.
-- `run_tests.py` defines `OLLAMA_HELPER = ROOT / "src" / "ollama_service.py"`, but no such file exists and the constant is unused in the inspected runner.
-- `docs/ROADMAP.md` still describes the "current 0.2.x line" even though `VERSION` is `0.3.5`; it should be refreshed in a future documentation pass.
-- `docs/images/architecture-modelito.svg` still says "Modelito 1.2.2 Cleanup" in its title while the dependency is `modelito==1.4.0`; the inline diagram below uses current wording, but the standalone image should be updated or removed later.
+- `STATUS.md` now embeds architecture and runtime diagrams via repository SVG image links for markdown-renderer compatibility.
+- Removed tracked repository-hygiene artefacts: top-level `sdf` and `src/configs/config.yaml.bak`.
+- Fixed stale augmented system-instruction paths in `src/configs/config-llama.yaml` to use `src/assets/system_instructions/...`.
+- Removed the unused `OLLAMA_HELPER` constant from `run_tests.py`.
+- Refreshed `docs/ROADMAP.md` opening wording from `0.2.x` to `0.3.x`.
+- Updated standalone `docs/images/*modelito.svg` wording to retire stale `modelito 1.2.2` references.
 - Generated Doxygen output under `docs/code/` is large and tracked. It appears intentional, but it dominates repository size and should be regenerated only as part of deliberate API-documentation updates.
 - The current git worktree was clean before this status update.
 
@@ -139,181 +138,13 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 ## Architecture Overview
 
-### Inline Architecture Diagram
+### Architecture Diagram
 
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="720" viewBox="0 0 1120 720" role="img" aria-labelledby="batllm-arch-title batllm-arch-desc">
-  <title id="batllm-arch-title">BatLLM architecture</title>
-  <desc id="batllm-arch-desc">Architecture diagram showing launchers, Kivy surfaces, game logic, replay logic, configuration, the BatLLM LLM service facade, modelito, Ollama, packaging, tests, and documentation.</desc>
-  <defs>
-    <style>
-      .bg { fill: #f7f5ef; }
-      .box { fill: #fffdf8; stroke: #26323d; stroke-width: 2; }
-      .accent { fill: #e9f2ff; stroke: #335c81; stroke-width: 2; }
-      .state { fill: #fff2df; stroke: #8a5a14; stroke-width: 2; }
-      .runtime { fill: #eef8ea; stroke: #44633f; stroke-width: 2; }
-      .title { font: 700 26px 'Segoe UI', sans-serif; fill: #14202b; }
-      .text { font: 500 14px 'Segoe UI', sans-serif; fill: #26323d; }
-      .small { font: 500 12px 'Segoe UI', sans-serif; fill: #26323d; }
-      .arrow { stroke: #26323d; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
-    </style>
-    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-      <path d="M0,0 L10,4 L0,8 z" fill="#26323d" />
-    </marker>
-  </defs>
-  <rect class="bg" x="0" y="0" width="1120" height="720" />
-  <text class="title" x="40" y="46">BatLLM Current Architecture</text>
+![BatLLM architecture](docs/images/architecture-modelito.svg)
 
-  <rect class="box" x="40" y="90" width="220" height="110" rx="14" />
-  <text class="text" x="62" y="124">Root launchers</text>
-  <text class="small" x="62" y="150">run_batllm.py</text>
-  <text class="small" x="62" y="172">run_game_analyzer.py</text>
+### Runtime Flow Diagram
 
-  <rect class="box" x="330" y="70" width="250" height="145" rx="14" />
-  <text class="text" x="352" y="104">Gameplay Kivy app</text>
-  <text class="small" x="352" y="130">main.py, home/settings/history</text>
-  <text class="small" x="352" y="152">game_board.py, bot.py, bullet.py</text>
-  <text class="small" x="352" y="174">ollama_config_screen.py</text>
-
-  <rect class="box" x="330" y="280" width="250" height="130" rx="14" />
-  <text class="text" x="352" y="314">Standalone analyzer</text>
-  <text class="small" x="352" y="340">analyzer_main.py</text>
-  <text class="small" x="352" y="362">analyzer_model.py</text>
-  <text class="small" x="352" y="384">load/review/board screens</text>
-
-  <rect class="state" x="40" y="270" width="220" height="160" rx="14" />
-  <text class="text" x="62" y="304">Config and state</text>
-  <text class="small" x="62" y="330">config.yaml + app_config.py</text>
-  <text class="small" x="62" y="352">BATLLM_HOME overlays</text>
-  <text class="small" x="62" y="374">saved sessions</text>
-  <text class="small" x="62" y="396">prompt/system assets</text>
-
-  <rect class="accent" x="650" y="80" width="220" height="135" rx="14" />
-  <text class="text" x="672" y="114">LLM service facade</text>
-  <text class="small" x="672" y="140">src/llm/service.py</text>
-  <text class="small" x="672" y="162">timeouts, readiness, metadata</text>
-  <text class="small" x="672" y="184">start/stop/download/delete</text>
-
-  <rect class="runtime" x="930" y="80" width="150" height="135" rx="14" />
-  <text class="text" x="952" y="114">Runtime</text>
-  <text class="small" x="952" y="140">modelito 1.4.0</text>
-  <text class="small" x="952" y="162">local Ollama</text>
-  <text class="small" x="952" y="184">models/server</text>
-
-  <rect class="accent" x="650" y="285" width="220" height="125" rx="14" />
-  <text class="text" x="672" y="319">Replay/session layer</text>
-  <text class="small" x="672" y="345">history_manager.py</text>
-  <text class="small" x="672" y="367">session_schema.py</text>
-  <text class="small" x="672" y="389">replay_engine.py</text>
-
-  <rect class="box" x="40" y="510" width="220" height="110" rx="14" />
-  <text class="text" x="62" y="544">Docs and API reference</text>
-  <text class="small" x="62" y="570">docs/*.md</text>
-  <text class="small" x="62" y="592">docs/code generated output</text>
-
-  <rect class="box" x="330" y="500" width="250" height="130" rx="14" />
-  <text class="text" x="352" y="534">Tests and smoke tools</text>
-  <text class="small" x="352" y="560">src/tests/*.py</text>
-  <text class="small" x="352" y="582">ollama_mock_server.py</text>
-  <text class="small" x="352" y="604">packaging_smoke.py</text>
-
-  <rect class="box" x="650" y="500" width="220" height="130" rx="14" />
-  <text class="text" x="672" y="534">Release packaging</text>
-  <text class="small" x="672" y="560">release bundles</text>
-  <text class="small" x="672" y="582">Homebrew formula</text>
-  <text class="small" x="672" y="604">GitHub Actions</text>
-
-  <path class="arrow" d="M260 145 H330" />
-  <path class="arrow" d="M260 160 C295 160 295 345 330 345" />
-  <path class="arrow" d="M580 148 H650" />
-  <path class="arrow" d="M870 148 H930" />
-  <path class="arrow" d="M455 215 V280" />
-  <path class="arrow" d="M580 345 H650" />
-  <path class="arrow" d="M760 285 V215" />
-  <path class="arrow" d="M260 350 H330" />
-  <path class="arrow" d="M760 410 V500" />
-  <path class="arrow" d="M260 565 H330" />
-  <path class="arrow" d="M580 565 H650" />
-</svg>
-
-### Inline Runtime Flow Diagram
-
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="620" viewBox="0 0 1120 620" role="img" aria-labelledby="batllm-flow-title batllm-flow-desc">
-  <title id="batllm-flow-title">BatLLM runtime flow</title>
-  <desc id="batllm-flow-desc">Runtime flow from configuration and model selection through model readiness, prompt execution, turn resolution, persistence, and analyzer replay.</desc>
-  <defs>
-    <style>
-      .bg { fill: #f6f7fb; }
-      .box { fill: #ffffff; stroke: #324154; stroke-width: 2; }
-      .decision { fill: #fff5dd; stroke: #8a6416; stroke-width: 2; }
-      .accent { fill: #e9f1ff; stroke: #335c81; stroke-width: 2; }
-      .runtime { fill: #edf7ee; stroke: #44633f; stroke-width: 2; }
-      .title { font: 700 26px 'Segoe UI', sans-serif; fill: #15202b; }
-      .text { font: 600 14px 'Segoe UI', sans-serif; fill: #27323b; }
-      .small { font: 500 12px 'Segoe UI', sans-serif; fill: #27323b; }
-      .arrow { stroke: #2f3a44; stroke-width: 2.2; fill: none; marker-end: url(#arrow2); }
-    </style>
-    <marker id="arrow2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-      <path d="M0,0 L10,4 L0,8 z" fill="#2f3a44" />
-    </marker>
-  </defs>
-  <rect class="bg" x="0" y="0" width="1120" height="620" />
-  <text class="title" x="40" y="46">BatLLM Runtime Flow</text>
-
-  <rect class="box" x="40" y="95" width="210" height="100" rx="14" />
-  <text class="text" x="62" y="128">Load configuration</text>
-  <text class="small" x="62" y="154">defaults + shipped YAML</text>
-  <text class="small" x="62" y="176">optional BATLLM_HOME overlay</text>
-
-  <rect class="box" x="310" y="95" width="210" height="100" rx="14" />
-  <text class="text" x="332" y="128">Select model</text>
-  <text class="small" x="332" y="154">Ollama screen or defaults</text>
-  <text class="small" x="332" y="176">local or remote inventory</text>
-
-  <polygon class="decision" points="620,80 725,145 620,210 515,145" />
-  <text class="text" x="574" y="140">Local model</text>
-  <text class="small" x="586" y="160">available?</text>
-
-  <rect class="accent" x="790" y="70" width="250" height="120" rx="14" />
-  <text class="text" x="812" y="104">Ensure model readiness</text>
-  <text class="small" x="812" y="130">resolve timeout and warm-up</text>
-  <text class="small" x="812" y="152">record last_served_model</text>
-  <text class="small" x="812" y="174">report structured errors</text>
-
-  <rect class="runtime" x="790" y="245" width="250" height="105" rx="14" />
-  <text class="text" x="812" y="279">Download remote model</text>
-  <text class="small" x="812" y="305">stream progress through modelito</text>
-  <text class="small" x="812" y="327">refresh local inventory</text>
-
-  <rect class="box" x="40" y="420" width="210" height="105" rx="14" />
-  <text class="text" x="62" y="454">Submit player prompt</text>
-  <text class="small" x="62" y="480">build command context</text>
-  <text class="small" x="62" y="502">use independent/shared history</text>
-
-  <rect class="accent" x="310" y="420" width="210" height="105" rx="14" />
-  <text class="text" x="332" y="454">Model provider call</text>
-  <text class="small" x="332" y="480">OllamaConnector to modelito</text>
-  <text class="small" x="332" y="502">assistant response text</text>
-
-  <rect class="box" x="580" y="420" width="210" height="105" rx="14" />
-  <text class="text" x="602" y="454">Resolve turn</text>
-  <text class="small" x="602" y="480">parse move/rotate/shoot/shield</text>
-  <text class="small" x="602" y="502">update board and history</text>
-
-  <rect class="box" x="850" y="420" width="210" height="105" rx="14" />
-  <text class="text" x="872" y="454">Save or analyse</text>
-  <text class="small" x="872" y="480">v2 session payload</text>
-  <text class="small" x="872" y="502">replay in analyzer</text>
-
-  <path class="arrow" d="M250 145 H310" />
-  <path class="arrow" d="M520 145 H515" />
-  <path class="arrow" d="M725 145 H790" />
-  <path class="arrow" d="M620 210 V298 H790" />
-  <path class="arrow" d="M915 350 V385 H145 V420" />
-  <path class="arrow" d="M915 190 V385" />
-  <path class="arrow" d="M250 472 H310" />
-  <path class="arrow" d="M520 472 H580" />
-  <path class="arrow" d="M790 472 H850" />
-</svg>
+![BatLLM runtime flow](docs/images/request-flow-modelito.svg)
 
 ## Important Files And Directories
 
@@ -344,7 +175,7 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `docs/README.md` is the canonical project overview and includes setup, Homebrew install notes, concepts, compatibility, troubleshooting, and glossary material.
 - `docs/USER_GUIDE.md` is the user-facing manual for gameplay, commands, screens, settings, analyzer use, sessions, and troubleshooting.
 - `docs/CONTRIBUTING.md` is the developer manual for setup, architecture, tests, release workflow, docs workflow, coding conventions, and troubleshooting.
-- `docs/ROADMAP.md` describes 1.0 local desktop hardening and 2.0 networked-play direction, but its opening version wording needs a minor refresh from `0.2.x` to the current `0.3.x` line.
+- `docs/ROADMAP.md` describes 1.0 local desktop hardening and 2.0 networked-play direction using current `0.3.x` line wording.
 - `docs/RELEASE_CRITERIA_1_0.md` defines CI, reliability, UX, bundle, and documentation gates for a future 1.0 candidate.
 - `docs/CHANGELOG.md` keeps active unreleased notes on the `0.x` hold and draft 1.0 notes.
 - `docs/FIRST_RUN_RELEASE_CHECKLIST.md` and `docs/UI_UNIFICATION_PLAN_1_0.md` remain release-preparation references.
@@ -387,12 +218,6 @@ The previous status report recorded these successful checks from the same releas
 - Local Ollama operations are inherently stateful. Starting/stopping the service, warming models, downloading models, or deleting models can affect real user state.
 - GUI validation is limited in headless/non-interactive environments; many UI paths rely on Kivy event-loop behaviour and manual spot checks.
 - `run_tests.py full` can affect a real Ollama service and should be run only with explicit maintainer intent.
-- `src/configs/config-llama.yaml` contains stale augmented-system-instruction paths under `src/headers/...` that do not match the current asset tree.
-- Tracked `src/configs/config.yaml.bak` appears to be mutable local backup data and should be reviewed before any release freeze.
-- Tracked `sdf` appears to be a captured Ollama terminal log and is likely accidental or at least unexplained repository material.
-- `run_tests.py` has an unused `OLLAMA_HELPER` constant pointing to a missing `src/ollama_service.py` path.
-- `docs/ROADMAP.md` has stale wording that describes the current line as `0.2.x`.
-- Standalone diagram files under `docs/images/` still include modelito 1.2.2 wording even though current requirements pin modelito 1.4.0.
 - Generated API docs under `docs/code/` may become stale when source changes unless regenerated deliberately.
 - Homebrew distribution remains source-based and macOS/Apple-Silicon oriented.
 - The saved-session v2 schema is the supported path; unsupported legacy sessions are intentionally rejected by schema helpers.
@@ -401,12 +226,7 @@ The previous status report recorded these successful checks from the same releas
 
 ### High Priority Before Release Freeze
 
-- Decide whether to remove, ignore, or document the tracked `sdf` terminal-capture file.
-- Decide whether tracked `src/configs/config.yaml.bak` is intentional; remove it or document why it is shipped.
-- Fix stale `src/configs/config-llama.yaml` augmented-system-instruction paths.
-- Remove or update the unused `OLLAMA_HELPER` constant in `run_tests.py`.
-- Refresh `docs/ROADMAP.md` opening version wording from `0.2.x` to the current `0.3.x` line.
-- Update or retire standalone `docs/images/*modelito.svg` files whose titles mention modelito 1.2.2.
+- Repository-hygiene follow-ups from this audit have been addressed in this update (`sdf`, `config.yaml.bak`, stale alternate config paths, unused test-runner constant, stale roadmap wording, and stale standalone modelito diagram wording).
 
 ### Validation Pending
 
@@ -425,7 +245,7 @@ The previous status report recorded these successful checks from the same releas
 ## Next Steps
 
 1. Run the narrow validation for this documentation update: `python -m pytest -q`.
-2. Review and address the repository-hygiene findings (`sdf`, `config.yaml.bak`, stale alternate config paths, unused test-runner constant).
+2. Keep repository-hygiene checks active for future artefacts and generated-file drift.
 3. Refresh stale documentation/diagram wording identified by the audit.
 4. Run full non-live CI-equivalent checks across source, tests, packaging smoke, and Homebrew formula generation.
 5. Schedule a maintainer-owned live Ollama validation pass before any release candidate.
@@ -438,4 +258,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-09 23:25
+Last updated: 2026-05-09 20:46

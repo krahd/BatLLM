@@ -21,7 +21,7 @@
   </defs>
 
   <rect class="bg" x="0" y="0" width="1400" height="780" />
-  <text class="title" x="60" y="60">BatLLM Architecture After The Modelito 1.2.2 Cleanup</text>
+  <text class="title" x="60" y="60">BatLLM Architecture After The Modelito 1.4.0 Migration</text>
   <text class="subtitle" x="60" y="92">Gameplay, UI, timeout policy, and config-overlay rules stay inside BatLLM. Generic provider and model-management behaviour now routes through modelito.</text>
 
   <rect class="panel" x="60" y="150" width="260" height="140" rx="18" ry="18" />
