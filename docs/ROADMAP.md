@@ -1,6 +1,6 @@
 # ROADMAP
 
-BatLLM is approaching 1.0 as a stable local desktop product. The current 0.2.x line already includes the core game loop, session saving, replay analysis, cross-platform launchers, and Ollama integration, so the remaining work for 1.0 is product consistency, reliability, and release hardening.
+BatLLM is approaching 1.0 as a stable local desktop product. The current 0.3.x line already includes the core game loop, session saving, replay analysis, cross-platform launchers, and Ollama integration, so the remaining work for 1.0 is product consistency, reliability, and release hardening.
 
 Version 2.0 is the planned architecture shift. It should focus on networked play first, then use that foundation to support additional clients and shared content.
 

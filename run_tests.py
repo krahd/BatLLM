@@ -14,7 +14,6 @@ SRC = ROOT / "src"
 VENV_PYTHON = (
     ROOT / ".venv_BatLLM" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
 )
-OLLAMA_HELPER = ROOT / "src" / "ollama_service.py"
 
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))

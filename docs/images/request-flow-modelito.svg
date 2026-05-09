@@ -22,7 +22,7 @@
 
   <rect class="bg" x="0" y="0" width="1340" height="860" />
   <text class="title" x="60" y="60">BatLLM Runtime Flow With Direct Modelito Integration</text>
-  <text class="subtitle" x="60" y="92">The same `modelito` toolchain now drives local selection, remote downloads, smoke validation, the configurator console, and live gameplay requests.</text>
+  <text class="subtitle" x="60" y="92">The same modelito toolchain now drives local selection, remote downloads, smoke validation, the configurator console, and live gameplay requests.</text>
 
   <rect class="box" x="60" y="160" width="280" height="130" rx="18" ry="18" />
   <text class="box-title" x="84" y="198">1. Select Or Refresh A Model</text>
