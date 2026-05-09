@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-09 14:13
+Last updated: 2026-05-09 18:35
 
 ## Project Purpose
 
@@ -77,6 +77,7 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 
 ## Recent Changes
 
+- Re-ran the full automatable release-readiness pass on 2026-05-09; all non-manual validation and packaging steps completed successfully.
 - Release-preparation work is functionally complete for the automatable path: release bundles build, Homebrew formula generation works, and packaging smoke validation passes.
 - The repository remains on version `0.3.5`; the earlier `1.0.0` notes are retained only as draft reference material and are not the active release line.
 - Root launchers and `run_tests.py` were stabilised so repository-root execution works without ad-hoc `PYTHONPATH` setup.
@@ -90,6 +91,13 @@ The codebase is currently aligned on `modelito==1.4.0` and now uses structured r
 
 Recent verified commands:
 
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python -m pytest -q` -> `151 passed, 2 skipped`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python run_tests.py full` -> core smoke `4 passed`; full suite `153 passed`; live-Ollama lifecycle start/stop verified.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python create_release_bundles.py` -> generated `dist/releases/BatLLM-v0.3.5-{source.zip,source.tar.gz,windows.zip,macos.zip,linux.tar.gz}`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb` -> completed successfully and wrote `/tmp/batllm.rb`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python -m pytest -q src/tests/test_homebrew_packaging.py` -> `7 passed`.
+- `/Users/tom/devel/ml-llm/llm/BatLLM/.venv_BatLLM/bin/python validate_packaging_smoke.py` -> `Packaging smoke validation passed.`
+- `gh api repos/krahd/BatLLM/branches/main/protection --jq '.required_status_checks.contexts'` -> confirmed required checks: `ubuntu-latest`, `windows-latest`, `macos-latest`, `Homebrew dry-run`, `Smoke: Ollama integration`.
 - `python run_tests.py full` -> core smoke `4 passed`; full suite `153 passed`; live-Ollama lifecycle start/stop verified.
 - `pytest -q` -> `151 passed, 2 skipped`.
 - `pytest -q src/tests/test_homebrew_packaging.py` -> `7 passed`.
@@ -102,8 +110,6 @@ Recent verified commands:
 - `python -m py_compile run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py src/llm/service.py src/util/packaging_smoke.py` -> completed successfully (no syntax errors).
 - `doxygen docs/code/dox_config.properties` -> completed successfully; generated docs align with version `0.3.5`.
 - `gh api repos/krahd/BatLLM/branches/main/protection` -> verified the live required-check configuration on `main`.
-
-This PR is documentation-only; no additional code execution was required for the STATUS sanitisation itself.
 
 ## Known Issues, Risks, And Limitations
 
@@ -136,6 +142,8 @@ Remaining external maintainer actions (not fully automatable from this workspace
 1. Complete Linux and Windows manual first-run checklist execution and finalise checklist sign-off as complete.
 2. Perform final release branch freeze/tag workflow (`v0.3.5`) once the manual platform sign-offs are complete.
 
+No additional automatable next steps remain open in this workspace.
+
 ## Longer-Term Steps
 
 1. Decide GUI direction for web-app surface versus Kivy-only roadmap. Analysis: this is the highest-leverage product decision because multiplayer, prompt sharing, and deployment choices all depend on whether Kivy remains the only client. Kivy and a web surface can coexist, but the added complexity yields no clear gain before 1.0. Decision: defer a web surface until after 1.0; revisit only if cross-device or teacher-mode use cases demand it. Comparable projects (Jan, GPT4All) gained traction without a web surface first.
@@ -148,4 +156,4 @@ Remaining external maintainer actions (not fully automatable from this workspace
 
 ---
 
-Last updated: 2026-05-09 14:13
+Last updated: 2026-05-09 18:35
