@@ -7,19 +7,21 @@
   <title>BatLLM</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f7f8f4;
-      --ink: #121715;
-      --muted: #58625d;
-      --line: #ccd4ce;
-      --paper: #ffffff;
-      --panel: #eef4f0;
-      --sea: #006b5e;
-      --sea-dark: #034c45;
-      --blue: #284f7a;
-      --oxide: #b5472f;
-      --gold: #d6a436;
-      --shadow: 0 18px 48px rgba(20, 30, 24, 0.12);
+      color-scheme: dark;
+      --bg: #09111a;
+      --bg-alt: #0f1a26;
+      --ink: #f3f6f8;
+      --muted: #9badbb;
+      --line: rgba(180, 205, 225, 0.16);
+      --paper: rgba(12, 22, 34, 0.88);
+      --panel: rgba(17, 30, 44, 0.78);
+      --accent: #73f0c5;
+      --accent-strong: #1fcf97;
+      --blue: #7ab6ff;
+      --rose: #ff8a7a;
+      --gold: #ffd36b;
+      --shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
+      --hero-shadow: 0 40px 110px rgba(0, 0, 0, 0.46);
     }
 
     * {
@@ -32,8 +34,11 @@
 
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
+      font-family: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(73, 126, 255, 0.18), transparent 32%),
+        radial-gradient(circle at 85% 20%, rgba(115, 240, 197, 0.14), transparent 24%),
+        linear-gradient(180deg, #0a121b 0%, #081018 54%, #0a131d 100%);
       color: var(--ink);
     }
 
@@ -50,8 +55,8 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      border-bottom: 1px solid rgba(18, 23, 21, 0.12);
-      background: rgba(247, 248, 244, 0.92);
+      border-bottom: 1px solid rgba(180, 205, 225, 0.12);
+      background: rgba(8, 16, 24, 0.72);
       backdrop-filter: blur(14px);
     }
 
@@ -74,6 +79,8 @@
       text-decoration: none;
       font-weight: 800;
       font-size: 19px;
+      letter-spacing: 0.02em;
+      font-family: "Space Grotesk", "Avenir Next Condensed", sans-serif;
     }
 
     .brand img {
@@ -85,60 +92,81 @@
       display: flex;
       align-items: center;
       gap: 22px;
-      color: #2d3833;
+      color: rgba(243, 246, 248, 0.76);
       font-size: 14px;
       font-weight: 700;
     }
 
     .nav-links a {
       text-decoration: none;
+      transition: color 140ms ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
     }
 
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 46px;
-      padding: 0 18px;
-      border-radius: 8px;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
       border: 1px solid transparent;
       text-decoration: none;
       font-size: 15px;
       font-weight: 800;
       line-height: 1;
+      transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
     }
 
     .button.primary {
-      background: var(--sea);
-      color: #ffffff;
-      box-shadow: 0 12px 28px rgba(0, 107, 94, 0.26);
+      background: linear-gradient(135deg, var(--accent) 0%, #4de5ff 100%);
+      color: #071018;
+      box-shadow: 0 14px 34px rgba(95, 238, 218, 0.28);
     }
 
     .button.secondary {
-      background: rgba(255, 255, 255, 0.86);
-      color: var(--sea-dark);
-      border-color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      border-color: rgba(255, 255, 255, 0.16);
     }
 
     .button.ghost {
       color: var(--ink);
-      border-color: var(--line);
-      background: var(--paper);
+      border-color: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .hero {
       position: relative;
-      min-height: 520px;
-      height: 72vh;
-      max-height: 680px;
+      min-height: 640px;
+      height: auto;
       display: grid;
-      align-items: center;
+      align-items: stretch;
       overflow: hidden;
       color: #ffffff;
       background:
-        linear-gradient(90deg, rgba(10, 19, 17, 0.88) 0%, rgba(10, 19, 17, 0.68) 42%, rgba(10, 19, 17, 0.20) 100%),
-        url("./images/request-flow-modelito.svg") center / cover no-repeat,
-        #17231f;
+        radial-gradient(circle at top left, rgba(122, 182, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 70% 30%, rgba(115, 240, 197, 0.18), transparent 30%),
+        linear-gradient(135deg, rgba(7, 16, 24, 0.96) 0%, rgba(13, 22, 34, 0.94) 48%, rgba(11, 19, 30, 0.98) 100%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 40px 28px auto auto;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(31, 207, 151, 0.28) 0%, rgba(31, 207, 151, 0) 68%);
+      filter: blur(18px);
+      pointer-events: none;
     }
 
     .hero::after {
@@ -146,7 +174,7 @@
       position: absolute;
       inset: auto 0 0;
       height: 180px;
-      background: linear-gradient(180deg, rgba(247, 248, 244, 0) 0%, var(--bg) 100%);
+      background: linear-gradient(180deg, rgba(9, 17, 26, 0) 0%, rgba(9, 17, 26, 1) 100%);
       pointer-events: none;
     }
 
@@ -156,23 +184,49 @@
       max-width: 1180px;
       width: 100%;
       margin: 0 auto;
-      padding: 84px 28px 118px;
+      padding: 92px 28px 118px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.88fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    .hero-copy {
+      max-width: 680px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(243, 246, 248, 0.82);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     h1 {
       margin: 0;
       max-width: 760px;
-      font-size: 76px;
-      line-height: 0.94;
+      font-family: "Space Grotesk", "Avenir Next Condensed", sans-serif;
+      font-size: 86px;
+      line-height: 0.9;
       font-weight: 900;
+      letter-spacing: -0.04em;
     }
 
     .hero p {
       margin: 28px 0 0;
-      max-width: 690px;
+      max-width: 640px;
       color: rgba(255, 255, 255, 0.86);
       font-size: 21px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .hero-actions {
@@ -180,6 +234,52 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: rgba(155, 173, 187, 0.92);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .hero-note a {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .hero-card {
+      position: relative;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+      box-shadow: var(--hero-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-card::before {
+      content: "Live local gameplay";
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(7, 16, 24, 0.72);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-card img {
+      width: 100%;
+      min-height: 100%;
+      border-radius: 18px;
+      object-fit: cover;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
     }
 
     .section {
@@ -200,30 +300,32 @@
     }
 
     .support-panel {
-      border: 1px solid rgba(214, 164, 54, 0.62);
-      border-radius: 8px;
+      border: 1px solid rgba(255, 211, 107, 0.22);
+      border-radius: 26px;
       background:
-        linear-gradient(135deg, rgba(214, 164, 54, 0.20), rgba(255, 255, 255, 0.94) 38%),
+        linear-gradient(135deg, rgba(255, 211, 107, 0.12), rgba(255, 138, 122, 0.08) 26%, rgba(15, 26, 38, 0.92) 76%),
         var(--paper);
       box-shadow: var(--shadow);
       display: grid;
-      grid-template-columns: 0.72fr 1.28fr;
+      grid-template-columns: 0.74fr 1.26fr;
       gap: 34px;
-      padding: 32px;
+      padding: 34px;
     }
 
     .support h2,
     .section h2 {
       margin: 0;
-      font-size: 40px;
-      line-height: 1.08;
+      font-family: "Space Grotesk", "Avenir Next Condensed", sans-serif;
+      font-size: 42px;
+      line-height: 1.05;
       font-weight: 900;
+      letter-spacing: -0.03em;
     }
 
     .support-copy {
       display: grid;
       gap: 16px;
-      color: #28322e;
+      color: rgba(243, 246, 248, 0.9);
       font-size: 17px;
       line-height: 1.58;
     }
@@ -235,6 +337,16 @@
     .support-copy a {
       color: var(--blue);
       font-weight: 800;
+    }
+
+    .support-kicker {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
     .intro-grid {
@@ -261,14 +373,15 @@
       min-height: 150px;
       padding: 20px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--paper);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.02));
+      backdrop-filter: blur(10px);
     }
 
     .fact strong {
       display: block;
       margin-bottom: 10px;
-      color: var(--sea-dark);
+      color: var(--accent);
       font-size: 16px;
     }
 
@@ -279,7 +392,9 @@
     }
 
     .band {
-      background: #e9f1ed;
+      background:
+        linear-gradient(180deg, rgba(17, 30, 44, 0.8), rgba(9, 17, 26, 0.92)),
+        var(--bg-alt);
       border-top: 1px solid var(--line);
       border-bottom: 1px solid var(--line);
     }
@@ -297,8 +412,8 @@
 
     .media-frame {
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--paper);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.04);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -331,9 +446,9 @@
       height: 42px;
       align-items: center;
       justify-content: center;
-      border-radius: 8px;
-      background: var(--ink);
-      color: #ffffff;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent) 0%, #56b7ff 100%);
+      color: #071018;
       font-weight: 900;
     }
 
@@ -354,8 +469,8 @@
       min-height: 174px;
       padding: 20px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--paper);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
       color: inherit;
       text-decoration: none;
       transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
@@ -363,14 +478,14 @@
 
     .link-card:hover {
       transform: translateY(-3px);
-      border-color: var(--sea);
-      box-shadow: 0 18px 36px rgba(20, 30, 24, 0.10);
+      border-color: rgba(115, 240, 197, 0.42);
+      box-shadow: 0 24px 44px rgba(0, 0, 0, 0.22);
     }
 
     .link-card strong {
       display: block;
       margin-bottom: 10px;
-      color: var(--sea-dark);
+      color: var(--accent);
       font-size: 17px;
     }
 
@@ -391,8 +506,9 @@
       margin: 0;
       padding: 18px;
       overflow-x: auto;
-      border-radius: 8px;
-      background: #111715;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      background: #071018;
       color: #dbe8e2;
       font-size: 14px;
       line-height: 1.55;
@@ -400,7 +516,7 @@
 
     footer {
       border-top: 1px solid var(--line);
-      background: #111715;
+      background: #071018;
       color: rgba(255, 255, 255, 0.74);
     }
 
@@ -434,16 +550,16 @@
       }
 
       h1 {
-        font-size: 54px;
+        font-size: 62px;
       }
 
       .hero {
-        min-height: 560px;
-        height: auto;
+        min-height: 0;
       }
 
       .hero-inner {
         padding-top: 74px;
+        grid-template-columns: 1fr;
       }
 
       .support-panel,
@@ -473,7 +589,7 @@
       }
 
       h1 {
-        font-size: 42px;
+        font-size: 46px;
       }
 
       .hero p,
@@ -488,6 +604,11 @@
       .support h2,
       .section h2 {
         font-size: 31px;
+      }
+
+      .hero-card {
+        padding: 12px;
+        border-radius: 20px;
       }
 
       .facts,
@@ -521,19 +642,58 @@
   <main id="top">
     <section class="hero" aria-label="BatLLM overview">
       <div class="hero-inner">
-        <h1>BatLLM</h1>
-        <p>
-          A local AI-mediated battle game for studying prompts, model behaviour, strategy,
-          and the practical limits of generative systems through play.
-        </p>
-        <div class="hero-actions">
-          <a class="button primary" href="https://github.com/krahd/BatLLM/releases">Download Releases</a>
-          <a class="button secondary" href="https://github.com/krahd/BatLLM">View Source</a>
+        <div class="hero-copy">
+          <span class="eyebrow">Local-first AI play and analysis</span>
+          <h1>BatLLM</h1>
+          <p>
+            A local AI-mediated battle game for studying prompts, model behaviour, strategy,
+            and the practical limits of generative systems through play.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://github.com/krahd/BatLLM/releases">Download Releases</a>
+            <a class="button secondary" href="https://github.com/krahd/BatLLM">View Source</a>
+          </div>
+          <p class="hero-note">
+            Initiated by
+            <a href="https://laurenzo.net/">Tomas Laurenzo</a>
+            as a research and teaching project about how language models actually behave under pressure.
+          </p>
         </div>
+        <figure class="hero-card">
+          <img src="./screenshots/quick_demo.gif" alt="Animated BatLLM gameplay demonstration">
+        </figure>
       </div>
     </section>
 
-
+    <section id="support" class="section support" aria-labelledby="support-title">
+      <div class="support-panel">
+        <div>
+          <span class="support-kicker">Project provenance</span>
+          <h2 id="support-title">Research-backed, openly developed, and maintained in the open</h2>
+        </div>
+        <div class="support-copy">
+          <p>
+            BatLLM began as part of a project supported by the
+            <a href="https://www.colorado.edu/researchinnovation/2024/05/03/seventeen-arts-humanities-projects-receive-grants-advance-scholarship-research-and">2024 Arts &amp; Humanities Grant Program</a>
+            of the
+            <a href="https://www.colorado.edu/researchinnovation/">Research &amp; Innovation Office</a>
+            at the University of Colorado Boulder.
+          </p>
+          <p>
+            BatLLM has also received a
+            <a href="https://www.colorado.edu/cha/funding-and-resources/faculty-opportunities/cha-small-grants">CHA Small Grant</a>,
+            from the
+            <a href="https://www.colorado.edu/cha/">Center for the Humanities &amp; the Arts</a>
+            at the University of Colorado Boulder.
+          </p>
+          <p>
+            The project was initiated by
+            <a href="https://laurenzo.net/">Tomas Laurenzo</a>
+            and continues as a public, free and libre software effort oriented toward research, pedagogy, and critical AI literacy.
+          </p>
+        </div>
+      </div>
+    </section>
 
     <section class="section compact" aria-labelledby="project-title">
       <div class="intro-grid">
@@ -582,14 +742,14 @@
           </ol>
         </div>
         <figure class="media-frame">
-          <img src="./screenshots/quick_demo.gif" alt="BatLLM gameplay demo">
+          <img src="./screenshots/quick_demo.gif" alt="Animated BatLLM gameplay demonstration">
         </figure>
       </div>
     </section>
 
     <section id="local-models" class="section feature-row reverse" aria-labelledby="local-models-title">
       <figure class="media-frame">
-        <img src="./screenshots/quick_demo.gif" alt="BatLLM gameplay demo">
+        <img src="./screenshots/quick_demo.gif" alt="Animated BatLLM gameplay demonstration from the desktop app">
       </figure>
       <div>
         <h2 id="local-models-title">Local model workflows stay visible</h2>
@@ -647,7 +807,7 @@ python create_release_bundles.py</code></pre>
 
   <footer>
     <div class="footer-inner">
-      <span>BatLLM is free and libre open source research and education software.</span>
+      <span>BatLLM is free and libre open source research and education software initiated by <a href="https://laurenzo.net/">Tomas Laurenzo</a>.</span>
       <span><a href="https://github.com/krahd/BatLLM">github.com/krahd/BatLLM</a></span>
     </div>
   </footer>
