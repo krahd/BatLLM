@@ -3,162 +3,653 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BatLLM Documentation</title>
+  <meta name="description" content="BatLLM is a local AI-mediated battle game and research project for studying prompts, model behaviour, and AI literacy through play.">
+  <title>BatLLM</title>
   <style>
     :root {
       color-scheme: light;
-      --bg: #f4f1ea;
-      --panel: #fffdf8;
-      --text: #181716;
-      --muted: #5e5851;
-      --line: #d8d0c4;
-      --accent: #204a68;
-      --accent-soft: #d8e7f2;
+      --bg: #f7f8f4;
+      --ink: #121715;
+      --muted: #58625d;
+      --line: #ccd4ce;
+      --paper: #ffffff;
+      --panel: #eef4f0;
+      --sea: #006b5e;
+      --sea-dark: #034c45;
+      --blue: #284f7a;
+      --oxide: #b5472f;
+      --gold: #d6a436;
+      --shadow: 0 18px 48px rgba(20, 30, 24, 0.12);
     }
-    * { box-sizing: border-box; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      background:
-        radial-gradient(circle at top left, rgba(32,74,104,0.10), transparent 28rem),
-        linear-gradient(180deg, #f7f3ec 0%, var(--bg) 100%);
-      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
     }
-    main {
-      max-width: 980px;
+
+    a {
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(18, 23, 21, 0.12);
+      background: rgba(247, 248, 244, 0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 48px 24px 72px;
+      min-height: 72px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
     }
-    header {
-      display: grid;
-      gap: 18px;
-      margin-bottom: 32px;
-    }
+
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
-    }
-    .brand img {
-      width: 56px;
-      height: 56px;
-    }
-    h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 4vw, 3.6rem);
-      line-height: 1;
-    }
-    p {
-      margin: 0;
-      line-height: 1.6;
-    }
-    .lead {
-      max-width: 52rem;
-      color: var(--muted);
-      font-size: 1.1rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 16px;
-      margin-top: 28px;
-    }
-    a.card {
-      display: block;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--panel);
-      color: inherit;
+      gap: 12px;
+      min-width: 0;
       text-decoration: none;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.04);
-      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+      font-weight: 800;
+      font-size: 19px;
     }
-    a.card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-      background: #ffffff;
+
+    .brand img {
+      width: 42px;
+      height: 42px;
     }
-    .kicker {
-      display: inline-block;
-      margin-bottom: 8px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-    .title {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 1.15rem;
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: #2d3833;
+      font-size: 14px;
       font-weight: 700;
     }
-    footer {
-      margin-top: 28px;
+
+    .nav-links a {
+      text-decoration: none;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .button.primary {
+      background: var(--sea);
+      color: #ffffff;
+      box-shadow: 0 12px 28px rgba(0, 107, 94, 0.26);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--sea-dark);
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .button.ghost {
+      color: var(--ink);
+      border-color: var(--line);
+      background: var(--paper);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 520px;
+      height: 72vh;
+      max-height: 680px;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      color: #ffffff;
+      background:
+        linear-gradient(90deg, rgba(10, 19, 17, 0.88) 0%, rgba(10, 19, 17, 0.68) 42%, rgba(10, 19, 17, 0.20) 100%),
+        url("./images/request-flow-modelito.svg") center / cover no-repeat,
+        #17231f;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 180px;
+      background: linear-gradient(180deg, rgba(247, 248, 244, 0) 0%, var(--bg) 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 84px 28px 118px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: 76px;
+      line-height: 0.94;
+      font-weight: 900;
+    }
+
+    .hero p {
+      margin: 28px 0 0;
+      max-width: 690px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 21px;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      margin-top: 34px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 82px 28px;
+    }
+
+    .section.compact {
+      padding-top: 48px;
+    }
+
+    .support {
+      position: relative;
+      z-index: 3;
+      margin-top: -46px;
+      padding-top: 0;
+    }
+
+    .support-panel {
+      border: 1px solid rgba(214, 164, 54, 0.62);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(214, 164, 54, 0.20), rgba(255, 255, 255, 0.94) 38%),
+        var(--paper);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 34px;
+      padding: 32px;
+    }
+
+    .support h2,
+    .section h2 {
+      margin: 0;
+      font-size: 40px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .support-copy {
+      display: grid;
+      gap: 16px;
+      color: #28322e;
+      font-size: 17px;
+      line-height: 1.58;
+    }
+
+    .support-copy p {
+      margin: 0;
+    }
+
+    .support-copy a {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 44px;
+      align-items: start;
+    }
+
+    .section-lead {
+      margin: 18px 0 0;
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 19px;
+      line-height: 1.62;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .fact {
+      min-height: 150px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+    }
+
+    .fact strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--sea-dark);
+      font-size: 16px;
+    }
+
+    .fact p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .band {
+      background: #e9f1ed;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .feature-row.reverse {
+      grid-template-columns: 1.18fr 0.82fr;
+    }
+
+    .media-frame {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .media-frame img {
+      width: 100%;
+      background: var(--paper);
+    }
+
+    .steps {
+      margin: 28px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 14px;
+    }
+
+    .steps li {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      align-items: start;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .steps span {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #ffffff;
+      font-weight: 900;
+    }
+
+    .steps strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .link-card {
+      min-height: 174px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      color: inherit;
+      text-decoration: none;
+      transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--sea);
+      box-shadow: 0 18px 36px rgba(20, 30, 24, 0.10);
+    }
+
+    .link-card strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--sea-dark);
+      font-size: 17px;
+    }
+
+    .link-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .install {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    pre {
+      margin: 0;
+      padding: 18px;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: #111715;
+      color: #dbe8e2;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      background: #111715;
+      color: rgba(255, 255, 255, 0.74);
+    }
+
+    .footer-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 34px 28px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      line-height: 1.5;
+    }
+
+    .footer-inner a {
+      color: #ffffff;
+      font-weight: 800;
+    }
+
+    @media (max-width: 920px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding-top: 14px;
+        padding-bottom: 14px;
+        gap: 12px;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      h1 {
+        font-size: 54px;
+      }
+
+      .hero {
+        min-height: 560px;
+        height: auto;
+      }
+
+      .hero-inner {
+        padding-top: 74px;
+      }
+
+      .support-panel,
+      .intro-grid,
+      .feature-row,
+      .feature-row.reverse,
+      .install {
+        grid-template-columns: 1fr;
+      }
+
+      .links-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .nav,
+      .hero-inner,
+      .section,
+      .footer-inner {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .nav-links {
+        font-size: 13px;
+      }
+
+      h1 {
+        font-size: 42px;
+      }
+
+      .hero p,
+      .section-lead {
+        font-size: 17px;
+      }
+
+      .support-panel {
+        padding: 22px;
+      }
+
+      .support h2,
+      .section h2 {
+        font-size: 31px;
+      }
+
+      .facts,
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <header>
-      <div class="brand">
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#top">
         <img src="./images/logo-small.png" alt="BatLLM logo">
-        <h1>BatLLM Documentation</h1>
+        <span>BatLLM</span>
+      </a>
+      <div class="nav-links">
+        <a href="#support">Grant Support</a>
+        <a href="#play">How It Plays</a>
+        <a href="#local-models">Local Models</a>
+        <a href="#docs">Docs</a>
+        <a href="https://github.com/krahd/BatLLM">GitHub</a>
       </div>
-      <p class="lead">
-        BatLLM is a free and libre research and education project built around a local,
-        AI-mediated battle game. It uses play, prompting, and strategy as a practical route into
-        AI literacy, experimentation with local LLM tooling, and critical engagement with how
-        generative systems behave in use.
-      </p>
-    </header>
+    </nav>
+  </header>
 
-    <section class="grid">
-      <a class="card" href="./README.md">
-        <span class="kicker">Start Here</span>
-        <span class="title">README</span>
-        <p>Project overview and documentation entry point for both users and contributors.</p>
-      </a>
-      <a class="card" href="./USER_GUIDE.md">
-        <span class="kicker">Usage</span>
-        <span class="title">User Guide</span>
-        <p>Game-manual style user documentation covering rules, match flow, screens, modes, commands, and Ollama usage.</p>
-      </a>
-      <a class="card" href="./CONTRIBUTING.md">
-        <span class="kicker">Development</span>
-        <span class="title">Contributing</span>
-        <p>Developer and contribution manual covering setup, architecture, configuration, testing, and troubleshooting.</p>
-      </a>
-      <a class="card" href="./FAQ.md">
-        <span class="kicker">Questions</span>
-        <span class="title">FAQ</span>
-        <p>Shared high-signal answers about gameplay, Ollama usage, configuration, and contributor-facing practical questions.</p>
-      </a>
-      <a class="card" href="./CHANGELOG.md">
-        <span class="kicker">History</span>
-        <span class="title">Changelog</span>
-        <p>Running record of documentation and release-level changes.</p>
-      </a>
-      <a class="card" href="./CREDITS.md">
-        <span class="kicker">Project</span>
-        <span class="title">Credits</span>
-        <p>Project authorship, support, and institutional context.</p>
-      </a>
-      <a class="card" href="https://github.com/krahd/BatLLM/releases">
-        <span class="kicker">Download</span>
-        <span class="title">Releases</span>
-        <p>GitHub release bundles for macOS, Linux, Windows, and the compressed source package.</p>
-      </a>
+  <main id="top">
+    <section class="hero" aria-label="BatLLM overview">
+      <div class="hero-inner">
+        <h1>BatLLM</h1>
+        <p>
+          A local AI-mediated battle game for studying prompts, model behaviour, strategy,
+          and the practical limits of generative systems through play.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://github.com/krahd/BatLLM/releases">Download Releases</a>
+          <a class="button secondary" href="https://github.com/krahd/BatLLM">View Source</a>
+        </div>
+      </div>
     </section>
 
-    <footer>
-      BatLLM repository: <a href="https://github.com/krahd/BatLLM">github.com/krahd/BatLLM</a>
-    </footer>
+
+
+    <section class="section compact" aria-labelledby="project-title">
+      <div class="intro-grid">
+        <div>
+          <h2 id="project-title">A game for learning how AI mediation really behaves</h2>
+          <p class="section-lead">
+            BatLLM is free and libre software that turns prompting into a concrete, inspectable
+            activity. Players do not move directly; they must persuade local AI systems to act
+            on their behalf inside a simple human-vs-human battle arena.
+          </p>
+        </div>
+        <div class="facts" aria-label="Project highlights">
+          <article class="fact">
+            <strong>Research And Education</strong>
+            <p>Designed for AI literacy, prompt quality experiments, and critical discussion of model behaviour.</p>
+          </article>
+          <article class="fact">
+            <strong>Local-First Play</strong>
+            <p>Runs as a desktop Python/Kivy application with local Ollama and modelito integration.</p>
+          </article>
+          <article class="fact">
+            <strong>Replay Analysis</strong>
+            <p>Saved sessions can be reviewed in a standalone Game Analyzer with prompts, responses, and outcomes.</p>
+          </article>
+          <article class="fact">
+            <strong>Open Tooling</strong>
+            <p>Maintained docs, tests, release tooling, and Homebrew packaging support the current 0.x line.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="play" class="band">
+      <div class="section feature-row">
+        <div>
+          <h2>How a match becomes data</h2>
+          <p class="section-lead">
+            Every prompt, response, action, and result becomes part of the learning surface.
+            The game is playable, but it is also an instrument for examining AI-mediated decisions.
+          </p>
+          <ol class="steps">
+            <li><span>1</span><div><strong>Prompt</strong>Players write instructions and strategy for their bots.</div></li>
+            <li><span>2</span><div><strong>Mediate</strong>BatLLM sends structured messages through the local model path.</div></li>
+            <li><span>3</span><div><strong>Act</strong>Model responses are parsed into movement, rotation, shooting, and shielding.</div></li>
+            <li><span>4</span><div><strong>Review</strong>Saved sessions preserve prompt history and board outcomes for analysis.</div></li>
+          </ol>
+        </div>
+        <figure class="media-frame">
+          <img src="./screenshots/quick_demo.gif" alt="BatLLM gameplay demo">
+        </figure>
+      </div>
+    </section>
+
+    <section id="local-models" class="section feature-row reverse" aria-labelledby="local-models-title">
+      <figure class="media-frame">
+        <img src="./screenshots/quick_demo.gif" alt="BatLLM gameplay demo">
+      </figure>
+      <div>
+        <h2 id="local-models-title">Local model workflows stay visible</h2>
+        <p class="section-lead">
+          BatLLM routes gameplay, model selection, downloads, lifecycle checks, and smoke validation
+          through a shared service layer. The same path supports the game, the configurator tooling,
+          and repeatable analyzer sessions.
+        </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./README.md">Read The Overview</a>
+          <a class="button ghost" href="./USER_GUIDE.md">Open The User Guide</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="docs" class="section compact" aria-labelledby="docs-title">
+      <h2 id="docs-title">Build, play, inspect, and contribute</h2>
+      <p class="section-lead">
+        Start with the project documentation, then install from source or releases. The repository
+        keeps the research framing, setup notes, tests, packaging details, and release criteria together.
+      </p>
+      <div class="links-grid">
+        <a class="link-card" href="./README.md">
+          <strong>README</strong>
+          <p>Project overview, setup, compatibility, Homebrew notes, and troubleshooting.</p>
+        </a>
+        <a class="link-card" href="./USER_GUIDE.md">
+          <strong>User Guide</strong>
+          <p>Rules, match flow, settings, Ollama screens, analyzer workflow, and saved sessions.</p>
+        </a>
+        <a class="link-card" href="./CONTRIBUTING.md">
+          <strong>Contributing</strong>
+          <p>Developer setup, architecture, tests, release workflow, and documentation process.</p>
+        </a>
+        <a class="link-card" href="./CREDITS.md">
+          <strong>Credits</strong>
+          <p>Project authorship, grant support, institutional context, and acknowledgements.</p>
+        </a>
+      </div>
+      <div class="install" aria-label="Install commands">
+        <pre><code>git clone https://github.com/krahd/BatLLM.git
+cd BatLLM
+python3 -m venv .venv_BatLLM
+source .venv_BatLLM/bin/activate
+pip install -r requirements.txt
+python run_batllm.py</code></pre>
+        <pre><code>python run_game_analyzer.py
+
+python -m pytest -q
+
+python create_release_bundles.py</code></pre>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>BatLLM is free and libre open source research and education software.</span>
+      <span><a href="https://github.com/krahd/BatLLM">github.com/krahd/BatLLM</a></span>
+    </div>
+  </footer>
 </body>
 </html>
