@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-10 00:38
+Last updated: 2026-05-10 00:51
 
 ## Project Purpose
 
@@ -89,7 +89,7 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - Mock-Ollama smoke validation now accepts a responding `/api/version` endpoint when process-level inspection cannot identify the mock server as an Ollama process.
 - Generated Doxygen output under `docs/code/` was regenerated after source and version changes. Existing Doxygen warnings are mostly undocumented Kivy/test helper classes and remain non-blocking documentation debt.
 - Architecture and runtime-flow SVG diagrams were redrawn with larger canvases, wrapped text, boundary-aligned connectors, plain arrow labels, and clearer label placement.
-- `docs/index.html` is now the public GitHub Pages showcase site for `https://krahd.github.io/BatLLM/`; GitHub Pages now serves from branch `main` and path `/docs`, the hero no longer uses a diagram background, the page uses a darker modernised visual system, grant/provenance notes are surfaced in a dedicated section, and front-page authorship now links to Tomas Laurenzo at `https://laurenzo.net/`.
+- `docs/index.html` is now the public GitHub Pages showcase site for `https://krahd.github.io/BatLLM/`; GitHub Pages now serves from branch `main` and path `/docs`, the hero no longer uses a diagram background or top-of-page gameplay image, the page uses a darker modernised visual system, grant/provenance notes are surfaced in a dedicated section, Tomas Laurenzo attribution remains in provenance/footer copy, the demo GIF is used once in-page, and inline text links are no longer bolded.
 - The git worktree was clean at the start of this audit; current changes are intentional audit/remediation updates.
 
 ## Current Implementation State
@@ -277,4 +277,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-10 00:38
+Last updated: 2026-05-10 00:51
