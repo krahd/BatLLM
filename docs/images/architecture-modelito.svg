@@ -25,7 +25,7 @@
   <text class="title" x="60" y="60">BatLLM modelito integration architecture</text>
   <text class="subtitle" x="60" y="92">The Kivy tools share one configuration layer and route local-model work through the BatLLM LLM facade before delegating to modelito.</text>
 
-  <rect class="box module" x="60" y="150" width="330" height="150"/>
+  <rect class="box module" x="60" y="150" width="280.5" height="150"/>
   <text class="box-title" x="84" y="190">Launchers</text>
   <text class="body" x="84" y="224">
     <tspan x="84" dy="0">run_batllm.py</tspan>
@@ -33,7 +33,7 @@
     <tspan x="84" dy="22">run_tests.py</tspan>
   </text>
 
-  <rect class="box state" x="60" y="380" width="330" height="205"/>
+  <rect class="box state" x="60" y="380" width="280.5" height="205"/>
   <text class="box-title" x="84" y="420">Config And State</text>
   <text class="body" x="84" y="452">
     <tspan x="84" dy="0">src/configs/config.yaml</tspan>
@@ -44,7 +44,7 @@
     <tspan x="84" dy="22">last_served_model</tspan>
   </text>
 
-  <rect class="box state" x="60" y="690" width="330" height="150"/>
+  <rect class="box state" x="60" y="690" width="280.5" height="150"/>
   <text class="box-title" x="84" y="730">Configurator Tooling</text>
   <text class="body" x="84" y="762">
     <tspan x="84" dy="0">src/configs/configurator.py</tspan>
@@ -52,7 +52,7 @@
     <tspan x="84" dy="22">console stream</tspan>
   </text>
 
-  <rect class="box module" x="500" y="145" width="390" height="185"/>
+  <rect class="box module" x="500" y="145" width="331.5" height="185"/>
   <text class="box-title" x="524" y="185">Gameplay Surface</text>
   <text class="body" x="524" y="217">
     <tspan x="524" dy="0">GameBoard builds prompt history</tspan>
@@ -61,7 +61,7 @@
     <tspan x="524" dy="22">saved sessions stay replayable</tspan>
   </text>
 
-  <rect class="box module" x="500" y="405" width="390" height="165"/>
+  <rect class="box module" x="500" y="405" width="331.5" height="165"/>
   <text class="box-title" x="524" y="445">Analyzer Surface</text>
   <text class="body" x="524" y="477">
     <tspan x="524" dy="0">analyzer_main.py replay UI</tspan>
@@ -69,7 +69,7 @@
     <tspan x="524" dy="22">prompt and response inspection</tspan>
   </text>
 
-  <rect class="box adapter" x="990" y="145" width="340" height="235"/>
+  <rect class="box adapter" x="990" y="145" width="289" height="235"/>
   <text class="box-title" x="1014" y="185">BatLLM LLM Facade</text>
   <text class="body" x="1014" y="217">
     <tspan x="1014" dy="0">src/llm/service.py</tspan>
@@ -91,35 +91,35 @@
     <tspan x="1394" dy="22">download_model_progress</tspan>
   </text>
 
-  <rect class="box runtime" x="1080" y="640" width="430" height="170"/>
-  <text class="box-title" x="1104" y="680">Local Ollama Runtime</text>
-  <text class="body" x="1104" y="712">
-    <tspan x="1104" dy="0">real local Ollama server</tspan>
-    <tspan x="1104" dy="22">installed model set</tspan>
-    <tspan x="1104" dy="22">warm, download, delete</tspan>
-    <tspan x="1104" dy="22">serve, stop and start</tspan>
+  <rect class="box runtime" x="1144.5" y="640" width="365.5" height="170"/>
+  <text class="box-title" x="1168.5" y="680">Local Ollama Runtime</text>
+  <text class="body" x="1168.5" y="712">
+    <tspan x="1168.5" dy="0">real local Ollama server</tspan>
+    <tspan x="1168.5" dy="22">installed model set</tspan>
+    <tspan x="1168.5" dy="22">warm, download, delete</tspan>
+    <tspan x="1168.5" dy="22">serve, stop and start</tspan>
   </text>
 
-  <path class="arrow" d="M390 225 H500"/>
-  <text class="label" x="445" y="214">launch</text>
+  <path class="arrow" d="M340.5 225 H500"/>
+  <text class="label" x="420" y="214">launch</text>
 
-  <path class="arrow" d="M390 275 C445 275 445 488 500 488"/>
+  <path class="arrow" d="M340.5 275 C445 275 445 488 500 488"/>
   <text class="label" x="440" y="367">launch</text>
 
-  <path class="arrow" d="M390 482 H500"/>
-  <text class="label" x="445" y="471">shared config</text>
+  <path class="arrow" d="M340.5 482 H500"/>
+  <text class="label" x="420" y="471">shared config</text>
 
-  <path class="arrow" d="M390 765 H960 V350 H990"/>
-  <text class="label" x="655" y="754">config-driven tooling</text>
+  <path class="arrow" d="M340.5 765 H960 V350 H990"/>
+  <text class="label" x="640" y="754">config-driven tooling</text>
 
-  <path class="arrow" d="M890 235 H990"/>
-  <text class="label" x="940" y="224">prompt lifecycle policy</text>
+  <path class="arrow" d="M831.5 235 H990"/>
+  <text class="label" x="910" y="224">prompt lifecycle policy</text>
 
-  <path class="arrow" d="M890 490 C940 490 940 315 990 315"/>
-  <text class="label" x="940" y="472">replay compatibility</text>
+  <path class="arrow" d="M831.5 490 C940 490 940 315 990 315"/>
+  <text class="label" x="905" y="472">replay compatibility</text>
 
-  <path class="arrow" d="M1330 260 H1370"/>
-  <text class="label" x="1350" y="249">delegate</text>
+  <path class="arrow" d="M1279 260 H1370"/>
+  <text class="label" x="1325" y="249">delegate</text>
 
   <path class="arrow" d="M1485 380 V640"/>
   <text class="label" x="1560" y="505">service calls</text>
@@ -127,6 +127,6 @@
   <path class="arrow" d="M1160 380 V640"/>
   <text class="label" x="1236" y="515">status and CLI</text>
 
-  <path class="arrow" d="M890 300 C950 300 950 725 1080 725"/>
-  <text class="label" x="990" y="614">prompt/model ops</text>
+  <path class="arrow" d="M831.5 300 C950 300 950 725 1144.5 725"/>
+  <text class="label" x="1005" y="614">prompt/model ops</text>
 </svg>

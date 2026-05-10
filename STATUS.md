@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-10 01:04
+Last updated: 2026-05-10 17:21
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -86,8 +86,8 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - Repository patch version was bumped from `0.3.5` to `0.3.6`.
 - Mock-Ollama smoke validation now accepts a responding `/api/version` endpoint when process-level inspection cannot identify the mock server as an Ollama process.
 - Generated Doxygen output under `docs/code/` was regenerated after source and version changes. Existing Doxygen warnings are mostly undocumented Kivy/test helper classes and remain non-blocking documentation debt.
-- Architecture and runtime-flow SVG diagrams were redrawn with larger canvases, wrapped text, boundary-aligned connectors, plain arrow labels, and clearer label placement.
-- `docs/index.html` is now the public GitHub Pages showcase site for `https://krahd.github.io/BatLLM/`; GitHub Pages now serves from branch `main` and path `/docs`, the hero no longer uses a diagram background or top-of-page gameplay image, the page uses a darker modernised visual system, grant/provenance notes are surfaced in a dedicated section, Tomas Laurenzo attribution remains in provenance/footer copy, the demo GIF is used once in-page, inline text links are no longer bolded, the hero eyebrow label has been removed, the hero right column shows the project logo at large scale, the screenshot has rectangular (zero-radius) corners, and documentation links in the hero and links grid point to the rendered GitHub pages for README, USER_GUIDE, CONTRIBUTING, and CREDITS.
+- Architecture and runtime-flow SVG diagrams were redrawn with larger canvases, wrapped text, boundary-aligned connectors, plain arrow labels, and clearer label placement; the runtime-flow SVG canvas width now matches the architecture diagram width, right-side boxes were shifted apart for clearer spacing, then boxes 2A/2B and arrow labels were fine-tuned so right-side arrow labels sit cleanly over their connectors, including an additional small left shift of 2A/2B with matching arrow-anchor adjustments, followed by iterative width reductions of boxes 1, 2A, and 2B for improved separation. The architecture diagram was then adjusted so every box except `modelito` is 15% narrower, with connector anchors updated to the new box edges, and the Local Ollama Runtime box text was repositioned inside the box.
+- `docs/index.html` is now the public GitHub Pages showcase site for `https://krahd.github.io/BatLLM/`; GitHub Pages now serves from branch `main` and path `/docs`, the hero no longer uses a diagram background or top-of-page gameplay image, the page uses a darker modernised visual system, grant/provenance notes are surfaced in a dedicated section, Tomas Laurenzo attribution remains in provenance/footer copy, the demo GIF is used once in-page, inline text links are no longer bolded, the hero eyebrow label has been removed, the hero right column shows the project logo at large scale, a stronger layered white glow is applied around the hero logo to soften visible border pixelation, the screenshot has rectangular (zero-radius) corners, and documentation links in the hero and links grid point to the rendered GitHub pages for README, USER_GUIDE, CONTRIBUTING, and CREDITS.
 - The git worktree was clean at the start of this audit; current changes are intentional audit/remediation updates.
 
 ## Current Implementation State
@@ -275,4 +275,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-10 01:04
+Last updated: 2026-05-10 17:21
