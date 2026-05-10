@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-10 00:01
+Last updated: 2026-05-10 00:04
 
 ## Project Purpose
 
@@ -180,7 +180,7 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `docs/ROADMAP.md` describes 1.0 local desktop hardening and 2.0 networked-play direction using current `0.3.x` line wording.
 - `docs/RELEASE_CRITERIA_1_0.md` defines CI, reliability, UX, bundle, and documentation gates for a future 1.0 candidate.
 - `docs/CHANGELOG.md` keeps active unreleased notes on the `0.x` hold and draft 1.0 notes.
-- `docs/index.html` is the static project showcase served by GitHub Pages from `main` `/docs`.
+- `docs/index.html` is the static project showcase served by GitHub Pages from branch `pages/batllm-site` and path `/docs`.
 - `docs/.nojekyll` keeps GitHub Pages from applying Jekyll processing to the static documentation tree.
 - `docs/FIRST_RUN_RELEASE_CHECKLIST.md` and `docs/UI_UNIFICATION_PLAN_1_0.md` remain release-preparation references.
 - `docs/images/architecture-modelito.svg` and `docs/images/request-flow-modelito.svg` are maintained standalone SVG diagrams used by `STATUS.md`; they were refreshed for legibility and connector accuracy.
@@ -203,9 +203,12 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - Documentation local-link sanity check for `docs/*.md` -> passed (`documentation-local-links-ok`).
 - `python3 - <<'PY' ...` XML parse check for `docs/images/architecture-modelito.svg` and `docs/images/request-flow-modelito.svg` -> passed.
 - `rsvg-convert -o /tmp/architecture-modelito.png docs/images/architecture-modelito.svg` and `rsvg-convert -o /tmp/request-flow-modelito.png docs/images/request-flow-modelito.svg` -> passed; both diagrams rendered to temporary PNGs without errors.
-- GitHub Pages configuration check with `gh api repos/krahd/BatLLM/pages` -> passed; Pages serves `https://krahd.github.io/BatLLM/` from branch `main` and path `/docs`.
+- GitHub Pages configuration check with `gh api repos/krahd/BatLLM/pages` -> passed; Pages serves `https://krahd.github.io/BatLLM/` from branch `pages/batllm-site` and path `/docs`.
 - `python3 - <<'PY' ...` static HTML reference check for `docs/index.html` -> passed; verified local asset/doc references and visible grant-support copy.
 - Local static server check with `python3 -m http.server 8040` from `docs/` plus `curl` -> passed; confirmed `index.html`, `images/logo-small.png`, `images/request-flow-modelito.svg`, and `images/architecture-modelito.svg` were served successfully.
+- Pages build request with `gh api repos/krahd/BatLLM/pages/builds --method POST` -> passed; build `991944945` completed successfully for commit `7fa9168`.
+- Published-site verification with `curl -sL https://krahd.github.io/BatLLM/` -> passed; confirmed the public HTML includes `Grant-supported research software`, `2024 Arts & Humanities Grant Program`, and `CHA Small Grant`.
+- Published asset checks with `curl -I` for `/images/logo-small.png`, `/images/request-flow-modelito.svg`, and `/images/architecture-modelito.svg` -> passed with HTTP 200 responses.
 
 ### Recent Previously Recorded Validation
 
@@ -274,4 +277,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-10 00:01
+Last updated: 2026-05-10 00:04
