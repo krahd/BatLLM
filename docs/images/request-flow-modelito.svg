@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="940" viewBox="0 0 1540 940" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="940" viewBox="0 0 1640 940" role="img" aria-labelledby="title desc">
   <title id="title">BatLLM local model request flow</title>
   <desc id="desc">The path from selecting or downloading an Ollama model to gameplay prompts, provider responses, parsing, and replay storage.</desc>
   <defs>
@@ -20,11 +20,11 @@
     </style>
   </defs>
 
-  <rect class="bg" x="0" y="0" width="1540" height="940"/>
+  <rect class="bg" x="0" y="0" width="1640" height="940"/>
   <text class="title" x="60" y="60">Local model request and replay flow</text>
   <text class="subtitle" x="60" y="92">Model selection, readiness checks, downloads, gameplay prompts, and saved sessions share one modelito-backed path.</text>
 
-  <rect class="box state" x="60" y="160" width="330" height="160"/>
+  <rect class="box state" x="60" y="160" width="290" height="160"/>
   <text class="box-title" x="84" y="198">
     <tspan x="84" dy="0">1. Select Or Refresh</tspan>
     <tspan x="84" dy="24">A Model</tspan>
@@ -39,34 +39,34 @@
   <text class="box-title" x="590" y="244" text-anchor="middle">Local Model</text>
   <text class="box-title" x="590" y="268" text-anchor="middle">Available?</text>
 
-  <rect class="box" x="820" y="130" width="410" height="205"/>
-  <text class="box-title" x="844" y="168">2A. Serve Existing Model</text>
-  <text class="body" x="844" y="200">
-    <tspan x="844" dy="0">save llm.model</tspan>
-    <tspan x="844" dy="22">resolve timeout through</tspan>
-    <tspan x="844" dy="22">src/llm/service.py</tspan>
-    <tspan x="844" dy="22">modelito readiness check</tspan>
-    <tspan x="844" dy="22">record last_served_model</tspan>
+  <rect class="box" x="860" y="130" width="370" height="205"/>
+  <text class="box-title" x="884" y="168">2A. Serve Existing Model</text>
+  <text class="body" x="884" y="200">
+    <tspan x="884" dy="0">save llm.model</tspan>
+    <tspan x="884" dy="22">resolve timeout through</tspan>
+    <tspan x="884" dy="22">src/llm/service.py</tspan>
+    <tspan x="884" dy="22">modelito readiness check</tspan>
+    <tspan x="884" dy="22">record last_served_model</tspan>
   </text>
 
-  <rect class="box" x="820" y="405" width="410" height="190"/>
-  <text class="box-title" x="844" y="443">2B. Download Remote Model</text>
-  <text class="body" x="844" y="475">
-    <tspan x="844" dy="0">modelito download progress</tspan>
-    <tspan x="844" dy="22">update status and output log</tspan>
-    <tspan x="844" dy="22">refresh local list</tspan>
-    <tspan x="844" dy="22">model becomes playable</tspan>
+  <rect class="box" x="860" y="405" width="370" height="190"/>
+  <text class="box-title" x="884" y="443">2B. Download Remote Model</text>
+  <text class="body" x="884" y="475">
+    <tspan x="884" dy="0">modelito download progress</tspan>
+    <tspan x="884" dy="22">update status and output log</tspan>
+    <tspan x="884" dy="22">refresh local list</tspan>
+    <tspan x="884" dy="22">model becomes playable</tspan>
   </text>
 
-  <rect class="box runtime" x="1290" y="245" width="210" height="350"/>
-  <text class="box-title" x="1314" y="283">Local Ollama</text>
-  <text class="body" x="1314" y="315">
-    <tspan x="1314" dy="0">real local server</tspan>
-    <tspan x="1314" dy="22">installed models</tspan>
-    <tspan x="1314" dy="22">warm and pull</tspan>
-    <tspan x="1314" dy="22">delete safeguards</tspan>
-    <tspan x="1314" dy="22">serve/stop/start</tspan>
-    <tspan x="1314" dy="22">provider responses</tspan>
+  <rect class="box runtime" x="1370" y="245" width="210" height="350"/>
+  <text class="box-title" x="1394" y="283">Local Ollama</text>
+  <text class="body" x="1394" y="315">
+    <tspan x="1394" dy="0">real local server</tspan>
+    <tspan x="1394" dy="22">installed models</tspan>
+    <tspan x="1394" dy="22">warm and pull</tspan>
+    <tspan x="1394" dy="22">delete safeguards</tspan>
+    <tspan x="1394" dy="22">serve/stop/start</tspan>
+    <tspan x="1394" dy="22">provider responses</tspan>
   </text>
 
   <rect class="box" x="60" y="680" width="360" height="180"/>
@@ -89,40 +89,40 @@
     <tspan x="544" dy="22">returns assistant text</tspan>
   </text>
 
-  <rect class="box state" x="1000" y="680" width="440" height="180"/>
-  <text class="box-title" x="1024" y="718">5. Parse And Persist</text>
-  <text class="body" x="1024" y="750">
-    <tspan x="1024" dy="0">gameplay response is parsed</tspan>
-    <tspan x="1024" dy="22">into actions and narrative</tspan>
-    <tspan x="1024" dy="22">HistoryManager stores</tspan>
-    <tspan x="1024" dy="22">prompts and outcomes</tspan>
-    <tspan x="1024" dy="22">analyzer replay stays valid</tspan>
+  <rect class="box state" x="1080" y="680" width="440" height="180"/>
+  <text class="box-title" x="1104" y="718">5. Parse And Persist</text>
+  <text class="body" x="1104" y="750">
+    <tspan x="1104" dy="0">gameplay response is parsed</tspan>
+    <tspan x="1104" dy="22">into actions and narrative</tspan>
+    <tspan x="1104" dy="22">HistoryManager stores</tspan>
+    <tspan x="1104" dy="22">prompts and outcomes</tspan>
+    <tspan x="1104" dy="22">analyzer replay stays valid</tspan>
   </text>
 
-  <path class="arrow" d="M390 255 H430"/>
-  <text class="label" x="418" y="244">refresh</text>
+  <path class="arrow" d="M350 255 H430"/>
+  <text class="label" x="396" y="244">refresh</text>
 
-  <path class="arrow" d="M750 255 H820"/>
-  <text class="label" x="785" y="244">local</text>
+  <path class="arrow" d="M750 255 H860"/>
+  <text class="label" x="805" y="244">local</text>
 
-  <path class="arrow" d="M590 360 V500 H820"/>
-  <text class="label" x="650" y="489">download</text>
+  <path class="arrow" d="M590 360 V500 H860"/>
+  <text class="label" x="725" y="489">download</text>
 
-  <path class="arrow" d="M1230 270 H1290"/>
-  <text class="label" x="1260" y="259">warm/inspect</text>
+  <path class="arrow" d="M1230 270 H1370"/>
+  <text class="label" x="1300" y="259">warm/inspect</text>
 
-  <path class="arrow" d="M1230 500 H1290"/>
-  <text class="label" x="1260" y="489">pull model</text>
+  <path class="arrow" d="M1230 500 H1370"/>
+  <text class="label" x="1300" y="489">pull model</text>
 
-  <path class="arrow" d="M1395 595 V640 H710 V680"/>
-  <text class="label" x="1080" y="630">response text</text>
+  <path class="arrow" d="M1475 595 V640 H710 V680"/>
+  <text class="label" x="1160" y="630">response text</text>
 
   <path class="arrow" d="M420 770 H520"/>
   <text class="label" x="470" y="759">prompt</text>
 
-  <path class="arrow" d="M900 770 H1000"/>
-  <text class="label" x="950" y="759">record outcome</text>
+  <path class="arrow" d="M900 770 H1080"/>
+  <text class="label" x="990" y="759">record outcome</text>
 
-  <path class="arrow" d="M820 315 C710 360 660 625 250 625 V680"/>
+  <path class="arrow" d="M860 315 C740 360 690 625 250 625 V680"/>
   <text class="label" x="540" y="610">after model is ready</text>
 </svg>
