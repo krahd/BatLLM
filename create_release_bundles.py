@@ -39,7 +39,7 @@ def platform_note(version: str, platform_name: str, install_hint: str) -> str:
     return (
         f"BatLLM {version} - {platform_name} release bundle\n\n"
         "Quick start:\n"
-        "1. Install Python 3.10 or newer. Python 3.11 or 3.12 is recommended.\n"
+        "1. Install Python 3.10, 3.11, or 3.12. Python 3.12 is recommended.\n"
         "2. Install Ollama from the official download page for your platform.\n"
         "3. Run the included install script.\n"
         "4. Launch BatLLM with the included run script.\n\n"

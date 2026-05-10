@@ -4,8 +4,12 @@
 
 ## Unreleased
 
-- keeping release line on `0.x` pending maintainer validation; repository `VERSION` is now `0.3.5`
+- keeping release line on `0.x` pending maintainer validation; repository `VERSION` is now `0.3.6`
 - continue release hardening and checklist execution before any `1.0.0` tag decision
+- aligned supported-Python documentation and launcher enforcement around Python `>=3.10,<3.13`
+- refreshed alternate config profiles so model names, movement keys, warmup-timeout defaults, and system-instruction paths match the current schema
+- bumped repository `VERSION` to `0.3.6` for the next patch release
+- corrected stale maintained-documentation references to the current `0.3.6` repository version and `llm.warmup_timeout` default
 
 ## Draft v1.0.0 Release Notes (not released)
 
@@ -35,7 +39,7 @@
 - moved gameplay requests to direct `modelito` usage in `src/game/ollama_connector.py`
 - switched the Ollama screen, configurator console, smoke helpers, and test CLI to direct `modelito` service and provider helpers
 - removed the remaining pre-release compatibility and stale backup files that kept obsolete non-gameplay HTTP paths alive
-- updated the maintained docs and status report to describe the direct `modelito 1.2.2` architecture consistently
+- updated the then-current maintained docs and status report to describe the direct `modelito 1.2.2` architecture consistently
 
 ## v0.3.3 - 2026-04-21
 

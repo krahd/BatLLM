@@ -99,3 +99,28 @@ def test_summarize_once_uses_provider_and_timeout(monkeypatch) -> None:
     }
     assert calls["message"] == "Reply with exactly OK"
     assert calls["settings"] == {"timeout": 88.0}
+
+
+def test_version_endpoint_responds_uses_configured_url(monkeypatch) -> None:
+    calls = {}
+
+    class FakeResponse:
+        status = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return None
+
+    def fake_urlopen(url, timeout):
+        calls["url"] = url
+        calls["timeout"] = timeout
+        return FakeResponse()
+
+    monkeypatch.setattr(smoke_llm_payload, "urlopen", fake_urlopen)
+
+    assert smoke_llm_payload._version_endpoint_responds(
+        {"url": "http://127.0.0.1/", "port": 11434}
+    )
+    assert calls == {"url": "http://127.0.0.1:11434/api/version", "timeout": 5.0}

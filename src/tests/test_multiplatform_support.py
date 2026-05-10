@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 DEFAULTS = import_module("configs.app_config").DEFAULTS
+compat = import_module("util.compat")
 ollama_service = import_module("llm.service")
 paths = import_module("util.paths")
 
@@ -27,12 +28,57 @@ def test_resolve_repo_relative_finds_system_instruction_file() -> None:
     assert resolved.name == "augmented_independent_1.txt"
 
 
+def test_supported_python_version_range_is_enforced(monkeypatch) -> None:
+    monkeypatch.setattr(compat.sys, "version_info", (3, 12, 9))
+    compat.require_supported_python("BatLLM")
+
+    monkeypatch.setattr(compat.sys, "version_info", (3, 9, 18))
+    try:
+        compat.require_supported_python("BatLLM")
+    except SystemExit as exc:
+        assert "Python 3.10 through 3.12" in str(exc)
+    else:
+        raise AssertionError("Python below the supported floor should be rejected")
+
+    monkeypatch.setattr(compat.sys, "version_info", (3, 13, 0))
+    try:
+        compat.require_supported_python("BatLLM")
+    except SystemExit as exc:
+        assert "Detected Python 3.13.0" in str(exc)
+    else:
+        raise AssertionError("Python at the unsupported upper bound should be rejected")
+
+
 def test_prompt_asset_dir_is_absolute_and_exists() -> None:
     prompt_dir = paths.prompt_asset_dir()
 
     assert prompt_dir.is_absolute()
     assert prompt_dir.exists()
     assert prompt_dir.name == "prompts"
+
+
+def test_alternate_config_files_use_current_keys_and_valid_assets() -> None:
+    expected_models = {
+        "config-llama.yaml": "llama3.2:latest",
+        "config-phi.yaml": "phi3:14b",
+    }
+
+    for filename, expected_model in expected_models.items():
+        config_path = ROOT / "src" / "configs" / filename
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+        game = data.get("game") or {}
+        llm = data.get("llm") or {}
+
+        assert game.get("bot_step_length") is not None
+        assert "step_length" not in game
+        assert llm.get("model") == expected_model
+        assert "warmup_timeout" in llm
+        assert "model_timeouts" in llm
+
+        for key, value in llm.items():
+            if not key.startswith("system_instructions_"):
+                continue
+            assert paths.resolve_repo_relative(value).exists(), f"{filename}: {key}"
 
 
 def test_load_llm_config_reads_yaml_defaults(tmp_path: Path) -> None:
@@ -619,6 +665,19 @@ def test_cross_platform_launchers_compile() -> None:
         root / "create_homebrew_formula.py",
     ):
         py_compile.compile(str(script), doraise=True)
+
+
+def test_root_launchers_bootstrap_src_before_local_imports() -> None:
+    for script in (
+        ROOT / "run_batllm.py",
+        ROOT / "run_game_analyzer.py",
+        ROOT / "run_tests.py",
+    ):
+        text = script.read_text(encoding="utf-8")
+        path_insert_index = text.index("sys.path.insert(0, str(SRC))")
+        local_import_index = text.index("from util.compat import require_supported_python")
+
+        assert path_insert_index < local_import_index
 
 
 def test_release_bundle_wrappers_include_game_analyzer_launchers() -> None:

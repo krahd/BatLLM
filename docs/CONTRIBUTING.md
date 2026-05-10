@@ -52,7 +52,7 @@ source .venv_BatLLM/bin/activate
 pip install -r requirements.txt
 ```
 
-Use Python 3.10 or newer. Python 3.11 or 3.12 is recommended.
+Use Python 3.10, 3.11, or 3.12. Python 3.12 is recommended.
 
 On Windows:
 
@@ -197,6 +197,7 @@ llm:
   max_tokens: null
   model: smollm2
   model_timeouts: {}
+  warmup_timeout: 30.0
   num_ctx: 4096
   num_predict: null
   num_thread: null

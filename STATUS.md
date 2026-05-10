@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-09 20:46
+Last updated: 2026-05-09 23:45
 
 ## Project Purpose
 
@@ -16,7 +16,7 @@ The project should remain practical, critical, and educational. Destructive or e
 - Main UI framework: Kivy `2.3.1` plus KivyMD `1.2.0`.
 - LLM/runtime integration: Ollama through `modelito==1.4.0` and `ollama==0.5.3`.
 - Default shipped model: `smollm2` with first-run `last_served_model` intentionally blank.
-- Repository version: `0.3.5`.
+- Repository version: `0.3.6`.
 
 ### macOS/Linux
 
@@ -71,24 +71,25 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 ### Repository Inventory
 
-- Tracked files: 611.
-- Tracked source/test/application files under `src/`: 82.
+- Tracked files: 610.
+- Tracked source/test/application files under `src/`: 81.
 - Tracked documentation files and generated API artefacts under `docs/`: 505.
-- Test files: 13 `test_*.py` files with 153 collected test functions by static scan.
+- Test files: 14 tracked smoke/test files with 157 collected test functions by static scan.
 - Key top-level launchers and tooling: `run_batllm.py`, `run_game_analyzer.py`, `run_tests.py`, `create_release_bundles.py`, `create_homebrew_formula.py`, `validate_packaging_smoke.py`, `start_ollama.sh`, `stop_ollama.sh`, `scripts/cmr-r`, and `tools/ollama_mock_server.py`.
 - CI workflows present: `.github/workflows/multiplatform.yml` and `.github/workflows/publish-homebrew-tap.yml`.
 - Packaging subtree present: `packaging/homebrew/README.md` and `packaging/homebrew/requirements.txt`.
 
 ### Notable Audit Findings
 
-- `STATUS.md` now embeds architecture and runtime diagrams via repository SVG image links for markdown-renderer compatibility.
-- Removed tracked repository-hygiene artefacts: top-level `sdf` and `src/configs/config.yaml.bak`.
-- Fixed stale augmented system-instruction paths in `src/configs/config-llama.yaml` to use `src/assets/system_instructions/...`.
-- Removed the unused `OLLAMA_HELPER` constant from `run_tests.py`.
-- Refreshed `docs/ROADMAP.md` opening wording from `0.2.x` to `0.3.x`.
-- Updated standalone `docs/images/*modelito.svg` wording to retire stale `modelito 1.2.2` references.
-- Generated Doxygen output under `docs/code/` is large and tracked. It appears intentional, but it dominates repository size and should be regenerated only as part of deliberate API-documentation updates.
-- The current git worktree was clean before this status update.
+- Root launchers and `run_tests.py` now insert `src/` into `sys.path` before importing local modules, so the documented root commands no longer depend on an already-exported `PYTHONPATH`.
+- `src/util/compat.py` now enforces the documented supported Python window `>=3.10,<3.13`.
+- `src/configs/config-llama.yaml` and `src/configs/config-phi.yaml` were refreshed to use current schema keys, matching system-instruction asset paths, warmup-timeout defaults, and model names that match the file intent.
+- Maintained docs were aligned with repository version `0.3.6`, supported Python `>=3.10,<3.13`, and the shipped `llm.warmup_timeout` default.
+- Repository patch version was bumped from `0.3.5` to `0.3.6`.
+- Mock-Ollama smoke validation now accepts a responding `/api/version` endpoint when process-level inspection cannot identify the mock server as an Ollama process.
+- Generated Doxygen output under `docs/code/` was regenerated after source and version changes. Existing Doxygen warnings are mostly undocumented Kivy/test helper classes and remain non-blocking documentation debt.
+- Architecture and runtime-flow SVG diagrams were redrawn with larger canvases, wrapped text, boundary-aligned connectors, plain arrow labels, and clearer label placement.
+- The git worktree was clean at the start of this audit; current changes are intentional audit/remediation updates.
 
 ## Current Implementation State
 
@@ -150,7 +151,7 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 - `AGENTS.md`: canonical operating instructions for coding agents in this repository.
 - `STATUS.md`: this complete project status report; must be updated with any project-state change.
-- `VERSION`: active repository version (`0.3.5`).
+- `VERSION`: active repository version (`0.3.6`).
 - `requirements.txt`: root development/runtime dependency pins.
 - `pytest.ini`: pytest path and discovery configuration.
 - `.github/workflows/`: CI and Homebrew tap publication workflows.
@@ -179,23 +180,30 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `docs/RELEASE_CRITERIA_1_0.md` defines CI, reliability, UX, bundle, and documentation gates for a future 1.0 candidate.
 - `docs/CHANGELOG.md` keeps active unreleased notes on the `0.x` hold and draft 1.0 notes.
 - `docs/FIRST_RUN_RELEASE_CHECKLIST.md` and `docs/UI_UNIFICATION_PLAN_1_0.md` remain release-preparation references.
+- `docs/images/architecture-modelito.svg` and `docs/images/request-flow-modelito.svg` are maintained standalone SVG diagrams used by `STATUS.md`; they were refreshed for legibility and connector accuracy.
 - `docs/code/` contains generated Doxygen HTML/LaTeX output and should be treated as generated documentation.
 
 ## Tests And Verification Status
 
 ### Latest Commands Run For This Audit
 
-- `pwd && rg --files -g 'AGENTS.md' -g '!**/.git/**' -g '!**/__pycache__/**' && git status --short` -> passed; confirmed repository path, only root `AGENTS.md`, and initially clean worktree.
-- `find . -maxdepth 2 -type f ...` plus `rg --files -g '*.py' ...` -> passed; inventoried top-level files and Python files.
-- Documentation/source inspection commands using `sed`, `find`, `git ls-files`, and AST parsing -> passed; informed this status report.
-- `rg '^def test_' src/tests -c | awk ...` -> passed; statically counted 153 test functions across 13 test files.
-- `python -m pytest -q` -> failed during collection in this container because the default `python` is Python 3.14.4 and does not have required dependencies installed (`ModuleNotFoundError: No module named 'yaml'`).
-- `python3.12 -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py` -> passed; source and launcher files compile under Python 3.12.
-- `python - <<'PY' ...` timestamp-format check -> passed; top and bottom `Last updated` lines match and use the required format.
+- `git status --short` -> passed; confirmed the worktree was clean before edits.
+- Repository audit commands using `rg`, `git ls-files`, `find`, `sed`, and `wc` -> passed; checked tracked inventory, maintained docs, source modules, config files, TODO markers, stale version/path references, ignored local artefacts, generated docs, and test inventory.
+- `.venv_BatLLM/bin/python -m pytest -q src/tests/test_multiplatform_support.py src/tests/test_history_compact.py` -> `38 passed`.
+- `.venv_BatLLM/bin/python -m pytest -q` -> `155 passed, 2 skipped`; rerun after the `0.3.6` version bump.
+- `.venv_BatLLM/bin/python run_tests.py core` -> `4 passed`.
+- `.venv_BatLLM/bin/python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py` -> passed.
+- `.venv_BatLLM/bin/python validate_packaging_smoke.py` -> initially failed inside the restricted sandbox because PyPI DNS was blocked; rerun with network permission and passed (`Packaging smoke validation passed.`).
+- CI-style mock Ollama smoke: started `tools/ollama_mock_server.py` on `127.0.0.1:11434`, then ran `BATLLM_RUN_OLLAMA_SMOKE=1 PYTHONPATH=src KIVY_HOME=/tmp/batllm-kivy-smoke KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 .venv_BatLLM/bin/python -m pytest -q src/tests/smoke_llm_payload.py` with local socket permission -> `2 passed`; the mock server was stopped afterwards.
+- `rg -n "0\.3\.5" VERSION docs src ...` -> passed with no matches after the `0.3.6` version bump.
+- `doxygen docs/code/dox_config.properties` -> passed; regenerated tracked API docs with `PROJECT_NUMBER = 0.3.6` and reported existing undocumented-class/member warnings.
+- Documentation local-link sanity check for `docs/*.md` -> passed (`documentation-local-links-ok`).
+- `python3 - <<'PY' ...` XML parse check for `docs/images/architecture-modelito.svg` and `docs/images/request-flow-modelito.svg` -> passed.
+- `rsvg-convert -o /tmp/architecture-modelito.png docs/images/architecture-modelito.svg` and `rsvg-convert -o /tmp/request-flow-modelito.png docs/images/request-flow-modelito.svg` -> passed; both diagrams rendered to temporary PNGs without errors.
 
 ### Recent Previously Recorded Validation
 
-The previous status report recorded these successful checks from the same release-hardening period. They remain useful historical evidence but were not rerun as part of this documentation-only audit unless listed above.
+The previous status report recorded these successful checks from the same release-hardening period. They remain useful historical evidence but were not rerun unless listed above.
 
 - `python -m pytest -q` -> `151 passed, 2 skipped`.
 - `python run_tests.py full` -> core smoke `4 passed`; full suite `153 passed`; live-Ollama lifecycle start/stop verified.
@@ -209,16 +217,17 @@ The previous status report recorded these successful checks from the same releas
 
 - The Kivy desktop app was not launched interactively with `python run_batllm.py` in this non-interactive environment.
 - The standalone analyzer was not launched interactively with `python run_game_analyzer.py` in this non-interactive environment.
-- Live Ollama lifecycle tests were not run during this audit to avoid mutating local model/service state.
-- Release bundle generation and Homebrew install smoke tests were not rerun during this audit because this change updates only `STATUS.md`.
+- A headless launcher import attempt reached Kivy window initialisation and failed with `Unable to get a Window`; this is an environment limitation, not a substitute for manual GUI launch validation.
+- `python run_tests.py full` was not run during this audit because it can start and stop a real local Ollama service.
+- Homebrew install-level smoke (`validate_packaging_smoke.py --run-homebrew-install-smoke`) was not run because it installs/uninstalls through the local Homebrew installation.
 
 ## Known Issues, Risks, And Limitations
 
-- The project is still on `0.3.5`; 1.0 materials are release-planning/draft references, not an active shipped 1.0 release line.
+- The project is still on `0.3.6`; 1.0 materials are release-planning/draft references, not an active shipped 1.0 release line.
 - Local Ollama operations are inherently stateful. Starting/stopping the service, warming models, downloading models, or deleting models can affect real user state.
 - GUI validation is limited in headless/non-interactive environments; many UI paths rely on Kivy event-loop behaviour and manual spot checks.
 - `run_tests.py full` can affect a real Ollama service and should be run only with explicit maintainer intent.
-- Generated API docs under `docs/code/` may become stale when source changes unless regenerated deliberately.
+- Generated API docs under `docs/code/` are current for this audit but remain large and noisy because Doxygen also tracks LaTeX PDF artefacts.
 - Homebrew distribution remains source-based and macOS/Apple-Silicon oriented.
 - The saved-session v2 schema is the supported path; unsupported legacy sessions are intentionally rejected by schema helpers.
 
@@ -226,29 +235,29 @@ The previous status report recorded these successful checks from the same releas
 
 ### High Priority Before Release Freeze
 
-- Repository-hygiene follow-ups from this audit have been addressed in this update (`sdf`, `config.yaml.bak`, stale alternate config paths, unused test-runner constant, stale roadmap wording, and stale standalone modelito diagram wording).
+- No new high-priority code or maintained-documentation remediation from this audit remains open.
 
 ### Validation Pending
 
-- Rerun `python -m pytest -q` in a supported Python environment with `requirements.txt` installed; the container default Python 3.14 environment lacks required dependencies.
-- Optionally rerun `python validate_packaging_smoke.py` if release artefacts are expected to remain valid in the current environment.
-- Rerun `python run_tests.py full` only in an environment where live Ollama start/stop is acceptable.
 - Perform manual GUI smoke checks for `python run_batllm.py` and `python run_game_analyzer.py` before release tagging.
+- Rerun `python run_tests.py full` only when the maintainer is ready for BatLLM to start/stop the configured real local Ollama service.
+- Run Homebrew install-level smoke only when mutating the local Homebrew installation is acceptable.
+- Complete Linux and Windows manual first-run checklist execution on native hosts before a release candidate.
 
 ### Documentation Pending
 
 - Keep `STATUS.md` current after every project-state change.
 - Ensure `docs/README.md`, `docs/USER_GUIDE.md`, and `docs/CONTRIBUTING.md` stay aligned with UI labels, release workflow, and config defaults.
 - Keep `docs/CHANGELOG.md` clear that 1.0 notes remain draft until an actual `v1.0.0` tag is prepared.
-- Regenerate `docs/code/` only when API documentation updates are intentional.
+- Regenerate `docs/code/` only when API documentation updates are intentional, and review generated PDF churn before committing.
 
 ## Next Steps
 
-1. Run the narrow validation for this documentation update: `python -m pytest -q`.
-2. Keep repository-hygiene checks active for future artefacts and generated-file drift.
-3. Refresh stale documentation/diagram wording identified by the audit.
-4. Run full non-live CI-equivalent checks across source, tests, packaging smoke, and Homebrew formula generation.
-5. Schedule a maintainer-owned live Ollama validation pass before any release candidate.
+1. Run maintainer-owned manual GUI smoke checks on a machine with a display.
+2. Run maintainer-owned live Ollama validation before any release candidate if local Ollama state can be safely mutated.
+3. Complete the Linux and Windows first-run checklist on native hosts.
+4. Keep repository-hygiene checks active for future artefacts and generated-file drift.
+5. Keep `STATUS.md`, release notes, and generated API docs aligned with future source/config changes.
 
 ## Longer-Term Steps
 
@@ -258,4 +267,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-09 20:46
+Last updated: 2026-05-09 23:45
