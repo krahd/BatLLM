@@ -185,26 +185,21 @@
       width: 100%;
       margin: 0 auto;
       padding: 92px 28px 118px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 60px;
+      align-items: center;
     }
 
     .hero-copy {
       max-width: 680px;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-      padding: 8px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.04);
-      color: rgba(243, 246, 248, 0.82);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    .hero-logo img {
+      width: 300px;
+      height: 300px;
+      object-fit: contain;
+      opacity: 0.88;
     }
 
     h1 {
@@ -361,7 +356,7 @@
 
     .media-frame {
       border: 1px solid var(--line);
-      border-radius: 24px;
+      border-radius: 0;
       background: rgba(255, 255, 255, 0.04);
       box-shadow: var(--shadow);
       overflow: hidden;
@@ -507,6 +502,13 @@
 
       .hero-inner {
         padding-top: 74px;
+        grid-template-columns: 1fr;
+      }
+
+      .hero-logo img {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto;
       }
 
       .support-panel,
@@ -585,7 +587,6 @@
     <section class="hero" aria-label="BatLLM overview">
       <div class="hero-inner">
         <div class="hero-copy">
-          <span class="eyebrow">Local-first AI play and analysis</span>
           <h1>BatLLM</h1>
           <p>
             A local AI-mediated battle game for studying prompts, model behaviour, strategy,
@@ -595,6 +596,9 @@
             <a class="button primary" href="https://github.com/krahd/BatLLM/releases">Download Releases</a>
             <a class="button secondary" href="https://github.com/krahd/BatLLM">View Source</a>
           </div>
+        </div>
+        <div class="hero-logo">
+          <img src="./images/logo-small.png" alt="BatLLM logo">
         </div>
       </div>
     </section>
@@ -690,8 +694,8 @@
           and repeatable analyzer sessions.
         </p>
         <div class="hero-actions">
-          <a class="button ghost" href="./README.md">Read The Overview</a>
-          <a class="button ghost" href="./USER_GUIDE.md">Open The User Guide</a>
+          <a class="button ghost" href="https://github.com/krahd/BatLLM/blob/main/docs/README.md">Read The Overview</a>
+          <a class="button ghost" href="https://github.com/krahd/BatLLM/blob/main/docs/USER_GUIDE.md">Open The User Guide</a>
         </div>
       </div>
     </section>
@@ -703,19 +707,19 @@
         keeps the research framing, setup notes, tests, packaging details, and release criteria together.
       </p>
       <div class="links-grid">
-        <a class="link-card" href="./README.md">
+        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/README.md">
           <strong>README</strong>
           <p>Project overview, setup, compatibility, Homebrew notes, and troubleshooting.</p>
         </a>
-        <a class="link-card" href="./USER_GUIDE.md">
+        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/USER_GUIDE.md">
           <strong>User Guide</strong>
           <p>Rules, match flow, settings, Ollama screens, analyzer workflow, and saved sessions.</p>
         </a>
-        <a class="link-card" href="./CONTRIBUTING.md">
+        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/CONTRIBUTING.md">
           <strong>Contributing</strong>
           <p>Developer setup, architecture, tests, release workflow, and documentation process.</p>
         </a>
-        <a class="link-card" href="./CREDITS.md">
+        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/CREDITS.md">
           <strong>Credits</strong>
           <p>Project authorship, grant support, institutional context, and acknowledgements.</p>
         </a>
