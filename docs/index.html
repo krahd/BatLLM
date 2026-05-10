@@ -185,10 +185,6 @@
       width: 100%;
       margin: 0 auto;
       padding: 92px 28px 118px;
-      display: grid;
-      grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.88fr);
-      gap: 36px;
-      align-items: center;
     }
 
     .hero-copy {
@@ -234,52 +230,6 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-    }
-
-    .hero-note {
-      margin-top: 18px;
-      color: rgba(155, 173, 187, 0.92);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .hero-note a {
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .hero-card {
-      position: relative;
-      padding: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-      box-shadow: var(--hero-shadow);
-      backdrop-filter: blur(12px);
-    }
-
-    .hero-card::before {
-      content: "Live local gameplay";
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      z-index: 2;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(7, 16, 24, 0.72);
-      color: var(--ink);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .hero-card img {
-      width: 100%;
-      min-height: 100%;
-      border-radius: 18px;
-      object-fit: cover;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
     }
 
     .section {
@@ -336,7 +286,6 @@
 
     .support-copy a {
       color: var(--blue);
-      font-weight: 800;
     }
 
     .support-kicker {
@@ -532,7 +481,6 @@
 
     .footer-inner a {
       color: #ffffff;
-      font-weight: 800;
     }
 
     @media (max-width: 920px) {
@@ -559,7 +507,6 @@
 
       .hero-inner {
         padding-top: 74px;
-        grid-template-columns: 1fr;
       }
 
       .support-panel,
@@ -606,11 +553,6 @@
         font-size: 31px;
       }
 
-      .hero-card {
-        padding: 12px;
-        border-radius: 20px;
-      }
-
       .facts,
       .links-grid {
         grid-template-columns: 1fr;
@@ -653,15 +595,7 @@
             <a class="button primary" href="https://github.com/krahd/BatLLM/releases">Download Releases</a>
             <a class="button secondary" href="https://github.com/krahd/BatLLM">View Source</a>
           </div>
-          <p class="hero-note">
-            Initiated by
-            <a href="https://laurenzo.net/">Tomas Laurenzo</a>
-            as a research and teaching project about how language models actually behave under pressure.
-          </p>
         </div>
-        <figure class="hero-card">
-          <img src="./screenshots/quick_demo.gif" alt="Animated BatLLM gameplay demonstration">
-        </figure>
       </div>
     </section>
 
@@ -747,10 +681,7 @@
       </div>
     </section>
 
-    <section id="local-models" class="section feature-row reverse" aria-labelledby="local-models-title">
-      <figure class="media-frame">
-        <img src="./screenshots/quick_demo.gif" alt="Animated BatLLM gameplay demonstration from the desktop app">
-      </figure>
+    <section id="local-models" class="section" aria-labelledby="local-models-title">
       <div>
         <h2 id="local-models-title">Local model workflows stay visible</h2>
         <p class="section-lead">
