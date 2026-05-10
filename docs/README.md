@@ -70,7 +70,7 @@ BatLLM is now maintained for:
 
 ### System Requirements
 
-1. Python 3.10 or newer. Python 3.11 or 3.12 is recommended.
+1. Python 3.10, 3.11, or 3.12. Python 3.12 is recommended.
 2. A local Ollama installation if you want to run BatLLM with the default workflow.
 3. Hardware capable of running the local model you choose.
 
@@ -91,8 +91,8 @@ If the CLI is missing, the app can offer to install Ollama from the Ollama scree
 
 | Topic | Current expectation | Notes |
 | --- | --- | --- |
-| Python | `3.10+` | `3.11` or `3.12` is recommended for normal development and usage. |
-| BatLLM | `0.3.3` | Matches the current repository `VERSION` file and release line. |
+| Python | `>=3.10,<3.13` | `3.12` is recommended for normal development and usage. |
+| BatLLM | `0.3.6` | Matches the current repository `VERSION` file and release line. |
 | Ollama workflow | local Ollama install with the CLI available | The recommended path is to manage install, start, stop, and model selection through `Ollama Config`. BatLLM can prompt to install/start Ollama, restore `llm.last_served_model`, and use the configured `llm.warmup_timeout` during service startup. |
 
 ## Quick Start

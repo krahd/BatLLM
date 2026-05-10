@@ -5,6 +5,8 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 from typing import TypeVar
+from urllib.error import URLError
+from urllib.request import urlopen
 
 import pytest
 import yaml
@@ -69,12 +71,24 @@ def _summarize_once(llm: dict, prompt: str) -> str:
     )
 
 
+def _version_endpoint_responds(llm: dict) -> bool:
+    url = f"{str(llm['url']).rstrip('/')}:{int(llm['port'])}/api/version"
+    try:
+        with urlopen(url, timeout=5.0) as response:
+            return 200 <= int(response.status) < 300
+    except (OSError, URLError, TimeoutError):
+        return False
+
+
 def test_ollama_health_endpoint_responds() -> None:
     state = modelito_ollama_service.inspect_service_state(str(CONFIG_PATH))
 
-    assert state.get("running") is True
-    # Mock-only CI runs can report running=True with installed=False and no version.
-    assert state.get("version") or state.get("installed") is False
+    if state.get("running") is True:
+        # Mock-only CI runs can report running=True with installed=False and no version.
+        assert state.get("version") or state.get("installed") is False
+        return
+
+    assert _version_endpoint_responds(_load_llm_config())
 
 
 def test_ollama_chat_returns_non_empty_content() -> None:

@@ -2,6 +2,7 @@ data:
   saved_sessions_folder: saved_sessions
 game:
   bot_diameter: 0.1
+  bot_step_length: 0.02
   bullet_damage: 5
   bullet_diameter: 0.02
   bullet_step_length: 0.01
@@ -10,22 +11,37 @@ game:
   prompt_augmentation: true
   shield_initial_state: true
   shield_size: 40
-  step_length: 0.02
   total_rounds: 2
   turns_per_round: 2
 llm:
   debug_requests: false
-  model: llama3.2:latest
+  last_served_model: ''
+  max_tokens: null
+  model: phi3:14b
+  model_timeouts: {}
   num_ctx: 4096
+  num_predict: null
+  num_thread: null
   path: /api/chat
   port: 11434
-  system_instructions_augmented_independent: src/headers/system_instructions/augmented_independent_1.txt
-  system_instructions_augmented_shared: src/headers/system_instructions/augmented_shared_1.txt
+  seed: null
+  stop: null
+  system_instructions_augmented_independent: src/assets/system_instructions/augmented_independent_1.txt
+  system_instructions_augmented_shared: src/assets/system_instructions/augmented_shared_1.txt
   system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
   system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
+  temperature: null
+  timeout: null
+  top_k: null
+  top_p: null
   url: http://localhost
+  warmup_timeout: 30.0
 ui:
+  auto_start_ollama: false
+  confirm_on_exit: true
   font_size: 16
   frame_rate: 60
   primary_color: '#0b0b0b'
+  prompt_save_on_exit: false
+  stop_ollama_on_exit: false
   title: BatLLM

@@ -1,7 +1,6 @@
 """Cross-platform test runner for BatLLM."""
 
 from __future__ import annotations
-from util.compat import require_supported_python
 
 import argparse
 import os
@@ -17,6 +16,9 @@ VENV_PYTHON = (
 
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+
+
+from util.compat import require_supported_python  # noqa: E402
 
 
 def build_parser() -> argparse.ArgumentParser:

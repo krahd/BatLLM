@@ -19,9 +19,6 @@ from util.version import current_app_version
 from view.analyzer_load_screen import AnalyzerLoadScreen
 from view.analyzer_review_screen import AnalyzerReviewScreen
 
-
-MIN_PYTHON = (3, 10)
-
 register_kivy_resource_paths()
 
 Builder.load_file(str(view_path("analyzer_load_screen.kv")))

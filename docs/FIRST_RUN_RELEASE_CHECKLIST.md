@@ -54,7 +54,7 @@ Use this checklist before each release candidate.
 
 - checklist completed by maintainer: in progress (Copilot-assisted local run)
 - date: 2026-05-09
-- release candidate tag: v0.3.5-rc1
+- release candidate tag: v0.3.6-rc1
 
 ## Current Execution Record (2026-05-08)
 
