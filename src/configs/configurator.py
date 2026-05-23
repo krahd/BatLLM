@@ -54,7 +54,7 @@ def safe_float(v: str) -> Optional[float]:
         return None
     try:
         return float(v)
-    except:
+    except (ValueError, TypeError):
         return None
 
 def safe_int(v: str) -> Optional[int]:
@@ -63,7 +63,7 @@ def safe_int(v: str) -> Optional[int]:
         return None
     try:
         return int(v)
-    except:
+    except (ValueError, TypeError):
         return None
 
 def safe_any(v: str) -> Optional[Any]:
@@ -72,7 +72,7 @@ def safe_any(v: str) -> Optional[Any]:
         return None
     try:
         return json.loads(v)
-    except:
+    except (ValueError, TypeError):
         return v
 
 SNAPSHOT_HTML_TMPL = (
@@ -235,13 +235,13 @@ class OtherSettingsPanel(ScrollView):
                 else:
                     try:
                         val = json.loads(raw)
-                    except:
+                    except (ValueError, TypeError):
                         if re.fullmatch(r'-?\d+', raw):
                             val = int(raw)
                         else:
                             try:
                                 val = float(raw)
-                            except:
+                            except ValueError:
                                 val = raw
                 sec_dict[key] = val
                 cfg[sec] = sec_dict
@@ -549,7 +549,7 @@ class ConsolePanel(BoxLayout):
         self._stop_flag = True
         try:
             self.app_ref._stop_models(None)
-        except:
+        except Exception:
             pass
     def generate(self):
         if self._gen_thread and self._gen_thread.is_alive():

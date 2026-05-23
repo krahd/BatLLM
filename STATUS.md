@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-10 17:21
+Last updated: 2026-05-23
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -62,6 +62,19 @@ python run_tests.py full
 - `PYTHONPATH=src`: needed when running modules directly without the root launchers.
 - `KIVY_WINDOW=mock`, `KIVY_NO_ARGS=1`, `KIVY_NO_CONSOLELOG=1`: useful for headless CI/test runs.
 - `BATLLM_RUN_OLLAMA_SMOKE=1`: enables gated Ollama smoke tests.
+
+## Bug Fix Audit — 2026-05-23
+
+A repository-wide bug audit was performed on 2026-05-23, reading every Python source file, CI configuration, and tooling script. Six confirmed bugs were found and fixed; 148 tests pass post-fix.
+
+### Fixes Applied
+
+- **`src/util/utils.py`** — `markup()`: removed inverted `else: font_size = 18` branch that silently overrode every valid caller-supplied `font_size` with a hardcoded value.
+- **`src/configs/app_config.py`** — `AppConfig.set()`: moved the section-creation guard outside the `isinstance` check so standard-type values (`str`/`int`/`float`/`bool`) no longer raise `KeyError` when the section does not yet exist.
+- **`src/game/ollama_connector.py`** — `load_options()`: removed dead-code line `self.stop = _maybe_int(config.get("llm", "stop"))` that was immediately overwritten by the correct assignment two lines later (and incorrectly applied `_maybe_int` to a value that should be a list of stop strings).
+- **`src/configs/configurator.py`** — Narrowed all six bare `except:` clauses to `except (ValueError, TypeError):`, `except ValueError:`, or `except Exception:` as appropriate; bare `except:` clauses swallow `SystemExit` and `KeyboardInterrupt`.
+- **`.github/workflows/multiplatform.yml`** — Added `run_game_analyzer.py` and `validate_packaging_smoke.py` to the CI `compileall` step so syntax errors in those launchers are caught by CI.
+- **`.pylintrc`** — Changed `py-version=3.13` to `py-version=3.12` to match the supported range `>=3.10,<3.13`.
 
 ## Thorough Audit Snapshot
 
@@ -186,7 +199,12 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 ## Tests And Verification Status
 
-### Latest Commands Run For This Audit
+### Latest Commands Run For This Audit (2026-05-23 Bug Fix Audit)
+
+- Repository-wide source read: all Python files in `src/`, root launchers, `tools/`, `scripts/`, CI workflows, `requirements.txt`, `pytest.ini`, `.pylintrc`, and packaging files read and cross-referenced by three parallel agents.
+- `python -m pytest -q src/tests --ignore=src/tests/test_homebrew_packaging.py` -> `148 passed, 2 skipped`; run after all six fixes were applied.
+
+### Latest Commands Run For Previous Audit (2026-05-09)
 
 - `git status --short` -> passed; confirmed the worktree was clean before edits.
 - Repository audit commands using `rg`, `git ls-files`, `find`, `sed`, and `wc` -> passed; checked tracked inventory, maintained docs, source modules, config files, TODO markers, stale version/path references, ignored local artefacts, generated docs, and test inventory.
@@ -275,4 +293,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-10 17:21
+Last updated: 2026-05-23

@@ -126,9 +126,8 @@ class AppConfig:
         If the section does not exist, it creates it.
         """
 
-        if not isinstance(value, (str, int, float, bool)):
-            if section not in self._config:
-                self._config[section] = {}
+        if section not in self._config:
+            self._config[section] = {}
 
         self._config[section][key] = value
 
