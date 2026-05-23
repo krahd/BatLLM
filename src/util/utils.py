@@ -332,8 +332,6 @@ def markup(text: str, font_size: Optional[int] = None, color="#000000", bold=Fal
 
     if font_size <= 0 or not isinstance(font_size, int):
         font_size = config.get("ui", "font_size")
-    else:
-        font_size = 18
 
     if not color.startswith("#") or len(color) != 7:
         color = "#000000"  # default to black if invalid

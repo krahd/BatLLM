@@ -284,7 +284,6 @@ class OllamaConnector:
 
         self.num_thread = _maybe_int(config.get("llm", "num_thread"))
         self.seed = _maybe_int(config.get("llm", "seed"))
-        self.stop = _maybe_int(config.get("llm", "stop"))
 
         self.num_ctx = _maybe_int(config.get("llm", "num_ctx"))
         self.num_predict = _maybe_int(config.get("llm", "num_predict"))
