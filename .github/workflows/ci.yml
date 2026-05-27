@@ -27,15 +27,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
+      - name: Create venv
+        run: |
+          python -m venv .venv_BatLLM
       - name: Install dependencies
         run: |
+          . .venv_BatLLM/bin/activate
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install pytest pylint
       - name: Compile sources
-        run: python -m compileall .
+        run: |
+          . .venv_BatLLM/bin/activate
+          python -m compileall .
       - name: Run tests
-        run: python run_tests.py
+        run: |
+          . .venv_BatLLM/bin/activate
+          python run_tests.py
       - name: Run pylint
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' }}
-        run: pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
+        run: |
+          . .venv_BatLLM/bin/activate
+          pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
