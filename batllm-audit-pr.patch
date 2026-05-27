@@ -1,0 +1,311 @@
+diff --git a/.github/dependabot.yml b/.github/dependabot.yml
+new file mode 100644
+index 0000000..0000000
+--- a/.github/dependabot.yml
++++ b/.github/dependabot.yml
+@@ -0,0 +1,25 @@
++version: 2
++updates:
++  - package-ecosystem: "pip"
++    directory: "/"
++    schedule:
++      interval: "weekly"
++    open-pull-requests-limit: 5
++    labels:
++      - "dependencies"
++      - "python"
++    commit-message:
++      prefix: "deps"
++      include: "scope"
++
++  - package-ecosystem: "github-actions"
++    directory: "/"
++    schedule:
++      interval: "weekly"
++    open-pull-requests-limit: 5
++    labels:
++      - "dependencies"
++      - "github-actions"
++    commit-message:
++      prefix: "ci"
++      include: "scope"
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+new file mode 100644
+index 0000000..0000000
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -0,0 +1,41 @@
++name: CI
++
++on:
++  pull_request:
++    branches: [main]
++  push:
++    branches: [main]
++
++permissions:
++  contents: read
++
++jobs:
++  test:
++    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
++    runs-on: ${{ matrix.os }}
++    strategy:
++      fail-fast: false
++      matrix:
++        os: [ubuntu-latest, macos-latest, windows-latest]
++        python-version: ["3.10", "3.11", "3.12"]
++
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++      - name: Set up Python
++        uses: actions/setup-python@v5
++        with:
++          python-version: ${{ matrix.python-version }}
++          cache: "pip"
++      - name: Install dependencies
++        run: |
++          python -m pip install --upgrade pip
++          python -m pip install -r requirements.txt
++          python -m pip install pytest pylint
++      - name: Compile sources
++        run: python -m compileall .
++      - name: Run tests
++        run: python run_tests.py
++      - name: Run pylint
++        if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' }}
++        run: pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
+diff --git a/.github/workflows/dependency-review.yml b/.github/workflows/dependency-review.yml
+new file mode 100644
+index 0000000..0000000
+--- a/.github/workflows/dependency-review.yml
++++ b/.github/workflows/dependency-review.yml
+@@ -0,0 +1,20 @@
++name: Dependency review
++
++on:
++  pull_request:
++    branches: [main]
++
++permissions:
++  contents: read
++  pull-requests: read
++
++jobs:
++  dependency-review:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++      - name: Review dependency changes
++        uses: actions/dependency-review-action@v4
++        with:
++          fail-on-severity: high
+diff --git a/.github/workflows/pip-audit.yml b/.github/workflows/pip-audit.yml
+new file mode 100644
+index 0000000..0000000
+--- a/.github/workflows/pip-audit.yml
++++ b/.github/workflows/pip-audit.yml
+@@ -0,0 +1,28 @@
++name: Python dependency audit
++
++on:
++  pull_request:
++    branches: [main]
++  push:
++    branches: [main]
++  schedule:
++    - cron: "17 4 * * 1"
++
++permissions:
++  contents: read
++
++jobs:
++  pip-audit:
++    runs-on: ubuntu-latest
++    steps:
++      - name: Checkout
++        uses: actions/checkout@v4
++      - name: Set up Python
++        uses: actions/setup-python@v5
++        with:
++          python-version: "3.12"
++          cache: "pip"
++      - name: Audit requirements
++        uses: pypa/gh-action-pip-audit@v1.1.0
++        with:
++          inputs: requirements.txt
+diff --git a/PR_BODY.md b/PR_BODY.md
+new file mode 100644
+index 0000000..0000000
+--- a/PR_BODY.md
++++ b/PR_BODY.md
+@@ -0,0 +1,38 @@
++## Summary
++
++This PR implements the confirmed high-confidence improvements from the BatLLM audit:
++
++- adds a repository security policy;
++- adds Dependabot for Python and GitHub Actions dependencies;
++- adds PR-time dependency review;
++- adds scheduled and PR-time Python dependency auditing with `pip-audit`;
++- adds a cross-platform Python CI matrix for Linux, macOS, and Windows;
++- documents the single runtime-state invariant: installed application files are read-only and mutable state belongs under `BATLLM_HOME` or the platform app-data equivalent;
++- adds a maintainer audit checklist for launchers, configuration, sessions, Ollama lifecycle, and release checks.
++
++## Rationale
++
++The audit found that BatLLM has several operational surfaces: source launchers, analyzer launchers, Homebrew packaging, release bundles, mutable configuration, saved sessions, and local Ollama orchestration. This makes repository hygiene and state-location consistency critical.
++
++This PR is deliberately additive. It avoids speculative refactors where source-level verification is required, but it establishes the CI/security/doc baseline needed before deeper changes such as entry-point consolidation, `pyproject.toml` migration, and state-path refactoring.
++
++## Verification
++
++Expected checks:
++
++```bash
++python -m pip install --upgrade pip
++python -m pip install -r requirements.txt
++python run_tests.py
++python -m compileall .
++pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
++pip-audit -r requirements.txt
++```
++
++## Follow-up work
++
++- Convert runtime configuration writes to use `BATLLM_HOME` everywhere.
++- Add migration logic for repository-relative historical config.
++- Collapse launchers onto canonical installed entry points.
++- Add `pyproject.toml` after confirming package/module names under `src/`.
++- Add tests for path handling, missing Ollama, non-responsive Ollama, subprocess timeouts, and session migration.
+diff --git a/PR_TITLE.txt b/PR_TITLE.txt
+new file mode 100644
+index 0000000..0000000
+--- a/PR_TITLE.txt
++++ b/PR_TITLE.txt
+@@ -0,0 +1 @@
++Harden CI, dependency security, and runtime state documentation
+diff --git a/SECURITY.md b/SECURITY.md
+new file mode 100644
+index 0000000..0000000
+--- a/SECURITY.md
++++ b/SECURITY.md
+@@ -0,0 +1,22 @@
++# Security Policy
++
++## Supported versions
++
++Security fixes are provided for the current `main` branch and the most recent tagged release.
++
++## Reporting a vulnerability
++
++Report suspected vulnerabilities privately. Do not open a public issue containing exploit details, secrets, local paths, or reproduction data that may expose a user system.
++
++Include:
++
++- affected BatLLM version or commit;
++- operating system and Python version;
++- installation method;
++- whether Ollama was installed system-wide, through Homebrew, or manually;
++- minimal reproduction steps;
++- relevant logs with secrets, local usernames, and paths redacted.
++
++## Security-relevant areas
++
++BatLLM interacts with a local Ollama service, reads and writes local configuration, stores sessions, and invokes launch scripts. Reports involving path traversal, unsafe subprocess use, unexpected writes outside the configured application directory, dependency compromise, or unintended disclosure of local files should be treated as security relevant.
+diff --git a/docs/MAINTAINER_AUDIT_CHECKLIST.md b/docs/MAINTAINER_AUDIT_CHECKLIST.md
+new file mode 100644
+index 0000000..0000000
+--- a/docs/MAINTAINER_AUDIT_CHECKLIST.md
++++ b/docs/MAINTAINER_AUDIT_CHECKLIST.md
+@@ -0,0 +1,28 @@
++# Maintainer audit checklist
++
++Use this checklist before release or after changing launch, configuration, packaging, or Ollama lifecycle code.
++
++## Functional checks
++
++- `python run_tests.py` passes on Python 3.10, 3.11, and 3.12.
++- Application launch works from source checkout.
++- Analyzer launch works from source checkout.
++- Homebrew launcher and release-bundle launcher call the same canonical application entry path.
++- Changing model selection updates only the user state directory.
++- Saved sessions are written under the user state directory.
++- Legacy session files either migrate deterministically or fail with a clear compatibility message.
++
++## Security and dependency checks
++
++- `pip-audit -r requirements.txt` passes or accepted findings are documented.
++- Dependency Review passes on pull requests that change dependencies.
++- Dependabot pull requests are reviewed and merged or explicitly rejected.
++- No launcher uses untrusted shell interpolation.
++- Subprocess calls use explicit argument lists, bounded timeouts, and clear error propagation.
++
++## Platform checks
++
++- Linux, macOS, and Windows CI pass.
++- `BATLLM_HOME` works on all supported platforms.
++- Paths with spaces and non-ASCII characters are tested.
++- Missing Ollama, stopped Ollama, and non-responsive Ollama produce actionable errors.
+diff --git a/docs/STATE_AND_INSTALLATION.md b/docs/STATE_AND_INSTALLATION.md
+new file mode 100644
+index 0000000..0000000
+--- a/docs/STATE_AND_INSTALLATION.md
++++ b/docs/STATE_AND_INSTALLATION.md
+@@ -0,0 +1,32 @@
++# Installation channels and mutable state
++
++BatLLM should use one state model across all installation channels.
++
++## Invariant
++
++Installed application files are read-only at runtime. User changes must not mutate the source tree, package installation directory, Homebrew cellar, application bundle, or release-bundle program directory.
++
++Runtime state belongs in a per-user application directory. `BATLLM_HOME` overrides the default location and is the canonical mechanism for tests, portable bundles, and package-manager integrations.
++
++## State categories
++
++| Category | Mutable | Location |
++|---|---:|---|
++| Packaged defaults | No | repository/package data |
++| Effective configuration | Yes | `$BATLLM_HOME/config.yaml` or platform app-data equivalent |
++| Saved sessions | Yes | `$BATLLM_HOME/sessions/` |
++| Logs | Yes | `$BATLLM_HOME/logs/` |
++| Cache/temp files | Yes | `$BATLLM_HOME/cache/` |
++
++## Required behaviour
++
++- On first run, create the user state directory if it does not exist.
++- Copy packaged default configuration into the user state directory before applying user edits.
++- Treat repository-relative `src/configs/config.yaml` as a read-only default, not as runtime state.
++- Prefer atomic writes for configuration and saved sessions.
++- Do not write to the Homebrew cellar or any other package-manager-controlled directory.
++- Tests should set `BATLLM_HOME` to a temporary directory.
++
++## Migration rule
++
++If an older install has user-edited configuration in a repository-relative path, migrate it once into the user state directory and leave the original file untouched after migration.
+diff --git a/scripts/apply_audit_pr.sh b/scripts/apply_audit_pr.sh
+new file mode 100644
+index 0000000..0000000
+--- a/scripts/apply_audit_pr.sh
++++ b/scripts/apply_audit_pr.sh
+@@ -0,0 +1,16 @@
++#!/usr/bin/env bash
++set -euo pipefail
++
++if [ ! -d .git ]; then
++  echo "Run this from the BatLLM repository root." >&2
++  exit 1
++fi
++
++git checkout -b chore/audit-ci-security-state-docs
++cp -R .github docs SECURITY.md PR_TITLE.txt PR_BODY.md .
++git add .
++git commit -m "chore: add audit-driven CI security and state documentation"
++
++echo "Branch created: chore/audit-ci-security-state-docs"
++echo "Open the PR with:"
++echo "gh pr create --title \"$(cat PR_TITLE.txt)\" --body-file PR_BODY.md"
