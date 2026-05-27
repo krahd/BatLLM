@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-23
+Last updated: 2026-05-27
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -12,7 +12,7 @@ The project should remain practical, critical, and educational. Destructive or e
 
 - Python: `>=3.10` and `<3.13` enforced by the launcher compatibility helper.
 - Main UI framework: Kivy `2.3.1` plus KivyMD `1.2.0`.
-- LLM/runtime integration: Ollama through `modelito==1.4.0` and `ollama==0.5.3`.
+- LLM/runtime integration: Ollama through `modelito==1.4.0` and `ollama>=0.5.11`.
 - Default shipped model: `smollm2` with first-run `last_served_model` intentionally blank.
 - Repository version: `0.3.6`.
 
@@ -46,6 +46,7 @@ python run_batllm.py
 python run_game_analyzer.py
 ```
 
+
 ### Test Runner
 
 ```bash
@@ -55,6 +56,17 @@ python run_tests.py full
 ```
 
 `run_tests.py full` requires `.venv_BatLLM` and may start/stop a real local Ollama service. Use it only when local Ollama state is safe to exercise.
+
+## 2026-05-27: CI and Dependency Security Update
+
+- Updated `requirements.txt` to require:
+	- `ollama>=0.5.11` (fixes PYSEC-2025-145)
+	- `requests>=2.33.0` (fixes CVE-2026-25645)
+	- `pytest>=9.0.3` (fixes CVE-2025-71176)
+- Updated `.github/workflows/ci.yml` to create `.venv_BatLLM` before installing dependencies and running tests, ensuring the correct Python interpreter is used.
+- All other dependencies remain pinned as before.
+- Dependency Review workflow requires enabling the GitHub Dependency Graph in repository settings for full support.
+- All other project state, architecture, and documentation remain as previously described.
 
 ### Useful Environment Variables
 
@@ -293,4 +305,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-23
+Last updated: 2026-05-27
