@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-27
+Last updated: 2026-05-29 01:52
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -57,14 +57,17 @@ python run_tests.py full
 
 `run_tests.py full` requires `.venv_BatLLM` and may start/stop a real local Ollama service. Use it only when local Ollama state is safe to exercise.
 
-## 2026-05-27: CI and Dependency Security Update
+## 2026-05-29: CI, Security, And Documentation Merge
 
-- Updated `requirements.txt` to require:
+- Fast-forwarded the audit-driven branch into `main`; the repository now includes the CI, dependency-security, and documentation artefacts listed below.
+- Updated `requirements.txt` and `packaging/homebrew/requirements.txt` to require the audited minimum versions:
 	- `ollama>=0.5.11` (fixes PYSEC-2025-145)
 	- `requests>=2.33.0` (fixes CVE-2026-25645)
 	- `pytest>=9.0.3` (fixes CVE-2025-71176)
-- Updated `.github/workflows/ci.yml` to create `.venv_BatLLM` before installing dependencies and running tests, ensuring the correct Python interpreter is used.
-- All other dependencies remain pinned as before.
+- Added `.github/dependabot.yml`, `.github/workflows/dependency-review.yml`, and `.github/workflows/pip-audit.yml`; `.github/workflows/ci.yml` now creates `.venv_BatLLM` before installing dependencies and running tests.
+- Added repository and docs-site security guidance in `SECURITY.md` and `docs/SECURITY.md`.
+- Added `docs/STATE_AND_INSTALLATION.md` and `docs/MAINTAINER_AUDIT_CHECKLIST.md` for audit support and maintainer reference.
+- Retained the audit bundle artefacts and helper script at the repository root for traceability: `batllm-audit-pr.patch`, `batllm-audit-pr-overlay.zip`, `batllm-pr-implementation/`, and `scripts/apply_audit_pr.sh`.
 - Dependency Review workflow requires enabling the GitHub Dependency Graph in repository settings for full support.
 - All other project state, architecture, and documentation remain as previously described.
 
@@ -178,10 +181,12 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `VERSION`: active repository version (`0.3.6`).
 - `requirements.txt`: root development/runtime dependency pins.
 - `pytest.ini`: pytest path and discovery configuration.
-- `.github/workflows/`: CI and Homebrew tap publication workflows.
+- `.github/workflows/`: CI, dependency-review, pip-audit, multiplatform, and Homebrew tap publication workflows; `.github/dependabot.yml` tracks dependency updates.
 - `run_batllm.py`: main application launcher.
 - `run_game_analyzer.py`: standalone Game Analyzer launcher.
 - `run_tests.py`: cross-platform core/full test runner.
+- `SECURITY.md` and `docs/SECURITY.md`: repository and docs-site security guidance.
+- `docs/STATE_AND_INSTALLATION.md` and `docs/MAINTAINER_AUDIT_CHECKLIST.md`: audit support and maintainer checklist documents.
 - `src/`: application, game, analyzer, utility, and test source.
 - `src/app.kv` and `src/view/*.kv`: Kivy layout definitions.
 - `src/assets/`: images, prompts, sounds, and system instructions.
@@ -193,6 +198,7 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `src/view/`: Kivy screen classes and UI helpers.
 - `docs/`: maintained user/developer docs, screenshots, diagrams, and generated API docs.
 - `packaging/homebrew/`: Homebrew distribution docs and pinned formula requirements.
+- `batllm-audit-pr.patch`, `batllm-audit-pr-overlay.zip`, `batllm-pr-implementation/`, and `scripts/apply_audit_pr.sh`: audit bundle artefacts and helper script retained for traceability.
 - `tools/ollama_mock_server.py`: local mock server for Ollama integration smoke tests.
 
 ## Documentation State
@@ -203,6 +209,9 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `docs/ROADMAP.md` describes 1.0 local desktop hardening and 2.0 networked-play direction using current `0.3.x` line wording.
 - `docs/RELEASE_CRITERIA_1_0.md` defines CI, reliability, UX, bundle, and documentation gates for a future 1.0 candidate.
 - `docs/CHANGELOG.md` keeps active unreleased notes on the `0.x` hold and draft 1.0 notes.
+- `SECURITY.md` is the repository security policy, and `docs/SECURITY.md` mirrors that guidance for the published docs site.
+- `docs/STATE_AND_INSTALLATION.md` summarises the current installation and repository state used by the audit bundle.
+- `docs/MAINTAINER_AUDIT_CHECKLIST.md` records the maintainer checklist for the audit/security update.
 - `docs/index.html` is the static project showcase served by GitHub Pages from branch `main` and path `/docs`.
 - `docs/.nojekyll` keeps GitHub Pages from applying Jekyll processing to the static documentation tree.
 - `docs/FIRST_RUN_RELEASE_CHECKLIST.md` and `docs/UI_UNIFICATION_PLAN_1_0.md` remain release-preparation references.
@@ -210,6 +219,11 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 - `docs/code/` contains generated Doxygen HTML/LaTeX output and should be treated as generated documentation.
 
 ## Tests And Verification Status
+
+### 2026-05-29 Merge Validation
+
+- No automated tests were rerun for the fast-forward merge to `main`; the branch only added dependency-floor, workflow, and documentation files.
+- The validation record below remains the latest executed test evidence for the repository state.
 
 ### Latest Commands Run For This Audit (2026-05-23 Bug Fix Audit)
 
@@ -305,4 +319,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-27
+Last updated: 2026-05-29 01:52
