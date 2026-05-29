@@ -6,4 +6,4 @@ psutil==7.0.0
 PyYAML==6.0.2
 requests>=2.33.0
 pytest>=9.0.3
-modelito==1.4.0
+modelito==1.4.5
