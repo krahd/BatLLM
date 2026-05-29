@@ -1,9 +1,9 @@
 Kivy==2.3.1
 kivymd==1.2.0
 Kivy-Garden==0.1.5
-ollama==0.5.3
+ollama>=0.5.11
 psutil==7.0.0
 PyYAML==6.0.2
-requests==2.32.4
-pytest==8.3.5
+requests>=2.33.0
+pytest>=9.0.3
 modelito==1.4.0
