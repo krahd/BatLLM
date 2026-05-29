@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-05-29 01:52
+Last updated: 2026-05-29 02:06
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -65,10 +65,11 @@ python run_tests.py full
 	- `requests>=2.33.0` (fixes CVE-2026-25645)
 	- `pytest>=9.0.3` (fixes CVE-2025-71176)
 - Added `.github/dependabot.yml`, `.github/workflows/dependency-review.yml`, and `.github/workflows/pip-audit.yml`; `.github/workflows/ci.yml` now creates `.venv_BatLLM` before installing dependencies and running tests.
+- Added a dependency-graph preflight to `.github/workflows/dependency-review.yml` so the job skips cleanly when GitHub reports zero dependency-graph manifests for this repository.
 - Added repository and docs-site security guidance in `SECURITY.md` and `docs/SECURITY.md`.
 - Added `docs/STATE_AND_INSTALLATION.md` and `docs/MAINTAINER_AUDIT_CHECKLIST.md` for audit support and maintainer reference.
 - Retained the audit bundle artefacts and helper script at the repository root for traceability: `batllm-audit-pr.patch`, `batllm-audit-pr-overlay.zip`, `batllm-pr-implementation/`, and `scripts/apply_audit_pr.sh`.
-- Dependency Review workflow requires enabling the GitHub Dependency Graph in repository settings for full support.
+- GitHub GraphQL currently reports `dependencyGraphManifests.totalCount = 0` for this repository, so the dependency-review job currently skips instead of failing until GitHub exposes dependency-graph manifests.
 - All other project state, architecture, and documentation remain as previously described.
 
 ### Useful Environment Variables
@@ -319,4 +320,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-05-29 01:52
+Last updated: 2026-05-29 02:06

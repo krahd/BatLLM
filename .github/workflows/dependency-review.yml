@@ -12,9 +12,39 @@ jobs:
   dependency-review:
     runs-on: ubuntu-latest
     steps:
+      - name: Check dependency graph availability
+        id: dependency-graph
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repository } = await github.graphql(
+              `
+                query($owner: String!, $name: String!) {
+                  repository(owner: $owner, name: $name) {
+                    dependencyGraphManifests(first: 1) {
+                      totalCount
+                    }
+                  }
+                }
+              `,
+              {
+                owner: context.repo.owner,
+                name: context.repo.repo,
+              },
+            );
+
+            const manifestCount = repository?.dependencyGraphManifests?.totalCount ?? 0;
+            core.setOutput('supported', manifestCount > 0 ? 'true' : 'false');
+            core.setOutput('manifest_count', String(manifestCount));
+
+            if (manifestCount === 0) {
+              core.notice('Dependency graph is unavailable for this repository; skipping dependency review.');
+            }
       - name: Checkout
+        if: steps.dependency-graph.outputs.supported == 'true'
         uses: actions/checkout@v4
       - name: Review dependency changes
+        if: steps.dependency-graph.outputs.supported == 'true'
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
