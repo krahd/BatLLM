@@ -13,11 +13,21 @@ jobs:
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.10", "3.11", "3.12"]
+    env:
+      BATLLM_RUN_OLLAMA_SMOKE: "0"
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+      KIVY_WINDOW: mock
+      PYTHONPATH: src
+      VENV_PYTHON: ${{ runner.os == 'Windows' && './.venv_BatLLM/Scripts/python.exe' || './.venv_BatLLM/bin/python' }}
 
     steps:
       - name: Checkout
@@ -32,20 +42,16 @@ jobs:
           python -m venv .venv_BatLLM
       - name: Install dependencies
         run: |
-          . .venv_BatLLM/bin/activate
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install pytest pylint
+          "$VENV_PYTHON" -m pip install --upgrade pip
+          "$VENV_PYTHON" -m pip install -r requirements.txt
+          "$VENV_PYTHON" -m pip install pytest pylint
       - name: Compile sources
         run: |
-          . .venv_BatLLM/bin/activate
-          python -m compileall .
+          "$VENV_PYTHON" -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py
       - name: Run tests
         run: |
-          . .venv_BatLLM/bin/activate
-          python run_tests.py
+          "$VENV_PYTHON" run_tests.py
       - name: Run pylint
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' }}
         run: |
-          . .venv_BatLLM/bin/activate
-          pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
+          "$VENV_PYTHON" -m pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
