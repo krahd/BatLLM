@@ -42,7 +42,7 @@ jobs:
             }
       - name: Checkout
         if: steps.dependency-graph.outputs.supported == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Review dependency changes
         if: steps.dependency-graph.outputs.supported == 'true'
         uses: actions/dependency-review-action@v4
