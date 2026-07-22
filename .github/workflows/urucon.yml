@@ -173,3 +173,11 @@ jobs:
       - name: Publish validated files
         if: steps.publication.outputs.requested == 'true'
         run: python research/urucon2026/publish_repository_guard.py
+      - name: Upload publication diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: urucon-publication-diagnostics
+          path: research/urucon2026/FINAL_PUBLICATION_ERROR.md
+          if-no-files-found: warn
+          retention-days: 7
