@@ -38,11 +38,27 @@ jobs:
         run: |
           python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments
       - name: Validate schema JSON
-        run: python -m json.tool research/urucon2026/schema/batllm-session-v3.schema.json > /dev/null
+        run: python -m json.tool research/urucon2026/schema/batllm-session-v3.schema.json
       - name: Run complete non-live test suite
         run: python -m pytest -q src/tests
       - name: Generate and verify research corpus
-        run: python research/urucon2026/experiments/run_all.py
+        shell: bash
+        run: |
+          set +e
+          python research/urucon2026/experiments/run_all.py > research-run.log 2>&1
+          code=$?
+          cat research-run.log
+          exit $code
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: urucon-diagnostics-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: |
+            research-run.log
+            research/urucon2026/results
+          if-no-files-found: warn
+          retention-days: 7
 
   research-artifact:
     name: Reproducibility artefact and paper
