@@ -1,3 +1,5 @@
 # Final URUCON audit status
 
-Status: failed. See `FINAL_AUDIT.log` and the corresponding GitHub Actions run. Generated deliverables were not declared final.
+Status: running.
+
+The adversarial hardening, full test suite, experiment regeneration, PDF/DOCX builds, visual-render preflights, and research-artefact packaging are in progress.
