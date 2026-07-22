@@ -1,6 +1,6 @@
 # BatLLM URUCON 2026 research artefact
 
-This directory contains the implementation, evaluation, and manuscript for **From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control**.
+This directory contains the implementation, evaluation, generated corpus, result files, and manuscript for **From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control**.
 
 ## Scope
 
@@ -18,6 +18,13 @@ The graphical application's user-facing export remains schema v2 for compatibili
 - **V4 — operative replay:** the recorded command, pre-state, and frozen rules must derive the recorded post-state and semantic events.
 
 These are verification predicates, not cumulative maturity levels. Availability depends on retained evidence.
+
+## Paper deliverables
+
+- `paper/main.pdf`: authoritative four-page A4 IEEE submission PDF.
+- `paper/main.docx`: editable single-column Word version with British-English proofing metadata.
+- `paper/BatLLM_URUCON_2026_Paper.pdf` and `.docx`: descriptively named copies.
+- `paper/build_docx.py`: reproducible DOCX build and formatting script.
 
 ## Run
 
@@ -52,7 +59,7 @@ The evaluation performs:
 5. repeated in-memory verification timing and canonical raw/gzip size measurement; and
 6. automatic generation of `paper/results.tex` from result summaries.
 
-Generated corpus files, timing results, and the compiled paper are CI artefacts rather than manually curated evidence. The workflow runs source compilation, schema validation, the complete non-live BatLLM tests, and every research experiment on Linux, macOS, and Windows under Python 3.10–3.12. A separate job compiles and preflights the four-page A4 IEEE manuscript.
+Generated corpus files, result summaries, the compiled PDF, and the editable DOCX are committed to this branch and are also regenerated as CI artefacts rather than manually curated evidence. The workflow runs source compilation, schema validation, the complete non-live BatLLM tests, and every research experiment on Linux, macOS, and Windows under Python 3.10–3.12. A separate job compiles and preflights the four-page A4 IEEE manuscript.
 
 ## Files
 
@@ -62,7 +69,14 @@ Generated corpus files, timing results, and the compiled paper are CI artefacts 
 - `experiments/inject_faults.py`: multi-position re-anchored perturbation testing.
 - `experiments/serialization_controls.py`: benign-serialisation false-positive controls.
 - `experiments/measure_overhead.py`: raw/gzip size and repeated in-memory timing.
-- `paper/main.tex`: manuscript source.
+- `paper/main.tex`: authoritative manuscript source in British English.
+- `paper/main.pdf`: submission PDF.
+- `paper/main.docx`: editable Word version.
+- `paper/build_docx.py`: DOCX generation script.
+- `corpus/generated/`: the 60 generated reference traces.
+- `results/`: replay, differential, perturbation, schema, serialisation, and overhead outputs.
+- `artifact/MANIFEST.sha256`: checksums for the packaged research artefact.
+- `artifact/BatLLM_URUCON_2026_Research_Artifact.zip`: packaged generated-artefact snapshot.
 - `CLAIMS.md`: claim-to-evidence ledger.
 - `PAPER_REVIEW.md`: adversarial paper review and revision record.
 - `AUDIT.md`: final implementation and manuscript audit.
