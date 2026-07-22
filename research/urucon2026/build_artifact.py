@@ -33,7 +33,6 @@ CORE_PATHS = [
     ROOT / "LICENSE",
     ROOT / "STATUS.md",
     ROOT / ".github/workflows/urucon.yml",
-    ROOT / ".github/workflows/urucon-publish-artifact.yml",
 ]
 
 
