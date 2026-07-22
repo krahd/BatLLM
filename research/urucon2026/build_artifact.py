@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Create the committed BatLLM URUCON 2026 research-artefact package."""
+"""Create the BatLLM URUCON 2026 research-artefact package."""
 
 from __future__ import annotations
 
 from datetime import datetime
 import hashlib
 from pathlib import Path
-import shutil
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -15,6 +14,9 @@ ARTIFACT = RESEARCH / "artifact"
 PACKAGE = ARTIFACT / "BatLLM_URUCON_2026_Research_Artifact.zip"
 MANIFEST = ARTIFACT / "MANIFEST.sha256"
 PACKAGE_HASH = ARTIFACT / "PACKAGE.sha256"
+
+AUTHORITATIVE_PAPER = RESEARCH / "paper/BatLLM_URUCON_2026_Paper.docx"
+WORD_TEMPLATE = RESEARCH / "paper/conference-template-a4.docx"
 
 CORE_PATHS = [
     RESEARCH,
@@ -34,6 +36,8 @@ CORE_PATHS = [
     ROOT / "STATUS.md",
     ROOT / ".github/workflows/urucon.yml",
 ]
+
+REMOVED_PAPER_SUFFIXES = {".tex", ".bib", ".log", ".pdf"}
 
 
 def sha256(path: Path) -> str:
@@ -61,6 +65,8 @@ def selected_files() -> list[Path]:
                 continue
             if path.suffix in {".aux", ".out"}:
                 continue
+            if path.parent == RESEARCH / "paper" and path.suffix in REMOVED_PAPER_SUFFIXES:
+                continue
             files.add(path)
     return sorted(files, key=lambda path: path.relative_to(ROOT).as_posix())
 
@@ -75,13 +81,9 @@ def zip_timestamp(path: Path) -> tuple[int, int, int, int, int, int]:
 
 def main() -> int:
     ARTIFACT.mkdir(parents=True, exist_ok=True)
-    paper = RESEARCH / "paper"
-    pdf = paper / "main.pdf"
-    docx = paper / "main.docx"
-    if not pdf.exists() or not docx.exists():
-        raise FileNotFoundError("Build paper/main.pdf and paper/main.docx first.")
-    shutil.copy2(pdf, paper / "BatLLM_URUCON_2026_Paper.pdf")
-    shutil.copy2(docx, paper / "BatLLM_URUCON_2026_Paper.docx")
+    for required in (AUTHORITATIVE_PAPER, WORD_TEMPLATE):
+        if not required.exists() or required.stat().st_size == 0:
+            raise FileNotFoundError(f"Required Word file is missing: {required}")
 
     files = selected_files()
     manifest_lines = [
