@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-07-22 17:55 UTC
+Last updated: 2026-07-22 18:30 UTC
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -8,13 +8,13 @@ The project should remain practical, critical, and educational. Destructive or e
 
 ## 2026-07-22: URUCON 2026 Research Artefact
 
-The `urucon` branch and PR #36 add a distinct schema-v3 research execution path for the paper *From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control*. The graphical application continues to export schema v2; the paper's claims concern the explicit headless schema-v3 recorder and verifier.
+BatLLM includes a distinct schema-v3 research execution path for the paper *From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control*. The graphical application continues to export schema v2; the paper's claims concern the explicit headless schema-v3 recorder and verifier.
 
 - New entry points: `run_batllm_research.py` records scripted or local-Ollama traces; `run_batllm_verify.py` validates and replays schema-v3 sessions.
 - New architecture: `src/game/trace_contract.py`, `session_v3.py`, `research_runtime.py`, and `trace_verifier.py` implement privacy-aware invocation evidence, grounding checks, canonical commitments, ordered trace integrity, and operative replay through the pure transition engine.
 - Research package: `research/urucon2026/` contains the JSON Schema, deterministic 60-session/1,080-transition corpus, independent reference semantics, differential and perturbation experiments, claim ledger, adversarial reviews, final paper sources, compiled PDF, editable DOCX, results, checksums, and complete ZIP artefact.
 - Validation: 172 tests passed and 2 live-Ollama tests were skipped; all 60 sessions validated; all 1,080 states and semantic-event sequences replayed equivalently; production and independent reference semantics matched in 5,000 cases; all 1,560 applicable re-anchored perturbations were detected; all 180 benign serialisation variants were accepted.
-- CI: `.github/workflows/urucon.yml` validates Linux, macOS, and Windows under Python 3.10-3.12 and builds/preflights the four-page A4 IEEE paper. URUCON validation run 29895189692 completed successfully.
+- CI: `.github/workflows/urucon.yml` validates relevant changes to the research runtime, schema, experiments, tests, and paper on Linux, macOS, and Windows under Python 3.10-3.12, and builds/preflights the four-page A4 IEEE paper. The final pre-merge validation completed successfully.
 - Boundaries: the work does not claim deterministic regeneration of model output, provider-wire capture, generic agent replay, pedagogical efficacy, or cryptographic authorship. SHA-256 values are consistency commitments rather than signatures.
 
 
