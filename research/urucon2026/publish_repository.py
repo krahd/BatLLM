@@ -58,6 +58,52 @@ def restore_validated_snapshot() -> None:
             raise FileNotFoundError(required)
 
 
+def harden_build_sources() -> None:
+    """Make document and package rebuilding self-contained on supported systems."""
+
+    builder = RESEARCH / "paper/build_docx.py"
+    text = builder.read_text(encoding="utf-8")
+    packaged_candidate = (
+        '        Path("/usr/share/citation-style-language/styles/ieee.csl"),\n'
+    )
+    pandoc_candidate = '        Path("/usr/share/pandoc/data/csl/ieee.csl"),\n'
+    if packaged_candidate not in text:
+        if pandoc_candidate not in text:
+            raise RuntimeError("Could not locate DOCX CSL candidate list")
+        text = text.replace(
+            pandoc_candidate,
+            packaged_candidate + pandoc_candidate,
+            1,
+        )
+    builder.write_text(text, encoding="utf-8")
+
+    paper_readme = RESEARCH / "paper/README.md"
+    text = paper_readme.read_text(encoding="utf-8")
+    note = (
+        "\n## DOCX build dependencies\n\n"
+        "The editable document requires `pandoc`, `python-docx`, and an IEEE CSL "
+        "style. On Ubuntu 24.04, install `citation-style-language-styles`; the "
+        "builder also recognises standard Pandoc and TeX Live CSL locations.\n"
+    )
+    if "## DOCX build dependencies" not in text:
+        text = text.rstrip() + "\n" + note
+    paper_readme.write_text(text, encoding="utf-8")
+
+    packager = RESEARCH / "build_artifact.py"
+    text = packager.read_text(encoding="utf-8")
+    anchor = '    ROOT / "requirements.txt",\n'
+    additions = (
+        '    ROOT / "CITATION.cff",\n'
+        '    ROOT / "LICENSE",\n'
+        '    ROOT / "STATUS.md",\n'
+    )
+    if 'ROOT / "CITATION.cff"' not in text:
+        if anchor not in text:
+            raise RuntimeError("Could not locate research-package core path list")
+        text = text.replace(anchor, anchor + additions, 1)
+    packager.write_text(text, encoding="utf-8")
+
+
 def build_documents() -> None:
     run(sys.executable, str(RESEARCH / "paper/build_docx.py"))
     paper = RESEARCH / "paper"
@@ -105,7 +151,7 @@ def update_status() -> None:
     lines = text.splitlines()
     for index, line in enumerate(lines):
         if line.startswith("Last updated:"):
-            lines[index] = "Last updated: 2026-07-22 17:30 UTC"
+            lines[index] = "Last updated: 2026-07-22 17:55 UTC"
             break
     text = "\n".join(lines) + "\n"
     heading = "## 2026-07-22: URUCON 2026 Research Artefact"
@@ -187,6 +233,43 @@ def archive_corpus() -> None:
     )
 
 
+def finalise_permanent_workflow() -> None:
+    path = ROOT / ".github/workflows/urucon.yml"
+    text = path.read_text(encoding="utf-8")
+    text = text.replace(
+        "permissions:\n  actions: read\n  contents: write\n",
+        "permissions:\n  contents: read\n",
+        1,
+    )
+    text = text.replace(
+        " research/urucon2026/publish_repository.py"
+        " research/urucon2026/publish_repository_guard.py",
+        "",
+        1,
+    )
+    marker = "\n  publish-repository:\n"
+    if marker in text:
+        text = text.split(marker, 1)[0].rstrip() + "\n"
+    path.write_text(text, encoding="utf-8")
+
+
+def remove_obsolete_files() -> None:
+    for relative in (
+        "research/urucon2026/.final-publish-trigger",
+        "research/urucon2026/.audit-trigger",
+        "research/urucon2026/.publish-trigger",
+        "research/urucon2026/FINAL_PUBLICATION_ERROR.md",
+        "research/urucon2026/publish_repository.py",
+        "research/urucon2026/publish_repository_guard.py",
+        ".github/workflows/urucon-final-audit.yml",
+        ".github/workflows/urucon-publish-artifact.yml",
+        ".github/workflows/urucon-final-publish.yml",
+        ".github/workflows/urucon-repository-publish-pr.yml",
+        "research/urucon2026/apply_audit_fixes.py",
+    ):
+        (ROOT / relative).unlink(missing_ok=True)
+
+
 def build_package() -> None:
     shutil.rmtree(RESEARCH / "artifact", ignore_errors=True)
     run(sys.executable, str(RESEARCH / "build_artifact.py"))
@@ -200,26 +283,12 @@ def build_package() -> None:
             raise RuntimeError("Research package ZIP integrity failure")
 
 
-def remove_obsolete_files() -> None:
-    for relative in (
-        "research/urucon2026/.final-publish-trigger",
-        "research/urucon2026/.audit-trigger",
-        "research/urucon2026/.publish-trigger",
-        ".github/workflows/urucon-final-audit.yml",
-        ".github/workflows/urucon-publish-artifact.yml",
-        ".github/workflows/urucon-final-publish.yml",
-        ".github/workflows/urucon-repository-publish-pr.yml",
-        "research/urucon2026/apply_audit_fixes.py",
-    ):
-        (ROOT / relative).unlink(missing_ok=True)
-
-
 def commit_and_push() -> None:
     run("git", "config", "user.name", "github-actions[bot]")
     run("git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
     run("git", "add", "-A")
     run("git", "add", "-f", "research/urucon2026")
-    run("git", "commit", "-m", "artifacts: publish complete audited URUCON package [skip ci]")
+    run("git", "commit", "-m", "artifacts: finalise clean audited URUCON package [skip ci]")
     run("git", "push", "origin", "HEAD:urucon")
 
 
@@ -229,12 +298,14 @@ def main() -> int:
         return 0
     print(f"Publishing URUCON artefact at {datetime.now(timezone.utc).isoformat()}")
     restore_validated_snapshot()
+    harden_build_sources()
     build_documents()
     update_status()
     write_citation()
     archive_corpus()
-    build_package()
+    finalise_permanent_workflow()
     remove_obsolete_files()
+    build_package()
     commit_and_push()
     return 0
 
