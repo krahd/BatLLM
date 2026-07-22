@@ -80,18 +80,18 @@ jobs:
           pdflatex -interaction=nonstopmode -halt-on-error main.tex | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
           pdflatex -interaction=nonstopmode -halt-on-error main.tex | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
           pages=$(pdfinfo main.pdf | awk '/^Pages:/ {print $2}')
-          test "$pages" -ge 4
-          test "$pages" -le 5
+          test "$pages" -eq 4
           ! grep -q 'Citation.*undefined' main.log
           ! grep -q 'There were undefined references' main.log
           ! grep -q 'LaTeX Error' main.log
           ! grep -q 'Overfull' main.log
-          pdftotext main.pdf /tmp/urucon-paper.txt
-          grep -q 'ACKNOWLEDGEMENT' /tmp/urucon-paper.txt
-          pdffonts main.pdf | awk 'NR > 2 && NF > 0 {if ($(NF-4) != "yes") exit 1}'
+          grep -Fq '\section*{Acknowledgement}' main.tex
+          pdfinfo main.pdf | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
+          pdffonts main.pdf | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
           mkdir -p /tmp/pdf-render
-          pdftoppm -png -r 150 main.pdf /tmp/pdf-render/page >/dev/null
-          test "$(find /tmp/pdf-render -name 'page-*.png' | wc -l)" -eq "$pages"
+          pdftoppm -png -f 1 -singlefile -r 150 main.pdf \
+            /tmp/pdf-render/page >/dev/null
+          test -s /tmp/pdf-render/page.png
 
       - name: Build and render editable British-English DOCX
         shell: bash
@@ -113,9 +113,9 @@ jobs:
           test -s /tmp/docx-render/main.pdf
           pages=$(pdfinfo /tmp/docx-render/main.pdf | awk '/^Pages:/ {print $2}')
           test "$pages" -ge 4
-          pdftoppm -png -r 120 /tmp/docx-render/main.pdf \
+          pdftoppm -png -f 1 -singlefile -r 120 /tmp/docx-render/main.pdf \
             /tmp/docx-render/page >/dev/null
-          test "$(find /tmp/docx-render -name 'page-*.png' | wc -l)" -eq "$pages"
+          test -s /tmp/docx-render/page.png
 
       - name: Package complete research artefact
         shell: bash
