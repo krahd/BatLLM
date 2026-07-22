@@ -41,6 +41,12 @@ The manuscript states this boundary directly and does not use “first”, “no
 - Schema validation, state continuity, round/game final states, grounding, transition replay, and event replay are independent checks.
 - Fault injection recomputes commitments derivable from retained content, preventing a trivial stale-hash evaluation.
 
+### Privacy failure found and corrected
+
+The first complete corpus run exposed a real defect rather than a merely failing assertion. BatLLM's replay engine includes the raw invalid model output in diagnostic event details. The research runtime initially copied those details into the ordinary semantic-event stream. Consequently, redacted and hash-only traces could disclose response text outside the protected response and request records, and replay comparison differed when the verifier received only the normalized `ERR` command.
+
+The event canonicalization boundary now removes diagnostic content keys—including `raw_response`, `llm_response`, `response`, `prompt`, and `content`—before events enter the trace. Raw model text remains solely in privacy-governed invocation evidence. A regression test verifies that semantic events cannot leak it. The correction is important conceptually: event replay verifies domain consequences, not duplicated linguistic evidence.
+
 ### Residual limitations
 
 - The graphical application's legacy v2 export is not upgraded. The v3 path is a headless research runtime sharing the parser and transition engine. The paper states this explicitly.
