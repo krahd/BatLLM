@@ -1,0 +1,21 @@
+{
+  "accepted": 180,
+  "by_variant": {
+    "compact-ascii": {
+      "accepted": 60,
+      "tested": 60
+    },
+    "pretty-unicode": {
+      "accepted": 60,
+      "tested": 60
+    },
+    "reversed-keys": {
+      "accepted": 60,
+      "tested": 60
+    }
+  },
+  "failures": [],
+  "false_rejections": 0,
+  "sessions": 60,
+  "variants": 180
+}

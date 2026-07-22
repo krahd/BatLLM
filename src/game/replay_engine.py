@@ -183,49 +183,90 @@ def clamp_position(x: float, y: float, *, radius: float) -> tuple[float, float]:
     )
 
 
+def _parse_finite_number(fragment: str) -> float | None:
+    """Parse a finite command argument without accepting surrounding whitespace."""
+
+    if not fragment or fragment != fragment.strip():
+        return None
+    try:
+        value = float(fragment)
+    except ValueError:
+        return None
+    return value if math.isfinite(value) else None
+
+
 def parse_model_response(response: Any) -> ParsedCommand:
-    """Parse BatLLM command grammar into a normalized command."""
+    """Parse BatLLM's bounded command grammar into a normalised command."""
+
     raw = str(response or "").strip()
     if not raw:
-        return ParsedCommand(raw_response=raw, normalized_cmd="ERR", kind="invalid", valid=False)
+        return ParsedCommand(
+            raw_response=raw,
+            normalized_cmd="ERR",
+            kind="invalid",
+            valid=False,
+        )
 
     head = raw[0].upper()
     if head == "M":
         if len(raw) == 1:
             return ParsedCommand(raw_response=raw, normalized_cmd="M", kind="move")
-        try:
-            distance = float(raw[1:])
-        except ValueError:
-            return ParsedCommand(raw_response=raw, normalized_cmd="ERR", kind="invalid", valid=False)
-        return ParsedCommand(raw_response=raw, normalized_cmd=f"M{distance}", kind="move", value=distance)
+        distance = _parse_finite_number(raw[1:])
+        if distance is None:
+            return ParsedCommand(
+                raw_response=raw,
+                normalized_cmd="ERR",
+                kind="invalid",
+                valid=False,
+            )
+        return ParsedCommand(
+            raw_response=raw,
+            normalized_cmd=f"M{distance}",
+            kind="move",
+            value=distance,
+        )
 
-    if head == "C":
-        try:
-            angle = float(raw[1:])
-        except ValueError:
-            return ParsedCommand(raw_response=raw, normalized_cmd="ERR", kind="invalid", valid=False)
-        return ParsedCommand(raw_response=raw, normalized_cmd=f"C{angle}", kind="rotate_cw", value=angle)
+    if head in {"C", "A"}:
+        angle = _parse_finite_number(raw[1:])
+        if angle is None:
+            return ParsedCommand(
+                raw_response=raw,
+                normalized_cmd="ERR",
+                kind="invalid",
+                valid=False,
+            )
+        kind = "rotate_cw" if head == "C" else "rotate_ccw"
+        return ParsedCommand(
+            raw_response=raw,
+            normalized_cmd=f"{head}{angle}",
+            kind=kind,
+            value=angle,
+        )
 
-    if head == "A":
-        try:
-            angle = float(raw[1:])
-        except ValueError:
-            return ParsedCommand(raw_response=raw, normalized_cmd="ERR", kind="invalid", valid=False)
-        return ParsedCommand(raw_response=raw, normalized_cmd=f"A{angle}", kind="rotate_ccw", value=angle)
-
-    if head == "B":
+    if head == "B" and len(raw) == 1:
         return ParsedCommand(raw_response=raw, normalized_cmd="B", kind="shoot")
 
     if head == "S":
         if len(raw) == 1:
-            return ParsedCommand(raw_response=raw, normalized_cmd="S", kind="shield_toggle")
-        if raw[1] == "1":
-            return ParsedCommand(raw_response=raw, normalized_cmd="S1", kind="shield_set", value=1.0)
-        if raw[1] == "0":
-            return ParsedCommand(raw_response=raw, normalized_cmd="S0", kind="shield_set", value=0.0)
-        return ParsedCommand(raw_response=raw, normalized_cmd="ERR", kind="invalid", valid=False)
+            return ParsedCommand(
+                raw_response=raw,
+                normalized_cmd="S",
+                kind="shield_toggle",
+            )
+        if len(raw) == 2 and raw[1] in {"0", "1"}:
+            return ParsedCommand(
+                raw_response=raw,
+                normalized_cmd=f"S{raw[1]}",
+                kind="shield_set",
+                value=float(raw[1]),
+            )
 
-    return ParsedCommand(raw_response=raw, normalized_cmd="ERR", kind="invalid", valid=False)
+    return ParsedCommand(
+        raw_response=raw,
+        normalized_cmd="ERR",
+        kind="invalid",
+        valid=False,
+    )
 
 
 def compute_move_target(state: Mapping[str, Any], rules: GameplaySettingsSnapshot, distance: float | None = None) -> tuple[float, float]:
@@ -258,6 +299,8 @@ def _segment_interaction(
     fx = p1[0] - cx
     fy = p1[1] - cy
     a = dx**2 + dy**2
+    if math.isclose(a, 0.0, abs_tol=1e-15):
+        return False, False
     b = 2 * (fx * dx + fy * dy)
     c = fx**2 + fy**2 - radius**2
 

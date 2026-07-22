@@ -1,0 +1,34 @@
+{
+  "by_privacy_mode": {
+    "full": {
+      "mean_gzip_bytes_per_play": 430.68615,
+      "mean_raw_bytes_per_play": 4373.6306,
+      "median_plays_per_second": 571.0145,
+      "median_verification_ms": 31.663784999999997,
+      "sessions": 20
+    },
+    "hashed": {
+      "mean_gzip_bytes_per_play": 357.34175,
+      "mean_raw_bytes_per_play": 2202.8056,
+      "median_plays_per_second": 954.1605,
+      "median_verification_ms": 18.864757,
+      "sessions": 20
+    },
+    "redacted": {
+      "mean_gzip_bytes_per_play": 528.89445,
+      "mean_raw_bytes_per_play": 4741.2028,
+      "median_plays_per_second": 544.414,
+      "median_verification_ms": 33.443963,
+      "sessions": 20
+    }
+  },
+  "overall": {
+    "mean_gzip_bytes_per_play": 438.97411666666665,
+    "mean_raw_bytes_per_play": 3772.546333333333,
+    "median_plays_per_second": 611.21,
+    "median_verification_ms": 29.449863999999998,
+    "sessions": 60
+  },
+  "repetitions_per_session": 7,
+  "timing_scope": "parsed-payload in-memory verification"
+}

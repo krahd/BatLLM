@@ -1,0 +1,4009 @@
+{
+  "application_provenance": {
+    "git_commit": "e9c946d92cb27fbbeef878121ab12af2c8a469fd",
+    "name": "BatLLM",
+    "trace_schema_version": 3,
+    "version": "0.3.6"
+  },
+  "created_at": "2026-01-01T00:00:00+00:00",
+  "games": [
+    {
+      "final_state": {
+        "1": {
+          "current_prompt": "",
+          "health": 30,
+          "id": 1,
+          "last_llm_response": null,
+          "rot": 345.0,
+          "shield": true,
+          "x": 0.29464101615137755,
+          "y": 0.48
+        },
+        "2": {
+          "current_prompt": "",
+          "health": 30,
+          "id": 2,
+          "last_llm_response": null,
+          "rot": 165.0,
+          "shield": false,
+          "x": 0.7017037086855465,
+          "y": 0.48705904774487396
+        }
+      },
+      "game_id": 1,
+      "rounds": [
+        {
+          "ended_at": "2026-01-01T00:00:00+00:00",
+          "final_state": {
+            "1": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 1,
+              "last_llm_response": null,
+              "rot": 345.0,
+              "shield": true,
+              "x": 0.29464101615137755,
+              "y": 0.48
+            },
+            "2": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 2,
+              "last_llm_response": null,
+              "rot": 165.0,
+              "shield": false,
+              "x": 0.7017037086855465,
+              "y": 0.48705904774487396
+            }
+          },
+          "gameplay_settings_snapshot": {
+            "bot_diameter": 0.09,
+            "bot_step_length": 0.04,
+            "bullet_damage": 5,
+            "bullet_diameter": 0.02,
+            "bullet_step_length": 0.01,
+            "initial_health": 30,
+            "shield_initial_state": false,
+            "shield_size": 65.0,
+            "total_rounds": 1,
+            "turns_per_round": 18
+          },
+          "initial_state": {
+            "1": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 1,
+              "last_llm_response": null,
+              "rot": 0.0,
+              "shield": false,
+              "x": 0.21000000000000002,
+              "y": 0.5
+            },
+            "2": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 2,
+              "last_llm_response": null,
+              "rot": 180.0,
+              "shield": false,
+              "x": 0.79,
+              "y": 0.5
+            }
+          },
+          "plays": [
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "96a07a9e716be4fe4b7db92cda75bb6e55b2f889c623cf75d2134d8b21b942dd",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.79,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "c70c015c87850ce325736da2bda03466edf7cb120c60b572f391096a3a4a6030",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S",
+              "play_id": "play_022_001",
+              "play_sha256": "510ce72f1f3821f4b4f0ea7f36fbe77fdedbcbb68f1148db75b43543962bad9f",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": true,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": null,
+              "request": {
+                "canonical_sha256": "78d19db31f0360867b41f88692504ab9968202cc1166548bdeacc0486502c2a2",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "971c3d1256202a39a11d6f30464b1c369ec74c3e2c064dda844157b3351561ab"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643",
+                "text": "[REDACTED]"
+              },
+              "sequence": 1,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "583448e985a68d772c4de669380133a163791bf051dddef5bc9cd808fb77c641"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "5057beccb7b70dd1745fc0bafc80ac7d658e98914f5c1771412335d0f4bedc24",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": true,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.79,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "a50cfed672beb4bb909e3620981d82f794bb662904c255d6e532fdae5f705a0c",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S1",
+              "play_id": "play_022_002",
+              "play_sha256": "2abae3a542393d0bd5ac134e306b6b3316c63eb2fc11830bdfff314f740182cb",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": true,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": true,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "510ce72f1f3821f4b4f0ea7f36fbe77fdedbcbb68f1148db75b43543962bad9f",
+              "request": {
+                "canonical_sha256": "ea06e641bc5703db9ecf2d2035b17bfd40f801d1b23127234b332e9e48e2a12c",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "b9cfa900cf9def9739baae4edef99c1c11f42bd73ba4182197945edece3ee877"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "3696ad59777e09d5f2daacb544022d435e7cd053d87c5781241fabd8fdf2a90d",
+                "text": "[REDACTED]"
+              },
+              "sequence": 2,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "f7fa4dcdb6f540aecee9d59d95e242c4153c318b40378b750dc46f867f78670e"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "8200ce372ef6207d061c7b883fe5db86d421f4e517b63f1647b7b0148b85fe68",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": true,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.79,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "79dc31aee2a46115466bdf9f73b2879fb9d988d70699e37866f38bfcf5fd2a09",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S0",
+              "play_id": "play_022_003",
+              "play_sha256": "645eff925b08ec0927085500a49a1b517aa74dd77666e52278e34da915a1860b",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": true,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "2abae3a542393d0bd5ac134e306b6b3316c63eb2fc11830bdfff314f740182cb",
+              "request": {
+                "canonical_sha256": "8ec793e4beebbc677b652c47612b106e14aa7ab0add4f9c36d999de1e85ed3bf",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "418ce0e93d8e421d370d2ae9a1d347238d3ff6236f2e62a8aa86a48539e9c1c3"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "f87980c88a93c33c01a3fa5fbbacdf984c0441d0c1b51fdc4620c5935cb78716",
+                "text": "[REDACTED]"
+              },
+              "sequence": 3,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "f3e79f4718bfbbd224101d5c913287c8f10ff6199b25cd208607ed8562f4c63d"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "3abf34c47d8f2581d1f0dc3e8693d2503380bcddd30a0dfb04d6a44d7f453039",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {},
+                  "label": "Shot blocked because shield is ON",
+                  "target_bot_id": null,
+                  "type": "no_op"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.79,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "0dbd888d83c9e732610c323b7fb8da6a622a3d5c98e9d67eb7acc1d0b99a1bc9",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "B",
+              "play_id": "play_022_004",
+              "play_sha256": "d0f8b2c57a06983dade52df32590ecc6cc9575cbe559720586af6cdf463a6c03",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "645eff925b08ec0927085500a49a1b517aa74dd77666e52278e34da915a1860b",
+              "request": {
+                "canonical_sha256": "025b91cfa0d1cd601925c07f31fb2cee593a167dbfe687e5eea6ae9977ff5d43",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "9786d47beac0a6bfdc1d92cf445275acb9c684b2e2c57a0011be3aa5dd50000a"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+                "text": "[REDACTED]"
+              },
+              "sequence": 4,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "11ba999ee84115073eb9c2bba9964b02a6c195ea4e1d96a4e154bf83c8f9da9e"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "84b991e61bf23eef1c42a28a6c6154846f34acd7c35c27032632b674d36fd646",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "cmd": "ERR"
+                  },
+                  "label": "Invalid command",
+                  "target_bot_id": null,
+                  "type": "invalid_command"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.79,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "858db92ef849661653e1080035dc7e27f6975e698e4d51a56867113c41f22e5c",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "ERR",
+              "play_id": "play_022_005",
+              "play_sha256": "b9e3c54a2db197dcd34f3e35a639821d143b4d885205369d4b2bd95b9861f048",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "d0f8b2c57a06983dade52df32590ecc6cc9575cbe559720586af6cdf463a6c03",
+              "request": {
+                "canonical_sha256": "1959c856d527402ea34055ba8d3189843c90adf89206fcf2b69714a4b65e8bb1",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "771a1c2eb3b905b02a0ed543b45ee42f678715ed2ba3ccb53099b629eb83baf7"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 8,
+                "sha256": "999aaa8645bb72ff599e143b1e3d2a94777127f4783a69f067251f7bbebc5ab6",
+                "text": "[REDACTED]"
+              },
+              "sequence": 5,
+              "status": "invalid-command",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "79800109d5d109baa576844381eb347744171746cf6428eddea1b1f6ce29231b"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "e18374d89688719b120c7c33d1314890c5c3b362e4b830d7529c1ae25b2878cc",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": [
+                      0.79,
+                      0.5
+                    ],
+                    "to": [
+                      0.75,
+                      0.5
+                    ]
+                  },
+                  "label": "Move to (0.750, 0.500)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.79,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "3ba43482eff7be8f75972a2b5af9edd7808cb54c5d5f7cb7ae7e33d77092dd4e",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M",
+              "play_id": "play_022_006",
+              "play_sha256": "8088183621e96ff999c3a835a7f5b254becd82e43c5576db9c3dcce512749bcd",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.79,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "b9e3c54a2db197dcd34f3e35a639821d143b4d885205369d4b2bd95b9861f048",
+              "request": {
+                "canonical_sha256": "5fd66022cbe6ad3d46efd8cdcc8ebbab3ec92e4a5679243be55af9bd7086ffb3",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "cbffa4a3293b2a46db60215b80057d0bfb7b2bb95f2fefb6a449f0bd1f6c86bd"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "08f271887ce94707da822d5263bae19d5519cb3614e0daedc4c7ce5dab7473f1",
+                "text": "[REDACTED]"
+              },
+              "sequence": 6,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "a725e61334ff6b9cfdb0dd3651ba290befc3043d0a2555c757053f88455d0efe"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "269fba8d637e94e8c58f635bdf92c0b749f0f9c01a066b3f3334dd3a8f057382",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": [
+                      0.21000000000000002,
+                      0.5
+                    ],
+                    "to": [
+                      0.26,
+                      0.5
+                    ]
+                  },
+                  "label": "Move to (0.260, 0.500)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.21000000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "2796a9f870f99a3162a24b772a08589df49d3c89d49a8f06a49abd1477748459",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M0.05",
+              "play_id": "play_022_007",
+              "play_sha256": "a06d567fbdd21849937ae6bb1a9d9276777a667ca4efce6b0a58cec42565dbf2",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21000000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "8088183621e96ff999c3a835a7f5b254becd82e43c5576db9c3dcce512749bcd",
+              "request": {
+                "canonical_sha256": "9e62736fd095ef291db6681008157848fa2f76c4945617e2d36a375c6fda51af",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "d835f6336e353150a822a71942ded37bc3d26f2e72217db71a40e26940c991e3",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "42af52e5763295051a28f7e83e51c9b5a6fcb68fad70c78a84a7bb42f68faaea"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 5,
+                "sha256": "d3de368db997a665911f986b9abd15ecf9bf906016145a345435598842bc1ebe",
+                "text": "[REDACTED]"
+              },
+              "sequence": 7,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "fcdcef05fe6179b60dc548ae3d0eff3b8b1b2750eb305656d47e631805753327"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "2638c984284a8ff18ec940ba10aed5dd868434f672e208f148d35e83cf42c44f",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": 180.0,
+                    "to": 195.0
+                  },
+                  "label": "Rotate clockwise to 195.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "abf9d6b764e5c5aed89e7e8ce5b845dcd6c2d7ca7aecc93a2e339ac1622e9a79",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "C15.0",
+              "play_id": "play_022_008",
+              "play_sha256": "9681d50d366ab32b98ab956f2b0e3253639cec7466dd736cce0fe69d940a1ffa",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "a06d567fbdd21849937ae6bb1a9d9276777a667ca4efce6b0a58cec42565dbf2",
+              "request": {
+                "canonical_sha256": "f5930460652ede5f3bb27ca090aa369a14362167d752abcd9413898c3f5113ea",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "22400c405f4206ba4563a04ebc38e27ac8c0f874c3c01ff75258a2d36d83d2e7",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "4a857edfe84925e311c316ba5e6d0f7e602c8193d4cb7d6bee9e5ee8f65aeb6e"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "c1f5e527f9d411dfe793aebe1021a0910fccbc69e55cb8ddaef79f5d535d60ec",
+                "text": "[REDACTED]"
+              },
+              "sequence": 8,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "9f1f7878aaa90d8b56828d12a3f0abe5e0a99d355fb0dfeea02e0a431b8dcf99"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "5916e7cc5d3b2725dc23f9bdbbb889ddd04294779a4980c554faeaecf82bbb50",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": 0.0,
+                    "to": 330.0
+                  },
+                  "label": "Rotate counterclockwise to 330.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": true,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "31d5f1cdebbf8389d469ca3244eaabbadaa3d01722697345e3131fbc97cec333",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "A30.0",
+              "play_id": "play_022_009",
+              "play_sha256": "2023fcd0ced3f41de2d2668664edb3fe4ca75b62dcdbcc8ecf127901a7ad601b",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "9681d50d366ab32b98ab956f2b0e3253639cec7466dd736cce0fe69d940a1ffa",
+              "request": {
+                "canonical_sha256": "a73a571976aae6453136c37799cc962393453642cd5d8aee77c8e233c1ca6618",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "d835f6336e353150a822a71942ded37bc3d26f2e72217db71a40e26940c991e3",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "78b96e8de32c010794e86ed8821e4016313a9fe1dc860bd50ee50864cb58e2f2",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "04801d5b42c2f49d21948ef8eea293d8afda79b0f94fe76d9c31f48ccdd570d5",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "10e16d4f09bc6b50804d6c72827b9474b55be9ca5b20121c6c40b900dad44de4"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "f22eaa9a1442b58c1afea9d20c4a958b27e44fe083e938a327433000b9a3d29e",
+                "text": "[REDACTED]"
+              },
+              "sequence": 9,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "bd5eca37ca47febe75b5d8b69942822fbc1da57b3a4b1f1cc9a0014b444af03f"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "487ea6d3e0d5833366fe174a2eac404849aeff6742f1fac75047093426bb570e",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": false,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": true,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "a4ff92be089bd38afaaf58b27f23534cc6f3e3a05c95147ae66592b750a4cc03",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S",
+              "play_id": "play_022_010",
+              "play_sha256": "4692e61097c15e32de8470754475f0cc07ef45792585288cf49c570e679f6dc6",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "2023fcd0ced3f41de2d2668664edb3fe4ca75b62dcdbcc8ecf127901a7ad601b",
+              "request": {
+                "canonical_sha256": "06cb58e501acba32c380e44c500aafc3670c9d8a18aa30788a461282e69dfe23",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "22400c405f4206ba4563a04ebc38e27ac8c0f874c3c01ff75258a2d36d83d2e7",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "77b844caa86cdf44fb0469de5202c86aded2f247eaa0bb0b7f35ff420543ffc0",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f5b2cae313a0dcec9986ce64c93d894bbbb712d68d40bbbdbb2590eda7c8ec6f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "28311073c1053f030541da9bcb171cd6a6f31b24810972e7c348a6a045ffcbf2"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643",
+                "text": "[REDACTED]"
+              },
+              "sequence": 10,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "4e8451fd99150dce278e1785ebbf8be973bf2f724deea96f668b3af2acdad214"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "7105f43205ec992ee4c883cd2da912609e8b359c65fa6cada16550c611d6fca6",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": false,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "4b5191bf3a6d017e72062d2063330443943e78403d6a19b7d898ac6c21985c16",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S1",
+              "play_id": "play_022_011",
+              "play_sha256": "b0c2cea75d27eb35d081ea8b1d4ac508854793463d78eebbada3b5e919168267",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "4692e61097c15e32de8470754475f0cc07ef45792585288cf49c570e679f6dc6",
+              "request": {
+                "canonical_sha256": "1fa8b77d5006909628ad5e143070a8d6519a80d9cd133afa55550ca37f1a93b0",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "d835f6336e353150a822a71942ded37bc3d26f2e72217db71a40e26940c991e3",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "78b96e8de32c010794e86ed8821e4016313a9fe1dc860bd50ee50864cb58e2f2",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "04801d5b42c2f49d21948ef8eea293d8afda79b0f94fe76d9c31f48ccdd570d5",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "96a7bb3de328f9539b671f055caf4644a0b83e33da6c11485caed798a34ef09c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "c8d0da010e4629efd16fec3629e20050c10ecc635a8a90393d13e68fa4387036",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "f944c85a250c5bd4c0edbfe1504a4ee6dab438d31b93b913c8efd0bc87f3c656"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "3696ad59777e09d5f2daacb544022d435e7cd053d87c5781241fabd8fdf2a90d",
+                "text": "[REDACTED]"
+              },
+              "sequence": 11,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "9e737daece669aa983c15d01b9490ef9e35f2b96233a741e806f312e7025df67"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "215989d97aa828f6bfdd0a0a7b4a010f3086fa86b4eabb6530bb2c817c459bec",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "4692ddb1d3ba3690d0490dcaa03885c099c9ebea8d505431b6c0b03c7db5c4cc",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S0",
+              "play_id": "play_022_012",
+              "play_sha256": "03a8fb8e62a3343e8286022c60a25ec6261e463d8b4298a93979493f883da694",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "b0c2cea75d27eb35d081ea8b1d4ac508854793463d78eebbada3b5e919168267",
+              "request": {
+                "canonical_sha256": "438423c4146b10c1f252bf28c27b1c93956c8ba7b850f02a8ce28fd89207822f",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "22400c405f4206ba4563a04ebc38e27ac8c0f874c3c01ff75258a2d36d83d2e7",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "77b844caa86cdf44fb0469de5202c86aded2f247eaa0bb0b7f35ff420543ffc0",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f5b2cae313a0dcec9986ce64c93d894bbbb712d68d40bbbdbb2590eda7c8ec6f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "125143b403a27fd1fa6e82a99f9046459d2124bcbd15a57340f5721a07a6fc02",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "5223feddd58cf12db85eac05a77137c7cf1e78d4c75247f2dae7ccd1b988ecc6"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "f87980c88a93c33c01a3fa5fbbacdf984c0441d0c1b51fdc4620c5935cb78716",
+                "text": "[REDACTED]"
+              },
+              "sequence": 12,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "f080e2cfa5c178b10693e9b586d1897d9d0e59cb2ed1bd3a54eabf1b9bd87acd"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "57b95883b664ae78940ef3a3f612813e30d98e9efa0d67b5b37b514f3b34c4f1",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {},
+                  "label": "Shot blocked because shield is ON",
+                  "target_bot_id": null,
+                  "type": "no_op"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "9e00bce2f78db0ef634209a948feef0453d73ac4438de75a23afaf20050893c8",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "B",
+              "play_id": "play_022_013",
+              "play_sha256": "fbd342373951d2c5bb51cb8a14849713532cec109d68b76fb14d31b4fb1f59d0",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "03a8fb8e62a3343e8286022c60a25ec6261e463d8b4298a93979493f883da694",
+              "request": {
+                "canonical_sha256": "df72848344ec3a87ee3dfe10a26679e4353c5656122cea36efa000bc4f84b169",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "d835f6336e353150a822a71942ded37bc3d26f2e72217db71a40e26940c991e3",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "78b96e8de32c010794e86ed8821e4016313a9fe1dc860bd50ee50864cb58e2f2",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "04801d5b42c2f49d21948ef8eea293d8afda79b0f94fe76d9c31f48ccdd570d5",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "96a7bb3de328f9539b671f055caf4644a0b83e33da6c11485caed798a34ef09c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "c8d0da010e4629efd16fec3629e20050c10ecc635a8a90393d13e68fa4387036",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "8a1759db4ea51d7344f9c79689b116b8eed2c6be17c23ec49e06289571268044",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "a6c4f23a9164ffdeaf654f510db679ded02e1528a9238377069b81d397389781"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+                "text": "[REDACTED]"
+              },
+              "sequence": 13,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "b6ba9f1a43fa7c223cba1a3e49265f836cb29e11e84120b48ab5eff9433c2580"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "defd48c8211e802e0166d7a7bc5f12bfa9c482e445c1db8b55f90b302673e5d8",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "cmd": "ERR"
+                  },
+                  "label": "Invalid command",
+                  "target_bot_id": null,
+                  "type": "invalid_command"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "0c6950a1443631c9bd02632954600facb549f2ebf7afd6ef6d9e97fdacc59ac3",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "ERR",
+              "play_id": "play_022_014",
+              "play_sha256": "0373b017622169aaced81e538e0809f45f6a806d9ced2e1f8ec01643d4f3e084",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "fbd342373951d2c5bb51cb8a14849713532cec109d68b76fb14d31b4fb1f59d0",
+              "request": {
+                "canonical_sha256": "9f7df1fc0f236d2713a228e9f5f64ef76431e3f055c92e204020c66d1eb63c6c",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "22400c405f4206ba4563a04ebc38e27ac8c0f874c3c01ff75258a2d36d83d2e7",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "77b844caa86cdf44fb0469de5202c86aded2f247eaa0bb0b7f35ff420543ffc0",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f5b2cae313a0dcec9986ce64c93d894bbbb712d68d40bbbdbb2590eda7c8ec6f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "125143b403a27fd1fa6e82a99f9046459d2124bcbd15a57340f5721a07a6fc02",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9ad27dd77599c15852019bd08204c9c67728c1b8a5883bdeddd5769fb207f51e",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "799e262b61a4d1db0908599345c0aaa42b2db11cdaffc56af99be064e837105c"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 8,
+                "sha256": "999aaa8645bb72ff599e143b1e3d2a94777127f4783a69f067251f7bbebc5ab6",
+                "text": "[REDACTED]"
+              },
+              "sequence": 14,
+              "status": "invalid-command",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "9b626732d300ac7d62be90da60b5916c1e208fae757971a67ca097e08e3e6b0d"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "de6b24441d1c117557146ef9925b9e1ff02199dc1b5e38fb3c7aa5bc8f5de5eb",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": [
+                      0.26,
+                      0.5
+                    ],
+                    "to": [
+                      0.29464101615137755,
+                      0.48
+                    ]
+                  },
+                  "label": "Move to (0.295, 0.480)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.26,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "19732694cf4382a72af0976c9b3a9e5380f93864a73a4c07ffa24a44179f9576",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M",
+              "play_id": "play_022_015",
+              "play_sha256": "d73098f73353b2dacc49ad70fed5c5594c1fb042f3701e676a326db0bcab408a",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.26,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "0373b017622169aaced81e538e0809f45f6a806d9ced2e1f8ec01643d4f3e084",
+              "request": {
+                "canonical_sha256": "0733f675346f4308bb134c7aa532e01073d8164fff2b937b8f788a1499c4568d",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "d835f6336e353150a822a71942ded37bc3d26f2e72217db71a40e26940c991e3",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "78b96e8de32c010794e86ed8821e4016313a9fe1dc860bd50ee50864cb58e2f2",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "04801d5b42c2f49d21948ef8eea293d8afda79b0f94fe76d9c31f48ccdd570d5",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "96a7bb3de328f9539b671f055caf4644a0b83e33da6c11485caed798a34ef09c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "c8d0da010e4629efd16fec3629e20050c10ecc635a8a90393d13e68fa4387036",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "8a1759db4ea51d7344f9c79689b116b8eed2c6be17c23ec49e06289571268044",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6b89c32e6341283a6e93ce118b8abf11f877f309433f053534ca53a942c0387d",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "5c9124085ab32f3d35ff076b21d02459d27059cd00bd5253bcbb559599dfdd4d"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "08f271887ce94707da822d5263bae19d5519cb3614e0daedc4c7ce5dab7473f1",
+                "text": "[REDACTED]"
+              },
+              "sequence": 15,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "06eeb4da603b23dc1b72a928b1d325315b27c412546cefa0349c194401976e45"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "06fd0d3214455e13d716fa6a81f50667f0f45bdcb7e837bda4681bdfe4b48610",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": [
+                      0.75,
+                      0.5
+                    ],
+                    "to": [
+                      0.7017037086855465,
+                      0.48705904774487396
+                    ]
+                  },
+                  "label": "Move to (0.702, 0.487)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.29464101615137755,
+                    "y": 0.48
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.75,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "d9574ab49e25a7ad6c10bb585fde692b87bcc946c1eaa36f41e817ca36676605",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M0.05",
+              "play_id": "play_022_016",
+              "play_sha256": "3b62a560022c82c94a486e710e7a4aeeb395de7823d06281b08ca3280ad91050",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7017037086855465,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.75,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "d73098f73353b2dacc49ad70fed5c5594c1fb042f3701e676a326db0bcab408a",
+              "request": {
+                "canonical_sha256": "deb442ccf2ae9ca454522baf459d975a99e4b97742ef986a178acc7e547192a2",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "22400c405f4206ba4563a04ebc38e27ac8c0f874c3c01ff75258a2d36d83d2e7",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "77b844caa86cdf44fb0469de5202c86aded2f247eaa0bb0b7f35ff420543ffc0",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f5b2cae313a0dcec9986ce64c93d894bbbb712d68d40bbbdbb2590eda7c8ec6f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "125143b403a27fd1fa6e82a99f9046459d2124bcbd15a57340f5721a07a6fc02",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9ad27dd77599c15852019bd08204c9c67728c1b8a5883bdeddd5769fb207f51e",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7935d04fd5c91f95f7aea7195ac2f84c2be8cc5c50ae3231301cc0f3984c913f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "f96d42cbe910e67140d737ff094a61d3e8af0b9fec6ac878fd6838eb6e2a99da"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 5,
+                "sha256": "d3de368db997a665911f986b9abd15ecf9bf906016145a345435598842bc1ebe",
+                "text": "[REDACTED]"
+              },
+              "sequence": 16,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "a40e010b4dff5ae858b7a5bc8fc313f1396168efa8a22e36ca533bb41863d94d"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "48b8570cc0a1ffa73e44182bcca3e8b395c06e44d4384692294853c2702ad9f5",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": 330.0,
+                    "to": 345.0
+                  },
+                  "label": "Rotate clockwise to 345.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.29464101615137755,
+                    "y": 0.48
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.7017037086855465,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "649329475d8a9b12b9140595427fff469706ff490b2ad7aa0021d1b606bf53fb",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "C15.0",
+              "play_id": "play_022_017",
+              "play_sha256": "9f809395b176be4bd8270d6caf387e36dcb63935132dce42ccc9ba36d8efb5be",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7017037086855465,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7017037086855465,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "3b62a560022c82c94a486e710e7a4aeeb395de7823d06281b08ca3280ad91050",
+              "request": {
+                "canonical_sha256": "c3c62661b6abb8bbc1e6822b43253a26ab20b053c6e6630156c6ee0e14aa71d6",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9c4604a8c46be63a379e93c1c841820b7edd32c36af12d51a766f17675eafdaa",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9bfdd4bf67ec40a593f470fe9be24f5b05f57e8824ba8cb14f625fbf87d148da",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7373577c7aa4a1cfef2d066f4f07274f7e8d154eb8df247abecdb62430009b23",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "d835f6336e353150a822a71942ded37bc3d26f2e72217db71a40e26940c991e3",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "78b96e8de32c010794e86ed8821e4016313a9fe1dc860bd50ee50864cb58e2f2",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "04801d5b42c2f49d21948ef8eea293d8afda79b0f94fe76d9c31f48ccdd570d5",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "96a7bb3de328f9539b671f055caf4644a0b83e33da6c11485caed798a34ef09c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "c8d0da010e4629efd16fec3629e20050c10ecc635a8a90393d13e68fa4387036",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "8a1759db4ea51d7344f9c79689b116b8eed2c6be17c23ec49e06289571268044",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6b89c32e6341283a6e93ce118b8abf11f877f309433f053534ca53a942c0387d",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "30eeb9baea53a88a36da959060115a28d499d04c8d42f3b6382421d17e36561a",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "2dfd215e11dfb6e7f082da15434f863c3d7aa09d017df024c496e436cc794774"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "c1f5e527f9d411dfe793aebe1021a0910fccbc69e55cb8ddaef79f5d535d60ec",
+                "text": "[REDACTED]"
+              },
+              "sequence": 17,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "e41cb0938d4cacdefe0c1421a0c7dd5587b2bf6560c1ce902fa1b68a6d255640"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "bb03869c85e49139e6be7268bd4d560f4fe6c067c430109c184ceb6abbfb9356",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": false
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": 195.0,
+                    "to": 165.0
+                  },
+                  "label": "Rotate counterclockwise to 165.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": true,
+                    "x": 0.29464101615137755,
+                    "y": 0.48
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.7017037086855465,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "c639061109235fa7bb76f40518f6b6eb505acd9cab4b67d9107b1ebaffb7fca8",
+                "text": "[REDACTED]"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "A30.0",
+              "play_id": "play_022_018",
+              "play_sha256": "b5bec4869b1576bd8915cf95381b80fba25e32f09787cc570e28b5eca11bc189",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": false,
+                  "x": 0.7017037086855465,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.29464101615137755,
+                  "y": 0.48
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7017037086855465,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "9f809395b176be4bd8270d6caf387e36dcb63935132dce42ccc9ba36d8efb5be",
+              "request": {
+                "canonical_sha256": "4382169c1136df1158dcf65e3a0329016ea6f3ee04b96c671898ca9520dadd44",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": {
+                        "canonical_sha256": "f8b4a730f871d1dae26ac8ec09ca7d2f82434d542c28f6d176f9461f8b826c2b",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "system"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f0874ae5a4ab297b8c665c957c7e02acaf35ac0fb1a39ec60ac63c11d9f688c8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b769fcb6dd480523a6d584b38fe7f280638c58e540d6af98400a1345dc2edb0c",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "07ef0a6168588643ae2da54f7245d9b6bdad34e5ebcd4e98696319dfc4495299",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "955cca1ceba45052d85984d3a2565f4ce25b7488602c60a165598bf80b26e472",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "b2dc802ca63a9bc903cf5473c4447effffc5f3a3d3673d2580e4b668c1d83ac8",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7ab5b2d9e5bb761726f65f3c85e8236974910ab12653899a5c737e95a6f23888",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "22400c405f4206ba4563a04ebc38e27ac8c0f874c3c01ff75258a2d36d83d2e7",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "77b844caa86cdf44fb0469de5202c86aded2f247eaa0bb0b7f35ff420543ffc0",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "f5b2cae313a0dcec9986ce64c93d894bbbb712d68d40bbbdbb2590eda7c8ec6f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "52bd5f3d03badf80f7ab61b0ebd226fa4b122255c1293fd4530e227c9a66a3f4",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "125143b403a27fd1fa6e82a99f9046459d2124bcbd15a57340f5721a07a6fc02",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "042d3353b47eb8582869835c788e52941d57628895a6e60a01d7094e690e9724",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "9ad27dd77599c15852019bd08204c9c67728c1b8a5883bdeddd5769fb207f51e",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "6ad15c2392e55fd1b8a11869d6888dea0b7ce4f000f52d8c76045cfcf15eb371",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "7935d04fd5c91f95f7aea7195ac2f84c2be8cc5c50ae3231301cc0f3984c913f",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "78b96e8de32c010794e86ed8821e4016313a9fe1dc860bd50ee50864cb58e2f2",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "assistant"
+                    },
+                    {
+                      "content": {
+                        "canonical_sha256": "3b1cd28aaf9e111aba22414e25d3951cbbe16158d940754038f6257f2d2a840a",
+                        "original_type": "str",
+                        "redacted": true
+                      },
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-2",
+                  "options": {
+                    "seed": 22,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "redacted",
+                "stored_sha256": "db38d9867e9cb16e8d0671c120bd790403122797c3a761253b1274c5faaf053e"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "f22eaa9a1442b58c1afea9d20c4a958b27e44fe083e938a327433000b9a3d29e",
+                "text": "[REDACTED]"
+              },
+              "sequence": 18,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "[REDACTED]"
+              },
+              "transition_sha256": "dcce0276845219b412794c8f978b64303325343fa84f1f6222045460f3c7c950"
+            }
+          ],
+          "prompts": [
+            {
+              "bot_id": 1,
+              "prompt": {
+                "encoding": "utf-8",
+                "length": 25,
+                "sha256": "261f83968d30720220010addbb236d3859b6027b47d7f247df6d6bc0ba4310ac",
+                "text": "[REDACTED]"
+              }
+            },
+            {
+              "bot_id": 2,
+              "prompt": {
+                "encoding": "utf-8",
+                "length": 26,
+                "sha256": "e31f91b990df9c171033e3efbeaba75d07abdf6236a77a9805eaccfbdd1c5263",
+                "text": "[REDACTED]"
+              }
+            }
+          ],
+          "round": 1,
+          "started_at": "2026-01-01T00:00:00+00:00"
+        }
+      ],
+      "started_at": "2026-01-01T00:00:00+00:00"
+    }
+  ],
+  "model_provenance": {
+    "endpoint": "http://localhost:11434/api/chat",
+    "fixture_family": "scripted",
+    "fixture_index": 22,
+    "provider": "scripted",
+    "requested_model": "fixture-2"
+  },
+  "privacy_mode": "redacted",
+  "runtime_provenance": {
+    "byteorder": "little",
+    "dependency_versions": {
+      "kivy": "2.3.1",
+      "kivymd": "1.2.0",
+      "modelito": "1.4.0",
+      "ollama": "0.6.2"
+    },
+    "implementation": "CPython",
+    "machine": "x86_64",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "python": "3.12.13"
+  },
+  "schema_version": 3,
+  "session_id": "session_022",
+  "session_sha256": "526ab213626336b0b60bae504ed36c0abe9474dedcc176f831eb50bdd40e81ab",
+  "session_type": "batllm_research_session"
+}

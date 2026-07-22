@@ -1,0 +1,2279 @@
+{
+  "application_provenance": {
+    "git_commit": "e9c946d92cb27fbbeef878121ab12af2c8a469fd",
+    "name": "BatLLM",
+    "trace_schema_version": 3,
+    "version": "0.3.6"
+  },
+  "created_at": "2026-01-01T00:00:00+00:00",
+  "games": [
+    {
+      "final_state": {
+        "1": {
+          "current_prompt": "",
+          "health": 30,
+          "id": 1,
+          "last_llm_response": null,
+          "rot": 345.0,
+          "shield": false,
+          "x": 0.2809807621135332,
+          "y": 0.485
+        },
+        "2": {
+          "current_prompt": "",
+          "health": 30,
+          "id": 2,
+          "last_llm_response": null,
+          "rot": 165.0,
+          "shield": true,
+          "x": 0.7167037086855466,
+          "y": 0.48705904774487396
+        }
+      },
+      "game_id": 1,
+      "rounds": [
+        {
+          "ended_at": "2026-01-01T00:00:00+00:00",
+          "final_state": {
+            "1": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 1,
+              "last_llm_response": null,
+              "rot": 345.0,
+              "shield": false,
+              "x": 0.2809807621135332,
+              "y": 0.485
+            },
+            "2": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 2,
+              "last_llm_response": null,
+              "rot": 165.0,
+              "shield": true,
+              "x": 0.7167037086855466,
+              "y": 0.48705904774487396
+            }
+          },
+          "gameplay_settings_snapshot": {
+            "bot_diameter": 0.1,
+            "bot_step_length": 0.03,
+            "bullet_damage": 6,
+            "bullet_diameter": 0.02,
+            "bullet_step_length": 0.01,
+            "initial_health": 30,
+            "shield_initial_state": false,
+            "shield_size": 70.0,
+            "total_rounds": 1,
+            "turns_per_round": 18
+          },
+          "initial_state": {
+            "1": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 1,
+              "last_llm_response": null,
+              "rot": 0.0,
+              "shield": false,
+              "x": 0.20500000000000002,
+              "y": 0.5
+            },
+            "2": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 2,
+              "last_llm_response": null,
+              "rot": 180.0,
+              "shield": false,
+              "x": 0.795,
+              "y": 0.5
+            }
+          },
+          "plays": [
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "7d9800198b850176b950e83d1d974a68150ce6f2e7a927dcbe845e5758850ea2",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "cmd": "ERR"
+                  },
+                  "label": "Invalid command",
+                  "target_bot_id": null,
+                  "type": "invalid_command"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.20500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.795,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "c70c015c87850ce325736da2bda03466edf7cb120c60b572f391096a3a4a6030"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "ERR",
+              "play_id": "play_053_001",
+              "play_sha256": "6dcdec1c60ff17905875db1cff55ee5c5841cd7e8281432abccf03d6c884da05",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.20500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.795,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.20500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.795,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": null,
+              "request": {
+                "canonical_sha256": "ba93153432ab99c859f08f6de383dfa28fef901bf4e7a3372364db4994d85621",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 8,
+                "sha256": "999aaa8645bb72ff599e143b1e3d2a94777127f4783a69f067251f7bbebc5ab6"
+              },
+              "sequence": 1,
+              "status": "invalid-command",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "6b20c28fb01f131932e645aefdcf2cb33d0cb258ea90520bc39e861c5bfcbbf8"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "70b8e093648eb96a6683af11bcaa314891e776bacc9678faa9bf3a7d4a016942",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": [
+                      0.795,
+                      0.5
+                    ],
+                    "to": [
+                      0.765,
+                      0.5
+                    ]
+                  },
+                  "label": "Move to (0.765, 0.500)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.20500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.795,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "a50cfed672beb4bb909e3620981d82f794bb662904c255d6e532fdae5f705a0c"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M",
+              "play_id": "play_053_002",
+              "play_sha256": "1174a423bd2653a67c782106d445953da03166cebe4bce210099d2c462d2ae39",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.20500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.20500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.795,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "6dcdec1c60ff17905875db1cff55ee5c5841cd7e8281432abccf03d6c884da05",
+              "request": {
+                "canonical_sha256": "0b41b3a794e1328d0bb344c3626dc0d7a099ac6652eebf83300e03047492a6a9",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "08f271887ce94707da822d5263bae19d5519cb3614e0daedc4c7ce5dab7473f1"
+              },
+              "sequence": 2,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "b7e1cdd9425bd46c501f7f0517a98e89ede590acaf527ab7fb9a077c827d98a4"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "15cd4e5d98a23fe0264d72883b701bb1b19bb72ec45d6e5975c54e5c5c7d0a81",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": [
+                      0.20500000000000002,
+                      0.5
+                    ],
+                    "to": [
+                      0.255,
+                      0.5
+                    ]
+                  },
+                  "label": "Move to (0.255, 0.500)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.20500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "79dc31aee2a46115466bdf9f73b2879fb9d988d70699e37866f38bfcf5fd2a09"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M0.05",
+              "play_id": "play_053_003",
+              "play_sha256": "5a1ae57551d22c60b32e615f9d7c5a82635733cb711b7d8cb3d5d2a8f0a23b61",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.20500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "1174a423bd2653a67c782106d445953da03166cebe4bce210099d2c462d2ae39",
+              "request": {
+                "canonical_sha256": "5637fda04466d50d6bbbaeb0d7d1cc1e8d01ce77e62195acbb02a263f31cf87c",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 5,
+                "sha256": "d3de368db997a665911f986b9abd15ecf9bf906016145a345435598842bc1ebe"
+              },
+              "sequence": 3,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "c53e8fdccecf5df5abafc3f0e16c3112d8814662c6e3046a409f1229ecdea7b5"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "6535db430e48c857269a3c0cbaeea35c666a67b6f111e24db9a1bffff250629f",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": 180.0,
+                    "to": 195.0
+                  },
+                  "label": "Rotate clockwise to 195.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "0dbd888d83c9e732610c323b7fb8da6a622a3d5c98e9d67eb7acc1d0b99a1bc9"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "C15.0",
+              "play_id": "play_053_004",
+              "play_sha256": "6b87da6074bb2311080c044728265c3c25773f879b33d70601ce37f05f8a57be",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "5a1ae57551d22c60b32e615f9d7c5a82635733cb711b7d8cb3d5d2a8f0a23b61",
+              "request": {
+                "canonical_sha256": "7b63b0f9dd6d433b3249c15a3c92cae1e844f1196eff36dab35449554dda8608",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "c1f5e527f9d411dfe793aebe1021a0910fccbc69e55cb8ddaef79f5d535d60ec"
+              },
+              "sequence": 4,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "eaaf8c89f5d3db1460d9debdc4799869e17d0f83b6f1fe234b8b2714cee6d8bb"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "24ebc7ce40ae661d616eebc5c645e98c493e1d75bbf7e93468983c54e8307a6e",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": 0.0,
+                    "to": 330.0
+                  },
+                  "label": "Rotate counterclockwise to 330.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "858db92ef849661653e1080035dc7e27f6975e698e4d51a56867113c41f22e5c"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "A30.0",
+              "play_id": "play_053_005",
+              "play_sha256": "6416d934bfd427a393fe268ab1258a7bb0e65bad327866b3a610751924155296",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "6b87da6074bb2311080c044728265c3c25773f879b33d70601ce37f05f8a57be",
+              "request": {
+                "canonical_sha256": "9e1c21015689444b9d5eed7bbb96ee02d9e71430639246e84658b64b0162da2f",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "f22eaa9a1442b58c1afea9d20c4a958b27e44fe083e938a327433000b9a3d29e"
+              },
+              "sequence": 5,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "dc62cf0bdf43c9d68effd8ba30e88ae0608fa7179d455df2db13106dd9e2af19"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "5d4fe6cc2ea953d4a96508ba143961455a20fb8844feef152c58e946a7c34981",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": false,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "3ba43482eff7be8f75972a2b5af9edd7808cb54c5d5f7cb7ae7e33d77092dd4e"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S",
+              "play_id": "play_053_006",
+              "play_sha256": "d0316c02ae92dfa4be5a12badd77c55e7762cd04f2a68ec026eb5b88c76b042b",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "6416d934bfd427a393fe268ab1258a7bb0e65bad327866b3a610751924155296",
+              "request": {
+                "canonical_sha256": "50fb64db5d1731430f0ed932004dff9cdea1f21d36ca5ad70cf466a0da8ea9e5",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643"
+              },
+              "sequence": 6,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "684739d25faa26dc7eeaf49680b62d4045378b97fb05668f774c13a9f6f5cf62"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "190e6a645b1e62e17375f4d3030d3de1a3bfdc12db2d6083e032f0cc76a59612",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": false,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": true,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "2796a9f870f99a3162a24b772a08589df49d3c89d49a8f06a49abd1477748459"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S1",
+              "play_id": "play_053_007",
+              "play_sha256": "18f862af322b6a1091db161df28314a83a01d60f245ef620bd898d43ffd538f3",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "d0316c02ae92dfa4be5a12badd77c55e7762cd04f2a68ec026eb5b88c76b042b",
+              "request": {
+                "canonical_sha256": "b4f89c24a5dc1f69078d48b4f35741d4064a703bfc46e6fa95d787dd0cafe8c4",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "3696ad59777e09d5f2daacb544022d435e7cd053d87c5781241fabd8fdf2a90d"
+              },
+              "sequence": 7,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "757dde2b475b0aa0b586e5a5541c4d52e523bf6a9d466900fc8489043d31c556"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "19a94148a6ef6c4a8ae88fc146d3831ae3f0f08b4227b3ab43b89f07c0f079d9",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": true,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "abf9d6b764e5c5aed89e7e8ce5b845dcd6c2d7ca7aecc93a2e339ac1622e9a79"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S0",
+              "play_id": "play_053_008",
+              "play_sha256": "36ea518f6534a8514708fc0e1071f1c52bb7f4a878010a96fa6fda1db3bb4807",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": true,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "18f862af322b6a1091db161df28314a83a01d60f245ef620bd898d43ffd538f3",
+              "request": {
+                "canonical_sha256": "240bb8c39e10540a54e535324341bab24f1c235d12a38b73e7765664424aa9e0",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "f87980c88a93c33c01a3fa5fbbacdf984c0441d0c1b51fdc4620c5935cb78716"
+              },
+              "sequence": 8,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "be50cef9bac01783d72322de9dee9bbfe967f4a8a53cf8472ea086d6eeb2f7c8"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "541f5c26526c561b42a5e35d882081c806c65b46ffa7b0baad9a882561d13d5a",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {},
+                  "label": "Shot blocked because shield is ON",
+                  "target_bot_id": null,
+                  "type": "no_op"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "31d5f1cdebbf8389d469ca3244eaabbadaa3d01722697345e3131fbc97cec333"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "B",
+              "play_id": "play_053_009",
+              "play_sha256": "7205e45e8d007f2d93ce528dc6b0b23dc2de35a4da523fceea2fc3f021f44de1",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "36ea518f6534a8514708fc0e1071f1c52bb7f4a878010a96fa6fda1db3bb4807",
+              "request": {
+                "canonical_sha256": "298198f495fd1f8636c8ded69f081581cef5d7938897e8466bcd0eb68334a2ae",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c"
+              },
+              "sequence": 9,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "8cae2b29171c6560413697c198ed190db066d0d26765d65f678c880b9a961dc7"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "5c0f53e61204c61335dbf63e708415f400e48074f3d99a8cb4596ef495431583",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "cmd": "ERR"
+                  },
+                  "label": "Invalid command",
+                  "target_bot_id": null,
+                  "type": "invalid_command"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "a4ff92be089bd38afaaf58b27f23534cc6f3e3a05c95147ae66592b750a4cc03"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "ERR",
+              "play_id": "play_053_010",
+              "play_sha256": "3c3cc7f2cfc4dd7ecc9af7837245347a349d943e7099d8f1110452d1af5e3c7c",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "7205e45e8d007f2d93ce528dc6b0b23dc2de35a4da523fceea2fc3f021f44de1",
+              "request": {
+                "canonical_sha256": "417677c0f50ae701a769f8782e1c091a1d9cb65fe1f48fc66b233c9364f6efcb",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 8,
+                "sha256": "999aaa8645bb72ff599e143b1e3d2a94777127f4783a69f067251f7bbebc5ab6"
+              },
+              "sequence": 10,
+              "status": "invalid-command",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "2b26c1231a33f0ee7dea6cc52e6986891214aaf76103af5ac8489eb8971c0c84"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "f26860b645c905fcd5527c8edcca0b37937364af819c9b1d7b70f90e287950fe",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": [
+                      0.255,
+                      0.5
+                    ],
+                    "to": [
+                      0.2809807621135332,
+                      0.485
+                    ]
+                  },
+                  "label": "Move to (0.281, 0.485)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.255,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "4b5191bf3a6d017e72062d2063330443943e78403d6a19b7d898ac6c21985c16"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M",
+              "play_id": "play_053_011",
+              "play_sha256": "df59cfe163c863888cddd956a8be2384f7071c157c4cac61929792214bf68d99",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.255,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "3c3cc7f2cfc4dd7ecc9af7837245347a349d943e7099d8f1110452d1af5e3c7c",
+              "request": {
+                "canonical_sha256": "56c1575ad77eb048fe25f5acdbf2ab070bb02e64aa02f7ca66278116cf5b579c",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "08f271887ce94707da822d5263bae19d5519cb3614e0daedc4c7ce5dab7473f1"
+              },
+              "sequence": 11,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "ffa2584bb9a761308ceb2bfdc154a0134f99c919b6ce3a5431f2a522eb3e55bd"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "53726a2f6da93740512329fcb4edccafa52325e594296ea0372498e1ce23ca87",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": [
+                      0.765,
+                      0.5
+                    ],
+                    "to": [
+                      0.7167037086855466,
+                      0.48705904774487396
+                    ]
+                  },
+                  "label": "Move to (0.717, 0.487)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.765,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "4692ddb1d3ba3690d0490dcaa03885c099c9ebea8d505431b6c0b03c7db5c4cc"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M0.05",
+              "play_id": "play_053_012",
+              "play_sha256": "bcecf8875791994f45650dba575ea68364e5d7977ca95649936663f81009a33e",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.765,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "df59cfe163c863888cddd956a8be2384f7071c157c4cac61929792214bf68d99",
+              "request": {
+                "canonical_sha256": "b833653e1d47bc45d538fa8ae4f366d6c69b0403e09e7fc40a099f5db467599f",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 5,
+                "sha256": "d3de368db997a665911f986b9abd15ecf9bf906016145a345435598842bc1ebe"
+              },
+              "sequence": 12,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "d1f543aff343b230ff8a9bbf021288861f0143e9c5ca663c191ba00ef43647e1"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "7bc22b88f62e0e00a7de590d007e3d614584e928cd43b7f7caa8a648d2a33129",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": 330.0,
+                    "to": 345.0
+                  },
+                  "label": "Rotate clockwise to 345.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.7167037086855466,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "9e00bce2f78db0ef634209a948feef0453d73ac4438de75a23afaf20050893c8"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "C15.0",
+              "play_id": "play_053_013",
+              "play_sha256": "4ec534ee20aacb0ca73f4c639840f53fa1834feeb9eb0523128e347249c4ebc5",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "bcecf8875791994f45650dba575ea68364e5d7977ca95649936663f81009a33e",
+              "request": {
+                "canonical_sha256": "94d7a5eddb1adef0e2cf06ff2c9ad2b08cc8350f078053f55a19b38a4f8ed67f",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "c1f5e527f9d411dfe793aebe1021a0910fccbc69e55cb8ddaef79f5d535d60ec"
+              },
+              "sequence": 13,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "c5b8351d1ca8414db3a8debdd89008c1aa7a55de61c9ecdd9587731d39a55feb"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "5e600f1541aba78b5e8023070367f00cab6c36565b95df78c3d7d76b65cb2d60",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": 195.0,
+                    "to": 165.0
+                  },
+                  "label": "Rotate counterclockwise to 165.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": true,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 195.0,
+                    "shield": false,
+                    "x": 0.7167037086855466,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "0c6950a1443631c9bd02632954600facb549f2ebf7afd6ef6d9e97fdacc59ac3"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "A30.0",
+              "play_id": "play_053_014",
+              "play_sha256": "a3bd75160809948b3ff93ab8e32fdbafadb733abf428aa6ded0ad5c278b33dc4",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 195.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "4ec534ee20aacb0ca73f4c639840f53fa1834feeb9eb0523128e347249c4ebc5",
+              "request": {
+                "canonical_sha256": "d1612b511ca7176565edec15f0343caa28106cd41c53fd73bcb725715f552d78",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "f22eaa9a1442b58c1afea9d20c4a958b27e44fe083e938a327433000b9a3d29e"
+              },
+              "sequence": 14,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "81536d3eff380965faa31fe16b159fc2f88f639ea962b96df29bfc1015ffdf50"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "978be4ee318002625f55f147768cad2c61f619b22834ed0273b28d71fe914fdc",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": true,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 165.0,
+                    "shield": false,
+                    "x": 0.7167037086855466,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "19732694cf4382a72af0976c9b3a9e5380f93864a73a4c07ffa24a44179f9576"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S",
+              "play_id": "play_053_015",
+              "play_sha256": "c562cdf395a3253fe8ea68fd8cc5fc322fd84a93545483effcbebb3f0c40cb7e",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "a3bd75160809948b3ff93ab8e32fdbafadb733abf428aa6ded0ad5c278b33dc4",
+              "request": {
+                "canonical_sha256": "d2fc052964ac30bf5c22aaa282c8126c24ee2b5988d74183a91d7f50ec0c52c9",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643"
+              },
+              "sequence": 15,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "356067ac791d762975be2234b8bcb897e02adce93aa64bdd1201474ad34f2ba5"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "dccc3fa18c05420c321d9405893b2a07ad7ca631731eed1529f9bc91458d3c1c",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 165.0,
+                    "shield": false,
+                    "x": 0.7167037086855466,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "d9574ab49e25a7ad6c10bb585fde692b87bcc946c1eaa36f41e817ca36676605"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S1",
+              "play_id": "play_053_016",
+              "play_sha256": "52f4f1e8ca307e5765cc2990da3f7c07acc07e2861f1b558712aaa4df8015664",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": true,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": false,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "c562cdf395a3253fe8ea68fd8cc5fc322fd84a93545483effcbebb3f0c40cb7e",
+              "request": {
+                "canonical_sha256": "ab18c51ef4a8a57d72aa61f3ccbc3755d70583eccd9d85a77ee9f61f5a5743f7",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "3696ad59777e09d5f2daacb544022d435e7cd053d87c5781241fabd8fdf2a90d"
+              },
+              "sequence": 16,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "b0c81e1c8d8c4a251eb65816f854171e5c5d0a437dd5c76b07c91d1d39b82721"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "d0e032c56dfc76e0ca5eed8cde936e015d9155f49c4985d709b4e528738bdc9b",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 165.0,
+                    "shield": true,
+                    "x": 0.7167037086855466,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "649329475d8a9b12b9140595427fff469706ff490b2ad7aa0021d1b606bf53fb"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S0",
+              "play_id": "play_053_017",
+              "play_sha256": "bd2f611a07521f50f8fe4a46d52597fd5054176821a8e9a5344f70fdadc38c32",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": true,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": true,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "52f4f1e8ca307e5765cc2990da3f7c07acc07e2861f1b558712aaa4df8015664",
+              "request": {
+                "canonical_sha256": "07fe9a1f4d641631a47db74320d7006c08c107fecddd05d56273166864216fee",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "f87980c88a93c33c01a3fa5fbbacdf984c0441d0c1b51fdc4620c5935cb78716"
+              },
+              "sequence": 17,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "ccc02af6cc5565599b49c831027686872136118ae846afc77749b96bccab5232"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "cdfe9e8febddc613b3f6978cfd1af8d379a899617d2d528ece6fb4abd3dd174c",
+              "context_policy": {
+                "independent_contexts": false,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {},
+                  "label": "Shot blocked because shield is ON",
+                  "target_bot_id": null,
+                  "type": "no_op"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.2809807621135332,
+                    "y": 0.485
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 165.0,
+                    "shield": true,
+                    "x": 0.7167037086855466,
+                    "y": 0.48705904774487396
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "c639061109235fa7bb76f40518f6b6eb505acd9cab4b67d9107b1ebaffb7fca8"
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "B",
+              "play_id": "play_053_018",
+              "play_sha256": "4609d4107343113ea3653a1400be6651c8cac0a732a7e5f0ba8d70a18282b719",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": true,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.2809807621135332,
+                  "y": 0.485
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": true,
+                  "x": 0.7167037086855466,
+                  "y": 0.48705904774487396
+                }
+              },
+              "previous_play_sha256": "bd2f611a07521f50f8fe4a46d52597fd5054176821a8e9a5344f70fdadc38c32",
+              "request": {
+                "canonical_sha256": "a734e32799a947831988abea5c1d571a3b75ca0a4caf9a45434efc19f90d013d",
+                "privacy_mode": "hashed"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c"
+              },
+              "sequence": 18,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310"
+              },
+              "transition_sha256": "4eb37eedbfd9c64207c8d92927eaf860bb760a223c9e20a5bb68f84389ef6c65"
+            }
+          ],
+          "prompts": [
+            {
+              "bot_id": 1,
+              "prompt": {
+                "encoding": "utf-8",
+                "length": 25,
+                "sha256": "261f83968d30720220010addbb236d3859b6027b47d7f247df6d6bc0ba4310ac"
+              }
+            },
+            {
+              "bot_id": 2,
+              "prompt": {
+                "encoding": "utf-8",
+                "length": 26,
+                "sha256": "e31f91b990df9c171033e3efbeaba75d07abdf6236a77a9805eaccfbdd1c5263"
+              }
+            }
+          ],
+          "round": 1,
+          "started_at": "2026-01-01T00:00:00+00:00"
+        }
+      ],
+      "started_at": "2026-01-01T00:00:00+00:00"
+    }
+  ],
+  "model_provenance": {
+    "endpoint": "http://localhost:11434/api/chat",
+    "fixture_family": "scripted",
+    "fixture_index": 53,
+    "provider": "scripted",
+    "requested_model": "fixture-1"
+  },
+  "privacy_mode": "hashed",
+  "runtime_provenance": {
+    "byteorder": "little",
+    "dependency_versions": {
+      "kivy": "2.3.1",
+      "kivymd": "1.2.0",
+      "modelito": "1.4.0",
+      "ollama": "0.6.2"
+    },
+    "implementation": "CPython",
+    "machine": "x86_64",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "python": "3.12.13"
+  },
+  "schema_version": 3,
+  "session_id": "session_053",
+  "session_sha256": "7ad4d93f5ad755b2e764361e0d933a03ec499b9b125edac3d16975c912326c49",
+  "session_type": "batllm_research_session"
+}
