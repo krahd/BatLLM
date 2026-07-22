@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-07-22 17:30 UTC
+Last updated: 2026-07-22 17:55 UTC
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 

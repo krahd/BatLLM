@@ -115,6 +115,7 @@ def _locate_ieee_csl() -> Path:
             "/usr/share/texlive/texmf-dist/tex/latex/"
             "citation-style-language/styles/ieee.csl"
         ),
+        Path("/usr/share/citation-style-language/styles/ieee.csl"),
         Path("/usr/share/pandoc/data/csl/ieee.csl"),
     ]
     for candidate in candidates:

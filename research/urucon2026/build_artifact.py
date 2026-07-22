@@ -29,6 +29,9 @@ CORE_PATHS = [
     ROOT / "run_batllm_research.py",
     ROOT / "run_batllm_verify.py",
     ROOT / "requirements.txt",
+    ROOT / "CITATION.cff",
+    ROOT / "LICENSE",
+    ROOT / "STATUS.md",
     ROOT / ".github/workflows/urucon.yml",
     ROOT / ".github/workflows/urucon-publish-artifact.yml",
 ]
