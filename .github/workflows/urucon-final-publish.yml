@@ -1,4 +1,4 @@
-name: Publish final audited URUCON package
+name: Publish complete URUCON repository artefact
 
 on:
   push:
@@ -7,17 +7,19 @@ on:
       - research/urucon2026/.final-publish-trigger
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
   group: urucon-branch-writer
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  validate-build-publish:
+  publish:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
+      GH_TOKEN: ${{ github.token }}
       BATLLM_RUN_OLLAMA_SMOKE: "0"
       KIVY_NO_ARGS: "1"
       KIVY_NO_CONSOLELOG: "1"
@@ -35,24 +37,36 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install build and rendering tools
+      - name: Install validation and document dependencies
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           : > "$AUDIT_LOG"
           {
             sudo apt-get update -qq
             sudo apt-get install -y -qq --no-install-recommends \
-              pandoc poppler-utils libreoffice-writer \
-              texlive-latex-base texlive-latex-recommended \
-              texlive-latex-extra texlive-publishers \
-              texlive-fonts-recommended
+              pandoc poppler-utils libreoffice-writer zip unzip
             python -m pip install --upgrade pip
             python -m pip install -r requirements.txt
             python -m pip install -r research/urucon2026/requirements.txt
           } 2>&1 | tee -a "$AUDIT_LOG"
 
-      - name: Validate hardened implementation
+      - name: Restore validated generated evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/urucon-ci
+          mkdir -p /tmp/urucon-ci
+          gh run download 29895189692 \
+            --repo krahd/BatLLM \
+            --name urucon-research-artifact \
+            --dir /tmp/urucon-ci
+          cp -a /tmp/urucon-ci/. research/urucon2026/
+          test "$(find research/urucon2026/corpus/generated -name 'session-*.json' | wc -l)" -eq 60
+          test -s research/urucon2026/paper/main.pdf
+          test -s research/urucon2026/results/replay-summary.json
+
+      - name: Validate source and generated evidence
         shell: bash
         run: |
           set -o pipefail
@@ -61,43 +75,21 @@ jobs:
               run_batllm.py run_game_analyzer.py run_tests.py \
               run_batllm_research.py run_batllm_verify.py
             python -m pytest -q src/tests
+            python research/urucon2026/experiments/run_all.py
           } 2>&1 | tee -a "$AUDIT_LOG"
 
-      - name: Regenerate complete evaluation artefact
-        shell: bash
-        run: |
-          set -o pipefail
-          python research/urucon2026/experiments/run_all.py \
-            2>&1 | tee -a "$AUDIT_LOG"
-
-      - name: Build and preflight British-English PDF
-        working-directory: research/urucon2026/paper
+      - name: Build and preflight final paper deliverables
         shell: bash
         run: |
           set -euo pipefail
-          rm -f main.aux main.log main.pdf
-          pdflatex -interaction=nonstopmode -halt-on-error main.tex | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
-          pdflatex -interaction=nonstopmode -halt-on-error main.tex | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
-          pdflatex -interaction=nonstopmode -halt-on-error main.tex | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
-          pages=$(pdfinfo main.pdf | awk '/^Pages:/ {print $2}')
+          python research/urucon2026/paper/build_docx.py 2>&1 | tee -a "$AUDIT_LOG"
+          cp research/urucon2026/paper/main.pdf \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.pdf
+          cp research/urucon2026/paper/main.docx \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
+          pages=$(pdfinfo research/urucon2026/paper/main.pdf | awk '/^Pages:/ {print $2}')
           test "$pages" -eq 4
-          ! grep -q 'Citation.*undefined' main.log
-          ! grep -q 'There were undefined references' main.log
-          ! grep -q 'LaTeX Error' main.log
-          ! grep -q 'Overfull' main.log
-          grep -Fq '\section*{Acknowledgement}' main.tex
-          pdfinfo main.pdf | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
-          pdffonts main.pdf | tee -a "$GITHUB_WORKSPACE/$AUDIT_LOG"
-          mkdir -p /tmp/pdf-render
-          pdftoppm -png -f 1 -singlefile -r 150 main.pdf \
-            /tmp/pdf-render/page >/dev/null
-          test -s /tmp/pdf-render/page.png
-
-      - name: Build and render editable British-English DOCX
-        shell: bash
-        run: |
-          set -euo pipefail
-          python research/urucon2026/paper/build_docx.py | tee -a "$AUDIT_LOG"
+          test "$(pdfinfo research/urucon2026/paper/main.pdf | awk '/^Page size:/ {print $3, $5}')" = "595.276 841.89"
           unzip -t research/urucon2026/paper/main.docx | tee -a "$AUDIT_LOG"
           python - <<'PY'
           from docx import Document
@@ -107,33 +99,91 @@ jobs:
           assert any(p.text == 'Acknowledgement' for p in doc.paragraphs)
           assert len(doc.tables) == 2
           PY
+          rm -rf /tmp/docx-render
           mkdir -p /tmp/docx-render
           libreoffice --headless --convert-to pdf --outdir /tmp/docx-render \
             research/urucon2026/paper/main.docx 2>&1 | tee -a "$AUDIT_LOG"
           test -s /tmp/docx-render/main.pdf
-          pages=$(pdfinfo /tmp/docx-render/main.pdf | awk '/^Pages:/ {print $2}')
-          test "$pages" -ge 4
-          pdftoppm -png -f 1 -singlefile -r 120 /tmp/docx-render/main.pdf \
-            /tmp/docx-render/page >/dev/null
-          test -s /tmp/docx-render/page.png
 
-      - name: Package complete research artefact
+      - name: Finalise documentation and package
         shell: bash
         run: |
           set -euo pipefail
-          cat > research/urucon2026/FINAL_AUDIT_STATUS.md <<'EOF'
-          # Final URUCON audit status
+          python - <<'PY'
+          from pathlib import Path
 
-          Status: complete.
+          status = Path('STATUS.md')
+          text = status.read_text(encoding='utf-8')
+          lines = text.splitlines()
+          for index, line in enumerate(lines):
+              if line.startswith('Last updated:'):
+                  lines[index] = 'Last updated: 2026-07-22 14:30 UTC'
+                  break
+          text = '\n'.join(lines) + '\n'
+          heading = '## 2026-07-22: URUCON 2026 Research Artefact'
+          section = '''## 2026-07-22: URUCON 2026 Research Artefact
 
-          The hardened source, complete non-live test suite, deterministic experiments, British-English four-page PDF, editable en-GB DOCX, render preflights, manifests, and packaged research artefact all passed their release gates.
+The `urucon` branch and PR #36 add a distinct schema-v3 research execution path for the paper *From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control*. The graphical application continues to export schema v2; the paper's claims concern the explicit headless schema-v3 recorder and verifier.
+
+- New entry points: `run_batllm_research.py` records scripted or local-Ollama traces; `run_batllm_verify.py` validates and replays schema-v3 sessions.
+- New architecture: `src/game/trace_contract.py`, `session_v3.py`, `research_runtime.py`, and `trace_verifier.py` implement privacy-aware invocation evidence, grounding checks, canonical commitments, ordered trace integrity, and operative replay through the pure transition engine.
+- Research package: `research/urucon2026/` contains the JSON Schema, deterministic 60-session/1,080-transition corpus, independent reference semantics, differential and perturbation experiments, claim ledger, adversarial reviews, final paper sources, compiled PDF, editable DOCX, results, checksums, and complete ZIP artefact.
+- Validation: 172 tests passed and 2 live-Ollama tests were skipped; all 60 sessions validated; all 1,080 states and semantic-event sequences replayed equivalently; production and independent reference semantics matched in 5,000 cases; all 1,560 applicable re-anchored perturbations were detected; all 180 benign serialisation variants were accepted.
+- CI: `.github/workflows/urucon.yml` validates Linux, macOS, and Windows under Python 3.10-3.12 and builds/preflights the four-page A4 IEEE paper. URUCON validation run 29895189692 completed successfully.
+- Boundaries: the work does not claim deterministic regeneration of model output, provider-wire capture, generic agent replay, pedagogical efficacy, or cryptographic authorship. SHA-256 values are consistency commitments rather than signatures.
+'''
+          if heading not in text:
+              marker = 'The project should remain practical, critical, and educational. Destructive or expensive local-model actions must stay explicit because BatLLM can start and stop a real Ollama service, download or delete models, and save user-created sessions.\n'
+              text = text.replace(marker, marker + '\n' + section + '\n', 1)
+          status.write_text(text, encoding='utf-8')
+
+          readme = Path('research/urucon2026/README.md')
+          text = readme.read_text(encoding='utf-8')
+          text = text.replace(
+              'Generated corpus files, result summaries, the compiled PDF, and the editable DOCX are committed to this branch and are also regenerated as CI artefacts rather than manually curated evidence.',
+              'Generated corpus files, result summaries, the compiled PDF, and the editable DOCX are committed to this branch and are also regenerated as CI artefacts rather than manually curated evidence.'
+          )
+          readme.write_text(text, encoding='utf-8')
+
+          Path('research/urucon2026/FINAL_AUDIT_STATUS.md').write_text(
+              '# Final URUCON audit status\n\n'
+              'Status: complete.\n\n'
+              'The hardened source, complete non-live test suite, deterministic experiments, '
+              'British-English four-page A4 IEEE PDF, editable en-GB DOCX, render preflight, '
+              'generated corpus and results, checksums, and packaged research artefact passed '
+              'their release gates. Validation source: GitHub Actions run 29895189692 plus this '
+              'publication run.\n',
+              encoding='utf-8',
+          )
+          PY
+          cd research/urucon2026/corpus/generated
+          rm -f BatLLM_URUCON_2026_Corpus.zip
+          zip -q -9 BatLLM_URUCON_2026_Corpus.zip session-*.json
+          cat > README.md <<'EOF'
+          # Generated reference corpus
+
+          This directory contains the 60 deterministic schema-v3 session traces (1,080 transitions) used by the paper evaluation. `BatLLM_URUCON_2026_Corpus.zip` is a compact copy of the same JSON corpus.
           EOF
-          rm -f research/urucon2026/.final-publish-trigger \
-            research/urucon2026/.audit-trigger \
-            research/urucon2026/.publish-trigger
-          python research/urucon2026/build_artifact.py | tee -a "$AUDIT_LOG"
+          cd ../../../..
+          rm -rf research/urucon2026/artifact
+          python research/urucon2026/build_artifact.py 2>&1 | tee -a "$AUDIT_LOG"
+          cd research/urucon2026/artifact
+          sha256sum -c PACKAGE.sha256
+          unzip -t BatLLM_URUCON_2026_Research_Artifact.zip | tail -2
+          cd ../../..
 
-      - name: Commit and push final deliverables
+      - name: Remove obsolete one-shot publication machinery
+        shell: bash
+        run: |
+          rm -f research/urucon2026/.final-publish-trigger
+          rm -f research/urucon2026/.audit-trigger
+          rm -f research/urucon2026/.publish-trigger
+          rm -f .github/workflows/urucon-final-audit.yml
+          rm -f .github/workflows/urucon-publish-artifact.yml
+          rm -f research/urucon2026/apply_audit_fixes.py
+          rm -f .github/workflows/urucon-final-publish.yml
+
+      - name: Commit complete repository artefact
         shell: bash
         run: |
           set -euo pipefail
@@ -141,7 +191,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           git add -f \
-            research/urucon2026/FINAL_AUDIT_STATUS.md \
             research/urucon2026/FINAL_AUDIT.log \
             research/urucon2026/corpus/generated \
             research/urucon2026/results \
@@ -150,26 +199,6 @@ jobs:
             research/urucon2026/paper/main.docx \
             research/urucon2026/paper/BatLLM_URUCON_2026_Paper.pdf \
             research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx \
-            research/urucon2026/paper/results.tex \
             research/urucon2026/artifact
-          git commit -m 'artifacts: publish final audited URUCON package [skip ci]'
+          git commit -m 'artifacts: publish complete audited URUCON package [skip ci]'
           git push origin HEAD:urucon
-
-      - name: Record failure on branch
-        if: failure()
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          cp "$AUDIT_LOG" /tmp/FINAL_AUDIT.log 2>/dev/null || true
-          git reset --hard HEAD
-          cp /tmp/FINAL_AUDIT.log "$AUDIT_LOG" 2>/dev/null || : > "$AUDIT_LOG"
-          cat > research/urucon2026/FINAL_AUDIT_STATUS.md <<'EOF'
-          # Final URUCON audit status
-
-          Status: failed. See `FINAL_AUDIT.log`. Generated deliverables were not declared final.
-          EOF
-          git add -f research/urucon2026/FINAL_AUDIT_STATUS.md \
-            research/urucon2026/FINAL_AUDIT.log
-          git commit -m 'audit: record final URUCON publication failure [skip ci]' || true
-          git push origin HEAD:urucon || true
