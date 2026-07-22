@@ -2,11 +2,11 @@
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{array}
-\usepackage{url}
-\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\usepackage{balance}
 \input{results.tex}
 
-\title{From Prompt to State: A Domain-Semantic Reproducibility Contract for Human--LLM-Mediated Control}
+\title{From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control}
 
 \author{\IEEEauthorblockN{Tomas Laurenzo}
 \IEEEauthorblockA{Department of Critical Media Practices\\
@@ -18,47 +18,185 @@ tomas@laurenzo.net}}
 \maketitle
 
 \begin{abstract}
-Systems that place a large language model between human intention and executable action cross two different computational regimes: stochastic language generation and deterministic state transition. Conventional chat logs preserve neither this boundary nor enough evidence to verify its consequences. This paper defines a domain-semantic reproducibility contract that separates invocation provenance from operative replay. A trace records the ordered request, inference configuration, returned text, response-to-command grounding, frozen rules, semantic events, and pre- and post-action states. Verification then checks four levels: structural validity, request reconstructability, grounding consistency, and replay-derived state equivalence. We implement the contract in BatLLM, an open-source game in which human players control agents indirectly through local language models. The implementation provides a versioned schema, three privacy modes, canonical commitments, a provider-neutral recorder, a headless verifier, and a reproducibility corpus. Across \ResultSessions{} sessions and \ResultPlays{} transitions, all traces verified for state and event equivalence. Full traces verified \ResultVerifiedGroundings{} response-to-command groundings; privacy-reduced traces retained operative replay through commitments. After every commitment derivable from retained content was recomputed, the verifier detected all \ResultFaults{} applicable controlled perturbations. The contribution is not generic record-and-replay for agents, but a contract for verifying the domain-level consequence of grounded language without assuming that model outputs can be regenerated.
+When a large language model mediates executable action, an interaction crosses two distinct boundaries: a stochastic model produces text, and an application grounds that text into a deterministic command. Repeating the model call is therefore neither necessary nor generally sufficient to verify the resulting state change. This paper defines an evidence contract for bounded LLM-mediated systems. A trace records the application-level invocation object, returned text or a commitment to it, the response-to-command grounding, frozen domain rules, semantic events, and pre- and post-action states. Four verification predicates check trace integrity, invocation reconstruction, grounding consistency, and operative replay. We implement the contract in BatLLM, an open-source game in which human instructions are mediated by local language models. The artefact includes a versioned schema, three text-retention profiles, canonical commitments, a provider-neutral recorder, a headless verifier, and an independently implemented reference semantics. In \ResultSessions{} generated sessions comprising \ResultPlays{} transitions, all recorded states and events replayed equivalently. Full-retention traces reconstructed \ResultExactRequests{} application-level invocations and independently verified \ResultVerifiedGroundings{} groundings. Differential testing matched production and reference semantics in all \ResultDifferentialCases{} cases. The verifier detected all \ResultFaults{} applicable re-anchored perturbations and accepted all \ResultSerializationVariants{} benign serialisation variants. The result is not model-output reproducibility or generic agent replay; it is a precise, testable account of how retained linguistic evidence produced a domain state.
 \end{abstract}
 
 \begin{IEEEkeywords}
-large language models, reproducibility, provenance, record and replay, human--AI interaction, game systems
+large language models, provenance, replay, grounding, verification, human--AI interaction
 \end{IEEEkeywords}
 
 \section{Introduction}
-Large language models (LLMs) increasingly mediate actions in software environments. A human request may be expanded with system instructions and world state, submitted to a model, interpreted as a command, and executed by a deterministic program. The resulting action is often treated as if it were one operation. It is not. It crosses a probabilistic boundary and then a semantic boundary.
+Large language models (LLMs) increasingly mediate actions in software environments. A human request may be combined with system instructions and world state, submitted to a model, parsed as a command, and executed by conventional code. Treating this sequence as one operation conceals two different computational regimes. Model inference is probabilistic and can be numerically nondeterministic across hardware, batching, precision, and execution order~\cite{yuan2025nondeterminism}; post-grounding execution may nevertheless be deterministic.
 
-Even nominally deterministic decoding does not guarantee identical outputs across inference configurations. Hardware, batching, numerical precision, and execution order may alter early token probabilities and produce divergent responses~\cite{yuan2025nondeterminism}. Consequently, reproducing an LLM-mediated action by calling the model again is an unsound default. A stronger and narrower question is possible: can a system reconstruct what was sent, preserve what was returned, verify how the text was grounded, and re-execute the grounded command against the original domain semantics?
+This distinction matters for reproducibility and audit. Calling a model again does not establish which response was obtained previously, and a prompt--response log does not establish what application state followed. The relevant question for a bounded action system is narrower: can the application reconstruct the invocation it issued, preserve or commit to the response it received, verify the command derived from that response, and replay the command against the same domain semantics?
 
-We answer this question through BatLLM~\cite{laurenzo2026batllm}, a turn-based game in which two humans specify strategies in natural language while local LLMs issue actions on their behalf. BatLLM is useful here not because games are novel agent environments---benchmarks such as AgentBoard and Cradle already use interactive software to study agent behaviour~\cite{ma2024agentboard,tan2025cradle}---but because its compact command grammar and deterministic state model expose the language-to-action boundary.
+We investigate this question through BatLLM~\cite{laurenzo2026batllm}, a turn-based game in which two humans influence software agents through natural-language prompts. Local LLMs return actions in a compact command language; the game then applies movement, rotation, shielding, shooting, collision, and damage rules. This arrangement makes the language-to-action boundary explicit and provides a small but non-trivial deterministic domain.
 
-This paper contributes: (1) a formal trace model separating invocation provenance from operative reproducibility; (2) a four-level verification contract; (3) an open reference implementation with full, redacted, and hash-only privacy modes; and (4) an evaluation of replay fidelity, semantic perturbation detection, and instrumentation overhead. We make no claim that preserved prompts can regenerate identical model text. We verify the computational consequence of the text actually returned.
+The paper contributes:
+\begin{enumerate}
+\item an evidence model that distinguishes the application-level invocation, model response, grounding operation, and domain transition;
+\item four verification predicates with explicit assumptions and text-retention-dependent availability;
+\item a BatLLM implementation comprising a schema, recorder, verifier, canonical commitments, and privacy-aware retention profiles; and
+\item an evaluation combining trace replay, independent differential semantics, re-anchored perturbations at multiple trace positions, benign serialisation controls, and overhead measurement.
+\end{enumerate}
+The claim is deliberately specific. The system does not reproduce a model output, authenticate a trace author, capture transport-layer bytes, or provide general-purpose multi-agent provenance. It verifies the recorded path from an application invocation to a grounded command and from that command to a domain state.
 
-\section{Related Work and Scope}
-W3C PROV provides interoperable concepts for entities, activities, agents, and derivation~\cite{w3c2013provo}. OpenTelemetry's generative-AI conventions further specify ordered input messages, model attributes, and output messages, while warning that recorded content may contain sensitive information~\cite{otel2026genai}. These standards establish provenance and observability vocabularies but do not define application-domain transition semantics.
+\section{Related Work}
+Games and interactive software have become established environments for evaluating LLM agents. AgentBoard evaluates multi-turn agents through fine-grained progress measures~\cite{ma2024agentboard}; Cradle addresses general computer control through screen-based interaction~\cite{tan2025cradle}. These systems motivate process-level analysis but do not by themselves define a replay contract for an application's language-to-state boundary.
 
-Recent systems address more of the execution chain. PROV-AGENT integrates prompts, responses, decisions, and downstream workflow provenance~\cite{souza2025provagent}. AgentRR records trajectories and abstracts them into reusable experiences~\cite{feng2025agentrr}. Prompt Scene Investigation introduces chain-of-custody and controlled behavioural replay for forensic analysis~\cite{ledjaki2026psi}. Mudasiru's \emph{agrepl} captures external interactions at the transport layer and replays them without outbound access~\cite{mudasiru2026agrepl}. Paduraru \emph{et al.} define Message--Action Traces, executable contracts, deterministic replay, fault injection, and action mediation for multi-agent orchestration~\cite{paduraru2026assurance}.
+Provenance standards provide a broader foundation. W3C PROV represents entities, activities, agents, and derivations~\cite{w3c2013provo}. OpenTelemetry's generative-AI conventions describe ordered input and output messages and model attributes, while explicitly treating captured content as potentially sensitive~\cite{otel2026genai}. Recent work extends provenance to agentic systems. PROV-AGENT integrates prompts, responses, decisions, and downstream workflow lineage~\cite{souza2025provagent}; a recent survey organises evidence tracing and execution provenance around observability, tool use, memory, audit, and recovery~\cite{wang2026traces}.
 
-These antecedents preclude any defensible claim that BatLLM introduces provenance, contracts, or record-and-replay for LLM agents. Table~\ref{tab:scope} locates the narrower contribution. Transport replay reproduces observed I/O; workflow provenance represents lineage; behavioural replay studies model outputs; orchestration contracts constrain multi-agent execution. The present work verifies whether a retained linguistic output was grounded into the recorded command and whether that command, executed by frozen domain semantics, derives the recorded state and semantic events.
+Record-and-replay has also entered LLM research. AgentRR reuses successful trajectories as experience for subsequent tasks~\cite{feng2025agentrr}. Prompt Scene Investigation records prompt--response evidence for forensic behavioural replay~\cite{ledjaki2026psi}. \emph{agrepl} captures external interactions and replays them without outbound access~\cite{mudasiru2026agrepl}. Paduraru \emph{et al.} propose Message--Action Traces, executable contracts, replay, and fault injection for agent orchestration~\cite{paduraru2026assurance}.
 
-\begin{table*}[t]
-\caption{Primary verification object in closely related approaches. A dash does not indicate a deficiency; it marks a different research objective.}
-\label{tab:scope}
+These approaches establish that provenance, trace contracts, and agent replay are not new in themselves. The present contribution concerns a different verification object: the conjunction of application-level invocation reconstruction, response-to-command consistency, and re-execution of an explicit deterministic transition function. It therefore complements rather than replaces transport replay, workflow provenance, behavioural re-enactment, or orchestration assurance.
+
+\section{Evidence and Verification Contract}
+\subsection{Execution model}
+For step $i$, let $u_i$ be the human instruction, $h_i$ the ordered conversational history, $s_i$ the pre-action state, $\theta_i$ the declared model configuration, and $\rho_i$ the frozen domain rules. The application constructs an adapter-boundary invocation object
+\begin{equation}
+a_i = A(u_i,h_i,s_i,\theta_i),
+\end{equation}
+then obtains response text $y_i$ from model provider $M$. A parser $P$ grounds the response into command $c_i$, and a transition function $\delta$ produces the next state and ordered semantic events:
+\begin{equation}
+c_i=P(y_i), \qquad (s_{i+1},e_i)=\delta(s_i,c_i;\rho_i).
+\end{equation}
+The trace unit is
+\begin{equation}
+T_i=\langle u_i,h_i,s_i,a_i,\theta_i,y_i,c_i,\rho_i,e_i,s_{i+1}\rangle.
+\end{equation}
+Here $a_i$ is the object passed to the provider adapter: model name, endpoint declaration, ordered messages, options, and stream setting. It is not claimed to be the provider library's internal representation or the HTTP request emitted below that boundary.
+
+\subsection{Verification predicates}
+The contract defines four predicates rather than a single undifferentiated notion of reproducibility.
+
+\textbf{V1---Trace validity.} The schema, identifiers, sequence, state continuity, final states, content commitments, transition commitments, and ordered play chain are internally consistent.
+
+\textbf{V2---Invocation evidence.} In full retention, the verifier independently reconstructs the current user message and conversation history from separately recorded prompt, state, system instructions, and context policy, then compares the result with $a_i$. Provider, endpoint, and requested model are checked against session provenance. Reduced-retention profiles provide weaker evidence, as Table~\ref{tab:profiles} specifies.
+
+\textbf{V3---Grounding consistency.} When $y_i$ is retained, re-applying $P$ must yield the recorded $c_i$ and validity status. Provider failures are represented separately and resolve operatively to \texttt{ERR}; they are not counted as model-response groundings.
+
+\textbf{V4---Operative replay.} Re-evaluating $\delta(s_i,c_i;\rho_i)$ must reproduce both $s_{i+1}$ and $e_i$. BatLLM compares discrete state exactly and position and rotation with absolute tolerance $10^{-6}$.
+
+\begin{table}[t]
+\caption{Evidence available by text-retention profile. ``Commit.'' denotes a SHA-256 commitment without retained text.}
+\label{tab:profiles}
 \centering
 \small
-\begin{tabular}{@{}p{0.18\textwidth}p{0.22\textwidth}p{0.25\textwidth}p{0.27\textwidth}@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-Approach & Primary recorded object & Replay or assurance target & Distinction from this contract \\
+Predicate & Full & Redacted & Hash-only \\
 \midrule
-W3C PROV / OpenTelemetry~\cite{w3c2013provo,otel2026genai} & Provenance graph; GenAI invocation telemetry & Lineage and observability & No application-specific grounding or transition-equivalence rule \\
-PROV-AGENT~\cite{souza2025provagent} & Agent interactions in workflow provenance & End-to-end provenance queries and reliability analysis & Relates decisions and outcomes; does not re-derive a bounded domain state \\
-AgentRR~\cite{feng2025agentrr} & Successful interaction trajectory and abstracted experience & Reuse of prior experience in later tasks & Replay guides new execution rather than verifying the original transition \\
-PSI~\cite{ledjaki2026psi} & Prompt--response evidence with chain of custody & Controlled model-behaviour replay and investigation & Re-enacts model behaviour; does not verify text-to-command domain semantics \\
-\emph{agrepl}~\cite{mudasiru2026agrepl} & External transitions & Isolated deterministic I/O replay & Reproduces dependencies below the application semantic boundary \\
-MAT contracts~\cite{paduraru2026assurance} & Message--action orchestration traces & Contract verdicts, deterministic replay, fault containment & General orchestration assurance; this paper specifies post-grounding state/event equivalence \\
-BatLLM contract & Invocation, response, grounded command, rules, events, states & Exact request reconstruction where retained; grounding and domain-state verification & Explicitly couples stochastic language evidence to a deterministic transition function \\
+V1 trace & yes & yes & yes \\
+V2 invocation & reconstruct & struct.+hash & hash \\
+V3 grounding & verify & no & no \\
+V4 replay & verify & verify & verify \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
-q¶»§q«^
+\textbf{Soundness under declared semantics.} Assume that $P$ and $\delta$ are deterministic, the implementation version used for verification denotes the same semantics as the recorder, and retained fields have not been replaced together with every external trust anchor. If V3 and V4 hold for a full-retention step, then the recorded command equals $P(y_i)$ and the recorded state and events equal $\delta(s_i,P(y_i);\rho_i)$. This statement does not imply that another invocation of $M$ would regenerate $y_i$ or that the trace is externally authentic.
+
+\subsection{Threat and disclosure boundaries}
+Canonical SHA-256 values detect accidental corruption, stale fields, selective edits, deletion, and reordering when an independent copy or anchor exists. They are unkeyed commitments, not signatures. A party able to replace the complete trace and all external anchors can construct another internally valid record. Model names and options are declarations; model weights, provider defaults, and serving binaries are not authenticated.
+
+The three profiles govern prompt, system-instruction, response, and request-message text, not all session metadata or game state. Hash-only storage is not confidentiality: low-entropy prompts may be recoverable by guessing and hashing. Redaction also prevents independent V3 verification. These constraints are properties of the evidence retained, not incidental limitations of the verifier.
+
+\section{Implementation}
+BatLLM's normalised command forms are movement (\texttt{M}, \texttt{M}$d$), clockwise and counter-clockwise rotation (\texttt{C}$\alpha$, \texttt{A}$\alpha$), shooting (\texttt{B}), and shield operations (\texttt{S}, \texttt{S1}, \texttt{S0}); other evaluated text resolves to \texttt{ERR}. Gameplay is implemented as a pure transition module independent of the Kivy interface.
+
+The v3 research runtime is a headless execution path that uses the same production parser and transition engine. Immediately before adapter invocation, it materialises the ordered messages, requested provider, endpoint declaration, model, generation options, and stream setting. It records timestamps, latency, retry count, response or error, normalised command, rules, states, and semantic events. Failed attempts are removed from subsequent conversation history, matching the application's rollback policy. The existing graphical application's v2 user export remains unchanged; this paper's claims concern the explicit v3 research path.
+
+Canonical JSON uses UTF-8, ordered keys, compact separators, and rejects non-finite numbers. Separate commitments cover protected text, retained requests, transitions, play records, the ordered play chain, and the session envelope. Semantic events exclude raw model text, which remains only in the retention-governed invocation evidence. The verifier reports predicate-specific failures in text or JSON and exits non-zero.
+
+To reduce dependence on a shared implementation, the artefact includes a second executable semantics that imports no production gameplay module. It separately implements command normalisation, movement bounds, rotation, shields, projectile traversal, collision, damage, state normalisation, and semantic-event construction. This is not a formal proof and can share specification errors, but it converts replay from a same-function regression into differential testing between two implementations.
+
+\section{Evaluation}
+\subsection{Questions and protocol}
+We evaluate four questions. \emph{Q1}: do generated traces satisfy the evidence available under each retention profile and reproduce their recorded state and events? \emph{Q2}: does the production transition engine agree with the independent executable semantics? \emph{Q3}: does the verifier reject controlled semantic inconsistencies while accepting semantically identical JSON serialisations? \emph{Q4}: what storage and in-memory verification costs does the reference representation impose?
+
+The trace corpus contains \ResultSessions{} sessions and \ResultPlays{} transitions: twenty sessions per retention profile, eighteen transitions per session, four requested model identifiers, shared and independent conversation histories, augmented and unaugmented prompts, varied gameplay parameters, every documented command form, and invalid text. Responses are scripted. This isolates trace semantics from model competence and network availability; it is not an evaluation of LLM behaviour.
+
+Differential testing uses a fixed seed and \ResultDifferentialCases{} targeted and random cases. Cases vary positions, rotation, health, shields, rules, commands, invalid text, and projectile outcomes. Production and reference implementations are compared for normalisation, resulting state, ordered events, and projectile path.
+
+The perturbation experiment changes eleven classes of evidence: command, retained response, retained invocation, retained human prompt, state supplied to the model, rules, pre-state, post-state, events, deletion, and reordering. Play-local faults are applied in early, middle, and late positions; rule faults are session-level. Mutations unavailable under a retention profile are excluded. Before verification, all commitments derivable from retained mutated content are recomputed. A second control reserialises every valid trace using compact ASCII, pretty Unicode, and recursively reversed key order.
+
+Storage is measured on canonical UTF-8 JSON and gzip level 9. Verification timing is the median of \ResultTimingRepetitions{} runs per already-parsed session, so it excludes file I/O and JSON parsing.
+
+\begin{table}[t]
+\caption{Reference artefact results.}
+\label{tab:results}
+\centering
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Measure & Result \\
+\midrule
+Valid trace sessions & \ResultValidSessions{}/\ResultSessions{} \\
+State / event replays & \ResultStateEquivalent{} / \ResultEventEquivalent{} \\
+Full invocation reconstructions & \ResultExactRequests{} \\
+Retained-text groundings verified & \ResultVerifiedGroundings{} \\
+Differential state/event/path cases & \ResultDifferentialState{}/\ResultDifferentialEvents{}/\ResultDifferentialPaths{} \\
+Re-anchored perturbations rejected & \ResultFaultsDetected{}/\ResultFaults{} \\
+Benign serialisations accepted & \ResultSerializationAccepted{}/\ResultSerializationVariants{} \\
+Raw bytes/play: full/redacted/hash & \ResultRawBytesFull{}/\ResultRawBytesRedacted{}/\ResultRawBytesHashed{} \\
+Mean gzip bytes/play & \ResultGzipBytes{} \\
+Median verification/session & \ResultVerificationMs{} ms \\
+Median verification throughput & \ResultThroughput{} plays/s \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Results}
+All sessions passed the guarantees available under their retention profile (Table~\ref{tab:results}). Every recorded state and event list replayed equivalently. Full retention reconstructed \ResultExactRequests{} adapter-boundary invocation objects and verified \ResultVerifiedGroundings{} response-to-command mappings. The \ResultCommittedGroundings{} reduced-retention transitions remained operatively replayable without being misreported as independently grounded.
+
+Production and reference semantics agreed in all \ResultDifferentialCases{} cases for command normalisation, state, events, and projectile paths. The verifier rejected all \ResultFaults{} applicable re-anchored perturbations across trace positions and accepted all \ResultSerializationVariants{} benign variants, yielding no observed false rejection in this control set. These are exhaustive results only for the declared fixtures, not estimates of attack detection in deployment.
+
+Raw storage varied substantially by retention profile. Redacted traces were slightly larger than full traces because each removed message content was replaced by a structured commitment; hash-only traces were smallest. Compression reduced the overall mean to \ResultGzipBytes{} bytes per play. Median in-memory verification was \ResultVerificationMs{} ms per eighteen-play session, equivalent to \ResultThroughput{} plays/s on the CI reference runner. Timing is environment-specific.
+
+\section{Limitations and Conclusion}
+The implementation validates a bounded deterministic domain. Systems with stochastic post-grounding execution must additionally capture random state or external effects. The independent semantics reduces, but cannot eliminate, common-specification error. The corpus uses scripted responses and does not establish live-provider completeness, model quality, or human usefulness. The recorded invocation is application-level rather than transport-level, and declared model identity is not cryptographically tied to weights or serving code. Retention commitments do not provide confidentiality or authorship, and reduced retention sacrifices independent grounding verification. Finally, the graphical application does not yet emit v3 traces; compatibility is preserved through a separate research runtime.
+
+Within these boundaries, the contract establishes a useful separation: model generation need not be repeatable for the action derived from a recorded response to be verifiable. By retaining evidence at the adapter boundary, exposing grounding as a checkable operation, and replaying explicit domain semantics, BatLLM provides a concrete account of how human instruction became computational state. The pattern applies to other bounded LLM-mediated systems whose outputs are grounded into an explicit command language and deterministic transition function.
+
+\balance
+\section*{Acknowledgment}
+BatLLM was supported by the University of Colorado Boulder's Center for Humanities \& the Arts and Research \& Innovation Office.
+
+\begin{thebibliography}{12}
+\bibitem{yuan2025nondeterminism}
+J. Yuan \emph{et al.}, ``Understanding and mitigating numerical sources of nondeterminism in LLM inference,'' in \emph{Advances in Neural Information Processing Systems}, vol. 38, 2025.
+
+\bibitem{ma2024agentboard}
+C. Ma \emph{et al.}, ``AgentBoard: An analytical evaluation board of multi-turn LLM agents,'' in \emph{Advances in Neural Information Processing Systems}, vol. 37, 2024.
+
+\bibitem{tan2025cradle}
+W. Tan \emph{et al.}, ``Cradle: Empowering foundation agents towards general computer control,'' in \emph{Proc. 42nd Int. Conf. Machine Learning}, 2025, pp. 58658--58725.
+
+\bibitem{laurenzo2026batllm}
+T. Laurenzo, ``BatLLM: Local-first human--LLM-mediated play and analysis,'' open-source software, 2026.
+
+\bibitem{w3c2013provo}
+W3C Provenance Working Group, ``PROV-O: The PROV ontology,'' W3C Recommendation, 2013.
+
+\bibitem{otel2026genai}
+OpenTelemetry Authors, ``Generative AI semantic conventions: Attribute registry,'' OpenTelemetry Specification, 2026.
+
+\bibitem{souza2025provagent}
+R. Souza \emph{et al.}, ``PROV-AGENT: Unified provenance for tracking AI agent interactions in agentic workflows,'' in \emph{Proc. IEEE Int. Conf. eScience}, 2025, pp. 467--473.
+
+\bibitem{wang2026traces}
+Y. Wang \emph{et al.}, ``From agent traces to trust: Evidence tracing and execution provenance in LLM agents,'' arXiv:2606.04990, 2026.
+
+\bibitem{feng2025agentrr}
+E. Feng \emph{et al.}, ``Get experience from practice: LLM agents with record \& replay,'' arXiv:2505.17716, 2025.
+
+\bibitem{ledjaki2026psi}
+L. F. Ledjaki, Y.-C. Chang, M. Loutis, and E. A\"imeur, ``Prompt scene investigation: Uncovering the evidence in LLMs,'' in \emph{Companion Proc. ACM Web Conf.}, 2026, pp. 284--290.
+
+\bibitem{mudasiru2026agrepl}
+R. Mudasiru, ``Deterministic replay for AI agent systems,'' arXiv:2607.16200, 2026.
+
+\bibitem{paduraru2026assurance}
+C. Paduraru, P.-L. Bouruc, and A. Stefanescu, ``A trace-based assurance framework for agentic AI orchestration: Contracts, testing, and governance,'' in \emph{Proc. 21st Int. Conf. Evaluation of Novel Approaches to Software Engineering}, 2026, pp. 420--427.
+\end{thebibliography}
+\end{document}
