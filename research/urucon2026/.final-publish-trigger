@@ -1,1 +1,1 @@
-Publish every validated URUCON deliverable, generated result, corpus file, checksum and research-artefact package; update status documentation and remove obsolete one-shot publication machinery.
+Run the PR-driven publication workflow and commit the complete validated corpus, results, British-English PDF and DOCX, citation metadata, checksums, and packaged research artefact.
