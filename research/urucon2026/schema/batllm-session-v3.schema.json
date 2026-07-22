@@ -1,0 +1,393 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://krahd.github.io/BatLLM/schema/batllm-session-v3.schema.json",
+  "title": "BatLLM Research Session v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "session_type",
+    "session_id",
+    "created_at",
+    "privacy_mode",
+    "application_provenance",
+    "runtime_provenance",
+    "model_provenance",
+    "games",
+    "session_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 3
+    },
+    "session_type": {
+      "const": "batllm_research_session"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "privacy_mode": {
+      "enum": [
+        "full",
+        "redacted",
+        "hashed"
+      ]
+    },
+    "application_provenance": {
+      "type": "object"
+    },
+    "runtime_provenance": {
+      "type": "object"
+    },
+    "model_provenance": {
+      "type": "object"
+    },
+    "session_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "games": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/game"
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "state": {
+      "type": "object"
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha256",
+        "length",
+        "encoding"
+      ],
+      "properties": {
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "encoding": {
+          "const": "utf-8"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "privacy_mode",
+        "canonical_sha256"
+      ],
+      "properties": {
+        "privacy_mode": {
+          "enum": [
+            "full",
+            "redacted",
+            "hashed"
+          ]
+        },
+        "canonical_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "stored_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "payload": {
+          "type": "object"
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "message"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "$ref": "#/$defs/content"
+        }
+      }
+    },
+    "play": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "play_id",
+        "sequence",
+        "bot_id",
+        "human_prompt",
+        "system_instructions",
+        "context_policy",
+        "game_state_supplied_to_model",
+        "request",
+        "request_started_at",
+        "request_completed_at",
+        "latency_ms",
+        "attempts",
+        "response",
+        "normalized_command",
+        "events",
+        "pre_state",
+        "post_state",
+        "transition_sha256",
+        "previous_play_sha256",
+        "play_sha256",
+        "chain_sha256",
+        "status"
+      ],
+      "properties": {
+        "play_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bot_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "human_prompt": {
+          "$ref": "#/$defs/content"
+        },
+        "game_state_supplied_to_model": {
+          "type": "object"
+        },
+        "request": {
+          "$ref": "#/$defs/request"
+        },
+        "request_started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "request_completed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "latency_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "response": {
+          "$ref": "#/$defs/content"
+        },
+        "normalized_command": {
+          "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "pre_state": {
+          "$ref": "#/$defs/state"
+        },
+        "post_state": {
+          "$ref": "#/$defs/state"
+        },
+        "transition_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "previous_play_sha256": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/sha256"
+            }
+          ]
+        },
+        "play_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "chain_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "invalid-command",
+            "invocation-error"
+          ]
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        },
+        "system_instructions": {
+          "$ref": "#/$defs/content"
+        },
+        "context_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prompt_augmentation",
+            "independent_contexts"
+          ],
+          "properties": {
+            "prompt_augmentation": {
+              "type": "boolean"
+            },
+            "independent_contexts": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "invocation-error"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "error"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "error"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bot_id",
+        "prompt"
+      ],
+      "properties": {
+        "bot_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "prompt": {
+          "$ref": "#/$defs/content"
+        }
+      }
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "round",
+        "started_at",
+        "gameplay_settings_snapshot",
+        "initial_state",
+        "prompts",
+        "plays",
+        "ended_at",
+        "final_state"
+      ],
+      "properties": {
+        "round": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "gameplay_settings_snapshot": {
+          "type": "object"
+        },
+        "initial_state": {
+          "$ref": "#/$defs/state"
+        },
+        "final_state": {
+          "$ref": "#/$defs/state"
+        },
+        "prompts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/prompt"
+          }
+        },
+        "plays": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/play"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "game": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "game_id",
+        "started_at",
+        "rounds",
+        "final_state"
+      ],
+      "properties": {
+        "game_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rounds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/round"
+          },
+          "minItems": 1
+        },
+        "final_state": {
+          "$ref": "#/$defs/state"
+        }
+      }
+    }
+  }
+}
