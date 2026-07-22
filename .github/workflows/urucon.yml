@@ -38,7 +38,7 @@ jobs:
           python -m pip install -r research/urucon2026/requirements.txt
       - name: Compile all maintained entry points
         run: |
-          python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments research/urucon2026/publish_repository.py
+          python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments research/urucon2026/publish_repository.py research/urucon2026/publish_repository_guard.py
       - name: Validate schema JSON syntax
         run: python -m json.tool research/urucon2026/schema/batllm-session-v3.schema.json
       - name: Run complete non-live test suite
@@ -169,4 +169,4 @@ jobs:
           python -m pip install -r research/urucon2026/requirements.txt
       - name: Publish validated files
         if: steps.publication.outputs.requested == 'true'
-        run: python research/urucon2026/publish_repository.py
+        run: python research/urucon2026/publish_repository_guard.py
