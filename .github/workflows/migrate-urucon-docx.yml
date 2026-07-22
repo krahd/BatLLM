@@ -20,7 +20,12 @@ jobs:
       - name: Decode Word files
         run: |
           set -euo pipefail
-          cat .docx-payload/paper-* | base64 -d > research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
+          cat \
+            .docx-payload/paper-00 \
+            .docx-payload/paper-011 \
+            .docx-payload/paper-012 \
+            .docx-payload/paper-02 \
+            | base64 -d > research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
           cat .docx-payload/template-* | base64 -d > research/urucon2026/paper/conference-template-a4.docx
       - name: Remove obsolete paper and package files
         run: |
