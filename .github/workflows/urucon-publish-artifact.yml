@@ -1,0 +1,114 @@
+name: Publish URUCON research artefact
+
+on:
+  push:
+    branches: [urucon]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    env:
+      BATLLM_RUN_OLLAMA_SMOKE: "0"
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+      KIVY_WINDOW: mock
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install system tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            pandoc poppler-utils \
+            texlive-latex-base texlive-latex-recommended \
+            texlive-latex-extra texlive-publishers \
+            texlive-fonts-recommended
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -r research/urucon2026/requirements.txt
+
+      - name: Validate implementation and regenerate results
+        run: |
+          python -m compileall -q src research/urucon2026/experiments \
+            run_batllm_research.py run_batllm_verify.py
+          python -m pytest -q src/tests
+          python research/urucon2026/experiments/run_all.py
+
+      - name: Enforce British-English source and build PDF
+        working-directory: research/urucon2026/paper
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('main.tex')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('\\section*{Acknowledgment}', '\\section*{Acknowledgement}')
+          path.write_text(text, encoding='utf-8')
+          PY
+          rm -f main.aux main.log main.pdf
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pages=$(pdfinfo main.pdf | awk '/^Pages:/ {print $2}')
+          test "$pages" -ge 4
+          test "$pages" -le 5
+          ! grep -q 'Citation.*undefined' main.log
+          ! grep -q 'There were undefined references' main.log
+          ! grep -q 'LaTeX Error' main.log
+          ! grep -q 'Overfull' main.log
+          pdftotext main.pdf - | grep -q 'ACKNOWLEDGEMENT'
+
+      - name: Build editable British-English DOCX
+        run: |
+          python research/urucon2026/paper/build_docx.py
+          unzip -t research/urucon2026/paper/main.docx
+          python - <<'PY'
+          from docx import Document
+          path = 'research/urucon2026/paper/main.docx'
+          doc = Document(path)
+          assert doc.core_properties.language == 'en-GB'
+          assert any(p.text == 'Acknowledgement' for p in doc.paragraphs)
+          assert len(doc.tables) == 2
+          PY
+
+      - name: Package complete research artefact
+        run: python research/urucon2026/build_artifact.py
+
+      - name: Commit generated artefact to urucon
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f \
+            research/urucon2026/README.md \
+            research/urucon2026/requirements.txt \
+            research/urucon2026/corpus/generated \
+            research/urucon2026/results \
+            research/urucon2026/paper/main.tex \
+            research/urucon2026/paper/results.tex \
+            research/urucon2026/paper/main.log \
+            research/urucon2026/paper/main.pdf \
+            research/urucon2026/paper/main.docx \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.pdf \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx \
+            research/urucon2026/artifact
+          if git diff --cached --quiet; then
+            echo 'Generated artefact already matches the branch.'
+          else
+            git commit -m 'artifacts: publish validated URUCON package [skip ci]'
+            git push origin HEAD:urucon
+          fi
