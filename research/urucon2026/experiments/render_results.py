@@ -15,6 +15,7 @@ def load(name: str) -> dict:
 
 def main() -> int:
     replay = load("replay-summary.json")
+    schema = load("schema-summary.json")
     differential = load("differential-summary.json")
     faults = load("fault-summary.json")
     serialization = load("serialization-summary.json")
@@ -25,6 +26,7 @@ def main() -> int:
         "ResultSessions": replay["sessions"],
         "ResultPlays": replay["plays"],
         "ResultValidSessions": replay["valid_sessions"],
+        "ResultSchemaValid": schema["valid_sessions"],
         "ResultExactRequests": replay["exact_requests"],
         "ResultRedactedRequests": replay["redacted_requests"],
         "ResultHashedRequests": replay["commitment_only_requests"],

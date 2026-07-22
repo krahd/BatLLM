@@ -34,10 +34,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+          python -m pip install -r research/urucon2026/requirements.txt
       - name: Compile all maintained entry points
         run: |
           python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments
-      - name: Validate schema JSON
+      - name: Validate schema JSON syntax
         run: python -m json.tool research/urucon2026/schema/batllm-session-v3.schema.json
       - name: Run complete non-live test suite
         run: python -m pytest -q src/tests
@@ -79,6 +80,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+          python -m pip install -r research/urucon2026/requirements.txt
       - name: Generate reference results
         run: python research/urucon2026/experiments/run_all.py
       - name: Install LaTeX
@@ -120,6 +122,7 @@ jobs:
             research/urucon2026/paper/references.bib
             research/urucon2026/paper/results.tex
             research/urucon2026/schema/batllm-session-v3.schema.json
+            research/urucon2026/requirements.txt
             research/urucon2026/README.md
             research/urucon2026/CLAIMS.md
             research/urucon2026/PAPER_REVIEW.md

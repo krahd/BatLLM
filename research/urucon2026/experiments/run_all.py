@@ -12,6 +12,7 @@ HERE = Path(__file__).resolve().parent
 def main() -> int:
     for script in (
         "generate_corpus.py",
+        "schema_controls.py",
         "differential_semantics.py",
         "inject_faults.py",
         "serialization_controls.py",
