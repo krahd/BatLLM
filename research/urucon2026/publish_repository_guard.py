@@ -41,7 +41,46 @@ def preserve_report(content: str) -> None:
         print(content)
 
 
+def ensure_ieee_csl() -> None:
+    """Expose Ubuntu's packaged IEEE CSL at a path used by the builder."""
+
+    accepted = (
+        Path(
+            "/usr/share/texlive/texmf-dist/tex/latex/"
+            "citation-style-language/styles/ieee.csl"
+        ),
+        Path("/usr/share/pandoc/data/csl/ieee.csl"),
+    )
+    if any(path.exists() for path in accepted):
+        return
+
+    subprocess.run(
+        [
+            "sudo",
+            "apt-get",
+            "install",
+            "-y",
+            "-qq",
+            "--no-install-recommends",
+            "citation-style-language-styles",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+    packaged = Path("/usr/share/citation-style-language/styles/ieee.csl")
+    if not packaged.exists():
+        raise FileNotFoundError(
+            "citation-style-language-styles did not provide ieee.csl"
+        )
+    target = accepted[1]
+    subprocess.run(["sudo", "mkdir", "-p", str(target.parent)], check=True)
+    subprocess.run(["sudo", "ln", "-sf", str(packaged), str(target)], check=True)
+    if not target.exists():
+        raise FileNotFoundError("Could not expose the packaged IEEE CSL to Pandoc")
+
+
 def docx_preflight() -> None:
+    ensure_ieee_csl()
     process = subprocess.run(
         [sys.executable, str(RESEARCH / "paper/build_docx.py")],
         cwd=ROOT,
