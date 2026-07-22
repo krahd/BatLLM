@@ -2,9 +2,37 @@ name: URUCON research validation
 
 on:
   push:
-    branches: [urucon]
+    branches: [main]
+    paths:
+      - ".github/workflows/urucon.yml"
+      - "research/urucon2026/**"
+      - "src/game/replay_engine.py"
+      - "src/game/research_runtime.py"
+      - "src/game/session_v3.py"
+      - "src/game/trace_contract.py"
+      - "src/game/trace_verifier.py"
+      - "src/tests/test_trace_contract.py"
+      - "src/tests/test_replay_engine.py"
+      - "src/tests/test_game_analyzer.py"
+      - "run_batllm_research.py"
+      - "run_batllm_verify.py"
+      - "requirements.txt"
   pull_request:
     branches: [main]
+    paths:
+      - ".github/workflows/urucon.yml"
+      - "research/urucon2026/**"
+      - "src/game/replay_engine.py"
+      - "src/game/research_runtime.py"
+      - "src/game/session_v3.py"
+      - "src/game/trace_contract.py"
+      - "src/game/trace_verifier.py"
+      - "src/tests/test_trace_contract.py"
+      - "src/tests/test_replay_engine.py"
+      - "src/tests/test_game_analyzer.py"
+      - "run_batllm_research.py"
+      - "run_batllm_verify.py"
+      - "requirements.txt"
 
 permissions:
   contents: read
