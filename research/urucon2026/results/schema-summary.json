@@ -1,0 +1,9 @@
+{
+  "draft": "2020-12",
+  "failures": [],
+  "invalid_sessions": 0,
+  "malformed_control_rejected": true,
+  "schema_valid": true,
+  "sessions": 60,
+  "valid_sessions": 60
+}

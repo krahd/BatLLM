@@ -1,0 +1,3289 @@
+{
+  "application_provenance": {
+    "git_commit": "e9c946d92cb27fbbeef878121ab12af2c8a469fd",
+    "name": "BatLLM",
+    "trace_schema_version": 3,
+    "version": "0.3.6"
+  },
+  "created_at": "2026-01-01T00:00:00+00:00",
+  "games": [
+    {
+      "final_state": {
+        "1": {
+          "current_prompt": "",
+          "health": 30,
+          "id": 1,
+          "last_llm_response": null,
+          "rot": 345.0,
+          "shield": false,
+          "x": 0.30659756150367534,
+          "y": 0.46205904774487394
+        },
+        "2": {
+          "current_prompt": "",
+          "health": 30,
+          "id": 2,
+          "last_llm_response": null,
+          "rot": 165.0,
+          "shield": true,
+          "x": 0.6916987298107781,
+          "y": 0.525
+        }
+      },
+      "game_id": 1,
+      "rounds": [
+        {
+          "ended_at": "2026-01-01T00:00:00+00:00",
+          "final_state": {
+            "1": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 1,
+              "last_llm_response": null,
+              "rot": 345.0,
+              "shield": false,
+              "x": 0.30659756150367534,
+              "y": 0.46205904774487394
+            },
+            "2": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 2,
+              "last_llm_response": null,
+              "rot": 165.0,
+              "shield": true,
+              "x": 0.6916987298107781,
+              "y": 0.525
+            }
+          },
+          "gameplay_settings_snapshot": {
+            "bot_diameter": 0.08,
+            "bot_step_length": 0.05,
+            "bullet_damage": 6,
+            "bullet_diameter": 0.02,
+            "bullet_step_length": 0.01,
+            "initial_health": 30,
+            "shield_initial_state": false,
+            "shield_size": 60.0,
+            "total_rounds": 1,
+            "turns_per_round": 18
+          },
+          "initial_state": {
+            "1": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 1,
+              "last_llm_response": null,
+              "rot": 0.0,
+              "shield": false,
+              "x": 0.21500000000000002,
+              "y": 0.5
+            },
+            "2": {
+              "current_prompt": "",
+              "health": 30,
+              "id": 2,
+              "last_llm_response": null,
+              "rot": 180.0,
+              "shield": false,
+              "x": 0.785,
+              "y": 0.5
+            }
+          },
+          "plays": [
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "fc90bde559b9d96824795274264e2fdde796a4fe18dfe160473571fd4fc97ece",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": 0.0,
+                    "to": 330.0
+                  },
+                  "label": "Rotate counterclockwise to 330.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 0.0,
+                    "shield": false,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "c70c015c87850ce325736da2bda03466edf7cb120c60b572f391096a3a4a6030",
+                "text": "Tactical turn 0."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "A30.0",
+              "play_id": "play_003_001",
+              "play_sha256": "de9fc3beb3456c50e520bfb37259582f4128c978c7e03c6fa36a55d3ce077bc4",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 0.0,
+                  "shield": false,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": null,
+              "request": {
+                "canonical_sha256": "a0b68d44403b4aaa493e1879a5cad1f4a99005b9d725f9948bdb9c71496d8c96",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "a0b68d44403b4aaa493e1879a5cad1f4a99005b9d725f9948bdb9c71496d8c96"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "f22eaa9a1442b58c1afea9d20c4a958b27e44fe083e938a327433000b9a3d29e",
+                "text": "A30"
+              },
+              "sequence": 1,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "5a84b46e99ae01601d52bc0e6cff40127ba1de873c076273f1267cf4c222ce21"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "09e29b1026c8a749b0b94e2787e6632e5c559a98c0f7bf22b82d0f82619ebec4",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": false,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "a50cfed672beb4bb909e3620981d82f794bb662904c255d6e532fdae5f705a0c",
+                "text": "Defensive turn 0."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S",
+              "play_id": "play_003_002",
+              "play_sha256": "c4f2a55b3117420d81dae829f5aca9f55ace8363d0ab5cb430897431e70cb0d0",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "de9fc3beb3456c50e520bfb37259582f4128c978c7e03c6fa36a55d3ce077bc4",
+              "request": {
+                "canonical_sha256": "bb8e280c9b5d8ee38784f87b20ab0d39003dc889d698f34f48faa29bc942747e",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "bb8e280c9b5d8ee38784f87b20ab0d39003dc889d698f34f48faa29bc942747e"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643",
+                "text": "S"
+              },
+              "sequence": 2,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "db4142e3b7417443fd8bdb32c9b4b680c5d6e133a0753a1bcf3845e226d7a96d"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "a62947614da566b12f37eddf9f42a56469e56929b6b296b6617f67c401987850",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": false,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "79dc31aee2a46115466bdf9f73b2879fb9d988d70699e37866f38bfcf5fd2a09",
+                "text": "Tactical turn 1."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S1",
+              "play_id": "play_003_003",
+              "play_sha256": "295bf7bf10285b004cb597285db96723cc8f15040c70a7b2eb8f61e97483e967",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": false,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "c4f2a55b3117420d81dae829f5aca9f55ace8363d0ab5cb430897431e70cb0d0",
+              "request": {
+                "canonical_sha256": "75ac2f2e4d86adcc859c6fb1fe91f695a7ed35022cf264eb83f74af681c915f4",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "75ac2f2e4d86adcc859c6fb1fe91f695a7ed35022cf264eb83f74af681c915f4"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "3696ad59777e09d5f2daacb544022d435e7cd053d87c5781241fabd8fdf2a90d",
+                "text": "S1"
+              },
+              "sequence": 3,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "8192a2ba65fd2cce3c46c3f7ac15fcc3ed05ffdc4ebd96fa318b03f16bfac401"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "54d4e66954e52476a24f61e89553e84214a42bb463e35264bc0b606808948878",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": true,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "0dbd888d83c9e732610c323b7fb8da6a622a3d5c98e9d67eb7acc1d0b99a1bc9",
+                "text": "Defensive turn 1."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S0",
+              "play_id": "play_003_004",
+              "play_sha256": "cbdb6eee20967a79839bc02b1d71ac8ab0eab9679372effb299810d0f828583b",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": true,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "295bf7bf10285b004cb597285db96723cc8f15040c70a7b2eb8f61e97483e967",
+              "request": {
+                "canonical_sha256": "fb42420ea162dc2b51fb0a5a4bd7e8dc4f26f1f8500b2f58d0bfe6abd306bb65",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "fb42420ea162dc2b51fb0a5a4bd7e8dc4f26f1f8500b2f58d0bfe6abd306bb65"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "f87980c88a93c33c01a3fa5fbbacdf984c0441d0c1b51fdc4620c5935cb78716",
+                "text": "S0"
+              },
+              "sequence": 4,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "15a6ab1c6258e912c75721a07e2032f17c956fba5c39cbe3f2f83183dd784da4"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "7e05acb4f884b33d6398e2e11c8fc54aa39629c45e93fcbb83d213d295bba80f",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {},
+                  "label": "Shot blocked because shield is ON",
+                  "target_bot_id": null,
+                  "type": "no_op"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "858db92ef849661653e1080035dc7e27f6975e698e4d51a56867113c41f22e5c",
+                "text": "Tactical turn 2."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "B",
+              "play_id": "play_003_005",
+              "play_sha256": "f4255941d1381ca0c131f9e39344c23bbe52a0249e5e67f8d2c8862ea9d93b9d",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "cbdb6eee20967a79839bc02b1d71ac8ab0eab9679372effb299810d0f828583b",
+              "request": {
+                "canonical_sha256": "17da89e37629a438566349f20a8f374eaeeed2956f19f4921b4fffb83a1237d3",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "17da89e37629a438566349f20a8f374eaeeed2956f19f4921b4fffb83a1237d3"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+                "text": "B"
+              },
+              "sequence": 5,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "0024309462038bdb50930d74836992d872bf0c03ed77455110845a6f0f0bd92b"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "6a0585c68a45b51af9e750274ffa3bc49158f675d9a49b250e44cda0533506f6",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "cmd": "ERR"
+                  },
+                  "label": "Invalid command",
+                  "target_bot_id": null,
+                  "type": "invalid_command"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "3ba43482eff7be8f75972a2b5af9edd7808cb54c5d5f7cb7ae7e33d77092dd4e",
+                "text": "Defensive turn 2."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "ERR",
+              "play_id": "play_003_006",
+              "play_sha256": "65af906d8645f617cc4b31875fc9e2249ce9a0bfefa24c87661a53891e3328c9",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "f4255941d1381ca0c131f9e39344c23bbe52a0249e5e67f8d2c8862ea9d93b9d",
+              "request": {
+                "canonical_sha256": "a82da9ed87594c3462f5de2047ec576a0e8f95cd527c5e31b3a34df45994fdce",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "a82da9ed87594c3462f5de2047ec576a0e8f95cd527c5e31b3a34df45994fdce"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 8,
+                "sha256": "999aaa8645bb72ff599e143b1e3d2a94777127f4783a69f067251f7bbebc5ab6",
+                "text": "nonsense"
+              },
+              "sequence": 6,
+              "status": "invalid-command",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "cde0808945d4de4317cc59e20e2bc8ef7cc9899d3bdcfece4b580c08fa32ff15"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "fa090187f32fe95a1d0f8b45a02adf24a6a5b1b440d3cd18035f411567769248",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": [
+                      0.21500000000000002,
+                      0.5
+                    ],
+                    "to": [
+                      0.25830127018922194,
+                      0.475
+                    ]
+                  },
+                  "label": "Move to (0.258, 0.475)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.21500000000000002,
+                    "y": 0.5
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "2796a9f870f99a3162a24b772a08589df49d3c89d49a8f06a49abd1477748459",
+                "text": "Tactical turn 3."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M",
+              "play_id": "play_003_007",
+              "play_sha256": "9f289522d6956a0dee2012cae71acb46c12f42c3b94b112d934a7e5d61434c26",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.21500000000000002,
+                  "y": 0.5
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "65af906d8645f617cc4b31875fc9e2249ce9a0bfefa24c87661a53891e3328c9",
+              "request": {
+                "canonical_sha256": "82c2a91594c2c6a64c25ced50c6c0e84ec6a6bf46f63f497bdb7a20e1cc50e57",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 3.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "82c2a91594c2c6a64c25ced50c6c0e84ec6a6bf46f63f497bdb7a20e1cc50e57"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "08f271887ce94707da822d5263bae19d5519cb3614e0daedc4c7ce5dab7473f1",
+                "text": "M"
+              },
+              "sequence": 7,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "29a89f21840ce4ddea8853393b9ca925d3152e440ac5523848076a13e9843d22"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "befcfeae1c18d59016c832ce4d8f5ca5c0ec0818b48e7eef0e630aa7f3bc2827",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": [
+                      0.785,
+                      0.5
+                    ],
+                    "to": [
+                      0.735,
+                      0.5
+                    ]
+                  },
+                  "label": "Move to (0.735, 0.500)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.785,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "abf9d6b764e5c5aed89e7e8ce5b845dcd6c2d7ca7aecc93a2e339ac1622e9a79",
+                "text": "Defensive turn 3."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M0.05",
+              "play_id": "play_003_008",
+              "play_sha256": "e6f334b6ff12cd7d14de3c4ea054972a92946b083e49b201735b1c74aaea74fb",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.785,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "9f289522d6956a0dee2012cae71acb46c12f42c3b94b112d934a7e5d61434c26",
+              "request": {
+                "canonical_sha256": "c238b2aa2cc168f469018efa1cd4b2e8f5487fc78e41a6e8e55e5fb320709460",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 3.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "c238b2aa2cc168f469018efa1cd4b2e8f5487fc78e41a6e8e55e5fb320709460"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 5,
+                "sha256": "d3de368db997a665911f986b9abd15ecf9bf906016145a345435598842bc1ebe",
+                "text": "M0.05"
+              },
+              "sequence": 8,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "9e59a123f19c32fa8cfed9f13c5e5760a478db4b13a2aff022813bdbe287f267"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "c3cd1c92a3954811356c817a05ee2062e269001eb0d33beb3d13c39c03b4f506",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": 330.0,
+                    "to": 345.0
+                  },
+                  "label": "Rotate clockwise to 345.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 330.0,
+                    "shield": true,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "31d5f1cdebbf8389d469ca3244eaabbadaa3d01722697345e3131fbc97cec333",
+                "text": "Tactical turn 4."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "C15.0",
+              "play_id": "play_003_009",
+              "play_sha256": "664a6f5b0f27c03b8fe80057e521529b9fa1d23f713c6efbed2839a2930dfe41",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 330.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "e6f334b6ff12cd7d14de3c4ea054972a92946b083e49b201735b1c74aaea74fb",
+              "request": {
+                "canonical_sha256": "c351abb2dfb827240f000c0d4c57c6922deb54e07bfc5f760c840af1505858d2",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 4.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "c351abb2dfb827240f000c0d4c57c6922deb54e07bfc5f760c840af1505858d2"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "c1f5e527f9d411dfe793aebe1021a0910fccbc69e55cb8ddaef79f5d535d60ec",
+                "text": "C15"
+              },
+              "sequence": 9,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "211678d7f37885f77e7437f1940b7118a7561bf82465604b21c46224df86f1f9"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "7ba4c4a28ba87b7800c9e415c5372859a1fd1d285cab0d693dbb4ea4876e93c2",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": 180.0,
+                    "to": 150.0
+                  },
+                  "label": "Rotate counterclockwise to 150.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": true,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 180.0,
+                    "shield": false,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "a4ff92be089bd38afaaf58b27f23534cc6f3e3a05c95147ae66592b750a4cc03",
+                "text": "Defensive turn 4."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "A30.0",
+              "play_id": "play_003_010",
+              "play_sha256": "eb1a918f5be2d1244d2f96bd9f0cd271c97bacdf707938da902e28d62f8cdb6a",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 180.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "664a6f5b0f27c03b8fe80057e521529b9fa1d23f713c6efbed2839a2930dfe41",
+              "request": {
+                "canonical_sha256": "0bdde9c299a193887891f8d45e95f20441e235b49cc1791fab480fff5fd9e76b",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M0.05",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 4.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "0bdde9c299a193887891f8d45e95f20441e235b49cc1791fab480fff5fd9e76b"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "f22eaa9a1442b58c1afea9d20c4a958b27e44fe083e938a327433000b9a3d29e",
+                "text": "A30"
+              },
+              "sequence": 10,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "eccbd3bd24dde029531298d5b597625f2dfce16514f60a54b705262377125e19"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "5413129ca2e8c4d90a6fd45f756f1965fa17baf6b1c6e9643527ed3667b89582",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": true,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": false,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "4b5191bf3a6d017e72062d2063330443943e78403d6a19b7d898ac6c21985c16",
+                "text": "Tactical turn 5."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S",
+              "play_id": "play_003_011",
+              "play_sha256": "f4ea8f76caba5f1c03d72138bc2a9d2fd532c0fad768c1f34c448a2b332052ef",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": true,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "eb1a918f5be2d1244d2f96bd9f0cd271c97bacdf707938da902e28d62f8cdb6a",
+              "request": {
+                "canonical_sha256": "f817e3a80d32d754ab992af92c36836f3dd4331d3a8ddc274d496e5c5a1c5948",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "C15",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 5.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "f817e3a80d32d754ab992af92c36836f3dd4331d3a8ddc274d496e5c5a1c5948"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "8de0b3c47f112c59745f717a626932264c422a7563954872e237b223af4ad643",
+                "text": "S"
+              },
+              "sequence": 11,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "592dfcbdef70139f20dfd17cf4fb235a5ba013cffb9a39afd4c88091618bb642"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "78fc19b7d2d6a31f9ffca4b2ef931a655d07c75fad61306538886d9cc46660c6",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "value": true
+                  },
+                  "label": "Shield ON",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": false,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "4692ddb1d3ba3690d0490dcaa03885c099c9ebea8d505431b6c0b03c7db5c4cc",
+                "text": "Defensive turn 5."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S1",
+              "play_id": "play_003_012",
+              "play_sha256": "e789496952cfab65c797a9957d3041fc4dddc51a1135a239d09449f225457628",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": false,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "f4ea8f76caba5f1c03d72138bc2a9d2fd532c0fad768c1f34c448a2b332052ef",
+              "request": {
+                "canonical_sha256": "39b78a9400fe45947ecad96cae6785fbce52e7e4b36bf13bc07b0ebaae18fc25",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M0.05",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 5.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "39b78a9400fe45947ecad96cae6785fbce52e7e4b36bf13bc07b0ebaae18fc25"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "3696ad59777e09d5f2daacb544022d435e7cd053d87c5781241fabd8fdf2a90d",
+                "text": "S1"
+              },
+              "sequence": 12,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "b952ffbced991731062b0d8ce9cd24b1fd5e5cb7287291bec55954a4075bed48"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "84a2af505f0b0639e7c36154d5523029ef148d64b5f6b82d4590bf6d97681d94",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "value": false
+                  },
+                  "label": "Shield OFF",
+                  "target_bot_id": null,
+                  "type": "shield"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": true,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "9e00bce2f78db0ef634209a948feef0453d73ac4438de75a23afaf20050893c8",
+                "text": "Tactical turn 6."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "S0",
+              "play_id": "play_003_013",
+              "play_sha256": "8ddf05ebca8c810285bab37b2dc195c46fff610b9e34d172c06220683a923288",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "e789496952cfab65c797a9957d3041fc4dddc51a1135a239d09449f225457628",
+              "request": {
+                "canonical_sha256": "17f594955fadf88366cc7f24b877acf5856f0620027bf614097016dd62b120df",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "C15",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 5.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 6.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "17f594955fadf88366cc7f24b877acf5856f0620027bf614097016dd62b120df"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 2,
+                "sha256": "f87980c88a93c33c01a3fa5fbbacdf984c0441d0c1b51fdc4620c5935cb78716",
+                "text": "S0"
+              },
+              "sequence": 13,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "95fce4e488879d2e9859fbb75d666fa7b78772e753f83aa1f18db67b2ebeaa4f"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "fb29e2eb2a116e2ec04ac393ae04720d8172e2fb31e3298757c470731ad52b17",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {},
+                  "label": "Shot blocked because shield is ON",
+                  "target_bot_id": null,
+                  "type": "no_op"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": true,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "0c6950a1443631c9bd02632954600facb549f2ebf7afd6ef6d9e97fdacc59ac3",
+                "text": "Defensive turn 6."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "B",
+              "play_id": "play_003_014",
+              "play_sha256": "1577d839b4b838c16d4d5fae52a80e64a63c68803ed8671e5cba582402a16700",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "8ddf05ebca8c810285bab37b2dc195c46fff610b9e34d172c06220683a923288",
+              "request": {
+                "canonical_sha256": "bc8e514d27e05289da1557f18936b4f0d5300192b0fbae541024504c8ac0400e",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M0.05",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 5.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 6.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "bc8e514d27e05289da1557f18936b4f0d5300192b0fbae541024504c8ac0400e"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "df7e70e5021544f4834bbee64a9e3789febc4be81470df629cad6ddb03320a5c",
+                "text": "B"
+              },
+              "sequence": 14,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "e82f93bb21c997f62169268a0e1626afa5144b1d1e606678d3c779aeb64aae4d"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "dfaff6a545de1340c051794414ae6734e525ef911768dfd30ed2c50131038f83",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "cmd": "ERR"
+                  },
+                  "label": "Invalid command",
+                  "target_bot_id": null,
+                  "type": "invalid_command"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": true,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "19732694cf4382a72af0976c9b3a9e5380f93864a73a4c07ffa24a44179f9576",
+                "text": "Tactical turn 7."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "ERR",
+              "play_id": "play_003_015",
+              "play_sha256": "7e3e11f5b720b856157d08d5f10d351113ac26fde644ab5c87ba6f0fac291344",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "1577d839b4b838c16d4d5fae52a80e64a63c68803ed8671e5cba582402a16700",
+              "request": {
+                "canonical_sha256": "3c3c9185f0d28168ec11833e8e9bbbbca1bca20bfcf0b63ad878780ac9c60e71",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "C15",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 5.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 6.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 7.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "3c3c9185f0d28168ec11833e8e9bbbbca1bca20bfcf0b63ad878780ac9c60e71"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 8,
+                "sha256": "999aaa8645bb72ff599e143b1e3d2a94777127f4783a69f067251f7bbebc5ab6",
+                "text": "nonsense"
+              },
+              "sequence": 15,
+              "status": "invalid-command",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "765470791e6b91c72997fe6a8c4b23cc9a74ae318bbae4a25d8308f5963e628b"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "d30949a384aeb406f8c8bff102819eb69788524b97665ea3ec97172975798651",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": [
+                      0.735,
+                      0.5
+                    ],
+                    "to": [
+                      0.6916987298107781,
+                      0.525
+                    ]
+                  },
+                  "label": "Move to (0.692, 0.525)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": true,
+                    "x": 0.735,
+                    "y": 0.5
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "d9574ab49e25a7ad6c10bb585fde692b87bcc946c1eaa36f41e817ca36676605",
+                "text": "Defensive turn 7."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M",
+              "play_id": "play_003_016",
+              "play_sha256": "32de4bfdc87a6c64b8ebe6bc3c68b81423a5364a1acbb49096cae0cd04d64fd0",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.6916987298107781,
+                  "y": 0.525
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.735,
+                  "y": 0.5
+                }
+              },
+              "previous_play_sha256": "7e3e11f5b720b856157d08d5f10d351113ac26fde644ab5c87ba6f0fac291344",
+              "request": {
+                "canonical_sha256": "b48093031c0e94d6d0b7e2d4b59b61e4743e12ec68b9872781e7ec88231cfdef",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M0.05",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 5.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 6.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 7.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "b48093031c0e94d6d0b7e2d4b59b61e4743e12ec68b9872781e7ec88231cfdef"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 1,
+                "sha256": "08f271887ce94707da822d5263bae19d5519cb3614e0daedc4c7ce5dab7473f1",
+                "text": "M"
+              },
+              "sequence": 16,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "98f2df038c15d940e0c9a59b9df6c5c062e31fe21301f47208861e330388905f"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 1,
+              "chain_sha256": "f5e0ec28ab66f88ed672313333a77721738a72c14c4127266921a665489e30b5",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 1,
+                  "details": {
+                    "from": [
+                      0.25830127018922194,
+                      0.475
+                    ],
+                    "to": [
+                      0.30659756150367534,
+                      0.46205904774487394
+                    ]
+                  },
+                  "label": "Move to (0.307, 0.462)",
+                  "target_bot_id": null,
+                  "type": "move"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.25830127018922194,
+                    "y": 0.475
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": true,
+                    "x": 0.6916987298107781,
+                    "y": 0.525
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 16,
+                "sha256": "649329475d8a9b12b9140595427fff469706ff490b2ad7aa0021d1b606bf53fb",
+                "text": "Tactical turn 8."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "M0.05",
+              "play_id": "play_003_017",
+              "play_sha256": "f93030e1433d159a3d58306dfc83d1ac6f875ebe4fae32472521be5f57b59a09",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.30659756150367534,
+                  "y": 0.46205904774487394
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.6916987298107781,
+                  "y": 0.525
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.25830127018922194,
+                  "y": 0.475
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.6916987298107781,
+                  "y": 0.525
+                }
+              },
+              "previous_play_sha256": "32de4bfdc87a6c64b8ebe6bc3c68b81423a5364a1acbb49096cae0cd04d64fd0",
+              "request": {
+                "canonical_sha256": "de64595c69c9b351dcb035b106ee8d39759cfe9e5144d839a8f96bd5a843877c",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":0.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "C15",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 5.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 6.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nTactical turn 7.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.6916987298107781,\"y\":0.525}}}\n[PLAYER_INPUT]\nTactical turn 8.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "de64595c69c9b351dcb035b106ee8d39759cfe9e5144d839a8f96bd5a843877c"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 5,
+                "sha256": "d3de368db997a665911f986b9abd15ecf9bf906016145a345435598842bc1ebe",
+                "text": "M0.05"
+              },
+              "sequence": 17,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "3aac16713e136f216af73fafc3d04f336e03706cf00fdc5ad5c4ff71d185c281"
+            },
+            {
+              "attempts": 1,
+              "bot_id": 2,
+              "chain_sha256": "4fbb8f7fe55d6750e5401c0b8a4824b210c0b1446c0c68fb9556a5abf14b8bd2",
+              "context_policy": {
+                "independent_contexts": true,
+                "prompt_augmentation": true
+              },
+              "events": [
+                {
+                  "bot_id": 2,
+                  "details": {
+                    "from": 150.0,
+                    "to": 165.0
+                  },
+                  "label": "Rotate clockwise to 165.0d",
+                  "target_bot_id": null,
+                  "type": "rotate"
+                }
+              ],
+              "game_state_supplied_to_model": {
+                "bots": {
+                  "1": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 1,
+                    "last_llm_response": null,
+                    "rot": 345.0,
+                    "shield": false,
+                    "x": 0.30659756150367534,
+                    "y": 0.46205904774487394
+                  },
+                  "2": {
+                    "current_prompt": "",
+                    "health": 30,
+                    "id": 2,
+                    "last_llm_response": null,
+                    "rot": 150.0,
+                    "shield": true,
+                    "x": 0.6916987298107781,
+                    "y": 0.525
+                  }
+                }
+              },
+              "human_prompt": {
+                "encoding": "utf-8",
+                "length": 17,
+                "sha256": "c639061109235fa7bb76f40518f6b6eb505acd9cab4b67d9107b1ebaffb7fca8",
+                "text": "Defensive turn 8."
+              },
+              "latency_ms": 0.0,
+              "normalized_command": "C15.0",
+              "play_id": "play_003_018",
+              "play_sha256": "5c36c6ce7a16172f469a69406d644db1c4898416ca53954e23bd4e8aed671a44",
+              "post_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.30659756150367534,
+                  "y": 0.46205904774487394
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 165.0,
+                  "shield": true,
+                  "x": 0.6916987298107781,
+                  "y": 0.525
+                }
+              },
+              "pre_state": {
+                "1": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 1,
+                  "last_llm_response": null,
+                  "rot": 345.0,
+                  "shield": false,
+                  "x": 0.30659756150367534,
+                  "y": 0.46205904774487394
+                },
+                "2": {
+                  "current_prompt": "",
+                  "health": 30,
+                  "id": 2,
+                  "last_llm_response": null,
+                  "rot": 150.0,
+                  "shield": true,
+                  "x": 0.6916987298107781,
+                  "y": 0.525
+                }
+              },
+              "previous_play_sha256": "f93030e1433d159a3d58306dfc83d1ac6f875ebe4fae32472521be5f57b59a09",
+              "request": {
+                "canonical_sha256": "4f2534c19210f780e7844e7cd8d3c3d8ee7b7da815a4730f501f2de5470bfc8a",
+                "payload": {
+                  "endpoint": "http://localhost:11434/api/chat",
+                  "messages": [
+                    {
+                      "content": "Return exactly one command from the BatLLM grammar.",
+                      "role": "system"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":false,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 0.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":true,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 1.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S0",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.21500000000000002,\"y\":0.5},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 2.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "nonsense",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":330.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.785,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 3.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M0.05",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":true,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":180.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 4.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "A30",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":false,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 5.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "S1",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 6.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "B",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.25830127018922194,\"y\":0.475},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.735,\"y\":0.5}}}\n[PLAYER_INPUT]\nDefensive turn 7.",
+                      "role": "user"
+                    },
+                    {
+                      "content": "M",
+                      "role": "assistant"
+                    },
+                    {
+                      "content": "[GAME_STATE]\n{\"bots\":{\"1\":{\"current_prompt\":\"\",\"health\":30,\"id\":1,\"last_llm_response\":null,\"rot\":345.0,\"shield\":false,\"x\":0.30659756150367534,\"y\":0.46205904774487394},\"2\":{\"current_prompt\":\"\",\"health\":30,\"id\":2,\"last_llm_response\":null,\"rot\":150.0,\"shield\":true,\"x\":0.6916987298107781,\"y\":0.525}}}\n[PLAYER_INPUT]\nDefensive turn 8.",
+                      "role": "user"
+                    }
+                  ],
+                  "model": "fixture-3",
+                  "options": {
+                    "seed": 3,
+                    "temperature": 0
+                  },
+                  "provider": "scripted",
+                  "stream": false
+                },
+                "privacy_mode": "full",
+                "stored_sha256": "4f2534c19210f780e7844e7cd8d3c3d8ee7b7da815a4730f501f2de5470bfc8a"
+              },
+              "request_completed_at": "2026-01-01T00:00:00+00:00",
+              "request_started_at": "2026-01-01T00:00:00+00:00",
+              "response": {
+                "encoding": "utf-8",
+                "length": 3,
+                "sha256": "c1f5e527f9d411dfe793aebe1021a0910fccbc69e55cb8ddaef79f5d535d60ec",
+                "text": "C15"
+              },
+              "sequence": 18,
+              "status": "ok",
+              "system_instructions": {
+                "encoding": "utf-8",
+                "length": 51,
+                "sha256": "359db889c1ef149e2557edc5238a741ce24425af2552e5d36401781509656310",
+                "text": "Return exactly one command from the BatLLM grammar."
+              },
+              "transition_sha256": "fab504c5c7a675e08d17b43cd2133fd3b46b31ede8cd478d48037274581d61a2"
+            }
+          ],
+          "prompts": [
+            {
+              "bot_id": 1,
+              "prompt": {
+                "encoding": "utf-8",
+                "length": 25,
+                "sha256": "261f83968d30720220010addbb236d3859b6027b47d7f247df6d6bc0ba4310ac",
+                "text": "Choose a tactical action."
+              }
+            },
+            {
+              "bot_id": 2,
+              "prompt": {
+                "encoding": "utf-8",
+                "length": 26,
+                "sha256": "e31f91b990df9c171033e3efbeaba75d07abdf6236a77a9805eaccfbdd1c5263",
+                "text": "Choose a defensive action."
+              }
+            }
+          ],
+          "round": 1,
+          "started_at": "2026-01-01T00:00:00+00:00"
+        }
+      ],
+      "started_at": "2026-01-01T00:00:00+00:00"
+    }
+  ],
+  "model_provenance": {
+    "endpoint": "http://localhost:11434/api/chat",
+    "fixture_family": "scripted",
+    "fixture_index": 3,
+    "provider": "scripted",
+    "requested_model": "fixture-3"
+  },
+  "privacy_mode": "full",
+  "runtime_provenance": {
+    "byteorder": "little",
+    "dependency_versions": {
+      "kivy": "2.3.1",
+      "kivymd": "1.2.0",
+      "modelito": "1.4.0",
+      "ollama": "0.6.2"
+    },
+    "implementation": "CPython",
+    "machine": "x86_64",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "python": "3.12.13"
+  },
+  "schema_version": 3,
+  "session_id": "session_003",
+  "session_sha256": "565233e10e28eb79f92579d72538cf63452ee9ddaaadb2c4c1577e80491d124d",
+  "session_type": "batllm_research_session"
+}

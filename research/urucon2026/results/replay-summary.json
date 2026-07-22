@@ -1,0 +1,19 @@
+{
+  "commitment_only_groundings": 720,
+  "commitment_only_requests": 360,
+  "event_equivalent_plays": 1080,
+  "exact_requests": 360,
+  "plays": 1080,
+  "privacy_modes": {
+    "full": 20,
+    "hashed": 20,
+    "redacted": 20
+  },
+  "redacted_requests": 360,
+  "sessions": 60,
+  "source_revision": "e9c946d92cb27fbbeef878121ab12af2c8a469fd",
+  "stable_fixture_metadata": true,
+  "state_equivalent_plays": 1080,
+  "valid_sessions": 60,
+  "verified_groundings": 360
+}

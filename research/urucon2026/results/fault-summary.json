@@ -1,0 +1,26 @@
+{
+  "applicable_faults": 1560,
+  "by_position": {
+    "early": {
+      "applicable": 500,
+      "detected": 500
+    },
+    "late": {
+      "applicable": 500,
+      "detected": 500
+    },
+    "middle": {
+      "applicable": 500,
+      "detected": 500
+    },
+    "round": {
+      "applicable": 60,
+      "detected": 60
+    }
+  },
+  "commitments_reanchored": true,
+  "detected": 1560,
+  "detection_rate": 1.0,
+  "fault_classes": 11,
+  "sessions": 60
+}

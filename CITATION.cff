@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use BatLLM or its URUCON 2026 research artefact, please cite this software repository."
+title: "BatLLM"
+type: software
+authors:
+  - family-names: "Laurenzo"
+    given-names: "Tomas"
+repository-code: "https://github.com/krahd/BatLLM"
+url: "https://krahd.github.io/BatLLM/"
+license: MIT
+version: 0.3.6
+date-released: 2026-07-22
+keywords:
+  - large language models
+  - human-AI interaction
+  - AI literacy
+  - reproducibility
+  - provenance
+  - videogames

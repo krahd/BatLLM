@@ -1,0 +1,11 @@
+{
+  "cases": 5000,
+  "event_matches": 5000,
+  "mismatch_count": 0,
+  "mismatches": [],
+  "normalization_matches": 5000,
+  "path_matches": 5000,
+  "reference_imports_production_gameplay": false,
+  "seed": 20260721,
+  "state_matches": 5000
+}
