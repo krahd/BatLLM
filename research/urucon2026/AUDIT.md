@@ -1,12 +1,12 @@
-# Adversarial audit
+# Final adversarial audit
 
 ## Verdict
 
-The paper is defensible only as a narrow systems contribution: a domain-semantic reproducibility contract connecting retained LLM invocation evidence to deterministic state and event verification. Any broader claim would be false or inadequately supported.
+The paper is defensible as a narrow systems contribution: an evidence contract that connects an application-level LLM invocation and retained response to explicit grounding and deterministic state/event replay. It is not defensible as generic agent provenance, model-output reproducibility, transport capture, or authenticated chain of custody.
 
-## Novelty audit
+## Novelty boundary
 
-The following claims are prohibited:
+The following claims remain prohibited:
 
 - first provenance model for LLM agents;
 - first record-and-replay system for agents;
@@ -14,68 +14,48 @@ The following claims are prohibited:
 - first forensic replay of prompt–response interactions;
 - first use of games to evaluate or teach LLM interaction.
 
-PROV-AGENT already integrates prompts, responses, decisions, and downstream workflow provenance. AgentRR explicitly imports record-and-replay into LLM agents. Prompt Scene Investigation records prompt–response evidence and performs controlled behavioural replay. `agrepl` performs isolated transport-level deterministic replay. Paduraru, Bouruc, and Stefanescu define Message–Action Traces, step and trace contracts, deterministic replay, fault injection, and language-to-action mediation.
-
-The contribution survives this prior art only because its verification object is narrower and different: the consistency of the complete chain
+PROV-AGENT, AgentRR, Prompt Scene Investigation, `agrepl`, Message–Action Trace contracts, W3C PROV, OpenTelemetry, and the 2026 survey of evidence tracing and execution provenance establish substantial prior art. The contribution survives because its verification object is the conjunction:
 
 ```text
-human prompt and context
-→ exact provider request
-→ preserved provider response
-→ explicit command grounding
+human instruction and context
+→ application-level adapter invocation
+→ retained response or commitment
+→ explicit response-to-command grounding
 → frozen domain transition
 → recorded state and semantic events
 ```
 
-The manuscript states this boundary directly and does not use “first”, “novel record-and-replay”, or equivalent inflated wording.
+## Implementation findings
 
-## Implementation audit
+- Recorder and verifier use the production BatLLM parser and transition engine.
+- Full-retention invocation verification reconstructs the current message and conversation history from separately recorded fields rather than trusting a self-hash alone.
+- Invocation errors are represented separately and are not counted as model groundings.
+- Raw model text is excluded from semantic events after an earlier privacy leak was found and fixed.
+- Retention-dependent guarantees are explicit.
+- The independent reference semantics imports no production gameplay module.
+- Fault injection re-anchors retained-content commitments and targets multiple trace positions.
+- Benign serialisation controls test false rejection.
+- The paper source compiles to four A4 IEEE pages without overfull boxes, undefined citations, or embedded hyperlinks.
 
-### Strengths
+## Residual limitations
 
-- The recorder and verifier use the existing pure BatLLM transition engine rather than a paper-only simulator.
-- The exact full-mode request is captured before provider invocation.
-- Full-mode request verification is not merely a self-hash check: the verifier reconstructs the current user message and conversation history from separately recorded fields.
-- Invocation errors are represented separately and are not falsely counted as model-response groundings.
-- Privacy guarantees are stratified instead of conflated.
-- Schema validation, state continuity, round/game final states, grounding, transition replay, and event replay are independent checks.
-- Fault injection recomputes commitments derivable from retained content, preventing a trivial stale-hash evaluation.
+- v3 remains a headless research path; the GUI exports v2.
+- The adapter record is not a wire capture.
+- Requested model identity is declarative, not cryptographically bound to weights or serving binaries.
+- Retry count is recorded, but successful-after-retry traces do not preserve every intermediate provider error.
+- Scripted responses validate trace semantics rather than live-model behaviour.
+- Reference and production semantics can share a specification error.
+- Hash commitments are neither signatures nor confidentiality mechanisms.
+- Reduced retention cannot independently verify response grounding.
+- Transfer beyond BatLLM is architectural, not empirically demonstrated.
 
-### Privacy failure found and corrected
+## Release criterion
 
-The first complete corpus run exposed a real defect rather than a merely failing assertion. BatLLM's replay engine includes the raw invalid model output in diagnostic event details. The research runtime initially copied those details into the ordinary semantic-event stream. Consequently, redacted and hash-only traces could disclose response text outside the protected response and request records, and replay comparison differed when the verifier received only the normalized `ERR` command.
+The branch is complete only when:
 
-The event canonicalization boundary now removes diagnostic content keys—including `raw_response`, `llm_response`, `response`, `prompt`, and `content`—before events enter the trace. Raw model text remains solely in privacy-governed invocation evidence. A regression test verifies that semantic events cannot leak it. The correction is important conceptually: event replay verifies domain consequences, not duplicated linguistic evidence.
-
-### Residual limitations
-
-- The graphical application's legacy v2 export is not upgraded. The v3 path is a headless research runtime sharing the parser and transition engine. The paper states this explicitly.
-- The live Modelito/Ollama adapter is implemented but provider-specific metadata completeness is not evaluated in the scripted corpus.
-- Hash-only records cannot prove the content behind a comprehensively replaced and re-anchored commitment.
-- Redacted and hash-only records cannot independently verify response-to-command grounding.
-- Unkeyed commitments are not signatures or trusted chain of custody.
-- The corpus validates software invariants, not model competence, human learning, prompt quality, or ecological validity.
-- The state equivalence rule is tailored to BatLLM's bounded numeric state. Systems with stochastic post-grounding execution need additional random-state capture.
-
-## Evaluation audit
-
-The evaluation would be invalid if it claimed general LLM reproducibility: it uses a scripted provider by design. Its valid purpose is narrower—to exercise all trace paths deterministically and permit exact cross-platform regression testing.
-
-The minimal-action-log comparison is deliberately severe and should not be interpreted as a comparison with production observability systems. Size and throughput numbers characterise this Python reference representation only.
-
-A 100% perturbation-detection rate is acceptable because the mutations are controlled tests of declared invariants, not an estimate of real-world attack detection. The paper uses “controlled perturbations”, never “attacks detected”.
-
-## Manuscript audit
-
-The manuscript is acceptable because it:
-
-- distinguishes invocation evidence from model regeneration;
-- treats related work as prior art rather than a foil;
-- includes an explicit threat model;
-- separates full, redacted, and hash-only guarantees;
-- states that the GUI retains v2 compatibility;
-- reserves pedagogy and human-subject questions for other work;
-- reports only metrics generated by the repository artefact;
-- fits the five-page URUCON limit, including references.
-
-The manuscript must be regenerated after any experiment or verifier change. `results.tex` is generated, not manually edited.
+1. all nine OS/Python research matrix jobs pass;
+2. repository dependency and multiplatform workflows pass;
+3. the full experiment suite regenerates all summaries and `results.tex`;
+4. the paper job compiles a four- or five-page PDF and uploads it;
+5. generated metrics agree with the paper; and
+6. the final PR diff contains no corrupted or unrelated file.
