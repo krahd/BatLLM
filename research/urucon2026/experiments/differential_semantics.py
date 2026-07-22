@@ -70,6 +70,13 @@ def _command(rng: random.Random, index: int) -> str:
         "Cbad",
         "Awrong",
         "Sx",
+        "S10",
+        "S01",
+        "BLAH",
+        "Mnan",
+        "Minf",
+        "Cnan",
+        "Ainf",
         "",
     )
     return choices[index % len(choices)]

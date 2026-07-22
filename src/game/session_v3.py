@@ -14,7 +14,6 @@ from typing import Any, Mapping
 
 from game.trace_contract import (
     PrivacyMode,
-    protected_text_mode,
     TRACE_SCHEMA_VERSION,
     TRACE_SESSION_TYPE,
     new_id,
@@ -121,11 +120,21 @@ def _validate_protected_text(value: Any, label: str) -> None:
 def _require_content_mode(
     value: Mapping[str, Any], expected: PrivacyMode, label: str
 ) -> None:
-    actual = protected_text_mode(value)
-    _require(
-        actual is expected,
-        f"{label} retention mode {actual.value!r} does not match session mode {expected.value!r}.",
-    )
+    if expected is PrivacyMode.FULL:
+        _require(
+            "text" in value and isinstance(value.get("text"), str),
+            f"{label} must retain full text.",
+        )
+    elif expected is PrivacyMode.REDACTED:
+        _require(
+            value.get("text") == "[REDACTED]",
+            f"{label} must contain the redaction marker.",
+        )
+    else:
+        _require(
+            "text" not in value,
+            f"{label} must not retain text in hash-only mode.",
+        )
 
 
 def validate_session_v3(payload: Any) -> dict[str, Any]:

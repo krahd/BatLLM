@@ -105,8 +105,18 @@ def normalize_state(
     return result
 
 
+def _parse_finite_number(fragment: str) -> float | None:
+    if not fragment or fragment != fragment.strip():
+        return None
+    try:
+        value = float(fragment)
+    except ValueError:
+        return None
+    return value if math.isfinite(value) else None
+
+
 def parse_command(response: Any) -> ReferenceCommand:
-    """Mirror the documented command forms used by the evaluation corpus."""
+    """Implement the exact bounded command forms used by BatLLM."""
 
     raw = str(response or "").strip()
     if not raw:
@@ -115,33 +125,25 @@ def parse_command(response: Any) -> ReferenceCommand:
     if head == "M":
         if len(raw) == 1:
             return ReferenceCommand("M", "move")
-        try:
-            distance = float(raw[1:])
-        except ValueError:
+        distance = _parse_finite_number(raw[1:])
+        if distance is None:
             return ReferenceCommand("ERR", "invalid", valid=False)
         return ReferenceCommand(f"M{distance}", "move", distance)
-    if head == "C":
-        try:
-            angle = float(raw[1:])
-        except ValueError:
+    if head in {"C", "A"}:
+        angle = _parse_finite_number(raw[1:])
+        if angle is None:
             return ReferenceCommand("ERR", "invalid", valid=False)
-        return ReferenceCommand(f"C{angle}", "rotate_cw", angle)
-    if head == "A":
-        try:
-            angle = float(raw[1:])
-        except ValueError:
-            return ReferenceCommand("ERR", "invalid", valid=False)
-        return ReferenceCommand(f"A{angle}", "rotate_ccw", angle)
-    if head == "B":
+        kind = "rotate_cw" if head == "C" else "rotate_ccw"
+        return ReferenceCommand(f"{head}{angle}", kind, angle)
+    if head == "B" and len(raw) == 1:
         return ReferenceCommand("B", "shoot")
     if head == "S":
         if len(raw) == 1:
             return ReferenceCommand("S", "shield_toggle")
-        if raw[1] == "1":
-            return ReferenceCommand("S1", "shield_set", 1.0)
-        if raw[1] == "0":
-            return ReferenceCommand("S0", "shield_set", 0.0)
-        return ReferenceCommand("ERR", "invalid", valid=False)
+        if len(raw) == 2 and raw[1] in {"0", "1"}:
+            return ReferenceCommand(
+                f"S{raw[1]}", "shield_set", float(raw[1])
+            )
     return ReferenceCommand("ERR", "invalid", valid=False)
 
 

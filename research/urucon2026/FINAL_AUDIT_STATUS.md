@@ -1,5 +1,5 @@
 # Final URUCON audit status
 
-Status: running.
+Status: hardened source validated; generated artefact build in progress.
 
-The adversarial hardening, full test suite, experiment regeneration, PDF/DOCX builds, visual-render preflights, and research-artefact packaging are in progress.
+The adversarial source fixes compile and the complete non-live test suite passes. Experiment regeneration and document/artefact publication are in progress.

@@ -103,15 +103,20 @@ class VerificationReport:
         }
 
 
-def _retained_text(record: Mapping[str, Any]) -> str | None:
-    text = record.get("text")
-    if text in (None, "[REDACTED]"):
+def _retained_text(
+    record: Mapping[str, Any], privacy: PrivacyMode
+) -> str | None:
+    if privacy is not PrivacyMode.FULL:
         return None
-    return str(text)
+    text = record.get("text")
+    return str(text) if isinstance(text, str) else None
 
 
 def _verify_grounding(
-    play: Mapping[str, Any], report: VerificationReport, location: str
+    play: Mapping[str, Any],
+    report: VerificationReport,
+    location: str,
+    privacy: PrivacyMode,
 ) -> None:
     status = play.get("status")
     command = play.get("normalized_command")
@@ -124,7 +129,7 @@ def _verify_grounding(
         return
 
     report.grounding_records += 1
-    retained_response = _retained_text(play["response"])
+    retained_response = _retained_text(play["response"], privacy)
     if retained_response is None:
         report.commitment_only_groundings += 1
         return
@@ -189,6 +194,7 @@ def _verify_request_semantics(
     shared_history: list[dict[str, str]],
     report: VerificationReport,
     location: str,
+    privacy: PrivacyMode,
 ) -> None:
     """Verify cross-field request consistency and full-mode reconstruction."""
 
@@ -204,6 +210,19 @@ def _verify_request_semantics(
     payload = request.get("payload")
     if not isinstance(payload, Mapping):
         return
+
+    messages = payload.get("messages")
+    if not isinstance(messages, list) or not all(
+        isinstance(message, Mapping)
+        and isinstance(message.get("role"), str)
+        and "content" in message
+        for message in messages
+    ):
+        report.add_issue("R2", location, "request-messages-invalid")
+    if payload.get("stream") is not False:
+        report.add_issue("R2", location, "request-stream-setting-mismatch")
+    if not isinstance(payload.get("options"), Mapping):
+        report.add_issue("R2", location, "request-options-invalid")
 
     for request_key, provenance_key in (
         ("provider", "provider"),
@@ -222,11 +241,11 @@ def _verify_request_semantics(
                 ),
             )
 
-    if request.get("privacy_mode") != PrivacyMode.FULL.value:
+    if privacy is not PrivacyMode.FULL:
         return
 
-    prompt = _retained_text(play["human_prompt"])
-    system = _retained_text(play["system_instructions"])
+    prompt = _retained_text(play["human_prompt"], privacy)
+    system = _retained_text(play["system_instructions"], privacy)
     if prompt is None or system is None:
         report.add_issue("R2", location, "full-request-source-text-missing")
         return
@@ -251,13 +270,8 @@ def _verify_request_semantics(
             "R2", location, "exact-request-reconstruction-mismatch"
         )
 
-    if payload.get("stream") is not False:
-        report.add_issue("R2", location, "request-stream-setting-mismatch")
-    if not isinstance(payload.get("options"), Mapping):
-        report.add_issue("R2", location, "request-options-invalid")
-
     if play.get("status") != "invocation-error":
-        response = _retained_text(play["response"])
+        response = _retained_text(play["response"], privacy)
         if response is None:
             report.add_issue("R2", location, "full-response-text-missing")
             return
@@ -291,6 +305,15 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
         report.elapsed_ms = (perf_counter() - started) * 1000.0
         return report
 
+    try:
+        canonical_json(payload)
+    except (TypeError, ValueError) as exc:
+        report.add_issue("R1", "session", "non-canonical-value", str(exc))
+        report.elapsed_ms = (perf_counter() - started) * 1000.0
+        return report
+
+    privacy = PrivacyMode(payload["privacy_mode"])
+
     if not verify_session_envelope_hash(payload):
         report.envelope_integrity = False
         report.add_issue("R1", "session", "session-hash-mismatch")
@@ -303,8 +326,19 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
         histories_by_bot: dict[int, list[dict[str, str]]] = {}
         shared_history: list[dict[str, str]] = []
         last_game_state: Mapping[Any, Mapping[str, Any]] | None = None
+        previous_round_final: Mapping[Any, Mapping[str, Any]] | None = None
 
         for round_index, round_entry in enumerate(game.get("rounds", []), start=1):
+            round_location = f"game[{game_index}].round[{round_index}]"
+            if previous_round_final is not None:
+                _compare_recorded_state(
+                    derived=previous_round_final,
+                    recorded=round_entry.get("initial_state", {}),
+                    report=report,
+                    level="R1",
+                    location=round_location,
+                    code="round-initial-state-mismatch",
+                )
             prior_post_state = deepcopy(round_entry.get("initial_state", {}))
             rules = GameplaySettingsSnapshot.from_mapping(
                 round_entry.get("gameplay_settings_snapshot")
@@ -341,13 +375,15 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
                     ("system_instructions", "system-commitment-mismatch"),
                     ("response", "response-commitment-mismatch"),
                 ):
-                    if not verify_protected_text(play[key]):
+                    if not verify_protected_text(play[key], privacy):
                         report.add_issue("R2", location, code)
                 error_record = play.get("error")
                 if isinstance(error_record, Mapping) and isinstance(
                     error_record.get("message"), Mapping
                 ):
-                    if not verify_protected_text(error_record["message"]):
+                    if not verify_protected_text(
+                        error_record["message"], privacy
+                    ):
                         report.add_issue(
                             "R2", location, "error-commitment-mismatch"
                         )
@@ -359,8 +395,9 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
                     shared_history=shared_history,
                     report=report,
                     location=location,
+                    privacy=privacy,
                 )
-                _verify_grounding(play, report, location)
+                _verify_grounding(play, report, location, privacy)
 
                 hashes_ok, hash_errors = verify_play_hashes(
                     play, expected_previous
@@ -422,7 +459,6 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
                     report.add_issue("R4", location, "replay-event-mismatch")
                 prior_post_state = deepcopy(play["post_state"])
 
-            round_location = f"game[{game_index}].round[{round_index}]"
             if _compare_recorded_state(
                 derived=prior_post_state,
                 recorded=round_entry["final_state"],
@@ -433,6 +469,7 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
             ):
                 report.round_final_states_verified += 1
             last_game_state = round_entry["final_state"]
+            previous_round_final = deepcopy(round_entry["final_state"])
 
         if last_game_state is not None:
             game_location = f"game[{game_index}]"

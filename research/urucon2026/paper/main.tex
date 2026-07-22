@@ -18,7 +18,7 @@ tomas@laurenzo.net}}
 \maketitle
 
 \begin{abstract}
-When a large language model mediates executable action, an interaction crosses two distinct boundaries: a stochastic model produces text, and an application grounds that text into a deterministic command. Repeating the model call is therefore neither necessary nor generally sufficient to verify the resulting state change. This paper defines an evidence contract for bounded LLM-mediated systems. A trace records the application-level invocation object, returned text or a commitment to it, the response-to-command grounding, frozen domain rules, semantic events, and pre- and post-action states. Four verification predicates check trace integrity, invocation reconstruction, grounding consistency, and operative replay. We implement the contract in BatLLM, an open-source game in which human instructions are mediated by local language models. The artefact includes a versioned schema, three text-retention profiles, canonical commitments, a provider-neutral recorder, a headless verifier, and an independently implemented reference semantics. In \ResultSessions{} generated sessions comprising \ResultPlays{} transitions, all recorded states and events replayed equivalently. Full-retention traces reconstructed \ResultExactRequests{} application-level invocations and independently verified \ResultVerifiedGroundings{} groundings. Differential testing matched production and reference semantics in all \ResultDifferentialCases{} cases. The verifier detected all \ResultFaults{} applicable re-anchored perturbations and accepted all \ResultSerializationVariants{} benign serialisation variants. The result is not model-output reproducibility or generic agent replay; it is a precise, testable account of how retained linguistic evidence produced a domain state.
+When a large language model mediates executable action, an interaction crosses two distinct boundaries: a stochastic model produces text, and an application grounds that text into a deterministic command. Repeating the model call is therefore neither necessary nor generally sufficient to verify the resulting state change. This paper defines an evidence contract for bounded LLM-mediated systems. A trace records the adapter-boundary invocation record, returned text or a commitment to it, the response-to-command grounding, frozen domain rules, semantic events, and pre- and post-action states. Four verification predicates check trace integrity, invocation reconstruction, grounding consistency, and operative replay. We implement the contract in BatLLM, an open-source game in which human instructions are mediated by local language models. The artefact includes a versioned schema, three text-retention profiles, canonical commitments, a provider-neutral recorder, a headless verifier, and an independently implemented reference semantics. In \ResultSessions{} generated sessions comprising \ResultPlays{} transitions, all recorded states and events replayed equivalently. Full-retention traces reconstructed \ResultExactRequests{} application-level invocations and independently verified \ResultVerifiedGroundings{} groundings. Differential testing matched production and reference semantics in all \ResultDifferentialCases{} cases. The verifier detected all \ResultFaults{} applicable re-anchored perturbations and accepted all \ResultSerializationVariants{} benign serialisation variants. The result is not model-output reproducibility or generic agent replay; it is a precise, testable account of how retained linguistic evidence produced a domain state.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -52,7 +52,7 @@ These approaches establish that provenance, trace contracts, and agent replay ar
 
 \section{Evidence and Verification Contract}
 \subsection{Execution model}
-For step $i$, let $u_i$ be the human instruction, $h_i$ the ordered conversational history, $s_i$ the pre-action state, $\theta_i$ the declared model configuration, and $\rho_i$ the frozen domain rules. The application constructs an adapter-boundary invocation object
+For step $i$, let $u_i$ be the human instruction, $h_i$ the ordered conversational history, $s_i$ the pre-action state, $\theta_i$ the declared model configuration, and $\rho_i$ the frozen domain rules. The application constructs an adapter-boundary invocation record
 \begin{equation}
 a_i = A(u_i,h_i,s_i,\theta_i),
 \end{equation}
@@ -64,7 +64,7 @@ The trace unit is
 \begin{equation}
 T_i=\langle u_i,h_i,s_i,a_i,\theta_i,y_i,c_i,\rho_i,e_i,s_{i+1}\rangle.
 \end{equation}
-Here $a_i$ is the object passed to the provider adapter: model name, endpoint declaration, ordered messages, options, and stream setting. It is not claimed to be the provider library's internal representation or the HTTP request emitted below that boundary.
+Here $a_i$ is the record materialised immediately before the provider-adapter call. Its model, ordered messages, options, and stream fields correspond to call arguments; provider and endpoint are application declarations. It is not the provider library's internal representation or the HTTP request emitted below that boundary.
 
 \subsection{Verification predicates}
 The contract defines four predicates rather than a single undifferentiated notion of reproducibility.
@@ -145,7 +145,7 @@ Mean gzip bytes/play & \ResultGzipBytes{} \\
 \end{table}
 
 \subsection{Results}
-All sessions passed both the published schema and the semantic guarantees available under their retention profile (Table~\ref{tab:results}). Every recorded domain state and event list replayed equivalently. Full retention reconstructed \ResultExactRequests{} adapter-boundary invocation objects and verified \ResultVerifiedGroundings{} response-to-command mappings. The \ResultCommittedGroundings{} reduced-retention transitions remained operatively replayable without being misreported as independently grounded.
+All sessions passed both the published schema and the semantic guarantees available under their retention profile (Table~\ref{tab:results}). Every recorded domain state and event list replayed equivalently. Full retention reconstructed \ResultExactRequests{} adapter-boundary invocation records and verified \ResultVerifiedGroundings{} response-to-command mappings. The \ResultCommittedGroundings{} reduced-retention transitions remained operatively replayable without being misreported as independently grounded.
 
 Production and reference semantics agreed in all \ResultDifferentialCases{} cases for command normalisation, state, events, and projectile paths. The verifier rejected all \ResultFaults{} applicable re-anchored perturbations across trace positions and accepted all \ResultSerializationVariants{} benign variants, yielding no observed false rejection in this control set. These are exhaustive results only for the declared fixtures, not estimates of attack detection in deployment.
 
@@ -163,7 +163,7 @@ The implementation validates a bounded deterministic domain. Systems with stocha
 
 Within these boundaries, the contract establishes a useful separation: model generation need not be repeatable for the action derived from a recorded response to be verifiable. By retaining evidence at the adapter boundary, exposing grounding as a checkable operation, and replaying explicit domain semantics, BatLLM provides a concrete account of how human instruction became computational state. The pattern applies to other bounded LLM-mediated systems whose outputs are grounded into an explicit command language and deterministic transition function.
 
-\section*{Acknowledgment}
+\section*{Acknowledgement}
 BatLLM was supported by the University of Colorado Boulder's Center for Humanities \& the Arts and Research \& Innovation Office.
 
 \begin{thebibliography}{12}

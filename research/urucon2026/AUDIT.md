@@ -59,3 +59,7 @@ The branch is complete only when:
 4. the paper job compiles a four- or five-page PDF and uploads it;
 5. generated metrics agree with the paper; and
 6. the final PR diff contains no corrupted or unrelated file.
+
+## Final hardening pass
+
+The final adversarial pass corrected additional defects that were not exposed by the initial deterministic corpus: permissive command-prefix parsing, acceptance of non-finite numeric commands, loss of response whitespace, a zero-length projectile-segment division, ambiguity when full text literally equalled the redaction marker, unsafe stringification of unknown event objects, canonical key collisions, incomplete cross-round continuity checks, and verifier exceptions on non-canonical values. Regression tests now cover each case. Public claims were also narrowed from an object purportedly passed wholesale to a provider adapter to an adapter-boundary record whose call-argument and declarative fields are distinguished explicitly.

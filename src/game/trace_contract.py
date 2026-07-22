@@ -53,7 +53,16 @@ def _normalise(value: Any) -> Any:
     if isinstance(value, Path):
         return str(value)
     if isinstance(value, Mapping):
-        return {str(key): _normalise(item) for key, item in value.items()}
+        normalised: dict[str, Any] = {}
+        for key, item in value.items():
+            rendered_key = str(key)
+            if rendered_key in normalised:
+                raise ValueError(
+                    "Canonical mapping keys collide after string conversion: "
+                    f"{rendered_key!r}."
+                )
+            normalised[rendered_key] = _normalise(item)
+        return normalised
     if isinstance(value, (list, tuple)):
         return [_normalise(item) for item in value]
     if isinstance(value, float):
@@ -122,13 +131,26 @@ def protected_text_mode(value: Mapping[str, Any]) -> PrivacyMode:
     return PrivacyMode.FULL
 
 
-def verify_protected_text(value: Mapping[str, Any]) -> bool:
-    """Verify retained full text; privacy-reduced records remain commitments."""
+def verify_protected_text(
+    value: Mapping[str, Any], expected_mode: PrivacyMode | str | None = None
+) -> bool:
+    """Verify retention form and retained full text when it is available."""
 
-    text = value.get("text")
-    if text is None or text == REDACTED_TEXT:
-        return True
-    rendered = str(text)
+    try:
+        privacy = (
+            PrivacyMode(expected_mode)
+            if expected_mode is not None
+            else protected_text_mode(value)
+        )
+    except (TypeError, ValueError):
+        return False
+    if privacy is PrivacyMode.HASHED:
+        return "text" not in value
+    if privacy is PrivacyMode.REDACTED:
+        return value.get("text") == REDACTED_TEXT
+    if "text" not in value or not isinstance(value.get("text"), str):
+        return False
+    rendered = value["text"]
     return (
         value.get("sha256") == sha256_text(rendered)
         and value.get("length") == len(rendered)
@@ -188,10 +210,19 @@ def _verify_redacted_messages(payload: Mapping[str, Any]) -> bool:
         content = message.get("content")
         if not isinstance(content, Mapping):
             return False
+        role = message.get("role")
+        if not isinstance(role, str) or not role:
+            return False
         if content.get("redacted") is not True:
             return False
         digest = content.get("canonical_sha256")
-        if not isinstance(digest, str) or len(digest) != 64:
+        if (
+            not isinstance(digest, str)
+            or len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+        ):
+            return False
+        if not isinstance(content.get("original_type"), str):
             return False
     return True
 
@@ -242,7 +273,8 @@ def event_to_dict(event: Any) -> dict[str, Any]:
     elif isinstance(event, Mapping):
         result = _normalise(event)
     else:
-        return {"type": type(event).__name__, "label": str(event)}
+        event_type = type(event).__name__
+        return {"type": event_type, "label": event_type}
     details = result.get("details")
     if isinstance(details, dict):
         result["details"] = {

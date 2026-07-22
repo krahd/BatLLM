@@ -86,8 +86,8 @@ def extract_response_text(response: Any) -> str:
                     text = str(message.get("content") or "")
                 elif isinstance(response.get("response"), str):
                     text = str(response["response"])
-    text = str(text or "").strip()
-    if not text:
+    text = str(text or "")
+    if not text.strip():
         raise RuntimeError(f"Empty model response ({type(response).__name__}).")
     return text
 

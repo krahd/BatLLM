@@ -4,7 +4,7 @@ This directory contains the implementation, evaluation, generated corpus, result
 
 ## Scope
 
-The artefact implements a schema-v3 research execution path inside BatLLM. It records the application-level object passed to the provider adapter, preserves or commits to returned text, records response-to-command grounding, freezes game rules, and verifies resulting state and semantic events through BatLLM's pure transition engine.
+The artefact implements a schema-v3 research execution path inside BatLLM. It records the application-level record materialised at the provider-adapter boundary, preserves or commits to returned text, records response-to-command grounding, freezes game rules, and verifies resulting state and semantic events through BatLLM's pure transition engine.
 
 The phrase **application-level invocation** is deliberate. The recorder captures the provider-adapter arguments visible to BatLLM: ordered messages, requested model, endpoint declaration, generation options, and stream setting. It does not claim to capture provider-library internals, HTTP headers, wire bytes, hidden defaults, model weights, or serving binaries.
 

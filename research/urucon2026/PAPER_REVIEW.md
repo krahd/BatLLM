@@ -24,7 +24,7 @@ The central idea was defensible, but the manuscript overstated what the implemen
 
 **Finding.** BatLLM records the object passed to its provider adapter, not the provider library's internal request, HTTP headers, wire bytes, hidden defaults, or serving configuration.
 
-**Correction.** Every claim now uses **application-level** or **adapter-boundary invocation object**. The formal model names this object explicitly and treats transport capture as outside scope.
+**Correction.** Every claim now uses **application-level** or **adapter-boundary invocation record**. The formal model names this object explicitly and treats transport capture as outside scope.
 
 ### 4. The evaluation was circular
 

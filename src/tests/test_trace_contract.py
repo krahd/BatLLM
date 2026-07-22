@@ -4,11 +4,18 @@ from copy import deepcopy
 import json
 from pathlib import Path
 
-from game.replay_engine import GameplaySettingsSnapshot
+import pytest
+
+from game.replay_engine import (
+    GameplaySettingsSnapshot,
+    parse_model_response,
+    resolve_shot,
+)
 from game.research_runtime import (
     InvocationPolicy,
     MediatedGameRuntime,
     ScriptedClient,
+    extract_response_text,
 )
 from game.session_v3 import (
     validate_session_v3,
@@ -196,3 +203,74 @@ def test_game_state_supplied_to_model_must_match_pre_state() -> None:
     assert "request-game-state-mismatch" in {
         issue.code for issue in report.issues
     }
+
+def test_exact_response_text_is_preserved() -> None:
+    assert extract_response_text("  M  ") == "  M  "
+
+
+def test_command_grammar_rejects_suffixes_and_non_finite_numbers() -> None:
+    for response in ("BLAH", "S10", "S01", "Mnan", "Minf", "Cnan", "Ainf"):
+        parsed = parse_model_response(response)
+        assert not parsed.valid
+        assert parsed.normalized_cmd == "ERR"
+
+
+def test_zero_bullet_step_is_safe() -> None:
+    zero_step_rules = GameplaySettingsSnapshot.from_mapping(
+        {**rules().to_dict(), "bullet_step_length": 0.0}
+    )
+    result = resolve_shot(initial_state(), 1, zero_step_rules)
+    assert result.reason == "max_steps"
+    assert result.path == []
+
+
+def test_full_mode_accepts_literal_redaction_marker() -> None:
+    runtime = MediatedGameRuntime(
+        client=ScriptedClient(["[REDACTED]"]),
+        initial_state=initial_state(),
+        rules=rules(),
+        policy=InvocationPolicy(provider="scripted", model="fixture"),
+        privacy_mode=PrivacyMode.FULL,
+    )
+    runtime.start_round({1: "[REDACTED]"})
+    play = runtime.play(bot_id=1, human_prompt="[REDACTED]")
+    assert play["response"]["text"] == "[REDACTED]"
+    report = verify_payload(runtime.session_payload())
+    assert report.valid
+    assert report.verified_groundings == 1
+
+
+def test_canonicalisation_rejects_stringified_key_collisions() -> None:
+    with pytest.raises(ValueError, match="collide"):
+        canonical_json({1: "integer", "1": "string"})
+
+
+def test_round_initial_state_must_follow_previous_round() -> None:
+    runtime = MediatedGameRuntime(
+        client=ScriptedClient(["M", "M"]),
+        initial_state=initial_state(),
+        rules=rules(),
+        policy=InvocationPolicy(provider="scripted", model="fixture"),
+        privacy_mode=PrivacyMode.FULL,
+    )
+    runtime.start_round({1: "advance"})
+    runtime.play(bot_id=1, human_prompt="advance")
+    runtime.end_round()
+    runtime.start_round({1: "advance again"})
+    runtime.play(bot_id=1, human_prompt="advance again")
+    payload = runtime.session_payload()
+    payload["games"][0]["rounds"][1]["initial_state"][1]["x"] = 0.99
+    report = verify_payload(payload)
+    assert not report.valid
+    assert "round-initial-state-mismatch" in {
+        issue.code for issue in report.issues
+    }
+
+
+def test_event_fallback_does_not_stringify_private_objects() -> None:
+    class PrivateEvent:
+        def __str__(self) -> str:
+            return "private model response"
+
+    converted = event_to_dict(PrivateEvent())
+    assert "private model response" not in canonical_json(converted)
