@@ -44,7 +44,7 @@ jobs:
           The adversarial hardening, full test suite, experiment regeneration, PDF/DOCX builds, visual-render preflights, and research-artefact packaging are in progress.
           EOF
           : > "$AUDIT_LOG"
-          git add research/urucon2026/FINAL_AUDIT_STATUS.md "$AUDIT_LOG"
+          git add -f research/urucon2026/FINAL_AUDIT_STATUS.md "$AUDIT_LOG"
           git commit -m 'audit: record final URUCON validation start [skip ci]'
           git push origin HEAD:urucon
 
@@ -102,6 +102,7 @@ jobs:
           The adversarial source fixes compile and the complete non-live test suite passes. Experiment regeneration and document/artefact publication are in progress.
           EOF
           git add -A
+          git reset -- "$AUDIT_LOG"
           git commit -m 'fix: harden URUCON evidence contract [skip ci]'
           git push origin HEAD:urucon
 
@@ -129,7 +130,7 @@ jobs:
           ! grep -q 'LaTeX Error' main.log
           ! grep -q 'Overfull' main.log
           pdftotext main.pdf - | grep -q 'ACKNOWLEDGEMENT'
-          pdffonts main.pdf | awk 'NR > 2 {if ($4 != "yes") exit 1}'
+          pdffonts main.pdf | awk 'NR > 2 && NF > 0 {if ($4 != "yes") exit 1}'
           mkdir -p /tmp/pdf-render
           pdftoppm -png -r 150 main.pdf /tmp/pdf-render/page >/dev/null
           test "$(find /tmp/pdf-render -name 'page-*.png' | wc -l)" -eq "$pages"
@@ -196,7 +197,9 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cp "$AUDIT_LOG" /tmp/FINAL_AUDIT.log 2>/dev/null || true
           git reset --hard HEAD
+          cp /tmp/FINAL_AUDIT.log "$AUDIT_LOG" 2>/dev/null || : > "$AUDIT_LOG"
           cat > research/urucon2026/FINAL_AUDIT_STATUS.md <<'EOF'
           # Final URUCON audit status
 
