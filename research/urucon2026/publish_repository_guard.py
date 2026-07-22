@@ -100,6 +100,10 @@ def main() -> int:
     REPORT.unlink(missing_ok=True)
     try:
         docx_preflight()
+        # GitHub's Actions token may publish generated files but may not rewrite
+        # the workflow that is currently executing. The connector performs that
+        # final workflow-only cleanup after this generated-artefact commit.
+        publish_repository.finalise_permanent_workflow = lambda: None
         return publish_repository.main()
     except Exception as exc:  # publication diagnostics must survive the runner
         details = traceback.format_exc()
