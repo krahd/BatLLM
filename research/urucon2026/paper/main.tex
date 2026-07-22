@@ -54,95 +54,11 @@ W3C PROV / OpenTelemetry~\cite{w3c2013provo,otel2026genai} & Provenance graph; G
 PROV-AGENT~\cite{souza2025provagent} & Agent interactions in workflow provenance & End-to-end provenance queries and reliability analysis & Relates decisions and outcomes; does not re-derive a bounded domain state \\
 AgentRR~\cite{feng2025agentrr} & Successful interaction trajectory and abstracted experience & Reuse of prior experience in later tasks & Replay guides new execution rather than verifying the original transition \\
 PSI~\cite{ledjaki2026psi} & Prompt--response evidence with chain of custody & Controlled model-behaviour replay and investigation & Re-enacts model behaviour; does not verify text-to-command domain semantics \\
-\emph{agrepl}~\cite{mudasiru2026agrepl} & External transport interactions & Isolated deterministic I/O replay & Reproduces dependencies below the application semantic boundary \\
+\emph{agrepl}~\cite{mudasiru2026agrepl} & External transitions & Isolated deterministic I/O replay & Reproduces dependencies below the application semantic boundary \\
 MAT contracts~\cite{paduraru2026assurance} & Message--action orchestration traces & Contract verdicts, deterministic replay, fault containment & General orchestration assurance; this paper specifies post-grounding state/event equivalence \\
 BatLLM contract & Invocation, response, grounded command, rules, events, states & Exact request reconstruction where retained; grounding and domain-state verification & Explicitly couples stochastic language evidence to a deterministic transition function \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-\section{Reproducibility Contract}
-For interaction step $i$, let $p_i$ be the human prompt, $h_i$ the ordered conversational context, $s_i$ the pre-action state, $\theta_i$ the inference configuration, and $\rho_i$ the domain rules. The rendered request is
-\begin{equation}
-q_i = Q(p_i,h_i,s_i), \qquad r_i \sim M(q_i;\theta_i),
-\end{equation}
-where $M$ is the model and $r_i$ its returned text. Grounding and execution are
-\begin{equation}
-c_i=P(r_i), \qquad (s_{i+1},e_i)=\delta(s_i,c_i;\rho_i),
-\end{equation}
-where $P$ is the command parser, $\delta$ is the deterministic transition function, and $e_i$ is the ordered semantic-event list. A trace unit is
-\begin{equation}
-T_i=\langle p_i,h_i,s_i,q_i,\theta_i,r_i,c_i,e_i,s_{i+1},\rho_i\rangle.
-\end{equation}
-
-The contract defines four cumulative verification levels.
-
-\textbf{R1---Trace validity and integrity.} Required fields, identifiers, sequence continuity, state continuity, canonical content commitments, transition commitments, round/game final states, and the ordered play chain are valid.
-
-\textbf{R2---Invocation reconstructability.} Full mode independently rebuilds the newly appended user message from the retained human prompt, state, system instructions, and context policy; reconstructs the complete ordered conversation; and checks it against the payload captured immediately before invocation. It also checks provider, endpoint, and model consistency against session provenance. Redacted mode verifies retained structure and commitments for removed message content. Hash-only mode establishes only the presence of a commitment.
-
-\textbf{R3---Grounding consistency.} When response text is retained, parsing it again must yield the recorded normalized command and status. Invocation failures are represented separately as terminal errors whose operative result is \texttt{ERR}; they are not miscounted as model responses. Privacy-reduced traces preserve response commitments and commands but cannot independently re-evaluate hidden text.
-
-\textbf{R4---Operative replay.} The verifier evaluates $\delta(s_i,c_i;\rho_i)$ and compares the resulting state and semantic events with the trace. State equivalence uses exact discrete values and an absolute tolerance of $10^{-6}$ for position and rotation.
-
-\subsection{Threat model and non-claims}
-The contract detects malformed traces, stale or inconsistent fields, accidental corruption, selective modification, deletion, reordering, and semantic disagreement after retained content has been re-anchored with new ordinary hashes. SHA-256 commitments are not signatures. A party able to rewrite the complete trace, all hidden commitments, and every external copy can construct a different internally consistent record. Adversarial chain of custody therefore requires an external trust anchor such as a signature, transparency log, or trusted timestamp. Likewise, R2 is evidence of the recorded invocation, not a guarantee that the same model call will reproduce $r_i$; R4 verifies the recorded command's consequence, not the correctness of the human strategy or model decision.
-
-\section{BatLLM Implementation}
-BatLLM's command language includes movement (\texttt{M} or \texttt{M} followed by a distance), clockwise and counter-clockwise rotation (\texttt{C}$\alpha$, \texttt{A}$\alpha$), shooting (\texttt{B}), and shield operations (\texttt{S}, \texttt{S1}, \texttt{S0}). Invalid output normalizes to \texttt{ERR} and produces no state change. Movement, rotation, shield, projectile, collision, and damage semantics reside in a pure transition module independent of the Kivy interface.
-
-The v3 research runtime is a headless BatLLM execution path that invokes the same command parser and pure transition engine used by the analyzer. Before each provider call it materializes the complete ordered messages, provider, endpoint, model, generation options, stream setting, system instructions, context policy, and supplied state. It records timing and retry count. A successful output is retained or committed according to privacy mode; a terminal provider error becomes an \texttt{invocation-error} transition whose operative command is \texttt{ERR}. Failed requests are removed from subsequent conversational context, matching the graphical application's rollback policy. The graphical application retains its existing v2 user-session export for compatibility; the claims and experiments in this paper concern the explicit v3 research path rather than silently reinterpreting legacy logs.
-
-Schema v3 stores application, runtime, dependency, and model provenance; frozen round rules; pre- and post-states; request and response records; grounding; ordered events; and three layers of SHA-256 commitments. Canonical JSON uses UTF-8, lexicographically ordered keys, no non-finite numbers, and compact separators. Full mode retains all text and supports R1--R4. Redacted mode retains non-textual invocation structure and content commitments. Hash-only mode retains commitments but no prompt, system, response, or request payload.
-
-The headless verifier emits human-readable or JSON reports and returns a non-zero process status on failure:
-\begin{verbatim}
-python run_batllm_verify.py session.json
-\end{verbatim}
-The repository also contains the JSON Schema, scripted corpus generator, semantic perturbation injector, overhead measurement, result-to-LaTeX renderer, and CI validation on Linux, macOS, and Windows under Python 3.10--3.12.
-
-\section{Evaluation}
-\subsection{Corpus and protocol}
-The scripted corpus isolates the contract from model quality and network availability. It contains \ResultSessions{} sessions with \ResultPlays{} transitions: twenty sessions per privacy mode, eighteen transitions per session, four model identifiers, shared and independent histories, augmented and unaugmented prompts, and varied movement, projectile, shield, damage, and turn settings. The command sequence covers every valid command form and invalid free text. Scripted responses are not evidence about LLM capability; they make trace verification deterministic and independently repeatable.
-
-For each unmodified trace we measured request classification, grounding verification, transition and event replay, serialized size, and verification time. We then injected eleven fault classes: normalized command, retained response, retained request, retained human prompt, state supplied to the model, frozen rules, pre-state, post-state, semantic events, deletion, and reordering. A perturbation was applied only when the relevant content existed; for example, hidden response text cannot be mutated in a hash-only trace. Before verification, all commitments derivable from retained mutated content---including text, request, transition, play-chain, and session hashes---were recomputed. Detection therefore depends on cross-field and semantic invariants rather than stale digests alone.
-
-\begin{table}[t]
-\caption{Evaluation results.}
-\label{tab:results}
-\centering
-\begin{tabular}{@{}lr@{}}
-\toprule
-Measure & Result \\
-\midrule
-Valid sessions & \ResultValidSessions{}/\ResultSessions{} \\
-State-equivalent transitions & \ResultStateEquivalent{}/\ResultPlays{} \\
-Event-equivalent transitions & \ResultEventEquivalent{}/\ResultPlays{} \\
-Exact request records & \ResultExactRequests{} \\
-Redacted / hash-only requests & \ResultRedactedRequests{} / \ResultHashedRequests{} \\
-Verified / committed groundings & \ResultVerifiedGroundings{} / \ResultCommittedGroundings{} \\
-Applicable perturbations detected & \ResultFaultsDetected{}/\ResultFaults{} \\
-Mean bytes per transition & \ResultBytesPerPlay{} \\
-Median size / minimal action log & $\ResultExpansion\times$ \\
-Median verification time/session & \ResultVerificationMs{} ms \\
-Median verification throughput & \ResultThroughput{} transitions/s \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Results}
-All \ResultValidSessions{} sessions passed the guarantees available in their privacy mode (Table~\ref{tab:results}). Full traces reconstructed \ResultExactRequests{} complete request payloads and re-parsed \ResultVerifiedGroundings{} returned texts into the recorded commands. The other \ResultCommittedGroundings{} transitions remained operatively replayable but, correctly, did not claim independent grounding verification. Every transition reproduced both its state and event list.
-
-All \ResultFaults{} applicable perturbations were detected after re-anchoring. Response and command changes produced grounding or replay failures; prompt and request changes produced reconstruction or provenance failures; supplied-state, rule, pre-state, and post-state changes produced request, continuity, or replay failures; event changes produced event-equivalence failures; deletion and reordering produced sequence, history, or continuity failures. The mean trace cost was \ResultBytesPerPlay{} bytes per transition and the median expansion over a deliberately minimal action log was $\ResultExpansion\times$. Median verification time was \ResultVerificationMs{} ms per eighteen-transition session, or \ResultThroughput{} transitions/s. These values characterize the Python reference artefact and corpus, not production telemetry infrastructure.
-
-\section{Limitations and Conclusion}
-The evaluation validates trace semantics, not pedagogical effectiveness, strategic prompting, or model capability. Those questions require human participants and are reserved for separate work. The scripted corpus does not test provider-specific metadata completeness; a live local-model adapter is included, but identical model regeneration is explicitly outside the contract. The implementation also assumes a bounded command grammar and deterministic transition layer. Systems whose post-grounding execution is itself stochastic require the transition trace to include and control the additional randomness.
-
-The work establishes a precise boundary that generic agent replay can obscure. An LLM response need not be regenerated to verify what a system did with it. By reconstructing invocation evidence where disclosure permits, checking response-to-command grounding, freezing domain rules, and re-executing deterministic semantics, BatLLM makes the path from human prompt to computational state auditable. The contract generalizes to bounded LLM-mediated systems in which linguistic output is grounded into an explicit command language and deterministic state transition.
-
-\section*{Acknowledgment}
-BatLLM was supported by the University of Colorado Boulder's Center for Humanities \& the Arts and Research \& Innovation Office.
-
-\bibliographystyle{IEEEtran}
-\bibliography{references}
-\end{document}
+q¶»§q«^
