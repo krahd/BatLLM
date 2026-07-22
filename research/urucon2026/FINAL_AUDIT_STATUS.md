@@ -1,5 +1,3 @@
 # Final URUCON audit status
 
-Status: hardened source validated; generated artefact build in progress.
-
-The adversarial source fixes compile and the complete non-live test suite passes. Experiment regeneration and document/artefact publication are in progress.
+Status: failed. See `FINAL_AUDIT.log` and the corresponding GitHub Actions run. Generated deliverables were not declared final.
