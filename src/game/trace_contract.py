@@ -219,14 +219,38 @@ def verify_request_record(record: Mapping[str, Any]) -> tuple[bool, str]:
     return True, "redacted-structure"
 
 
+_NON_SEMANTIC_EVENT_DETAIL_KEYS = {
+    "raw_response",
+    "llm_response",
+    "response",
+    "prompt",
+    "content",
+}
+
+
 def event_to_dict(event: Any) -> dict[str, Any]:
-    """Convert replay-engine events to ordinary dictionaries."""
+    """Convert a replay event into privacy-safe domain-semantic data.
+
+    The replay engine may attach the raw model text to diagnostic event
+    details. That text is invocation evidence, not domain semantics, and is
+    already governed by the trace privacy mode. It must not be duplicated in
+    the unprotected event stream.
+    """
 
     if is_dataclass(event):
-        return _normalise(asdict(event))
-    if isinstance(event, Mapping):
-        return _normalise(event)
-    return {"type": type(event).__name__, "label": str(event)}
+        result = _normalise(asdict(event))
+    elif isinstance(event, Mapping):
+        result = _normalise(event)
+    else:
+        return {"type": type(event).__name__, "label": str(event)}
+    details = result.get("details")
+    if isinstance(details, dict):
+        result["details"] = {
+            key: value
+            for key, value in details.items()
+            if key not in _NON_SEMANTIC_EVENT_DETAIL_KEYS
+        }
+    return result
 
 
 def transition_material(

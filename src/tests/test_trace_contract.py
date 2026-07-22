@@ -15,7 +15,12 @@ from game.session_v3 import (
     verify_session_envelope_hash,
     write_session_v3,
 )
-from game.trace_contract import PrivacyMode, canonical_json, sha256_json
+from game.trace_contract import (
+    PrivacyMode,
+    canonical_json,
+    event_to_dict,
+    sha256_json,
+)
 from game.trace_verifier import verify_payload
 
 
@@ -80,6 +85,17 @@ def test_canonical_hash_is_order_independent() -> None:
         {"a": 1, "b": 2}
     )
 
+
+
+def test_semantic_events_do_not_leak_raw_model_text() -> None:
+    event = {
+        "type": "invalid_command",
+        "label": "Invalid command",
+        "details": {"raw_response": "private text", "cmd": "ERR"},
+    }
+    converted = event_to_dict(event)
+    assert converted["details"] == {"cmd": "ERR"}
+    assert "private text" not in canonical_json(converted)
 
 def test_full_trace_is_exactly_reconstructable_and_replayable() -> None:
     payload = build()
