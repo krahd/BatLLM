@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  actions: read
+  contents: write
 
 jobs:
   tests:
@@ -37,7 +38,7 @@ jobs:
           python -m pip install -r research/urucon2026/requirements.txt
       - name: Compile all maintained entry points
         run: |
-          python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments
+          python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments research/urucon2026/publish_repository.py
       - name: Validate schema JSON syntax
         run: python -m json.tool research/urucon2026/schema/batllm-session-v3.schema.json
       - name: Run complete non-live test suite
@@ -100,8 +101,7 @@ jobs:
           pdflatex -interaction=nonstopmode -halt-on-error main.tex
           pages=$(pdfinfo main.pdf | awk '/^Pages:/ {print $2}')
           echo "Compiled page count: $pages"
-          test "$pages" -le 5
-          test "$pages" -ge 4
+          test "$pages" -eq 4
           ! grep -q 'Citation.*undefined' main.log
           ! grep -q 'There were undefined references' main.log
           ! grep -q 'LaTeX Error' main.log
@@ -127,5 +127,46 @@ jobs:
             research/urucon2026/CLAIMS.md
             research/urucon2026/PAPER_REVIEW.md
             research/urucon2026/AUDIT.md
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 30
+
+  publish-repository:
+    name: Commit complete URUCON package to branch
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'urucon'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: urucon
+          fetch-depth: 0
+      - name: Check publication request
+        id: publication
+        shell: bash
+        run: |
+          if test -f research/urucon2026/.final-publish-trigger; then
+            echo 'requested=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'requested=false' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-python@v5
+        if: steps.publication.outputs.requested == 'true'
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install publication dependencies
+        if: steps.publication.outputs.requested == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            pandoc poppler-utils libreoffice-writer zip unzip
+          python -m pip install --upgrade pip
+          python -m pip install -r research/urucon2026/requirements.txt
+      - name: Publish validated files
+        if: steps.publication.outputs.requested == 'true'
+        run: python research/urucon2026/publish_repository.py
