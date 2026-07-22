@@ -1,0 +1,66 @@
+name: Migrate URUCON paper to authoritative DOCX
+
+on:
+  push:
+    branches: ["agent/urucon-docx-authoritative"]
+    paths: [".github/workflows/migrate-urucon-docx.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/urucon-docx-authoritative
+          fetch-depth: 0
+      - name: Decode Word files
+        run: |
+          set -euo pipefail
+          cat .docx-payload/paper-* | base64 -d > research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
+          cat .docx-payload/template-* | base64 -d > research/urucon2026/paper/conference-template-a4.docx
+      - name: Remove obsolete paper files
+        run: |
+          set -euo pipefail
+          git rm -f --ignore-unmatch \
+            research/urucon2026/paper/main.tex \
+            research/urucon2026/paper/main.pdf \
+            research/urucon2026/paper/main.log \
+            research/urucon2026/paper/main.docx \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.pdf \
+            research/urucon2026/paper/build_docx.py \
+            research/urucon2026/paper/references.bib \
+            research/urucon2026/paper/results.tex \
+            research/urucon2026/experiments/render_results.py
+          git rm -r .docx-payload
+      - name: Validate and package
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          for name in (
+              "research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx",
+              "research/urucon2026/paper/conference-template-a4.docx",
+          ):
+              path = Path(name)
+              assert path.exists() and path.stat().st_size > 0, path
+              with ZipFile(path) as archive:
+                  assert archive.testzip() is None, path
+                  assert "word/document.xml" in archive.namelist(), path
+          PY
+          python -m py_compile research/urucon2026/build_artifact.py research/urucon2026/experiments/run_all.py
+          python research/urucon2026/build_artifact.py
+      - name: Commit migration
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "URUCON: make Word manuscript authoritative"
+          git push origin HEAD:agent/urucon-docx-authoritative
