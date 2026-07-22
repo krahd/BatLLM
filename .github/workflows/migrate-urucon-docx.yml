@@ -22,7 +22,7 @@ jobs:
           set -euo pipefail
           cat .docx-payload/paper-* | base64 -d > research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
           cat .docx-payload/template-* | base64 -d > research/urucon2026/paper/conference-template-a4.docx
-      - name: Remove obsolete paper files
+      - name: Remove obsolete paper and package files
         run: |
           set -euo pipefail
           git rm -f --ignore-unmatch \
@@ -34,9 +34,12 @@ jobs:
             research/urucon2026/paper/build_docx.py \
             research/urucon2026/paper/references.bib \
             research/urucon2026/paper/results.tex \
-            research/urucon2026/experiments/render_results.py
+            research/urucon2026/experiments/render_results.py \
+            research/urucon2026/artifact/MANIFEST.sha256 \
+            research/urucon2026/artifact/PACKAGE.sha256 \
+            research/urucon2026/artifact/BatLLM_URUCON_2026_Research_Artifact.zip
           git rm -r .docx-payload
-      - name: Validate and package
+      - name: Validate Word files
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -54,7 +57,9 @@ jobs:
                   assert "word/document.xml" in archive.namelist(), path
           PY
           python -m py_compile research/urucon2026/build_artifact.py research/urucon2026/experiments/run_all.py
-          python research/urucon2026/build_artifact.py
+          sha256sum \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx \
+            research/urucon2026/paper/conference-template-a4.docx
       - name: Commit migration
         run: |
           set -euo pipefail
