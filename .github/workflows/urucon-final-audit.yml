@@ -1,0 +1,156 @@
+name: Final URUCON adversarial audit
+
+on:
+  push:
+    branches: [urucon]
+    paths:
+      - research/urucon2026/.audit-trigger
+
+permissions:
+  contents: write
+
+concurrency:
+  group: urucon-branch-writer
+  cancel-in-progress: false
+
+jobs:
+  audit-fix-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      BATLLM_RUN_OLLAMA_SMOKE: "0"
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+      KIVY_WINDOW: mock
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: urucon
+          fetch-depth: 0
+
+      - name: Wait for previous branch writer and synchronise
+        shell: bash
+        run: |
+          set -euo pipefail
+          last=$(git ls-remote origin refs/heads/urucon | awk '{print $1}')
+          stable=0
+          for _ in $(seq 1 24); do
+            sleep 20
+            current=$(git ls-remote origin refs/heads/urucon | awk '{print $1}')
+            if [ "$current" = "$last" ]; then
+              stable=$((stable + 1))
+            else
+              last="$current"
+              stable=0
+            fi
+            if [ "$stable" -ge 9 ]; then
+              break
+            fi
+          done
+          git fetch origin urucon
+          git reset --hard origin/urucon
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install build and rendering tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            pandoc poppler-utils libreoffice-writer \
+            texlive-latex-base texlive-latex-recommended \
+            texlive-latex-extra texlive-publishers \
+            texlive-fonts-recommended
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -r research/urucon2026/requirements.txt
+
+      - name: Apply adversarial fixes
+        run: |
+          python research/urucon2026/apply_audit_fixes.py
+          rm -f research/urucon2026/.audit-trigger research/urucon2026/.publish-trigger
+
+      - name: Validate hardened implementation
+        run: |
+          python -m compileall -q src research/urucon2026/experiments \
+            run_batllm.py run_game_analyzer.py run_tests.py \
+            run_batllm_research.py run_batllm_verify.py
+          python -m pytest -q src/tests
+
+      - name: Commit audited source revision
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: harden URUCON evidence contract [skip ci]'
+
+      - name: Regenerate complete evaluation artefact
+        run: python research/urucon2026/experiments/run_all.py
+
+      - name: Build and preflight British-English PDF
+        working-directory: research/urucon2026/paper
+        run: |
+          set -euo pipefail
+          rm -f main.aux main.log main.pdf
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          pages=$(pdfinfo main.pdf | awk '/^Pages:/ {print $2}')
+          test "$pages" -ge 4
+          test "$pages" -le 5
+          ! grep -q 'Citation.*undefined' main.log
+          ! grep -q 'There were undefined references' main.log
+          ! grep -q 'LaTeX Error' main.log
+          ! grep -q 'Overfull' main.log
+          pdftotext main.pdf - | grep -q 'ACKNOWLEDGEMENT'
+          pdffonts main.pdf | awk 'NR > 2 {if ($4 != "yes") exit 1}'
+          mkdir -p /tmp/pdf-render
+          pdftoppm -png -r 150 main.pdf /tmp/pdf-render/page >/dev/null
+          test "$(find /tmp/pdf-render -name 'page-*.png' | wc -l)" -eq "$pages"
+
+      - name: Build and render editable British-English DOCX
+        run: |
+          set -euo pipefail
+          python research/urucon2026/paper/build_docx.py
+          unzip -t research/urucon2026/paper/main.docx
+          python - <<'PY'
+          from docx import Document
+          path = 'research/urucon2026/paper/main.docx'
+          doc = Document(path)
+          assert doc.core_properties.language == 'en-GB'
+          assert any(p.text == 'Acknowledgement' for p in doc.paragraphs)
+          assert len(doc.tables) == 2
+          PY
+          mkdir -p /tmp/docx-render
+          libreoffice --headless --convert-to pdf --outdir /tmp/docx-render \
+            research/urucon2026/paper/main.docx
+          test -s /tmp/docx-render/main.pdf
+          pages=$(pdfinfo /tmp/docx-render/main.pdf | awk '/^Pages:/ {print $2}')
+          test "$pages" -ge 4
+          pdftoppm -png -r 120 /tmp/docx-render/main.pdf \
+            /tmp/docx-render/page >/dev/null
+          test "$(find /tmp/docx-render -name 'page-*.png' | wc -l)" -eq "$pages"
+
+      - name: Package complete research artefact
+        run: python research/urucon2026/build_artifact.py
+
+      - name: Commit and push generated deliverables
+        run: |
+          set -euo pipefail
+          git add -f \
+            research/urucon2026/corpus/generated \
+            research/urucon2026/results \
+            research/urucon2026/paper/main.log \
+            research/urucon2026/paper/main.pdf \
+            research/urucon2026/paper/main.docx \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.pdf \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx \
+            research/urucon2026/paper/results.tex \
+            research/urucon2026/artifact
+          git commit -m 'artifacts: publish final audited URUCON package [skip ci]'
+          git fetch origin urucon
+          test "$(git rev-parse origin/urucon)" = "$(git rev-parse HEAD~2)"
+          git push origin HEAD:urucon
