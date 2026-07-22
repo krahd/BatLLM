@@ -3,23 +3,24 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from common import ROOT
 
 
 def load(name: str) -> dict:
     return json.loads(
-        (ROOT / "research/urucon2026/results" / name).read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "research/urucon2026/results" / name).read_text(encoding="utf-8")
     )
 
 
 def main() -> int:
     replay = load("replay-summary.json")
+    differential = load("differential-summary.json")
     faults = load("fault-summary.json")
+    serialization = load("serialization-summary.json")
     overhead = load("overhead-summary.json")
+    overall = overhead["overall"]
+    by_mode = overhead["by_privacy_mode"]
     macros = {
         "ResultSessions": replay["sessions"],
         "ResultPlays": replay["plays"],
@@ -31,15 +32,23 @@ def main() -> int:
         "ResultCommittedGroundings": replay["commitment_only_groundings"],
         "ResultStateEquivalent": replay["state_equivalent_plays"],
         "ResultEventEquivalent": replay["event_equivalent_plays"],
+        "ResultDifferentialCases": differential["cases"],
+        "ResultDifferentialNormalisation": differential["normalization_matches"],
+        "ResultDifferentialState": differential["state_matches"],
+        "ResultDifferentialEvents": differential["event_matches"],
+        "ResultDifferentialPaths": differential["path_matches"],
         "ResultFaultClasses": faults["fault_classes"],
         "ResultFaults": faults["applicable_faults"],
         "ResultFaultsDetected": faults["detected"],
-        "ResultBytesPerPlay": f"{overhead['mean_bytes_per_play']:.0f}",
-        "ResultExpansion": (
-            f"{overhead['median_expansion_ratio_vs_minimal_action_log']:.2f}"
-        ),
-        "ResultVerificationMs": f"{overhead['median_verification_ms']:.2f}",
-        "ResultThroughput": f"{overhead['median_plays_per_second']:.0f}",
+        "ResultSerializationVariants": serialization["variants"],
+        "ResultSerializationAccepted": serialization["accepted"],
+        "ResultRawBytesFull": f"{by_mode['full']['mean_raw_bytes_per_play']:.0f}",
+        "ResultRawBytesRedacted": f"{by_mode['redacted']['mean_raw_bytes_per_play']:.0f}",
+        "ResultRawBytesHashed": f"{by_mode['hashed']['mean_raw_bytes_per_play']:.0f}",
+        "ResultGzipBytes": f"{overall['mean_gzip_bytes_per_play']:.0f}",
+        "ResultVerificationMs": f"{overall['median_verification_ms']:.2f}",
+        "ResultThroughput": f"{overall['median_plays_per_second']:.0f}",
+        "ResultTimingRepetitions": overhead["repetitions_per_session"],
     }
     output = ROOT / "research/urucon2026/paper/results.tex"
     output.parent.mkdir(parents=True, exist_ok=True)
