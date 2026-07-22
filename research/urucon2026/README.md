@@ -1,6 +1,6 @@
 # BatLLM URUCON 2026 research artefact
 
-This directory contains the implementation, evaluation, generated corpus, result files, and manuscript for **From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control**.
+This directory contains the implementation, evaluation, generated corpus, result files, and Word manuscript for **From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control**.
 
 ## Scope
 
@@ -21,10 +21,10 @@ These are verification predicates, not cumulative maturity levels. Availability 
 
 ## Paper deliverables
 
-- `paper/main.pdf`: authoritative four-page A4 IEEE submission PDF.
-- `paper/main.docx`: editable single-column Word version with British-English proofing metadata.
-- `paper/BatLLM_URUCON_2026_Paper.pdf` and `.docx`: descriptively named copies.
-- `paper/build_docx.py`: reproducible DOCX build and formatting script.
+- `paper/BatLLM_URUCON_2026_Paper.docx`: sole authoritative IEEE A4 manuscript.
+- `paper/conference-template-a4.docx`: original IEEE A4 Word template supplied for the submission.
+
+The repository intentionally contains no LaTeX paper source and no committed PDF duplicate. CI renders the DOCX to a temporary PDF only for layout and page-count validation.
 
 ## Run
 
@@ -55,11 +55,12 @@ The evaluation performs:
 1. generation and verification of 60 traces and 1,080 transitions across all retention profiles;
 2. 5,000 differential cases against a separately implemented executable semantics that imports no production gameplay code;
 3. re-anchored semantic perturbations at early, middle, and late trace positions, plus round-level rule perturbations;
-4. benign JSON serialisation controls using compact ASCII, pretty Unicode, and recursively reversed key order;
-5. repeated in-memory verification timing and canonical raw/gzip size measurement; and
-6. automatic generation of `paper/results.tex` from result summaries.
+4. benign JSON serialisation controls using compact ASCII, pretty Unicode, and recursively reversed key order; and
+5. repeated in-memory verification timing and canonical raw/gzip size measurement.
 
-Generated corpus files, result summaries, the compiled PDF, and the editable DOCX are committed to this branch and are also regenerated as CI artefacts rather than manually curated evidence. The workflow runs source compilation, schema validation, the complete non-live BatLLM tests, and every research experiment on Linux, macOS, and Windows under Python 3.10–3.12. A separate job compiles and preflights the four-page A4 IEEE manuscript.
+Generated corpus files and result summaries are committed and regenerated in CI. The workflow runs source compilation, schema validation, the complete non-live BatLLM tests, and every research experiment on Linux, macOS, and Windows under Python 3.10–3.12. A separate job structurally validates the authoritative DOCX, renders it temporarily, checks A4 geometry and page count, and packages the complete research artefact.
+
+The manuscript reports the committed reference results explicitly. If the experiment outputs change, the corresponding values in the Word manuscript must be reviewed and updated intentionally rather than being substituted automatically during a build.
 
 ## Files
 
@@ -69,16 +70,15 @@ Generated corpus files, result summaries, the compiled PDF, and the editable DOC
 - `experiments/inject_faults.py`: multi-position re-anchored perturbation testing.
 - `experiments/serialization_controls.py`: benign-serialisation false-positive controls.
 - `experiments/measure_overhead.py`: raw/gzip size and repeated in-memory timing.
-- `paper/main.tex`: authoritative manuscript source in British English.
-- `paper/main.pdf`: submission PDF.
-- `paper/main.docx`: editable Word version.
-- `paper/build_docx.py`: DOCX generation script.
+- `paper/BatLLM_URUCON_2026_Paper.docx`: authoritative manuscript.
+- `paper/conference-template-a4.docx`: original Word template.
 - `corpus/generated/`: the 60 generated reference traces.
 - `results/`: replay, differential, perturbation, schema, serialisation, and overhead outputs.
 - `artifact/MANIFEST.sha256`: checksums for the packaged research artefact.
 - `artifact/BatLLM_URUCON_2026_Research_Artifact.zip`: packaged generated-artefact snapshot.
 - `CLAIMS.md`: claim-to-evidence ledger.
 - `PAPER_REVIEW.md`: adversarial paper review and revision record.
+- `PAPER_STYLE_AUDIT.md`: argument, prose, and evidentiary-alignment audit.
 - `AUDIT.md`: final implementation and manuscript audit.
 
 ## Security and disclosure boundary

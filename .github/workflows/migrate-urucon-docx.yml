@@ -1,0 +1,134 @@
+name: Migrate URUCON paper to authoritative DOCX
+
+on:
+  pull_request:
+    branches: [main]
+    paths: [".github/workflows/migrate-urucon-docx.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/urucon-docx-authoritative
+          fetch-depth: 0
+
+      - name: Install Word build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            libreoffice-writer poppler-utils fonts-liberation xz-utils
+          python -m pip install --upgrade pip
+          python -m pip install python-docx
+
+      - name: Retrieve and preserve the supplied IEEE template
+        run: |
+          set -euo pipefail
+          paper_dir="research/urucon2026/paper"
+          mkdir -p "$paper_dir" /tmp/template-converted /tmp/libreoffice-home
+          curl -fL --retry 5 --retry-all-errors \
+            "https://www.ieee.org/content/dam/ieee-org/ieee/web/org/conferences/conference-template-a4.docx" \
+            -o "$paper_dir/conference-template-a4.docx"
+          echo "57e248ce34bc60e37d30b8a1d46f41915967c97bff5ed6e2f94cf31f7ddc5fe6  $paper_dir/conference-template-a4.docx" | sha256sum -c -
+          HOME=/tmp/libreoffice-home libreoffice --headless \
+            --convert-to docx --outdir /tmp/template-converted \
+            "$paper_dir/conference-template-a4.docx"
+          test -s /tmp/template-converted/conference-template-a4.docx
+
+      - name: Build the authoritative Word manuscript
+        run: |
+          set -euo pipefail
+          base64 -d .word-migration/build.py.xz.b64 | xz -d > /tmp/build_urucon_docx.py
+          sed -i \
+            "s#TEMPLATE = Path('/mnt/data/template-converted/conference-template-a4.docx')#TEMPLATE = Path('/tmp/template-converted/conference-template-a4.docx')#" \
+            /tmp/build_urucon_docx.py
+          sed -i \
+            "s#OUT = Path('/mnt/data/BatLLM_URUCON_2026_Paper.docx')#OUT = Path('research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx')#" \
+            /tmp/build_urucon_docx.py
+          python /tmp/build_urucon_docx.py
+
+      - name: Remove obsolete paper, package, and migration files
+        run: |
+          set -euo pipefail
+          git rm -f --ignore-unmatch \
+            research/urucon2026/paper/main.tex \
+            research/urucon2026/paper/main.pdf \
+            research/urucon2026/paper/main.log \
+            research/urucon2026/paper/main.docx \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.pdf \
+            research/urucon2026/paper/build_docx.py \
+            research/urucon2026/paper/references.bib \
+            research/urucon2026/paper/results.tex \
+            research/urucon2026/experiments/render_results.py \
+            research/urucon2026/artifact/MANIFEST.sha256 \
+            research/urucon2026/artifact/PACKAGE.sha256 \
+            research/urucon2026/artifact/BatLLM_URUCON_2026_Research_Artifact.zip \
+            .github/workflows/migrate-urucon-docx.yml
+          git rm -rf --ignore-unmatch .docx-payload .docx-payload-v2 .word-migration
+
+      - name: Validate Word files and rendered paper
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          from docx import Document
+
+          paper = Path("research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx")
+          template = Path("research/urucon2026/paper/conference-template-a4.docx")
+          for path in (paper, template):
+              assert path.exists() and path.stat().st_size > 0, path
+              with ZipFile(path) as archive:
+                  assert archive.testzip() is None, path
+                  assert "word/document.xml" in archive.namelist(), path
+
+          doc = Document(paper)
+          text = "\n".join(paragraph.text for paragraph in doc.paragraphs)
+          assert "From Prompt to State" in text
+          assert "Applications that let a large language model control software" in text
+          assert len(doc.tables) == 2
+          assert len(doc.sections) >= 2
+          assert doc.core_properties.language == "en-GB"
+          forbidden = (
+              "Paper Title* (use style: paper title)",
+              "IEEE conference templates contain guidance text",
+          )
+          assert not any(fragment in text for fragment in forbidden)
+          PY
+          rm -rf /tmp/urucon-paper /tmp/qa-home
+          mkdir -p /tmp/urucon-paper /tmp/qa-home
+          HOME=/tmp/qa-home libreoffice --headless \
+            --convert-to pdf --outdir /tmp/urucon-paper \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
+          rendered="/tmp/urucon-paper/BatLLM_URUCON_2026_Paper.pdf"
+          test -s "$rendered"
+          pages=$(pdfinfo "$rendered" | awk '/^Pages:/ {print $2}')
+          width=$(pdfinfo "$rendered" | awk '/^Page size:/ {print $3}')
+          height=$(pdfinfo "$rendered" | awk '/^Page size:/ {print $5}')
+          test "$pages" -ge 3
+          test "$pages" -le 5
+          awk -v w="$width" 'BEGIN { exit !(w > 594 && w < 597) }'
+          awk -v h="$height" 'BEGIN { exit !(h > 840 && h < 843) }'
+          pdftotext "$rendered" /tmp/urucon-paper/paper.txt
+          grep -q "From Prompt to State" /tmp/urucon-paper/paper.txt
+          ! grep -q "Paper Title.*use style" /tmp/urucon-paper/paper.txt
+          python -m py_compile research/urucon2026/build_artifact.py research/urucon2026/experiments/run_all.py
+          sha256sum \
+            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx \
+            research/urucon2026/paper/conference-template-a4.docx
+          pdfinfo "$rendered"
+
+      - name: Commit migration
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "URUCON: make Word manuscript authoritative"
+          git push origin HEAD:agent/urucon-docx-authoritative

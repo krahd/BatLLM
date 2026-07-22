@@ -1,16 +1,10 @@
 # Paper files
 
-- `main.tex`: authoritative IEEE-style source, written in British English.
-- `results.tex`: generated experimental-result macros consumed by `main.tex`.
-- `main.pdf`: four-page A4 submission PDF.
-- `main.docx`: editable single-column Word version using British-English proofing metadata.
-- `BatLLM_URUCON_2026_Paper.pdf` and `.docx`: descriptively named copies of the same deliverables.
-- `build_docx.py`: reproducible LaTeX-to-DOCX conversion and formatting script.
-- `references.bib`: machine-readable bibliography used by the DOCX build.
-- `main.log`: successful LaTeX build log from the validated research artefact.
+- `BatLLM_URUCON_2026_Paper.docx`: the sole authoritative manuscript and the file to edit or submit.
+- `conference-template-a4.docx`: the original IEEE A4 Word template used to format the manuscript.
 
-The PDF is the submission-formatted version. The DOCX preserves equations, citations, tables, section structure, and references in an editable layout; it is not intended to reproduce IEEE's two-column pagination.
+The paper is maintained directly in Microsoft Word. There is no LaTeX source, generated PDF, conversion script, duplicate `main.docx`, or separate bibliography file in this directory. This deliberately leaves one unambiguous current manuscript.
 
-## DOCX build dependencies
+## Formatting and validation
 
-The editable document requires `pandoc`, `python-docx`, and an IEEE CSL style. On Ubuntu 24.04, install `citation-style-language-styles`; the builder also recognises standard Pandoc and TeX Live CSL locations.
+The authoritative DOCX retains the template's A4 page geometry, two-column body layout, title and affiliation block, heading hierarchy, equations, table styles, reference numbering, and British-English proofing metadata. The repository workflow checks the DOCX package structurally, confirms that template guidance text has been removed, renders it temporarily with LibreOffice, and verifies an A4 page count within the conference limit. The temporary PDF is a validation artefact and is not committed as a second paper version.

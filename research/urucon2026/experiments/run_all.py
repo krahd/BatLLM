@@ -17,7 +17,6 @@ def main() -> int:
         "inject_faults.py",
         "serialization_controls.py",
         "measure_overhead.py",
-        "render_results.py",
     ):
         process = subprocess.run(
             [sys.executable, str(HERE / script)],
