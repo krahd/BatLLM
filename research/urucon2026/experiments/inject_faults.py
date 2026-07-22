@@ -10,9 +10,16 @@ from pathlib import Path
 from typing import Callable
 
 from common import ROOT
-from game.replay_engine import parse_model_response
+from game.replay_engine import (
+    GameplaySettingsSnapshot,
+    apply_play,
+    compare_state_maps,
+    parse_model_response,
+)
 from game.trace_contract import (
     PrivacyMode,
+    canonical_json,
+    event_to_dict,
     finalise_play_hash,
     sha256_json,
     sha256_text,
@@ -42,10 +49,34 @@ def _different_command(current: str) -> str:
 
 
 def alter_command(payload: Payload) -> None:
+    """Select a command guaranteed to alter replayed state or semantic events."""
+
     play = _first_play(payload)
-    play["normalized_command"] = parse_model_response(
-        _different_command(play["normalized_command"])
-    ).normalized_cmd
+    rules = GameplaySettingsSnapshot.from_mapping(
+        _round(payload)["gameplay_settings_snapshot"]
+    )
+    for candidate in ("M0.2", "C90", "A45", "B", "S1", "S0", "nonsense"):
+        parsed = parse_model_response(candidate)
+        if parsed.normalized_cmd == play["normalized_command"]:
+            continue
+        resolution = apply_play(
+            play["pre_state"],
+            bot_id=play["bot_id"],
+            llm_response=parsed.normalized_cmd,
+            cmd_text=parsed.normalized_cmd,
+            rules=rules,
+        )
+        replay_events = [event_to_dict(event) for event in resolution.events]
+        state_same, _details = compare_state_maps(
+            resolution.state_by_bot, play["post_state"]
+        )
+        events_same = canonical_json(replay_events) == canonical_json(
+            play["events"]
+        )
+        if not state_same or not events_same:
+            play["normalized_command"] = parsed.normalized_cmd
+            return
+    raise RuntimeError("No semantically distinct command fixture available.")
 
 
 def alter_response(payload: Payload) -> None:
