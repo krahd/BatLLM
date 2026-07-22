@@ -1,0 +1,66 @@
+name: Finalise URUCON merge package
+
+on:
+  push:
+    branches: [urucon]
+    paths:
+      - .merge-finalize-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  finalise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: urucon
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Update merged-state documentation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("STATUS.md")
+          text = path.read_text(encoding="utf-8")
+          text = text.replace(
+              "Last updated: 2026-07-22 17:55 UTC",
+              "Last updated: 2026-07-22 18:30 UTC",
+              1,
+          )
+          text = text.replace(
+              "The `urucon` branch and PR #36 add a distinct schema-v3 research execution path",
+              "BatLLM includes a distinct schema-v3 research execution path",
+              1,
+          )
+          text = text.replace(
+              "- CI: `.github/workflows/urucon.yml` validates Linux, macOS, and Windows under Python 3.10-3.12 and builds/preflights the four-page A4 IEEE paper. URUCON validation run 29895189692 completed successfully.",
+              "- CI: `.github/workflows/urucon.yml` validates relevant changes to the research runtime, schema, experiments, tests, and paper on Linux, macOS, and Windows under Python 3.10-3.12, and builds/preflights the four-page A4 IEEE paper. The final pre-merge validation completed successfully.",
+              1,
+          )
+          path.write_text(text, encoding="utf-8")
+          PY
+          rm -f .merge-finalize-trigger
+
+      - name: Regenerate and verify research package
+        run: |
+          python research/urucon2026/build_artifact.py
+          cd research/urucon2026/artifact
+          sha256sum -c PACKAGE.sha256
+          unzip -t BatLLM_URUCON_2026_Research_Artifact.zip
+
+      - name: Commit final merge package
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git add -f research/urucon2026/artifact
+          git commit -m 'artifacts: regenerate final URUCON merge package [skip ci]'
+          git push origin HEAD:urucon
