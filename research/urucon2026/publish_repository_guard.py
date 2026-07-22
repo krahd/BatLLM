@@ -22,6 +22,7 @@ def git(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
 
 
 def preserve_report(content: str) -> None:
+    REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(content, encoding="utf-8")
     try:
         git("config", "user.name", "github-actions[bot]")
@@ -89,39 +90,26 @@ def docx_preflight() -> None:
         check=False,
     )
     if process.returncode:
-        preserve_report(
-            "# Final URUCON publication failure\n\n"
-            "The editable DOCX build failed before repository packaging.\n\n"
-            "## Standard output\n\n```text\n"
-            f"{process.stdout}"
-            "```\n\n## Standard error\n\n```text\n"
-            f"{process.stderr}"
-            "```\n"
-        )
-        raise subprocess.CalledProcessError(
-            process.returncode,
-            process.args,
-            output=process.stdout,
-            stderr=process.stderr,
+        raise RuntimeError(
+            "Editable DOCX preflight failed.\n\n"
+            f"stdout:\n{process.stdout}\n\nstderr:\n{process.stderr}"
         )
 
 
 def main() -> int:
+    REPORT.unlink(missing_ok=True)
     try:
         docx_preflight()
         return publish_repository.main()
     except Exception as exc:  # publication diagnostics must survive the runner
-        if not REPORT.exists() or "Standard error" not in REPORT.read_text(
-            encoding="utf-8"
-        ):
-            details = traceback.format_exc()
-            preserve_report(
-                "# Final URUCON publication failure\n\n"
-                f"Exception: `{type(exc).__name__}: {exc}`\n\n"
-                "```text\n"
-                f"{details}"
-                "```\n"
-            )
+        details = traceback.format_exc()
+        preserve_report(
+            "# Final URUCON publication failure\n\n"
+            f"Exception: `{type(exc).__name__}: {exc}`\n\n"
+            "```text\n"
+            f"{details}"
+            "```\n"
+        )
         raise
 
 
