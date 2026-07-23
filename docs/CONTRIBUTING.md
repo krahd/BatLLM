@@ -366,6 +366,12 @@ export PYTHONPATH=src
 python run_tests.py core
 ```
 
+`run_tests.py non-live` (also the default mode) runs the complete isolated suite without starting or stopping Ollama:
+
+```bash
+python run_tests.py non-live
+```
+
 `run_tests.sh core` remains available as a Unix convenience wrapper around the same flow.
 
 The quick smoke currently runs only the lightweight smoke checks in `src/tests/test_history_compact.py`:

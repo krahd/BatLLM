@@ -31,9 +31,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -50,7 +50,7 @@ jobs:
           "$VENV_PYTHON" -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py
       - name: Run tests
         run: |
-          "$VENV_PYTHON" run_tests.py
+          "$VENV_PYTHON" run_tests.py non-live
       - name: Run pylint
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12' }}
         run: |

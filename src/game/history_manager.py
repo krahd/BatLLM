@@ -1,4 +1,6 @@
 import json
+import os
+import tempfile
 from datetime import datetime
 
 from kivy.utils import escape_markup
@@ -243,16 +245,11 @@ class HistoryManager:
 
         # if there's no active round, raise an error
         if not self.current_round:
-            if not self.current_round:
-                raise ValueError(
-                    "There is no active round to end. Call start_round first."
-                )
+            raise ValueError("There is no active round to end. Call start_round first.")
 
         # If a turn is in progress within this round, raise an error
         if self.current_turn and "post_state" not in self.current_turn:
-            if not self.current_round:
-                raise ValueError(
-                    "Cannot end a round mid turn. Call end_turn first")
+            raise ValueError("Cannot end a round mid turn. Call end_turn first")
 
         # Mark round end time
         self.current_round["end_time"] = self._now_iso()
@@ -271,21 +268,24 @@ class HistoryManager:
 
         end_time = self._now_iso()
         initial_state = dict(self.current_round.get("initial_state", {}))
-        cancelled_turn_number = len(self.current_round.get("turns", [])) or 1
+        turns = self.current_round.setdefault("turns", [])
+        cancelled_turn_number = len(turns) + 1
 
         cancelled_turn = {
             "turn": cancelled_turn_number,
             "start_time": self.current_turn.get("start_time", end_time) if self.current_turn else end_time,
             "end_time": end_time,
-            "pre_state": dict(initial_state),
+            "pre_state": dict(self.current_turn.get("pre_state", initial_state)) if self.current_turn else dict(initial_state),
             "plays": [],
             "cmd": "",
-            "post_state": dict(initial_state),
+            "post_state": dict(self.current_turn.get("pre_state", initial_state)) if self.current_turn else dict(initial_state),
             "status": "cancelled",
             "cancel_reason": reason,
         }
 
-        self.current_round["turns"] = [cancelled_turn]
+        if self.current_turn in turns:
+            turns.remove(self.current_turn)
+        turns.append(cancelled_turn)
         self.current_round["status"] = "cancelled"
         self.current_round["cancel_reason"] = reason
         if cancelled_by_bot_id is not None:
@@ -338,21 +338,14 @@ class HistoryManager:
 
 
         if not self.current_turn:
-            # raise ValueError(
-            #    "Cannot record a play without an active turn. Call start_turn first."
-            # )
-            print("Cannot record a play without an active turn. Call start_turn first.")
+            raise ValueError("Cannot record a play without an active turn. Call start_turn first.")
 
-        else:
-            # Create a play entry
-            play = {
-                "bot_id": bot.id,
-                "llm_response": bot.last_llm_response,
-                "cmd": bot.last_cmd,
-            }
-
-            # Append to the current turn's plays
-            self.current_turn.setdefault("plays", []).append(play)
+        play = {
+            "bot_id": bot.id,
+            "llm_response": bot.last_llm_response,
+            "cmd": bot.last_cmd,
+        }
+        self.current_turn.setdefault("plays", []).append(play)
 
 
 
@@ -382,7 +375,7 @@ class HistoryManager:
     def get_chat_history(self, bot_id: int | None = None, shared: bool = True) -> list[dict[str, str]]:
         """Reconstruct the chat history for the current game.
         """
-        history: list[dict[str, str, str]] = []
+        history: list[dict[str, str]] = []
         # If there is no active game, return empty history.
         if not self.current_game:
             return history
@@ -392,6 +385,8 @@ class HistoryManager:
         for rnd in rounds:
             for turn in rnd.get("turns", []):
                 for play in turn.get("plays", []):
+                    if not shared and bot_id is not None and play.get("bot_id") != bot_id:
+                        continue
                     history.append(
                         {"bot_id": play["bot_id"], "llm_response": play["llm_response"], "cmd": play["cmd"]})
 
@@ -484,10 +479,22 @@ class HistoryManager:
             saved_at=self._now_iso(),
             llm_metadata=ollama_service.build_saved_llm_metadata_snapshot(),
         )
-        with open(
-            filepath, "w", encoding="utf-8"
-        ) as f:  # JSON spec requires UTF-8 support by decoders.
-            json.dump(payload, f, indent=4, ensure_ascii=False)
+        destination = os.fspath(filepath)
+        directory = os.path.dirname(os.path.abspath(destination))
+        os.makedirs(directory, exist_ok=True)
+        fd, temporary = tempfile.mkstemp(prefix=".batllm-", suffix=".tmp", dir=directory)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=4, ensure_ascii=False)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, destination)
+        except Exception:
+            try:
+                os.unlink(temporary)
+            except FileNotFoundError:
+                pass
+            raise
 
 
     # Get the full session history as a human - readable string.
