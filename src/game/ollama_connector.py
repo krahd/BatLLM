@@ -117,6 +117,14 @@ class LLMTimeoutError(RuntimeError):
         )
 
 
+class LLMRequestError(RuntimeError):
+    """Provider-neutral terminal request failure."""
+
+    def __init__(self, message: str, original_exception: BaseException | None = None):
+        super().__init__(message)
+        self.original_exception = original_exception
+
+
 class OllamaConnector:
     """
     Lean sync connector for Ollama.
@@ -248,8 +256,15 @@ class OllamaConnector:
             return
 
 
-        tail = history[-max_n:]
+        system = history[0] if history and history[0].get("role") == "system" else None
+        available = max_n - (1 if system else 0)
+        tail = history[1:] if system else history[:]
+        tail = tail[-available:] if available > 0 else []
+        if tail and tail[0].get("role") == "assistant":
+            tail = tail[1:]
         history.clear()
+        if system:
+            history.append(system)
         history.extend(tail)
         self._ensure_system_message(history)  # ensure system message is at index 0
         # TODO verify this works OK
@@ -446,27 +461,28 @@ class OllamaConnector:
         res: dict[str, Any] | Any
         last_timeout: BaseException | None = None
 
-        for attempt in range(1, 3):
-            try:
-                res = self.client.chat(
-                    model=self.model,
-                    messages=history,
-                    options=options,
-                    stream=False,
-                )
-                break
-            except TIMEOUT_EXCEPTIONS as exc:
-                last_timeout = exc
-                if attempt == 2:
-                    self._remove_message_instance(history, user_message)
-                    raise LLMTimeoutError(
-                        model=self.model,
-                        timeout=self.timeout,
-                        attempts=attempt,
-                        original_exception=exc,
-                    ) from exc
-        else:  # pragma: no cover - loop always exits via break/raise
-            raise AssertionError("Unreachable Ollama retry state.")
+        try:
+            for attempt in range(1, 3):
+                try:
+                    res = self.client.chat(
+                        model=self.model, messages=history, options=options, stream=False
+                    )
+                    break
+                except TIMEOUT_EXCEPTIONS as exc:
+                    last_timeout = exc
+                    if attempt == 2:
+                        raise LLMTimeoutError(
+                            model=self.model, timeout=self.timeout, attempts=attempt,
+                            original_exception=exc,
+                        ) from exc
+            else:  # pragma: no cover
+                raise AssertionError("Unreachable Ollama retry state.")
+        except LLMTimeoutError:
+            self._remove_message_instance(history, user_message)
+            raise
+        except Exception as exc:
+            self._remove_message_instance(history, user_message)
+            raise LLMRequestError(f"LLM request failed: {exc}", exc) from exc
 
         # ---- Extract assistant text ----
         content = ""
@@ -490,7 +506,8 @@ class OllamaConnector:
         if not content:
             # Helpful debug info without dumping the entire object
             typename = type(res).__name__
-            raise RuntimeError(f"Empty or unparseable content from model (type={typename}).")
+            self._remove_message_instance(history, user_message)
+            raise LLMRequestError(f"Empty or unparseable content from model (type={typename}).")
 
         last_served_model = str(config.get("llm", "last_served_model") or "").strip()
         if self.model and self.model != last_served_model:
@@ -499,6 +516,7 @@ class OllamaConnector:
 
         # Persist llm reply into our history
         history.append({"role": "assistant", "content": content})
+        self._trim_history_inplace(history)
 
         # Optionally trim again if you enforce a hard cap:
         # self._trim_history_inplace(history)

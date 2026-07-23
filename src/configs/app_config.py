@@ -1,5 +1,8 @@
 """Configuration loader module"""
 import copy
+import os
+import tempfile
+import threading
 from pathlib import Path
 
 import yaml
@@ -10,6 +13,7 @@ from util.paths import resolve_config_path
 APP_NAME = "BatLLM"
 SHIPPED_CONFIG_PATH = Path(__file__).parent / "config.yaml"
 CONFIG_PATH = resolve_config_path(SHIPPED_CONFIG_PATH)
+_SAVE_LOCK = threading.Lock()
 
 # Maximize the window on startup
 KivyConfig.set("graphics", "window_state", "maximized")
@@ -109,8 +113,20 @@ class AppConfig:
 
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(path, "w", encoding="utf-8") as f:
-            yaml.safe_dump(self._config, f, sort_keys=False)
+        with _SAVE_LOCK:
+            fd, temporary = tempfile.mkstemp(prefix=".batllm-", suffix=".tmp", dir=path.parent)
+            try:
+                with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                    yaml.safe_dump(self._config, handle, sort_keys=False)
+                    handle.flush()
+                    os.fsync(handle.fileno())
+                os.replace(temporary, path)
+            except Exception:
+                try:
+                    os.unlink(temporary)
+                except FileNotFoundError:
+                    pass
+                raise
 
 
 

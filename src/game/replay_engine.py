@@ -77,7 +77,7 @@ class GameplaySettingsSnapshot:
     @classmethod
     def from_mapping(cls, values: Mapping[str, Any] | None) -> "GameplaySettingsSnapshot":
         values = values or {}
-        return cls(
+        snapshot = cls(
             bot_diameter=_to_float(values.get("bot_diameter"), 0.1),
             bot_step_length=_to_float(values.get("bot_step_length"), 0.03),
             bullet_damage=_to_int(values.get("bullet_damage"), 5),
@@ -89,6 +89,23 @@ class GameplaySettingsSnapshot:
             turns_per_round=max(1, _to_int(values.get("turns_per_round"), 8)),
             total_rounds=max(1, _to_int(values.get("total_rounds"), 2)),
         )
+        numeric = (
+            snapshot.bot_diameter, snapshot.bot_step_length, snapshot.bullet_diameter,
+            snapshot.bullet_step_length, snapshot.shield_size,
+        )
+        if not all(math.isfinite(value) for value in numeric):
+            raise ValueError("Gameplay settings must contain only finite numeric values.")
+        if not 0 < snapshot.bot_diameter <= 1:
+            raise ValueError("bot_diameter must be in (0, 1].")
+        if snapshot.bot_step_length <= 0 or snapshot.bullet_step_length <= 0:
+            raise ValueError("Movement and projectile step lengths must be positive.")
+        if snapshot.bullet_diameter <= 0 or snapshot.bullet_damage < 0:
+            raise ValueError("Projectile diameter must be positive and damage non-negative.")
+        if not 0 <= snapshot.shield_size <= 180:
+            raise ValueError("shield_size must be between 0 and 180 degrees.")
+        if snapshot.initial_health <= 0:
+            raise ValueError("initial_health must be positive.")
+        return snapshot
 
     def to_dict(self) -> dict[str, Any]:
         return {

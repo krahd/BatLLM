@@ -84,10 +84,16 @@ class NormalizedCanvas:
         if widget.width == 0 or widget.height == 0:
             return 0.0, 0.0
 
-        local_x = x - widget.x
-        local_y = y - widget.y
-        nx = local_x / float(widget.width)
-        ny = 1.0 - (local_y / float(widget.height))
+        padding = getattr(widget, "padding", [0, 0, 0, 0])
+        if isinstance(padding, (int, float)):
+            padding = [padding] * 4
+        elif len(padding) == 2:
+            padding = [padding[0], padding[1], padding[0], padding[1]]
+        scale_size = min(widget.width - padding[0] - padding[2], widget.height - padding[1] - padding[3])
+        if scale_size <= 0:
+            return 0.0, 0.0
+        nx = (x - widget.x) / scale_size - 0.05
+        ny = (widget.y + widget.height - y) / scale_size
         return nx, ny
 
 
@@ -101,4 +107,4 @@ class NormalizedCanvas:
         Returns:
             tuple: A tuple containing the normalised x and y coordinates of the touch event.    
         """
-        return NormalizedCanvas.normalize_point(widget, touch.x, touch.y)
+        return NormalizedCanvas.to(widget, touch.x, touch.y)

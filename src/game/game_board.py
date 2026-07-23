@@ -44,7 +44,7 @@ from kivy.uix.widget import Widget
 from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
-from game.ollama_connector import LLMTimeoutError, OllamaConnector  # TODO move to singleton
+from game.ollama_connector import LLMRequestError, LLMTimeoutError, OllamaConnector
 from game.prompt_store import PromptStore
 from game.replay_engine import GameplaySettingsSnapshot, resolve_shot
 from util.paths import asset_path
@@ -87,6 +87,8 @@ class GameBoard(Widget):
         self._turn_submission_index: int = 0
         self._round_timeout_action: str | None = None
         self._timeout_popup: Optional[Popup] = None
+        self._game_generation = 0
+        self._turn_generation = 0
 
         # Audio
         self.sound_shoot = SoundLoader.load(str(asset_path("sounds", "shoot1.wav")))
@@ -105,7 +107,7 @@ class GameBoard(Widget):
         self.bind(size=self._redraw, pos=self._redraw)
 
         # Render loop
-        fps = float(config.get("ui", "frame_rate"))
+        fps = max(1.0, float(config.get("ui", "frame_rate") or 60))
         Clock.schedule_interval(self._redraw, 1.0 / fps)
 
     # -------------------------------------------------------------------------
@@ -133,7 +135,7 @@ class GameBoard(Widget):
         Starts a new game by resetting game state and initializing bots.
         Notifies the history manager to start tracking the new game.
         """
-        # Reset counters for the new game
+        self._game_generation += 1
         self.current_turn = 0
         self.current_round = 0
         self.shuffled_bots = None
@@ -160,6 +162,12 @@ class GameBoard(Widget):
 
         self.games_started += 1
         self.history_manager.start_game(self)
+
+    def current_callback_token(self) -> tuple[int, int]:
+        return self._game_generation, self._turn_generation
+
+    def callback_token_is_current(self, token: tuple[int, int]) -> bool:
+        return token == self.current_callback_token()
 
     def end_game(self):
         """Ends the game and displays the final results."""
@@ -500,6 +508,7 @@ class GameBoard(Widget):
         # Round is not over → start a turn
         self.update_title_label()
         self.history_manager.start_turn(self)
+        self._turn_generation += 1
 
         # Reset the per-turn readiness
         for b in self.bots:
@@ -520,6 +529,15 @@ class GameBoard(Widget):
         """
         # Record the bot's play in the history manager
         self.history_manager.record_play(bot)
+
+        # A fatal action ends immediately; the round-count condition is only
+        # evaluated after the turn and round have been finalised.
+        if any(current_bot.health <= 0 for current_bot in self.bots):
+            self.current_turn += 1
+            self.history_manager.end_turn(self)
+            self.end_game()
+            self.start_new_game()
+            return
 
         # If all bots are done, end turn and schedule next
         if all(b.ready_for_next_turn for b in self.bots):
@@ -570,8 +588,10 @@ class GameBoard(Widget):
             f"BatLLM already retried once."
         )
 
-    def handle_bot_llm_timeout(self, bot: Bot, exc: LLMTimeoutError):
+    def handle_bot_llm_timeout(self, bot: Bot, exc: LLMTimeoutError, *, token=None):
         """Resolve an LLM timeout using the round policy or a user choice popup."""
+        if token is not None and not self.callback_token_is_current(token):
+            return
         if self._round_timeout_action == "err":
             self._resolve_bot_timeout(bot, exc, action="err", remember_for_round=False)
             return
@@ -581,6 +601,12 @@ class GameBoard(Widget):
             return
 
         self._show_timeout_resolution_popup(bot, exc)
+
+    def handle_bot_llm_error(self, bot: Bot, exc: LLMRequestError, *, token=None):
+        """Finish a provider failure deterministically without stalling the turn."""
+        if token is not None and not self.callback_token_is_current(token):
+            return
+        bot.finish_turn_with_error(str(exc))
 
     def _resolve_bot_timeout(
         self,
@@ -766,9 +792,6 @@ class GameBoard(Widget):
             target = self.get_bot_by_id(shot.damaged_bot_id)
             if target:
                 target.damage(amount=rules.bullet_damage)
-            if self.game_is_over():
-                self.end_game()
-                self.start_new_game()
 
 
 

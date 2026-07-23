@@ -174,6 +174,7 @@ def validate_session_v3(payload: Any) -> dict[str, Any]:
     seen_sequences: set[int] = set()
     for game_index, game in enumerate(games, start=1):
         _require(isinstance(game, dict), f"Game {game_index} must be an object.")
+        _require(isinstance(game.get("final_state"), dict), f"Game {game_index} lacks final_state.")
         _require(
             isinstance(game.get("rounds"), list) and bool(game["rounds"]),
             f"Game {game_index} needs at least one round.",
@@ -189,6 +190,7 @@ def validate_session_v3(payload: Any) -> dict[str, Any]:
                 isinstance(round_entry.get("initial_state"), dict),
                 f"{prefix} lacks initial_state.",
             )
+            _require(isinstance(round_entry.get("final_state"), dict), f"{prefix} lacks final_state.")
             _require(
                 isinstance(round_entry.get("plays"), list) and bool(round_entry["plays"]),
                 f"{prefix} needs at least one play.",

@@ -215,13 +215,11 @@ def test_command_grammar_rejects_suffixes_and_non_finite_numbers() -> None:
         assert parsed.normalized_cmd == "ERR"
 
 
-def test_zero_bullet_step_is_safe() -> None:
-    zero_step_rules = GameplaySettingsSnapshot.from_mapping(
-        {**rules().to_dict(), "bullet_step_length": 0.0}
-    )
-    result = resolve_shot(initial_state(), 1, zero_step_rules)
-    assert result.reason == "max_steps"
-    assert result.path == []
+def test_zero_bullet_step_is_rejected() -> None:
+    with pytest.raises(ValueError, match="step lengths must be positive"):
+        GameplaySettingsSnapshot.from_mapping(
+            {**rules().to_dict(), "bullet_step_length": 0.0}
+        )
 
 
 def test_full_mode_accepts_literal_redaction_marker() -> None:
