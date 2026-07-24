@@ -1,10 +1,9 @@
-# Paper files
+# Paper location
 
-- `BatLLM_URUCON_2026_Paper.docx`: the sole authoritative manuscript and the file to edit or submit.
-- `conference-template-a4.docx`: the original IEEE A4 Word template used to format the manuscript.
+The authoritative manuscript for **From Prompt to State: Verifiable Grounding and Operative Replay for LLM-Mediated Control** is maintained in the writing repository:
 
-The paper is maintained directly in Microsoft Word. There is no LaTeX source, generated PDF, conversion script, duplicate `main.docx`, or separate bibliography file in this directory. This deliberately leaves one unambiguous current manuscript.
+`https://github.com/krahd/academic-writing/tree/main/my_papers_2026/2026%20-%20Urucon%20-%20BatLLM`
 
-## Formatting and validation
+Canonical migration commit: `787295f8259c2a9cefd592d9980b291cc9330393`.
 
-The authoritative DOCX retains the template's A4 page geometry, two-column body layout, title and affiliation block, heading hierarchy, equations, table styles, reference numbering, and British-English proofing metadata. The repository workflow checks the DOCX package structurally, confirms that template guidance text has been removed, renders it temporarily with LibreOffice, and verifies an A4 page count within the conference limit. The temporary PDF is a validation artefact and is not committed as a second paper version.
+This BatLLM repository intentionally retains no editable manuscript, submission PDF, bibliography, conference template, or paper-review duplicate. It owns the implementation, schema, experiments, generated corpus, results, and reproducibility artefact that support the paper's technical claims.
