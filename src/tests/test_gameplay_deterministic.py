@@ -14,6 +14,7 @@ from game.bullet import Bullet
 from game.game_board import GameBoard
 from game.ollama_connector import LLMTimeoutError, OllamaConnector
 from game.prompt_store import PromptStore
+from game.session_schema import validate_session_payload
 from view.home_screen import HomeScreen
 
 
@@ -478,7 +479,9 @@ def test_play_turn_timeout_can_cancel_round_and_roll_back_state(monkeypatch) -> 
     assert round_entry["status"] == "cancelled"
     assert round_entry["cancelled_by_bot_id"] == 2
     assert cancelled_turn["status"] == "cancelled"
+    assert cancelled_turn["turn"] == 1
     assert cancelled_turn["plays"] == []
+    assert cancelled_turn["post_state"] == round_entry["initial_state"]
     assert math.isclose(bot_one.x, 0.2)
     assert math.isclose(bot_one.y, 0.2)
     assert board.current_turn == 0
@@ -595,6 +598,8 @@ def test_round_completion_and_session_save(monkeypatch, tmp_path: Path) -> None:
     assert saved["session_type"] == "batllm_saved_session"
     assert saved["games"][0]["rounds"][0]["turns"][0]["plays"]
     assert saved["games"][0]["rounds"][0]["gameplay_settings_snapshot"]["turns_per_round"] == 1
+    assert len(saved["games"]) == 1
+    assert validate_session_payload(saved) is saved
 
 
 def test_round_end_history_spacing_separates_next_round(monkeypatch) -> None:
@@ -668,8 +673,58 @@ def test_history_manager_exports_roundtrip_and_views(monkeypatch, tmp_path: Path
     session_path = tmp_path / "session-roundtrip.json"
     board.history_manager.save_session(session_path)
     saved = json.loads(session_path.read_text(encoding="utf-8"))
-    normalized_games = json.loads(json.dumps(board.history_manager.games))
+    expected_games = list(board.history_manager.games)
+    while len(expected_games) > 1 and not expected_games[-1].get("rounds"):
+        expected_games.pop()
+    normalized_games = json.loads(json.dumps(expected_games))
     assert saved["games"] == normalized_games
+
+
+def test_manual_new_game_finalises_old_bots_before_replacement(monkeypatch) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    board.history_manager.start_round(board)
+    board.history_manager.start_turn(board)
+    old_bots = list(board.bots)
+    old_bots[0].health = 0
+    old_bots[1].health = 37
+
+    board.start_new_game()
+
+    abandoned = board.history_manager.games[0]
+    turn = abandoned["rounds"][0]["turns"][0]
+    assert abandoned["winner"] == 2
+    assert turn["post_state"][1]["health"] == 0
+    assert turn["post_state"][2]["health"] == 37
+    assert board.bots != old_bots
+
+
+def test_active_round_rejects_new_prompt_submissions(monkeypatch) -> None:
+    board, scheduled_once, _history_log = _build_board(monkeypatch)
+    board.submit_prompt_to_bot(1, "first")
+    board.submit_prompt_to_bot(2, "second")
+    active_round = board.history_manager.current_round
+    queued = list(scheduled_once)
+
+    assert board.submit_prompt_to_bot(1, "replacement") is False
+    assert board.history_manager.current_round is active_round
+    assert scheduled_once == queued
+    assert board.get_bot_by_id(1).current_prompt == "first"
+
+
+def test_cancellation_reuses_active_turn_number_after_completed_turn(monkeypatch) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    manager = board.history_manager
+    manager.start_round(board)
+    manager.start_turn(board)
+    manager.end_turn(board)
+    manager.start_turn(board)
+    rollback_state = manager.current_round["initial_state"]
+
+    manager.cancel_round("cancelled", rollback_state=rollback_state)
+
+    turns = manager.games[0]["rounds"][0]["turns"]
+    assert [turn["turn"] for turn in turns] == [1, 2]
+    assert turns[1]["post_state"] == rollback_state
 
 
 def test_home_screen_save_session_file_uses_configured_folder(monkeypatch, tmp_path: Path) -> None:
@@ -702,6 +757,35 @@ def test_home_screen_save_session_file_uses_configured_folder(monkeypatch, tmp_p
     assert exported.exists()
     saved = json.loads(exported.read_text(encoding="utf-8"))
     assert saved["games"][0]["rounds"][0]["prompts"][0]["prompt"] == "Reply with exactly S1"
+
+
+def test_home_screen_requires_confirmation_before_overwrite(monkeypatch, tmp_path: Path) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    screen = HomeScreen()
+    screen.ids = {"game_board": board}
+    original_get = config.get
+    monkeypatch.setattr(
+        config,
+        "get",
+        lambda section, key: str(tmp_path)
+        if (section, key) == ("data", "saved_sessions_folder")
+        else original_get(section, key),
+    )
+    target = tmp_path / "existing.json"
+    target.write_text("original", encoding="utf-8")
+    prompts = []
+    monkeypatch.setattr(
+        screen,
+        "_show_confirmation_popup",
+        lambda title, message, confirm: prompts.append((title, message, confirm)),
+    )
+
+    assert screen._save_session_file("existing.json") is False
+    assert target.read_text(encoding="utf-8") == "original"
+    assert prompts[0][0] == "Replace Session"
+
+    prompts[0][2]()
+    assert target.read_text(encoding="utf-8") != "original"
 
 
 def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:

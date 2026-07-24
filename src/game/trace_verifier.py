@@ -340,9 +340,18 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
                     code="round-initial-state-mismatch",
                 )
             prior_post_state = deepcopy(round_entry.get("initial_state", {}))
-            rules = GameplaySettingsSnapshot.from_mapping(
-                round_entry.get("gameplay_settings_snapshot")
-            )
+            try:
+                rules = GameplaySettingsSnapshot.from_mapping(
+                    round_entry.get("gameplay_settings_snapshot")
+                )
+            except (TypeError, ValueError) as exc:
+                report.add_issue(
+                    "R1",
+                    round_location,
+                    "invalid-gameplay-settings",
+                    str(exc),
+                )
+                continue
             for play_index, play in enumerate(round_entry.get("plays", []), start=1):
                 location = (
                     f"game[{game_index}].round[{round_index}].play[{play_index}]"

@@ -6,10 +6,12 @@ from __future__ import annotations
 from copy import deepcopy
 from importlib import metadata
 import json
+import os
 import platform
 from pathlib import Path
 import re
 import sys
+import tempfile
 from typing import Any, Mapping
 
 from game.trace_contract import (
@@ -337,10 +339,24 @@ def write_session_v3(payload: Mapping[str, Any], path: str | Path) -> Path:
     validated = validate_session_v3(dict(payload))
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(
-        json.dumps(validated, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
-        encoding="utf-8",
+    fd, temporary = tempfile.mkstemp(
+        prefix=".batllm-v3-", suffix=".tmp", dir=output.parent
     )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(
+                json.dumps(validated, indent=2, ensure_ascii=False, sort_keys=True)
+                + "\n"
+            )
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, output)
+    except Exception:
+        try:
+            os.unlink(temporary)
+        except FileNotFoundError:
+            pass
+        raise
     return output
 
 

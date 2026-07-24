@@ -172,6 +172,18 @@ def test_round_trip_file(tmp_path: Path) -> None:
     assert verify_payload(data).valid
 
 
+def test_verifier_reports_invalid_gameplay_settings() -> None:
+    corrupted = deepcopy(build())
+    corrupted["games"][0]["rounds"][0]["gameplay_settings_snapshot"][
+        "bot_step_length"
+    ] = 0
+
+    report = verify_payload(corrupted)
+
+    assert not report.valid
+    assert "invalid-gameplay-settings" in {issue.code for issue in report.issues}
+
+
 def test_full_request_history_is_independently_reconstructed() -> None:
     corrupted = deepcopy(build())
     play = corrupted["games"][0]["rounds"][0]["plays"][1]
