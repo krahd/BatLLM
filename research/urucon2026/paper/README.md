@@ -6,4 +6,6 @@ The authoritative manuscript for **From Prompt to State: Verifiable Grounding an
 
 Canonical migration commit: `787295f8259c2a9cefd592d9980b291cc9330393`.
 
+The refreshed software artefact contains this pointer as its only paper-directory file.
+
 This BatLLM repository intentionally retains no editable manuscript, submission PDF, bibliography, conference template, or paper-review duplicate. It owns the implementation, schema, experiments, generated corpus, results, and reproducibility artefact that support the paper's technical claims.
