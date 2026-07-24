@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-07-22 22:24
+Last updated: 2026-07-24 01:37
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -17,13 +17,15 @@ The project should remain practical, critical, and educational. Destructive or e
 - Session filenames are restricted to basenames contained by the configured save directory. Prompt forward navigation and normalised touch conversion no longer pass invalid values or call a missing method.
 - `run_tests.py` now separates minimal `core`, complete `non-live` (the default), and live-integration `full` modes; the standard CI matrix explicitly runs the complete non-live suite.
 - `run_tests.py` now uses `.venv_BatLLM` when available and otherwise uses the active supported Python interpreter, allowing isolated validation environments without changing repository-local user state.
+- All bot movement and rotation entry points now commit normalised gameplay state synchronously; prompt saves and the standalone configurator use atomic replacement, and prompt-save failures are surfaced in the GUI.
 - Validation on this checkout under Python 3.12.13: the complete non-live suite passed with 172 tests and 2 live-Ollama tests skipped; compile checks, dependency imports, workflow YAML parsing, `git diff --check`, and the research reproducibility pipeline passed. The research pipeline revalidated all 60 sessions and matched the independent semantics in all 5,000 differential cases.
-- Remaining audit work: explicit overwrite-confirmation UX for existing session files, surfacing prompt-file I/O failures in the GUI, and maintainer-owned live Ollama/manual GUI validation.
+- Remaining release work: explicit overwrite-confirmation UX for existing session files and maintainer-owned live Ollama/manual GUI validation.
 
-## 2026-07-22: Post-PR #38 Mainline Integration
+## 2026-07-24: URUCON Ownership And Post-PR #38 Integration
 
-- PR `#38` is present in the base history at `9e40f65`; its Word-first URUCON migration is now completed in the repository tree rather than left as one-time workflow payloads.
-- `research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx` is the sole authoritative manuscript, and `conference-template-a4.docx` is the retained IEEE A4 template. Obsolete LaTeX sources, duplicate DOCX/PDF files, generated archive/checksum files, migration payloads, and self-mutating migration workflows were removed.
+- PR `#38` is present in the base history at `9e40f65`; its one-time hidden migration payloads and self-mutating migration workflows have been removed.
+- The authoritative manuscript and writing history now live in `krahd/academic-writing` at migration commit `787295f8259c2a9cefd592d9980b291cc9330393`. This repository intentionally retains no editable manuscript, submission PDF, bibliography, conference template, or paper-review duplicate.
+- BatLLM retains the implementation-owned generated research artefact ZIP and checksums under `research/urucon2026/artifact/`.
 - Active Dependabot updates were integrated consistently across existing and PR-#38-added workflows: `actions/checkout` v7, `actions/setup-python` v6, `actions/github-script` v9, and `actions/dependency-review-action` v5.
 - Runtime and Homebrew dependency sets now agree on `modelito==1.4.5`, `ollama>=0.6.2`, `psutil==7.2.2`, `PyYAML==6.0.3`, and `requests>=2.34.2`.
 - A final-round regression found by the combined suite was fixed: only a defeated bot triggers immediate fatal-game finalisation; reaching the configured round count is evaluated after both bot plays and the round are fully recorded.
@@ -34,9 +36,9 @@ BatLLM includes a distinct schema-v3 research execution path for the paper *From
 
 - New entry points: `run_batllm_research.py` records scripted or local-Ollama traces; `run_batllm_verify.py` validates and replays schema-v3 sessions.
 - New architecture: `src/game/trace_contract.py`, `session_v3.py`, `research_runtime.py`, and `trace_verifier.py` implement privacy-aware invocation evidence, grounding checks, canonical commitments, ordered trace integrity, and operative replay through the pure transition engine.
-- Research package: `research/urucon2026/` contains the JSON Schema, deterministic 60-session/1,080-transition corpus, independent reference semantics, differential and perturbation experiments, claim ledger, adversarial reviews, the authoritative Word manuscript, retained IEEE A4 template, and reproducible result-generation tooling. Generated PDFs and ZIP artefacts are not committed.
+- Research package: `research/urucon2026/` contains the JSON Schema, deterministic 60-session/1,080-transition corpus, independent reference semantics, differential and perturbation experiments, claim ledger, generated artefact ZIP and checksums, and reproducible result-generation tooling. `paper/README.md` points to the separately maintained authoritative manuscript.
 - Validation: 172 tests passed and 2 live-Ollama tests were skipped; all 60 sessions validated; all 1,080 states and semantic-event sequences replayed equivalently; production and independent reference semantics matched in 5,000 cases; all 1,560 applicable re-anchored perturbations were detected; all 180 benign serialisation variants were accepted.
-- CI: `.github/workflows/urucon.yml` validates relevant changes to the research runtime, schema, experiments, tests, and paper on Linux, macOS, and Windows under Python 3.10-3.12, then validates and temporarily renders the authoritative Word paper without committing a generated PDF.
+- CI: `.github/workflows/urucon.yml` validates the research runtime, schema, experiments, tests, corpus, results, and implementation-owned artefact on Linux, macOS, and Windows under Python 3.10-3.12 without duplicating the manuscript.
 - Boundaries: the work does not claim deterministic regeneration of model output, provider-wire capture, generic agent replay, pedagogical efficacy, or cryptographic authorship. SHA-256 values are consistency commitments rather than signatures.
 
 
@@ -258,6 +260,13 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 ## Tests And Verification Status
 
+### 2026-07-24 Re-audit Closure Validation
+
+- `KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_WINDOW=mock PYTHONPATH=src /tmp/batllm-audit-venv/bin/python -m pytest -q src/tests` -> `172 passed, 2 skipped`.
+- `PYTHONPATH=src /tmp/batllm-audit-venv/bin/python research/urucon2026/experiments/run_all.py` -> passed: 60 sessions and 1,080 plays replayed, 5,000 differential cases matched, all 1,560 applicable faults were detected, and all 180 benign serialisation variants were accepted.
+- Python compilation, workflow YAML parsing, and `git diff --check` passed.
+- Live Ollama tests and manual GUI checks were not run because they can affect a real local service or require an interactive display.
+
 ### 2026-05-29 Merge Validation
 
 - No automated tests were rerun for the fast-forward merge to `main`; the branch only added dependency-floor, workflow, and documentation files.
@@ -366,4 +375,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-07-22 22:24
+Last updated: 2026-07-24 01:37

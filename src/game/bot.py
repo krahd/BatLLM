@@ -187,12 +187,12 @@ class Bot(Widget):
             distance if distance is not None else self.default_step,
         )
 
-        # cancel any in-flight move to avoid stacking
+        # Logical state must be committed synchronously. Animating x/y directly
+        # makes history snapshots and the next model request timing-dependent.
         Animation.cancel_all(self, 'x', 'y')
-        anim = Animation(x=nx, y=ny, duration=duration, t=easing)
+        self.x, self.y = nx, ny
         if on_complete:
-            anim.bind(on_complete=lambda *_: on_complete())
-        anim.start(self)
+            on_complete()
 
 
 
@@ -218,17 +218,11 @@ class Bot(Widget):
         """
         Smoothly rotate by delta_deg over 'duration' seconds.
         """
-        # cancel any in-flight rotation to avoid fighting animations TODO: test
-
+        # Rotation is gameplay state, so commit it before returning.
         Animation.cancel_all(self, 'rot')
-
-        target = (self.rot + angle)
-
-        anim = Animation(rot=target, duration=duration, t=easing)
+        self.rot = (self.rot + angle) % 360
         if on_complete:
-            anim.bind(on_complete=lambda *_: on_complete())
-            self.rot = self.rot % 360
-        anim.start(self)
+            on_complete()
 
 
     def rotate_instantaneously(self, angle: float):

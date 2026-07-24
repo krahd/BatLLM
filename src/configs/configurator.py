@@ -16,6 +16,7 @@ import os
 import re
 import json
 import shutil
+import tempfile
 import threading
 from typing import Any, Dict, List, Optional
 import yaml
@@ -92,8 +93,21 @@ class ConfigManager:
         with open(self.path, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f) or {}
     def save(self, data: Dict[str, Any]):
-        with open(self.path, 'w', encoding='utf-8') as f:
-            yaml.safe_dump(data, f, sort_keys=False)
+        directory = os.path.dirname(os.path.abspath(self.path))
+        os.makedirs(directory, exist_ok=True)
+        fd, temporary = tempfile.mkstemp(prefix='.batllm-config-', suffix='.tmp', dir=directory)
+        try:
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                yaml.safe_dump(data, f, sort_keys=False)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temporary, self.path)
+        except Exception:
+            try:
+                os.unlink(temporary)
+            except FileNotFoundError:
+                pass
+            raise
     def backup(self):
         if os.path.exists(self.path):
             shutil.copy2(self.path, self.backup_path)
@@ -659,8 +673,7 @@ class BatLLMConfigApp(App):
                            'temperature': None, 'top_p': None, 'top_k': None, 'timeout': 10.0,
                            'max_tokens': None, 'stop': None, 'seed': None, 'num_thread': None,
                            'num_ctx': None, 'num_predict': None}}
-        with open(path, 'w', encoding='utf-8') as f:
-            yaml.safe_dump(minimal, f, sort_keys=False)
+        ConfigManager(path).save(minimal)
     # Unified load/save methods (duplicates removed)
     def load_config(self):
         # Ensure cfg_path exists (can be called before build finishes)

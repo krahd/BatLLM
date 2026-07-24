@@ -1,6 +1,8 @@
 import os
+import tempfile
 from kivy.lang import Builder
 from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.properties import StringProperty
 from util.paths import prompt_asset_dir
 
@@ -33,11 +35,25 @@ class SaveDialog(Popup):
             fn += '.txt'
         full_path = os.path.join(folder, fn)
 
+        temporary = None
         try:
-            with open(full_path, 'w', encoding='utf-8') as f:
+            fd, temporary = tempfile.mkstemp(prefix=".batllm-prompt-", suffix=".tmp", dir=folder)
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 f.write(self.content_to_save)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temporary, full_path)
         except Exception as e:
-            print("Error saving file:", e)
+            if temporary:
+                try:
+                    os.unlink(temporary)
+                except FileNotFoundError:
+                    pass
+            Popup(
+                title="Prompt save failed",
+                content=Label(text=str(e)),
+                size_hint=(None, None),
+                size=(520, 240),
+            ).open()
         else:
-            print(f"Saved prompt to {full_path}")
             self.dismiss()
