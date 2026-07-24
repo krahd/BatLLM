@@ -23,7 +23,7 @@ CORE_PATHS = [
     ROOT / "src/game/trace_verifier.py",
     ROOT / "src/game/replay_engine.py",
     ROOT / "src/tests/test_trace_contract.py",
-    ROOT / "src/tests/test_replay_engine.py",
+    ROOT / "src/tests/test_gameplay_deterministic.py",
     ROOT / "src/tests/test_game_analyzer.py",
     ROOT / "run_batllm_research.py",
     ROOT / "run_batllm_verify.py",

@@ -76,7 +76,7 @@ BatLLM is now maintained for:
 
 ### Python Dependencies
 
-The repository Python environment uses `requirements.txt`, which now includes the packages the current code imports. BatLLM's maintained Ollama integration depends on `modelito==1.4.0`.
+The repository Python environment uses `requirements.txt`, which includes the packages the current code imports. BatLLM's maintained Ollama integration depends on `modelito==1.4.5`.
 
 ### Ollama Requirements
 

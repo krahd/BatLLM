@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from configs.app_config import CONFIG_PATH, config
+from configs.app_config import config
 
 
 @pytest.fixture(autouse=True)
@@ -28,13 +28,13 @@ def _disable_kivy_window_requirement(monkeypatch) -> None:
 
 
 @pytest.fixture(autouse=True)
-def _restore_repo_config_state() -> None:
-    original_text = CONFIG_PATH.read_text(encoding="utf-8")
+def _isolate_config_state(tmp_path) -> None:
+    """Keep configuration writes inside the per-test temporary directory."""
     original_config = deepcopy(config.as_dict())
     original_path = getattr(config, "_path")
+    setattr(config, "_path", tmp_path / "config.yaml")
 
     yield
 
     setattr(config, "_config", deepcopy(original_config))
     setattr(config, "_path", original_path)
-    CONFIG_PATH.write_text(original_text, encoding="utf-8")

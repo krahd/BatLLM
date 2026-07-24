@@ -151,7 +151,7 @@ class HistoryManager:
             )
 
         # If a turn is in progress (start_turn called without end_turn), handle it
-        if self.current_turn and "post_state" not in self.current_turn:
+        if self.current_turn is not None:
 
             # Take a final snapshot for the turn (likely nothing changed if aborted mid-turn)
             self.current_turn["end_time"] = self._now_iso()
@@ -191,6 +191,9 @@ class HistoryManager:
             raise ValueError(
                 "Cannot start a round without an active game. Call start_game first."
             )
+
+        if self.current_round is not None:
+            raise ValueError("Cannot start a round while another round is active.")
 
         # Create the new round entry
         round_number = len(self.current_game["rounds"]) + 1
@@ -248,7 +251,7 @@ class HistoryManager:
             raise ValueError("There is no active round to end. Call start_round first.")
 
         # If a turn is in progress within this round, raise an error
-        if self.current_turn and "post_state" not in self.current_turn:
+        if self.current_turn is not None:
             raise ValueError("Cannot end a round mid turn. Call end_turn first")
 
         # Mark round end time
@@ -258,7 +261,13 @@ class HistoryManager:
         self.current_round = None
         self.current_turn = None
 
-    def cancel_round(self, reason: str, *, cancelled_by_bot_id: int | None = None):
+    def cancel_round(
+        self,
+        reason: str,
+        *,
+        cancelled_by_bot_id: int | None = None,
+        rollback_state: dict | None = None,
+    ):
         """Abort the active round while keeping a cancelled-round record in history."""
 
         if not self.current_round:
@@ -269,7 +278,12 @@ class HistoryManager:
         end_time = self._now_iso()
         initial_state = dict(self.current_round.get("initial_state", {}))
         turns = self.current_round.setdefault("turns", [])
-        cancelled_turn_number = len(turns) + 1
+        cancelled_turn_number = (
+            self.current_turn.get("turn", len(turns))
+            if self.current_turn
+            else len(turns) + 1
+        )
+        final_state = dict(rollback_state or initial_state)
 
         cancelled_turn = {
             "turn": cancelled_turn_number,
@@ -278,7 +292,7 @@ class HistoryManager:
             "pre_state": dict(self.current_turn.get("pre_state", initial_state)) if self.current_turn else dict(initial_state),
             "plays": [],
             "cmd": "",
-            "post_state": dict(self.current_turn.get("pre_state", initial_state)) if self.current_turn else dict(initial_state),
+            "post_state": final_state,
             "status": "cancelled",
             "cancel_reason": reason,
         }
@@ -473,8 +487,11 @@ class HistoryManager:
         Save the entire session history to a JSON file.
         This will include all games played in this session.
         """
+        export_games = list(self.games)
+        while len(export_games) > 1 and not export_games[-1].get("rounds"):
+            export_games.pop()
         payload = build_session_payload(
-            games=self.games,
+            games=export_games,
             app_version=current_app_version(),
             saved_at=self._now_iso(),
             llm_metadata=ollama_service.build_saved_llm_metadata_snapshot(),

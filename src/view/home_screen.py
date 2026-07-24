@@ -463,9 +463,9 @@ class HomeScreen(Screen):
                 """
 
                 if filename:
-                    self._save_session_file(filename)
-
-                force_exit()
+                    self._save_session_file(filename, on_saved=force_exit)
+                else:
+                    force_exit()
 
             def _on_filename_cancelled():
                 """
@@ -529,10 +529,16 @@ class HomeScreen(Screen):
         self.ids.overlay.desaturation = 0.1  # Set the initial desaturation value
         self._resume_window_key_down()
 
-    def _save_session_file(self, filename: str) -> None:
+    def _save_session_file(
+        self,
+        filename: str,
+        *,
+        overwrite: bool = False,
+        on_saved=None,
+    ) -> bool:
         """Persist the current session into the configured save folder."""
         if not filename:
-            return
+            return False
 
         filename = filename.strip()
         if not filename or filename != Path(filename).name or Path(filename).is_absolute():
@@ -545,4 +551,16 @@ class HomeScreen(Screen):
         target_path = (target_dir / filename).resolve()
         if target_path.parent != target_dir.resolve():
             raise ValueError("Session filename escapes the saved-session directory.")
+        if target_path.exists() and not overwrite:
+            self._show_confirmation_popup(
+                "Replace Session",
+                f"{filename} already exists. Replace it?",
+                lambda: self._save_session_file(
+                    filename, overwrite=True, on_saved=on_saved
+                ),
+            )
+            return False
         self.ids.game_board.history_manager.save_session(target_path)
+        if callable(on_saved):
+            on_saved()
+        return True

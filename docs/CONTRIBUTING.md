@@ -626,7 +626,7 @@ BatLLM gameplay uses `modelito` plus the configured Ollama host, port, and model
 Check:
 
 1. `pip install -r requirements.txt` completed successfully
-2. the virtual environment contains `modelito==1.4.0`
+2. the virtual environment contains `modelito==1.4.5`
 3. `llm.url` and `llm.port` point to the intended Ollama service
 4. the configured model name in `llm.model` exists locally
 

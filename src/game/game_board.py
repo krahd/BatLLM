@@ -45,6 +45,7 @@ from configs.app_config import config
 from game.bot import Bot
 from game.history_manager import HistoryManager
 from game.ollama_connector import LLMRequestError, LLMTimeoutError, OllamaConnector
+from game.ollama_singleton import reset_executor
 from game.prompt_store import PromptStore
 from game.replay_engine import GameplaySettingsSnapshot, resolve_shot
 from util.paths import asset_path
@@ -135,7 +136,11 @@ class GameBoard(Widget):
         Starts a new game by resetting game state and initializing bots.
         Notifies the history manager to start tracking the new game.
         """
+        if self.history_manager.current_game is not None:
+            self.history_manager.end_game(self)
+
         self._game_generation += 1
+        reset_executor()
         self.current_turn = 0
         self.current_round = 0
         self.shuffled_bots = None
@@ -403,10 +408,13 @@ class GameBoard(Widget):
         Register the player's prompt for the coming round.
         If all bots have submitted, start the next turn (and round if needed).
         """
+        if self.history_manager.current_round is not None:
+            return False
+
         bot = self.get_bot_by_id(bot_id)
         if not bot:
             print(f"ERROR: bot {bot_id} not found")
-            return
+            return False
 
         # Record the new prompt for the specified bot (and optionally in PromptStore)
         bot.current_prompt = new_prompt
@@ -416,7 +424,7 @@ class GameBoard(Widget):
 
         # If not everyone is ready yet, wait for the other bot
         if not all(b.ready_for_next_round for b in self.bots):
-            return
+            return True
 
         # All bots are ready → start a new round (the moment bots receive new prompts)
         if self.current_round is None:
@@ -450,6 +458,7 @@ class GameBoard(Widget):
         # Tell the history manager a new round is starting, then kick the first turn
         self.history_manager.start_round(self)
         Clock.schedule_once(self.play_turn)
+        return True
 
     def _apply_round_settings_to_live_bots(
         self,
@@ -729,7 +738,12 @@ class GameBoard(Widget):
         """Cancel the active round, roll back state, and keep a cancelled-round history entry."""
         round_number = self.current_round
         self._restore_round_initial_state()
-        self.history_manager.cancel_round(reason, cancelled_by_bot_id=bot.id)
+        rollback_state = self.history_manager._get_bots_state(self)
+        self.history_manager.cancel_round(
+            reason,
+            cancelled_by_bot_id=bot.id,
+            rollback_state=rollback_state,
+        )
         self._turn_submission_queue = []
         self._turn_submission_index = 0
         self._round_timeout_action = None

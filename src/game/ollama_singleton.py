@@ -28,15 +28,16 @@ def get_executor(*_args, **_kwargs) -> ThreadPoolExecutor:
     return pool
 
 
+def reset_executor() -> None:
+    """Retire the inference pool so new work is not queued behind stale work."""
+    info = get_executor.cache_info()
+    if info.hits or info.misses:
+        get_executor().shutdown(wait=False, cancel_futures=True)
+    get_executor.cache_clear()
+
+
 
 def reset_singletons() -> None:
     """Reset the singleton instances."""
-    info = get_executor.cache_info()
-    if info.hits or info.misses:
-        pool = get_executor()
-        shutdown = getattr(pool, "shutdown", None)
-        if callable(shutdown):
-            shutdown(wait=False, cancel_futures=True)
-
-    get_executor.cache_clear()
+    reset_executor()
     get_connector.cache_clear()
