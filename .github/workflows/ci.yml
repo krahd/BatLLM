@@ -47,7 +47,10 @@ jobs:
           "$VENV_PYTHON" -m pip install pytest "pylint>=4,<5"
       - name: Compile sources
         run: |
-          "$VENV_PYTHON" -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py
+          "$VENV_PYTHON" -m compileall -q src tools run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py
+      - name: Check documentation
+        run: |
+          "$VENV_PYTHON" tools/check_docs.py
       - name: Run tests
         run: |
           "$VENV_PYTHON" run_tests.py non-live
