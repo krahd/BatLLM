@@ -42,14 +42,20 @@ jobs:
         run: python tools/apply_pr44_audit_closure.py
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          python -m pip install -r research/urucon2026/requirements.txt
-          python -m pip install pytest "pylint>=4,<5"
+          python -m pip install --upgrade pip >/dev/null
+          python -m pip install -r requirements.txt >/dev/null
+          python -m pip install -r research/urucon2026/requirements.txt >/dev/null
+          python -m pip install pytest "pylint>=4,<5" >/dev/null
       - name: Compile maintained sources
         run: python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py run_batllm_research.py run_batllm_verify.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py research/urucon2026/experiments
       - name: Run complete non-live suite
-        run: python -m pytest -q src/tests
+        shell: bash
+        run: |
+          set +e
+          python -m pytest -q src/tests > /tmp/pytest.log 2>&1
+          code=$?
+          tail -n 160 /tmp/pytest.log
+          exit $code
       - name: Run full Pylint gate
         run: python -m pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
       - name: Run complete research pipeline
