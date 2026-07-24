@@ -90,7 +90,21 @@ jobs:
       - name: Run complete research pipeline
         run: python research/urucon2026/experiments/run_all.py
       - name: Check patch integrity
-        run: git diff --check
+        shell: bash
+        run: |
+          set +e
+          git diff --check > /tmp/diffcheck.log 2>&1
+          code=$?
+          cat /tmp/diffcheck.log
+          exit $code
+      - name: Upload diff diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr44-remediation-diffcheck
+          path: /tmp/diffcheck.log
+          if-no-files-found: ignore
+          retention-days: 1
       - name: Remove temporary automation
         run: rm -f .github/PR44_AUDIT_CLOSURE tools/apply_pr44_audit_closure.py .github/workflows/apply-pr44-audit-closure.yml
       - name: Commit validated remediation
