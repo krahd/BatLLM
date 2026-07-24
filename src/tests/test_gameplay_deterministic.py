@@ -966,3 +966,81 @@ def test_bullet_uses_configured_diameter(monkeypatch) -> None:
     bullet = Bullet(1, 0.5, 0.5, 0)
 
     assert bullet.diameter == pytest.approx(0.05)
+
+
+
+def test_completed_game_restart_replaces_connector_history_generation(monkeypatch) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    retired_connector = board.ollama_connector
+    retired_connector._history_shared = [{"role": "user", "content": "old game"}]
+
+    board.end_game()
+    assert board.history_manager.current_game is None
+    board.start_new_game()
+
+    assert board.ollama_connector is not retired_connector
+    assert board.ollama_connector._history_shared == []
+
+
+def test_session_export_drops_active_and_cancelled_turns(monkeypatch, tmp_path: Path) -> None:
+    board, scheduled_once, _history_log = _build_board(
+        monkeypatch, overrides={("game", "turns_per_round"): 1}
+    )
+    manager = board.history_manager
+    monkeypatch.setattr(
+        board.ollama_connector,
+        "send_prompt_to_llm_sync",
+        lambda _bot_id, **_kwargs: "S0",
+    )
+    board.submit_prompt_to_bot(1, "one")
+    board.submit_prompt_to_bot(2, "two")
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
+
+    manager.start_round(board)
+    manager.start_turn(board)
+    active_target = tmp_path / "active-filtered.json"
+    manager.save_session(active_target)
+    active_payload = json.loads(active_target.read_text(encoding="utf-8"))
+    assert len(active_payload["games"][0]["rounds"]) == 1
+    assert len(active_payload["games"][0]["rounds"][0]["turns"]) == 1
+
+    manager.cancel_round("cancelled", rollback_state=manager.games[0]["rounds"][0]["initial_state"])
+    cancelled_target = tmp_path / "cancelled-filtered.json"
+    manager.save_session(cancelled_target)
+    cancelled_payload = json.loads(cancelled_target.read_text(encoding="utf-8"))
+    assert len(cancelled_payload["games"][0]["rounds"]) == 1
+    assert len(cancelled_payload["games"][0]["rounds"][0]["turns"]) == 1
+
+
+def test_debug_llm_shortcut_submits_to_both_valid_bot_ids(monkeypatch) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    submitted = []
+    monkeypatch.setenv("BATLLM_DEBUG_SHORTCUTS", "1")
+    monkeypatch.setattr(
+        board,
+        "submit_prompt_to_bot",
+        lambda bot_id, prompt: submitted.append((bot_id, prompt)) or True,
+    )
+
+    assert board._on_keyboard_down(_FakeKeyboard(), (0, "l"), "", []) is True
+    assert [bot_id for bot_id, _prompt in submitted] == [1, 2]
+
+
+def test_state_validation_rejects_key_id_mismatch_and_duplicate_ids() -> None:
+    from game.replay_engine import validate_state_map
+
+    state = {
+        "id": 1,
+        "health": 30,
+        "x": 0.2,
+        "y": 0.5,
+        "rot": 0,
+        "shield": False,
+    }
+    mismatched = {"1": {**state, "id": 2}}
+    with pytest.raises(ValueError, match="does not match embedded id"):
+        validate_state_map(mismatched, require_id=True)
+
+    duplicated = {"1": dict(state), 1: dict(state)}
+    with pytest.raises(ValueError, match="duplicate bot id"):
+        validate_state_map(duplicated, require_id=True)

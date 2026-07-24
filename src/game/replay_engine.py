@@ -31,6 +31,7 @@ def validate_state_map(
     """Reject state maps that replay cannot safely and meaningfully consume."""
     if not isinstance(state_map, Mapping) or not state_map:
         raise ValueError(f"{label} must be a non-empty mapping.")
+    seen_bot_ids: set[int] = set()
     for key, value in state_map.items():
         if not isinstance(value, Mapping):
             raise ValueError(f"{label} bot {key!r} must be a mapping.")
@@ -54,6 +55,9 @@ def validate_state_map(
                     f"{label} bot {key!r} field {state_field!r} must be numeric."
                 )
         try:
+            if isinstance(key, bool):
+                raise ValueError("boolean map key")
+            key_bot_id = int(key)
             bot_id = int(value.get("id", key))
             health = int(value["health"])
             x = float(value["x"])
@@ -61,8 +65,15 @@ def validate_state_map(
             rotation = float(value["rot"])
         except (OverflowError, TypeError, ValueError) as exc:
             raise ValueError(f"{label} bot {key!r} has invalid numeric fields.") from exc
-        if bot_id <= 0 or health < 0:
+        if key_bot_id <= 0 or bot_id <= 0 or health < 0:
             raise ValueError(f"{label} bot {key!r} has an invalid id or health.")
+        if bot_id != key_bot_id:
+            raise ValueError(
+                f"{label} bot key {key!r} does not match embedded id {bot_id}."
+            )
+        if bot_id in seen_bot_ids:
+            raise ValueError(f"{label} contains duplicate bot id {bot_id}.")
+        seen_bot_ids.add(bot_id)
         if not all(math.isfinite(item) for item in (x, y, rotation)):
             raise ValueError(f"{label} bot {key!r} has non-finite coordinates.")
         if not 0 <= x <= 1 or not 0 <= y <= 1:
