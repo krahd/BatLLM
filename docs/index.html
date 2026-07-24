@@ -669,10 +669,10 @@
     <section id="play" class="band">
       <div class="section feature-row">
         <div>
-          <h2>How a match becomes data</h2>
+          <h2>How a game becomes inspectable</h2>
           <p class="section-lead">
             Every prompt, response, action, and result becomes part of the learning surface.
-            The game is playable, but it is also an instrument for examining AI-mediated decisions.
+            The game is playable, but it is also an instrument for examining AI-mediated decisions and their recorded consequences.
           </p>
           <ol class="steps">
             <li><span>1</span><div><strong>Prompt</strong>Players write instructions and strategy for their bots.</div></li>
@@ -696,7 +696,7 @@
           and repeatable analyzer sessions.
         </p>
         <div class="hero-actions">
-          <a class="button ghost" href="https://github.com/krahd/BatLLM/blob/main/docs/README.md">Read The Overview</a>
+          <a class="button ghost" href="https://github.com/krahd/BatLLM/blob/main/README.md">Read The Overview</a>
           <a class="button ghost" href="https://github.com/krahd/BatLLM/blob/main/docs/USER_GUIDE.md">Open The User Guide</a>
         </div>
       </div>
@@ -709,21 +709,21 @@
         keeps the research framing, setup notes, tests, packaging details, and release criteria together.
       </p>
       <div class="links-grid">
-        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/README.md">
-          <strong>README</strong>
-          <p>Project overview, setup, compatibility, Homebrew notes, and troubleshooting.</p>
+        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/README.md">
+          <strong>Project overview</strong>
+          <p>What BatLLM is, its current support, installation, and the shortest path to a first game.</p>
         </a>
         <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/USER_GUIDE.md">
           <strong>User Guide</strong>
-          <p>Rules, match flow, settings, Ollama screens, analyzer workflow, and saved sessions.</p>
+          <p>Rules, game flow, commands, settings, Ollama controls, saved sessions, and the Game Analyzer.</p>
         </a>
         <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/CONTRIBUTING.md">
           <strong>Contributing</strong>
           <p>Developer setup, architecture, tests, release workflow, and documentation process.</p>
         </a>
-        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/docs/CREDITS.md">
-          <strong>Credits</strong>
-          <p>Project authorship, grant support, institutional context, and acknowledgements.</p>
+        <a class="link-card" href="https://github.com/krahd/BatLLM/blob/main/STATUS.md">
+          <strong>Current status</strong>
+          <p>What works now, the latest validation baseline, known limitations, and remaining release work.</p>
         </a>
       </div>
       <div class="install" aria-label="Install commands">
@@ -735,7 +735,7 @@ pip install -r requirements.txt
 python run_batllm.py</code></pre>
         <pre><code>python run_game_analyzer.py
 
-python -m pytest -q
+python run_tests.py non-live
 
 python create_release_bundles.py</code></pre>
       </div>

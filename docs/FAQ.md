@@ -1,72 +1,80 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [User Guide](USER_GUIDE.md) · [FAQ](FAQ.md) · [Contributing](CONTRIBUTING.md) · [Status](../STATUS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
 # FAQ
 
-This FAQ is shared between advanced users and contributors. It focuses on recurring, non-trivial questions. Step-by-step screen walkthroughs live in [USER_GUIDE.md](USER_GUIDE.md), while setup, architecture, testing, and troubleshooting procedures live in [CONTRIBUTING.md](CONTRIBUTING.md).
+## What is BatLLM for?
 
-## What is BatLLM actually for?
+BatLLM is a local, two-player battle game and a research/education project. It makes prompt-writing, model behaviour, context design, and failure modes concrete by requiring players to act through language models rather than through direct controls.
 
-BatLLM is a local, AI-mediated, human-vs-human battle game and a research/education project. It is meant to make prompting, model behaviour, strategy, and failure modes concrete through play rather than to act as a generic chat shell.
+It is not a general-purpose chat application or inference server.
 
-## Is BatLLM a general-purpose inference server?
+## Is there a single-player mode?
 
-No. BatLLM depends on local LLM infrastructure, but it does not try to replace Ollama or provide a standalone inference platform.
+No. The current game assumes two human players and two model-mediated bots. There are no NPC opponents or campaign modes.
 
-## Is BatLLM strictly human-vs-human?
+## Why can a good strategy still fail?
 
-Yes. The current design assumes two human players, two bots, and no NPC opponent or single-player campaign mode.
+A strategy must survive several translations: the player expresses it in language, the model interprets it, and the response must match BatLLM's strict command language. Model choice, wording, conversation history, prompt augmentation, and shared or independent contexts can all change the result.
 
-## Why can a good strategy still fail in play?
+## What does Ollama do?
 
-The model has to translate the player's intent into BatLLM's strict command format. Prompt wording, model choice, context history, prompt augmentation, and shared-vs-independent contexts all affect whether a strategically sound idea becomes a valid in-game action.
+Ollama runs the local language model. BatLLM uses `modelito` to send gameplay requests and perform model-management operations, while the in-app Ollama controls also use the local `ollama` command-line installation for service lifecycle work.
 
-## What role does Ollama play in BatLLM?
+## What happens when Ollama is missing or stopped?
 
-BatLLM uses `modelito` for gameplay chat requests and for the in-app model-management helpers. The `Ollama Config` screen still relies on the real local `ollama` CLI for install, start, stop, and status-sensitive lifecycle work.
-
-## What happens if Ollama is missing or not running?
-
-If the CLI is missing, BatLLM can ask whether to launch the official installer. If Ollama is installed but stopped, BatLLM can ask whether to start it or skip the prompt and auto-start it when `Start Ollama Automatically on BatLLM Launch` is enabled.
+BatLLM can offer to open the official installer when the CLI is missing. When Ollama is installed but stopped, BatLLM can ask to start it or start it automatically when **Start Ollama Automatically on BatLLM Launch** is enabled.
 
 ## What is the difference between local and remote models?
 
-- local models already exist in the local Ollama installation and can be selected for gameplay immediately
-- remote models are names discovered through `modelito`'s remote catalog and only become playable after download
+- A **local model** is already installed in Ollama and can be selected for play.
+- A **remote model** is a catalogue entry. It must be downloaded before it becomes local and playable.
 
-## Does BatLLM change my real Ollama installation?
+## Does BatLLM change the real Ollama installation?
 
-Yes. Starting or stopping the service, downloading models, deleting models, and reinstalling Ollama all affect the configured local Ollama environment. Treat the Ollama screen as a real system control surface, not a BatLLM-only sandbox.
+Yes. Starting or stopping Ollama, downloading models, deleting models, and reinstalling Ollama affect the configured local environment. The Ollama screen is a real system control surface, not a BatLLM-only sandbox.
 
-## What does `Use Selected` change?
+## What does **Use Selected** do?
 
-`Use Selected` writes the chosen model to `llm.model`, attempts to warm it for gameplay, and records it in `llm.last_served_model` after a successful warm-up. That saved value lets BatLLM restore the same served model the next time it starts Ollama.
+It saves the chosen local model as `llm.model`, attempts to warm it for gameplay, and records it as `llm.last_served_model` after successful warm-up. Per-model timeout editing is separate and is stored in `llm.model_timeouts`.
 
-Timeout editing is separate. The `Local Models` timeout row stores per-model overrides in `llm.model_timeouts`, so you can tune a heavier local model without changing the fallback used by the rest of your installed models.
+## What are independent and shared contexts?
 
-## Can I review saved games later inside BatLLM?
+With independent contexts, each bot has its own model conversation history. With shared context, both bots use one history, which can expose earlier instructions or create interference between strategies.
 
-Yes. Current `Save Session` exports are analyzer-compatible JSON files. You can open them from the in-app `Game Analyzer` button or from the standalone launcher `python run_game_analyzer.py`.
+Every new game starts with fresh conversation history.
 
-The analyzer replays game logic using the saved prompts, ordered plays, and the per-round `gameplay_settings_snapshot` embedded in the session file. Legacy top-level list exports are not replay-supported there.
+## Can I review a saved game later?
+
+Yes. **Save Session** writes a session-v2 JSON file that can be opened in the built-in or standalone Game Analyzer. The analyzer replays the saved commands using the frozen rules recorded with each round.
+
+Legacy top-level list exports are intentionally unsupported.
+
+## Where are configuration and sessions stored?
+
+It depends on the launch method:
+
+- a source checkout without `BATLLM_HOME` writes configuration to `src/configs/config.yaml` and relative sessions inside the repository;
+- when `BATLLM_HOME` is set, mutable configuration and relative session folders resolve below that directory;
+- Homebrew sets `BATLLM_HOME` to `~/Library/Application Support/BatLLM` by default;
+- release bundles currently keep state relative to the extracted bundle unless the variable is set manually.
+
+See [STATE_AND_INSTALLATION.md](STATE_AND_INSTALLATION.md).
 
 ## Can I manage Ollama outside BatLLM?
 
-Yes. If Ollama is already installed, running, and reachable at the configured host and port, BatLLM can use it without the in-app control screen. The screen is recommended, not mandatory.
+Yes. If Ollama is already installed, running, and reachable at the configured host and port, BatLLM can use it without the in-app service controls.
 
-## Where is the runtime configuration stored?
+## What should I inspect when a bot does nothing?
 
-The main runtime file is `src/configs/config.yaml`. Contributors should also know that `src/configs/app_config.py` defines fallback defaults used when keys are missing from the YAML.
+Open **History**. The most common cause is that the model returned prose or another string that did not match one valid command. Also inspect the Ollama output log for service or timeout failures.
 
-## What should contributors validate before opening a pull request?
+## What should contributors run before a pull request?
 
-Run the relevant non-live tests for the area changed, keep cross-platform impact in mind, and update documentation in the same branch whenever UI labels, config keys, setup steps, or Ollama behaviour change. The current command set is documented in [CONTRIBUTING.md](CONTRIBUTING.md).
+At minimum:
 
-## Where should I start when something seems wrong?
+```bash
+python run_tests.py non-live
+python tools/check_docs.py
+```
 
-Use the document that matches the problem:
-
-- gameplay flow and screen behaviour: [USER_GUIDE.md](USER_GUIDE.md)
-- recurring practical and architectural questions: [FAQ.md](FAQ.md)
-- setup, configuration, testing, and troubleshooting: [CONTRIBUTING.md](CONTRIBUTING.md)
-
-If the problem is model-related, inspect the History screen and the Ollama output log before assuming the game logic failed.
+Use the area-specific guidance in [CONTRIBUTING.md](CONTRIBUTING.md), and run stateful live or install-level checks only when their side effects are acceptable.

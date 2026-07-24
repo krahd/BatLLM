@@ -1,558 +1,327 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [User Guide](USER_GUIDE.md) · [FAQ](FAQ.md) · [Contributing](CONTRIBUTING.md) · [Status](../STATUS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
 # Contributing
 
-This is BatLLM's developer and contribution manual. It covers how to set up the project locally, how the codebase is organised, how to validate changes, and what is expected when contributing code or documentation.
+BatLLM is a Python/Kivy game, a research artefact, and an educational project. Contributions should preserve all three roles: the application must remain usable, the recorded data must remain interpretable, and changes should not obscure the project's critical framing around AI mediation and literacy.
 
-BatLLM is both a software project and a research and education project. When contributing, preserve the practical software quality of the repository and the project's framing around AI literacy, human-AI mediation, and hands-on learning.
+## Contribution principles
 
-## Roadmap
+- Keep pull requests focused on one coherent change.
+- Preserve current behaviour unless the change explicitly intends to alter it.
+- Add or update tests when behaviour changes.
+- Update the relevant documentation in the same pull request.
+- Consider macOS, Linux, and Windows when changing paths, launchers, dependencies, or subprocesses.
+- Keep destructive or expensive Ollama operations explicit and confirmed.
+- Do not let tests write to a user's configuration or real saved sessions.
+- Use British English in maintained prose documentation.
 
-Features wishlist: [ROADMAP.md](ROADMAP.md)
+For larger features or architecture changes, open an issue before implementation.
 
-1.0 planning references:
+## Development setup
 
-- [RELEASE_CRITERIA_1_0.md](RELEASE_CRITERIA_1_0.md)
-- [FIRST_RUN_RELEASE_CHECKLIST.md](FIRST_RUN_RELEASE_CHECKLIST.md)
-- [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md)
+### Python
 
-For repository settings, set branch protection required checks to the list in `RELEASE_CRITERIA_1_0.md`.
+BatLLM supports Python `3.10`, `3.11`, and `3.12`. Python `3.12` is recommended.
 
-## Ways To Contribute
-
-Contributions are welcome in several forms:
-
-- bug fixes
-- new features
-- documentation improvements
-- testing improvements
-- design, UX, and workflow clean-up
-- analysis of recorded game histories and model behaviour
-
-If you are unsure whether an idea fits the project, opening an issue first is a good default.
-
-## Contribution Rules
-
-- keep pull requests scoped to one topic
-- use English commit messages
-- explain non-obvious changes in the pull request description
-- update documentation when the workflow, UI, setup, configuration, or tests change
-- keep the FAQ focused on recurring non-trivial questions; routine walkthrough material belongs in the user guide
-- keep cross-platform impact in mind when changing scripts, paths, or dependencies
-
-## Development Setup
-
-### Python Environment
+macOS and Linux:
 
 ```bash
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
 python3 -m venv .venv_BatLLM
 source .venv_BatLLM/bin/activate
-pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-Use Python 3.10, 3.11, or 3.12. Python 3.12 is recommended.
-
-On Windows:
+Windows PowerShell:
 
 ```powershell
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
 py -m venv .venv_BatLLM
 .\.venv_BatLLM\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
 
-### Ollama Environment
+### Launchers
 
-The codebase depends on two different Ollama surfaces:
-
-- the `modelito` Python package for gameplay chat requests and model-management helpers
-- the `ollama` CLI for the local service-management helpers and the Ollama config screen
-
-For non-live unit work, the CLI is not required. For live gameplay or `run_tests.py full`, it is required.
-
-### Running The App Locally
+Main application:
 
 ```bash
 python run_batllm.py
 ```
 
-For the standalone analyzer:
+Standalone Game Analyzer:
 
 ```bash
 python run_game_analyzer.py
 ```
 
-If Ollama is not already installed, either install it manually from the official download page for your platform or let BatLLM launch the official installer flow:
+The repository also contains `scripts/cmr-r`, a small Unix convenience launcher that selects the project virtual environment when available.
 
-- macOS: `https://ollama.com/download`
-- Linux: `https://ollama.com/download/linux`
-- Windows: `https://ollama.com/download/windows`
+### Ollama
 
-## Repository Layout
+Most tests do not require Ollama. Live gameplay and the explicitly live test mode require:
 
-Core runtime modules:
+- the `ollama` CLI;
+- a reachable local Ollama service; and
+- at least one installed model.
 
-- `src/main.py`: Kivy app entrypoint
-- `src/view/`: screens and `.kv` layouts
-- `src/game/game_board.py`: match flow, rendering hooks, and UI coordination
-- `src/game/bot.py`: bot state and command execution
-- `src/game/bullet.py`: bullet movement and collision logic
-- `src/game/ollama_connector.py`: chat/history request builder using `modelito`'s Ollama provider
-- `src/game/history_manager.py`: authoritative game and chat history
-- `src/game/replay_engine.py`: Kivy-free replay and rules helpers shared by gameplay and the analyzer
-- `src/game/session_schema.py`: saved-session schema validation and v2 envelope helpers
-- `src/llm/service.py`: BatLLM-specific Ollama/runtime facade over `modelito`, including config overlay and timeout policy
-- `src/analyzer_main.py`: standalone Game Analyzer app entrypoint
-- `src/analyzer_model.py`: session navigation and replay-step model for the analyzer UI
-- `src/configs/`: YAML config files and config loader
-- `run_batllm.py`: repository-root launcher
-- `run_game_analyzer.py`: repository-root standalone analyzer launcher
-- `run_tests.py`: cross-platform test runner
-- `create_release_bundles.py`: source and platform bundle generator
-- `create_homebrew_formula.py`: Homebrew tap formula generator
-- `start_ollama.sh` and `stop_ollama.sh`: Unix wrappers around the Python Ollama helper
-- `packaging/homebrew/`: Homebrew runtime requirement pins and maintainer notes
+BatLLM uses `modelito` for gameplay requests and model-management helpers. The repository-supported version is pinned in `requirements.txt`; contributors should install the complete requirements file rather than installing individual packages manually.
 
-Maintained documentation:
+## Repository structure
 
-- `docs/README.md`
-- `docs/USER_GUIDE.md`
-- `docs/CONTRIBUTING.md`
-- `docs/FAQ.md`
-- `docs/CHANGELOG.md`
-- `docs/CREDITS.md`
+| Path | Purpose |
+| --- | --- |
+| `run_batllm.py` | main desktop launcher |
+| `run_game_analyzer.py` | standalone analyser launcher |
+| `run_tests.py` | cross-platform `core`, `non-live`, and `full` test runner |
+| `src/main.py` | main Kivy application shell and startup/shutdown flow |
+| `src/view/` | screen controllers and KV layouts |
+| `src/game/game_board.py` | live game, round, and turn coordination |
+| `src/game/bot.py` | bot state and command execution |
+| `src/game/bullet.py` | bullet travel and collision behaviour |
+| `src/game/ollama_connector.py` | model request construction and conversation histories |
+| `src/game/history_manager.py` | authoritative session, game, round, turn, and chat history |
+| `src/game/replay_engine.py` | Kivy-free command parsing and deterministic transition logic |
+| `src/game/session_schema.py` | user-facing saved-session v2 validation |
+| `src/game/session_v3.py` | research trace-v3 structures |
+| `src/analyzer_model.py` | analyser navigation and replay model |
+| `src/llm/service.py` | BatLLM-specific Ollama/modelito lifecycle facade |
+| `src/configs/` | shipped defaults, alternate profiles, and config loader |
+| `src/util/paths.py` | repository, asset, user-state, and saved-session path resolution |
+| `src/tests/` | automated tests and smoke helpers |
+| `research/urucon2026/` | research runtime, schema, experiments, corpus, results, and artefact |
+| `create_release_bundles.py` | cross-platform release archive generator |
+| `create_homebrew_formula.py` | Homebrew formula generator |
+| `validate_packaging_smoke.py` | release-bundle and Homebrew validation |
 
-Generated API docs:
+## Runtime architecture
 
-- `docs/code/`
-
-## Architecture Overview
-
-The current gameplay stack works like this:
-
-1. `HomeScreen` owns the high-level UI and delegates game actions to `GameBoard`.
-2. `GameBoard` owns the active `Bot` instances, the prompt store, and the live round/turn flow.
-3. `Bot` instances execute movement, rotation, shield, and bullet actions.
-4. `GameBoard` uses `OllamaConnector` to send synchronous chat requests through `modelito`'s Ollama provider.
-5. `HistoryManager` records game history and chat history as the single source of truth.
-
-The current replay/analyzer stack works like this:
-
-1. `HistoryManager.save_session()` exports the v2 saved-session envelope.
-2. Each round records a frozen `gameplay_settings_snapshot`.
-3. `replay_engine.py` replays ordered plays against the saved round snapshot instead of the live config.
-4. `AnalyzerSessionModel` turns those replay results into timeline steps, state diffs, and inspector text.
-5. `AnalyzerLoadScreen` and `AnalyzerReviewScreen` expose the replay in-app and through `run_game_analyzer.py`.
-
-The current model-management stack works like this:
-
-1. `OllamaConfigScreen` uses `src/llm/service.py` and `modelito` service helpers for install/start/stop/status operations.
-2. It uses `modelito` model listing, readiness, pull, and delete helpers for model management.
-3. BatLLM-specific timeout resolution and config overlay behavior remain in `src/llm/service.py`.
-
-Important implementation notes:
-
-- `NormalizedCanvas` keeps arena drawing resolution-independent by treating positions as values in the range `0.0` to `1.0`.
-- `HistoryManager` is the single source of truth for game and chat history.
-- `util.paths` is responsible for resolving assets, prompts, config-relative files, and save folders without relying on the current working directory.
-- BatLLM is currently built around two-player AI-mediated play, and some UI assumptions still rely on that structure.
-
-## Configuration Reference
-
-BatLLM reads its runtime configuration from `src/configs/config.yaml` by default.
-
-### File Locations
-
-- primary runtime config: `src/configs/config.yaml`
-- loader: `src/configs/app_config.py`
-
-If `BATLLM_HOME` is not set, BatLLM writes updated values back to `src/configs/config.yaml` when the app saves configuration.
-
-If `BATLLM_HOME` is set, BatLLM treats `src/configs/config.yaml` as the shipped default config and writes mutable runtime config to `BATLLM_HOME/config.yaml` instead. Relative save folders such as `saved_sessions` are also resolved under `BATLLM_HOME` in that mode.
-
-### Current Default File
-
-```yaml
-data:
-  saved_sessions_folder: saved_sessions
-game:
-  bot_diameter: 0.1
-  bot_step_length: 0.03
-  bullet_damage: 5
-  bullet_diameter: 0.02
-  bullet_step_length: 0.01
-  independent_contexts: true
-  initial_health: 30
-  prompt_augmentation: true
-  shield_initial_state: true
-  shield_size: 70
-  total_rounds: 2
-  turns_per_round: 8
-llm:
-  debug_requests: false
-  last_served_model: ''
-  max_tokens: null
-  model: smollm2
-  model_timeouts: {}
-  warmup_timeout: 30.0
-  num_ctx: 4096
-  num_predict: null
-  num_thread: null
-  path: /api/chat
-  port: 11434
-  seed: null
-  stop: null
-  system_instructions_augmented_independent: src/assets/system_instructions/augmented_independent_1.txt
-  system_instructions_augmented_shared: src/assets/system_instructions/augmented_shared_1.txt
-  system_instructions_not_augmented_independent: src/assets/system_instructions/not_augmented_independent_1.txt
-  system_instructions_not_augmented_shared: src/assets/system_instructions/not_augmented_shared_1.txt
-  temperature: null
-  timeout: null
-  top_k: null
-  top_p: null
-  url: http://localhost
-ui:
-  auto_start_ollama: false
-  stop_ollama_on_exit: false
-  confirm_on_exit: true
-  font_size: 16
-  frame_rate: 60
-  primary_color: '#0b0b0b'
-  prompt_save_on_exit: false
-  title: BatLLM
+```mermaid
+flowchart LR
+    P1[Player 1 prompt] --> H[HomeScreen]
+    P2[Player 2 prompt] --> H
+    H --> G[GameBoard]
+    G --> O[OllamaConnector]
+    O --> M[modelito]
+    M --> L[Local Ollama model]
+    L --> O
+    O --> G
+    G --> R[Replay engine]
+    G --> HM[HistoryManager]
+    HM --> S[Saved session v2]
+    S --> A[Game Analyzer]
+    R --> A
 ```
 
-### Section Reference
+### Live game flow
 
-#### `data`
+1. `HomeScreen` collects one prompt per player.
+2. `GameBoard` starts the round when both prompts are ready.
+3. `OllamaConnector` builds the model messages and maintains independent or shared histories.
+4. `modelito` sends the request to Ollama.
+5. `replay_engine.parse_model_response()` converts the returned text into BatLLM's bounded command grammar.
+6. The live bot executes the command.
+7. `HistoryManager` records prompts, responses, commands, states, and outcomes.
 
-| Key | Meaning |
+Each new game receives a fresh connector history. This prevents late responses from a retired game contaminating the next game's model context.
+
+### Saved sessions and analysis
+
+The graphical application exports session schema v2. Each saved round includes a frozen gameplay-settings snapshot; the top-level envelope also records model/runtime metadata. Only completed turns are exported.
+
+The Game Analyzer validates the saved file, replays the ordered commands using the frozen rules, and reports state differences rather than silently approximating incompatible data. Legacy top-level list exports are intentionally rejected.
+
+### Research runtime
+
+The URUCON research path is separate from the user-facing v2 export. It records schema-v3 traces through headless entry points and verifies them with the pure transition engine. See [research/urucon2026/README.md](../research/urucon2026/README.md).
+
+The editable paper is not stored in this repository.
+
+## Configuration and mutable state
+
+The shipped defaults are in `src/configs/config.yaml`. `src/configs/app_config.py` overlays hard-coded fallback values, the shipped YAML, and an optional user YAML.
+
+The active location depends on how BatLLM is launched:
+
+- **Source checkout without `BATLLM_HOME`:** configuration changes write to `src/configs/config.yaml`; relative saved-session folders resolve inside the repository.
+- **`BATLLM_HOME` set:** mutable configuration writes to `$BATLLM_HOME/config.yaml`; relative saved-session folders resolve below `$BATLLM_HOME`.
+- **Homebrew:** the generated wrappers set `BATLLM_HOME` to `~/Library/Application Support/BatLLM` unless the user overrides it.
+- **Release bundles:** the launchers currently run from the extracted bundle and do not set `BATLLM_HOME`; state therefore remains relative to that extracted directory unless the user sets the variable.
+- **Tests:** `src/tests/conftest.py` sets an isolated temporary `BATLLM_HOME` before application configuration is imported.
+
+See [STATE_AND_INSTALLATION.md](STATE_AND_INSTALLATION.md) for the compact reference.
+
+### Main configuration groups
+
+| Section | Important keys |
 | --- | --- |
-| `saved_sessions_folder` | Default folder for saved sessions. |
+| `game` | rounds, turns, health, damage, dimensions, movement, context mode, prompt augmentation |
+| `ui` | frame rate, exit behaviour, Ollama startup/shutdown behaviour, title and presentation defaults |
+| `llm` | model, endpoint, request options, prompt files, timeouts, last served model |
+| `data` | saved-session folder |
 
-Saved sessions exported from the current app use the v2 BatLLM envelope. The analyzer depends on that format and rejects legacy top-level list exports.
+Do not copy the full YAML into prose documentation. Link to the shipped file and document only behaviour that readers need; this reduces configuration drift.
 
-#### `game`
+## Testing
 
-| Key | Meaning |
-| --- | --- |
-| `bot_diameter` | Normalised bot diameter used by the renderer. |
-| `bot_step_length` | Default movement step used by `M` and manual movement. |
-| `bullet_damage` | Health removed by a successful hit. |
-| `bullet_diameter` | Normalised bullet render size. |
-| `bullet_step_length` | Bullet movement step size. |
-| `independent_contexts` | `true` means each bot keeps separate chat history; `false` means both bots share one history. |
-| `initial_health` | Starting health per bot. |
-| `prompt_augmentation` | `true` means BatLLM prepends structured game-state data to the player prompt. |
-| `shield_initial_state` | Starting shield state for new bots. |
-| `shield_size` | Shield arc width in degrees. |
-| `total_rounds` | Maximum number of rounds in a game. |
-| `turns_per_round` | Maximum number of turns per round. |
-
-#### `llm`
-
-| Key | Meaning |
-| --- | --- |
-| `debug_requests` | Reserved debug flag in the YAML; not a primary user control in the current UI. |
-| `last_served_model` | The last model BatLLM explicitly warmed so startup can restore it. |
-| `max_tokens` | Optional generation option forwarded when not `null`. |
-| `model` | Active model name used for gameplay and as the BatLLM-selected Ollama model. |
-| `model_timeouts` | Optional per-model timeout overrides keyed by installed model name. |
-| `num_ctx` | Optional Ollama context size. |
-| `num_predict` | Optional generation limit. |
-| `num_thread` | Optional thread-count override. |
-| `path` | Chat path used by BatLLM gameplay requests. Current default is `/api/chat`. |
-| `port` | Ollama service port. |
-| `seed` | Optional generation seed. |
-| `stop` | Optional stop sequence setting. |
-| `system_instructions_augmented_independent` | File used when prompt augmentation is on and contexts are independent. |
-| `system_instructions_augmented_shared` | File used when prompt augmentation is on and context is shared. |
-| `system_instructions_not_augmented_independent` | File used when prompt augmentation is off and contexts are independent. |
-| `system_instructions_not_augmented_shared` | File used when prompt augmentation is off and context is shared. |
-| `temperature` | Optional generation temperature. |
-| `timeout` | Optional global timeout fallback used when there is no per-model override. |
-| `top_k` | Optional top-k sampling value. |
-| `top_p` | Optional top-p sampling value. |
-| `url` | Ollama base URL, usually `http://localhost`. |
-
-Optional advanced key supported by the current code:
-
-| Key | Meaning |
-| --- | --- |
-| `max_history_messages` | If present, limits the number of retained chat messages. If absent, BatLLM defaults to `turns_per_round * 2`. |
-
-#### `ui`
-
-| Key | Meaning |
-| --- | --- |
-| `confirm_on_exit` | Controls whether the home screen exit flow asks for confirmation. |
-| `font_size` | Default font size used by the `markup()` helper in `util.utils`. |
-| `frame_rate` | Render/update interval for the game board. |
-| `auto_start_ollama` | When true, BatLLM can start Ollama automatically during app startup. |
-| `stop_ollama_on_exit` | When true, BatLLM can stop Ollama automatically during app shutdown. |
-| `primary_color` | Current theme colour value kept in config; not heavily wired into the present Kivy views. |
-| `prompt_save_on_exit` | Controls whether BatLLM asks for a save filename before exit. |
-| `title` | App window title. |
-
-### Screen Mappings
-
-The settings screen writes these keys:
-
-- `game.total_rounds`
-- `game.turns_per_round`
-- `game.initial_health`
-- `game.bullet_damage`
-- `game.shield_size`
-- `game.bot_step_length`
-- `game.independent_contexts`
-- `game.prompt_augmentation`
-- `ui.confirm_on_exit`
-- `ui.prompt_save_on_exit`
-- `ui.auto_start_ollama`
-- `ui.stop_ollama_on_exit`
-
-The Ollama configuration screen writes:
-
-- `llm.model`
-- `llm.model_timeouts`
-- `llm.warmup_timeout`
-- installer actions are launched from the screen, but the config file is not modified directly by that action
-
-### Configuration Notes
-
-1. `llm.path` affects gameplay chat requests, not the model-management calls made by the Ollama configuration screen.
-2. The Ollama configuration screen assumes the configured host and port are the shared local Ollama service to manage.
-3. BatLLM reads the system-instruction file paths directly from config, so broken paths will fail at runtime.
-4. The current Ollama lifecycle toggles are stored in `ui.auto_start_ollama` and `ui.stop_ollama_on_exit`. `main.py` still accepts the legacy `ui.auto_stop_ollama` key as a backward-compatible fallback for older configs.
-5. On a fresh install, `llm.last_served_model` starts empty and is filled after BatLLM successfully warms a model so startup can later restore that serving state.
-6. Request-timeout precedence is: `llm.model_timeouts[model]`, then `llm.timeout`, then BatLLM's built-in common-model defaults, then the generic fallback.
-7. Ollama service-start warmup uses `llm.warmup_timeout` when present, otherwise BatLLM falls back to the built-in `30s` default.
-8. Packaged installs can set `BATLLM_HOME` to keep mutable config and saved-session data out of a read-only install prefix.
-
-## Testing And Validation
-
-BatLLM has three practical test tiers:
-
-1. shell/config smoke checks
-2. headless non-live unit tests
-3. live Ollama smoke tests
-
-### Environment
-
-Use the project virtual environment:
-
-```bash
-source .venv_BatLLM/bin/activate
-```
-
-For terminal-only environments, run Kivy tests headlessly:
-
-```bash
-export KIVY_WINDOW=mock
-export KIVY_NO_ARGS=1
-export KIVY_NO_CONSOLELOG=1
-export KIVY_HOME=/tmp/batllm-kivy
-export PYTHONPATH=src
-```
-
-### Quick Smoke
-
-`run_tests.py core` is the cross-platform smoke runner:
+### Core smoke
 
 ```bash
 python run_tests.py core
 ```
 
-`run_tests.py non-live` (also the default mode) runs the complete isolated suite without starting or stopping Ollama:
+This runs the small history/configuration smoke module.
+
+### Complete non-live suite
 
 ```bash
 python run_tests.py non-live
 ```
 
-`run_tests.sh core` remains available as a Unix convenience wrapper around the same flow.
-
-The quick smoke currently runs only the lightweight smoke checks in `src/tests/test_history_compact.py`:
+`non-live` is the default mode, so this is equivalent:
 
 ```bash
-./run_tests.sh core
+python run_tests.py
 ```
 
-That covers:
-
-- config shape
-- shell-script syntax
-- source compilation
-
-### Recommended Non-Live Unit Suite
-
-This is the most useful day-to-day test command for UI and logic changes:
+Direct pytest invocation is also supported:
 
 ```bash
 python -m pytest -q src/tests
 ```
 
-That suite covers:
+The non-live suite is the normal validation path for gameplay, UI logic, analysis, path handling, packaging helpers, and research contracts.
 
-- exit-flow behaviour
-- confirmation and text-input pop-ups
-- Ollama config screen logic
-- model-picker behaviour
-- cross-platform launch and path handling
-- non-live smoke checks
-
-### Homebrew Dry-Run Validation
-
-For Homebrew packaging or release-tooling changes, validate that the formula renders from the current worktree and that the packaging tests pass:
-
-```bash
-python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb
-python -m pytest -q src/tests/test_homebrew_packaging.py
-```
-
-This mirrors the repository's CI `Homebrew dry-run` job and keeps the formula path aligned with the standard tap-release workflow.
-
-### Packaging Smoke Validation
-
-To run release-bundle and Homebrew dry-run checks together with one command:
-
-```bash
-python validate_packaging_smoke.py
-```
-
-This command executes:
-
-- `create_release_bundles.py` and verifies expected archives plus launcher files
-- `create_homebrew_formula.py --create-worktree-archive ... --formula-out ...` and validates key formula entries
-
-To additionally execute the packaged install wrapper for the current platform inside a temporary extracted bundle and verify the created virtual environment:
-
-```bash
-python validate_packaging_smoke.py --run-installer-smoke
-```
-
-Installer smoke notes:
-
-- runs only for the current platform bundle (macOS on macOS, Linux on Linux, Windows on Windows)
-- executes the bundled `install-batllm.*` script with a default 900-second timeout
-- accepts `--installer-timeout <seconds>` to override the timeout
-
-Optional flags:
-
-- `--skip-release-bundles`
-- `--skip-homebrew`
-- `--run-installer-smoke`
-- `--installer-timeout`
-- `--run-homebrew-install-smoke`
-- `--homebrew-install-timeout`
-
-For install-level Homebrew validation (install, test, uninstall), run:
-
-```bash
-python validate_packaging_smoke.py --run-homebrew-install-smoke
-```
-
-This path uses a temporary local tap generated from the current worktree formula because newer Homebrew versions reject direct `brew install --formula /tmp/batllm.rb` installs outside a tap.
-
-### CI Defaults
-
-Current repository CI follows these defaults:
-
-- PR validation runs the full non-live suite across Linux, macOS, and Windows.
-- Homebrew packaging is validated on PRs in a dedicated Linux job that renders a formula from the current worktree and runs Homebrew packaging tests.
-- Tagged releases publish the formula to `krahd/homebrew-tap` through the dedicated publish workflow.
-
-### Live Ollama Smoke
-
-`run_tests.py full` starts Ollama, runs the full `src/tests` suite with live Ollama smoke enabled, and then stops Ollama:
+### Live Ollama suite
 
 ```bash
 python run_tests.py full
 ```
 
-`run_tests.sh full` remains available on Unix-like shells as a wrapper around the same command:
+This command starts the configured Ollama service, runs the suite with live smoke enabled, and then stops the service.
+
+> [!WARNING]
+> Use `full` only when it is acceptable for BatLLM to start and stop the real configured Ollama service.
+
+### Headless Kivy environment
+
+CI uses:
 
 ```bash
-./run_tests.sh full
+export KIVY_WINDOW=mock
+export KIVY_NO_ARGS=1
+export KIVY_NO_CONSOLELOG=1
+export PYTHONPATH=src
 ```
 
-Equivalent environment toggle for the live smoke tests:
+Tests already set an isolated `BATLLM_HOME`; do not point tests at user state.
+
+### Lint and compilation
 
 ```bash
-BATLLM_RUN_OLLAMA_SMOKE=1 PYTHONPATH=src ./.venv_BatLLM/bin/python -m pytest -q src/tests
+python -m compileall -q src run_batllm.py run_game_analyzer.py run_tests.py \
+  create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py
+
+python -m pylint src run_batllm.py run_game_analyzer.py \
+  create_release_bundles.py create_homebrew_formula.py
 ```
 
-Use this only when:
+The maintained Pylint gate is configured in `.pylintrc` and CI.
 
-- the Ollama CLI is installed
-- the configured host and port are available
-- you are comfortable with BatLLM starting and stopping the configured local Ollama service
+### Documentation checks
 
-### Documentation Validation
+```bash
+python tools/check_docs.py
+```
 
-When docs or API surface change:
+This checks required documentation, local Markdown and HTML links, the `STATUS.md` timestamp contract, repository-version references, and the absence of known temporary audit artefacts.
+
+Regenerate Doxygen output only when the public API documentation intentionally changes:
 
 ```bash
 doxygen docs/code/dox_config.properties
 ```
 
-Review the generated diff under `docs/code/` before committing.
+Review generated changes carefully; `docs/code/` is large and noisy.
 
-### What To Run For Common Changes
+### Packaging checks
 
-| Change type | Minimum recommended validation |
-| --- | --- |
-| gameplay logic | non-live unit suite |
-| exit flow or pop-ups | non-live unit suite |
-| Ollama config screen | non-live unit suite |
-| cross-platform smoke | `python run_tests.py core` |
-| Ollama integration path | non-live unit suite plus live smoke if possible |
-| docs only | regenerate code docs if public API docs changed |
+Release bundles and formula rendering:
 
-## Documentation Workflow
+```bash
+python validate_packaging_smoke.py
+```
 
-BatLLM's docs are split by role:
+Homebrew-specific unit checks:
 
-- `README.md`: project framing plus the high-level map for users and contributors
-- `USER_GUIDE.md`: user-facing game manual
-- `FAQ.md`: shared high-signal reference for recurring user and contributor questions
-- `CONTRIBUTING.md`: developer-facing setup, architecture, configuration, testing, and troubleshooting
+```bash
+python create_homebrew_formula.py \
+  --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz \
+  --formula-out /tmp/batllm.rb
+python -m pytest -q src/tests/test_homebrew_packaging.py
+```
 
-When behaviour changes, update the maintained docs in the same branch. In particular, update docs when you change:
+Optional install-level modes mutate the current machine and should be run deliberately:
 
-- UI labels
-- setup steps
-- config keys or defaults
-- test commands
-- Ollama model-management behaviour
-- keyboard and exit behaviour
-- project-level framing, aims, or educational positioning
+```bash
+python validate_packaging_smoke.py --run-installer-smoke
+python validate_packaging_smoke.py --run-homebrew-install-smoke
+```
 
-Do not use the FAQ for trivial click-path questions unless the behaviour is surprising, high-risk, or easy to misinterpret. Keep the FAQ focused on questions whose answers help users compete more effectively or help contributors reason about the codebase.
+## Continuous integration
 
-## Release Workflow
+Current pull requests to `main` are covered by:
 
-BatLLM now uses tags for versions and a repository-level `VERSION` file to track the current release number.
+- **CI:** the complete non-live suite on Python `3.10`–`3.12` across Ubuntu, macOS, and Windows; compilation on every matrix job; Pylint on Ubuntu/Python 3.12.
+- **Multiplatform Validation:** release-bundle generation on all three operating systems, Homebrew formula/package tests, and a mock-Ollama integration smoke.
+- **Python dependency audit:** `pip-audit` against `requirements.txt`.
+- **Dependency review:** high-severity dependency-diff review when the repository dependency graph is available.
+- **URUCON research validation:** focused research-facing tests, schema validation, experiments, and research-artefact packaging on Ubuntu/Python 3.12 when relevant paths change.
 
-To build release assets:
+Repository protection may require workflow-level checks rather than every matrix job individually. `docs/RELEASE_CRITERIA_1_0.md` records the current release gate.
+
+## Documentation responsibilities
+
+The documentation has deliberately separated roles:
+
+- `README.md`: public project overview and installation.
+- `docs/README.md`: documentation index.
+- `docs/USER_GUIDE.md`: game and application use.
+- `docs/FAQ.md`: recurring questions.
+- `docs/CONTRIBUTING.md`: development and maintenance.
+- `STATUS.md`: current snapshot only.
+- `docs/CHANGELOG.md`: chronological history.
+
+Update the relevant page whenever a change affects:
+
+- UI labels or navigation;
+- game terminology or rules;
+- configuration keys, defaults, or state paths;
+- model-management behaviour;
+- session formats or analyzer compatibility;
+- supported Python/platforms;
+- test or release commands; or
+- repository structure.
+
+Do not append PR-by-PR audit narratives to `STATUS.md`. Record durable current facts there; put historical detail in the changelog, the pull request, or a research audit file whose purpose is explicitly historical.
+
+## Release and distribution work
+
+The repository version is stored in `VERSION` and mirrored in `CITATION.cff` and maintained release-facing documentation.
+
+Build release archives with:
 
 ```bash
 python create_release_bundles.py
 ```
 
-That produces:
+The generator creates source, Windows, macOS, and Linux archives under `dist/releases/`.
 
-- source archives
-- a Windows bundle with `.bat` launchers
-- a macOS bundle with `.command` launchers
-- a Linux bundle with `.sh` launchers
-
-Tagged releases can also publish BatLLM's source-based Apple Silicon Homebrew formula automatically to `krahd/homebrew-tap` through the repository workflow. That automation requires a repository secret named `HOMEBREW_TAP_TOKEN` with push access to the shared tap.
-The publish workflow now validates that release tags use `vMAJOR.MINOR.PATCH` format and that the tag version matches the repository `VERSION` file before it pushes any tap update.
-
-To generate a Homebrew formula for the `krahd` tap after publishing a release tag:
+Generate a Homebrew formula from a release tag with:
 
 ```bash
 python create_homebrew_formula.py \
@@ -560,106 +329,47 @@ python create_homebrew_formula.py \
   --formula-out /path/to/homebrew-krahd/Formula/batllm.rb
 ```
 
-For local validation before publishing, create a formula from the current worktree instead:
+Tagged publication to `krahd/homebrew-tap` is handled by `.github/workflows/publish-homebrew-tap.yml` when the repository secret `HOMEBREW_TAP_TOKEN` is configured.
 
-```bash
-python create_homebrew_formula.py \
-  --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz \
-  --formula-out /tmp/batllm.rb
-```
+Before a release candidate, use:
 
-## Coding Conventions
+- [1.0 release criteria](RELEASE_CRITERIA_1_0.md);
+- [first-run and release checklist](FIRST_RUN_RELEASE_CHECKLIST.md); and
+- [maintainer audit checklist](MAINTAINER_AUDIT_CHECKLIST.md).
 
-- use Python 3 style annotations where practical
-- keep Kivy screen logic in the screen classes and layout structure in `.kv` files
-- avoid undocumented user-facing behaviour changes
-- prefer clear state transitions over hidden side effects
-- use British English in maintained documentation
-- keep identifiers, API names, and other code-level naming consistent with the existing codebase
+## Troubleshooting
 
-## Pull Request Workflow
+### Imports fail from the repository root
 
-Recommended contribution flow:
+Use the root launchers rather than importing `src` modules directly. The launchers add `src/` to `sys.path` and enforce the supported Python range.
 
-1. fork the repository and clone it locally
-2. create a branch for one topic only
-3. make the change with relevant tests or validation
-4. update docs if the workflow, UI, or developer process changed
-5. review the resulting diff, including generated documentation noise
-6. open a pull request with a clear description of what changed and why
+### BatLLM cannot start or reach Ollama
 
-Before opening a PR:
+1. Confirm that the `ollama` CLI is installed.
+2. Check the host and port in the active configuration.
+3. Run `python -m llm.service status` with `PYTHONPATH=src`.
+4. Inspect the output log in **Ollama Config**.
+5. Verify that the selected model exists locally.
 
-1. run the relevant tests
-2. update docs if the workflow or UI changed
-3. regenerate code docs if public modules or screen docs changed
-4. review the resulting diff for generated-file noise before pushing
+### Gameplay requests time out
 
-### Documentation Review Checklist
+Timeout precedence is:
 
-- confirm visible UI labels in the docs match the current Kivy labels and button text
-- confirm config keys and defaults mentioned in docs match `src/configs/config.yaml` and `src/configs/app_config.py`
-- confirm compatibility and version references still match `VERSION`, current platform support, and release naming
-- confirm screenshots, diagrams, and screen descriptions still match the current interface, or remove them if they no longer do
-- confirm cross-links, setup commands, and platform-specific launcher notes still point to maintained files and workflows
+1. `llm.model_timeouts[model]`;
+2. `llm.timeout`;
+3. built-in common-model defaults; and
+4. the generic fallback.
 
-## Developer Troubleshooting
+The service warm-up timeout is separate and uses `llm.warmup_timeout`, with a built-in 30-second default.
 
-### The App Cannot Start Ollama
+### A saved session fails validation
 
-Symptoms:
+Use a current v2 session exported after at least one completed turn. Do not edit saved state manually unless testing validation behaviour. The analyzer rejects legacy list exports and malformed identity/state maps intentionally.
 
-- `Start Ollama` fails
-- the output log says `ollama not found`
-- the install confirmation prompt appears
+### Remote models do not load
 
-What to check:
+Remote catalogue retrieval requires network access. Local gameplay does not require remote catalogue access once an installed model is available.
 
-1. confirm the `ollama` CLI is installed and available on your `PATH`
-2. run `ollama --version` in a terminal
-3. verify `llm.url` and `llm.port` in `src/configs/config.yaml`
+### Generated API documentation is stale
 
-### Gameplay Fails To Talk To The Model
-
-BatLLM gameplay uses `modelito` plus the configured Ollama host, port, and model.
-
-Check:
-
-1. `pip install -r requirements.txt` completed successfully
-2. the virtual environment contains `modelito==1.4.5`
-3. `llm.url` and `llm.port` point to the intended Ollama service
-4. the configured model name in `llm.model` exists locally
-
-### The Remote Model List Will Not Load
-
-The remote picker fetches model names through `modelito`'s remote catalog helper.
-
-If refresh fails:
-
-1. verify the machine has outbound network access
-2. retry from the Ollama screen
-3. check the Ollama screen output log for the captured error
-
-Existing local selections are preserved if the remote refresh fails.
-
-### The Local Model List Is Empty
-
-The local picker loads through `modelito`'s local-model inventory helper.
-
-Check:
-
-1. Ollama is actually running on `llm.url:llm.port`
-2. `ollama list` shows models in the same installation
-3. the configured host and port point to the intended local service
-
-### Doxygen Output Is Stale
-
-Regenerate the code docs from the repository root:
-
-```bash
-doxygen docs/code/dox_config.properties
-```
-
-### `run_tests.sh core` Does Not Cover My UI Change
-
-That is expected. `core` only runs the lightweight smoke checks. Use the non-live unit suite above for screen and pop-up changes.
+Run Doxygen only when the source-level API docs should change, then inspect the generated diff before committing.

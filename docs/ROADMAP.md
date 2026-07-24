@@ -1,61 +1,53 @@
-# ROADMAP
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [Status](../STATUS.md) · [1.0 Criteria](RELEASE_CRITERIA_1_0.md) · [Contributing](CONTRIBUTING.md)**
 
-BatLLM is approaching 1.0 as a stable local desktop product. The current 0.3.x line already includes the core game loop, session saving, replay analysis, cross-platform launchers, and Ollama integration, so the remaining work for 1.0 is product consistency, reliability, and release hardening.
+# Roadmap
 
-Version 2.0 is the planned architecture shift. It should focus on networked play first, then use that foundation to support additional clients and shared content.
+BatLLM's current priority is a stable local desktop release. The core game, saved-session analysis, deterministic replay helpers, local Ollama integration, cross-platform launchers, and research runtime already exist. The remaining 1.0 work is release hardening rather than a new game design.
 
+Version 2.0 is the planned architectural change towards networked play and additional clients.
 
-## 1.0 - Stable Local Desktop Release
+## 1.0: stable local desktop release
 
-### 1.0 Goals
+### Goals
 
-- Deliver a coherent local-first experience for non-technical users.
-- Make the gameplay and analyzer flows feel like one product.
-- Release with stronger reliability, onboarding, and test coverage.
+- Make first-run setup understandable for non-specialist users.
+- Make gameplay and analysis feel like one coherent application.
+- Preserve deterministic game, session, and replay behaviour.
+- Release with defensible cross-platform and packaging validation.
 
-### 1.0 Planned Work
+### Remaining work
 
-- Unify the Game and Analyzer user interface.
-- Standardize theme, spacing, typography, button styles, and navigation patterns.
-- Align status panels, player summaries, and action controls across screens.
-- Harden Ollama integration for offline service, slow startup, missing models, malformed responses, and timeouts.
-- Improve user-facing error messages and recovery paths during setup and play.
-- Polish session save/load and analyzer replay workflows.
-- Preserve compatibility of saved sessions and replay behavior.
-- Tighten release bundles, launcher behavior, and first-run setup guidance on macOS, Linux, and Windows.
-- Expand tests for failure paths, save/load compatibility, analyzer flows, and cross-platform startup confidence.
-- Define explicit 1.0 release criteria for local play, analyzer workflow, onboarding, and documentation.
+- Complete native first-run testing on macOS, Linux, and Windows.
+- Finish the interface-consistency work in [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md).
+- Improve recovery and messages for missing, stopped, slow, or non-responsive Ollama states.
+- Validate release-bundle state locations and move them to platform user directories if needed before 1.0.
+- Complete install-level Apple Silicon Homebrew validation.
+- Continue testing malformed model output, timeouts, save/load compatibility, and analyzer edge cases.
+- Sign off the [1.0 release criteria](RELEASE_CRITERIA_1_0.md) and [first-run checklist](FIRST_RUN_RELEASE_CHECKLIST.md).
 
-### 1.0 Not in Scope
+### Not in scope for 1.0
 
-- Client-server migration.
-- Networked play.
-- Web clients.
-- Centralized prompt repository.
-- Centralized game repository.
+- client-server migration;
+- networked play;
+- web clients;
+- central prompt or game repositories; and
+- single-player or NPC modes.
 
+## 2.0: networked play architecture
 
-## 2.0 - Networked Play Architecture
+### Goals
 
-### 2.0 Goals
+- Move from a desktop-only process to a service-backed platform.
+- Support remote human-vs-human play without losing deterministic replay.
+- Make the game engine usable by desktop and web clients.
 
-- Move BatLLM from a desktop-only app to a client-server platform.
-- Support networked play without losing deterministic replay and session analysis.
-- Enable additional clients, starting with the web.
+### Planned sequence
 
-### 2.0 Planned Work
+1. Separate remaining game/session coordination from Kivy-bound UI code.
+2. Define a versioned server contract for game creation, prompt submission, turn execution, session storage, and replay retrieval.
+3. Preserve state-transition tests and schema compatibility during the split.
+4. Implement networked desktop play.
+5. Add a web client after the server and desktop behaviours agree.
+6. Consider shared prompt and game repositories only after authentication, moderation, provenance, and versioning are designed.
 
-- Extract core game execution, replay, and session logic from Kivy-bound UI code.
-- Preserve deterministic replay and schema versioning during the refactor.
-- Introduce server-side APIs for game creation, prompt submission, turn execution, session storage, and replay retrieval.
-- Implement networked clients for remote single-player or remote-hosted play.
-- Build a web client once desktop and server behavior are aligned.
-- Design centralized prompt and game repositories on top of the server platform.
-- Only ship shared repositories after authentication, moderation, versioning, and sync behavior are clearly defined.
-
-### 2.0 Release Ordering
-
-- Engine and service extraction comes before any new client work.
-- Networked play is the primary 2.0 deliverable.
-- Web access follows the server contract.
-- Shared repositories are optional 2.x work if they put 2.0 delivery at risk.
+The server contract comes before new clients. Shared repositories are optional later 2.x work, not a prerequisite for networked play.

@@ -1,45 +1,39 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [Status](../STATUS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
 # Changelog
 
 ## Unreleased
 
-- keeping release line on `0.x` pending maintainer validation; repository `VERSION` is now `0.3.6`
-- continue release hardening and checklist execution before any `1.0.0` tag decision
-- aligned supported-Python documentation and launcher enforcement around Python `>=3.10,<3.13`
-- refreshed alternate config profiles so model names, movement keys, warmup-timeout defaults, and system-instruction paths match the current schema
-- bumped repository `VERSION` to `0.3.6` for the next patch release
-- corrected stale maintained-documentation references to the current `0.3.6` repository version and `llm.warmup_timeout` default
+### Reliability and session integrity
 
-## Draft v1.0.0 Release Notes (not released)
+- isolated model conversation histories across manual and normal game restarts;
+- guarded asynchronous game lifecycle callbacks against retired games and turns;
+- exported only completed analyzer-valid turns from saved sessions;
+- strengthened nested session and replay-state validation, including bot identity consistency;
+- preserved rejected prompts and surfaced save failures without discarding user input; and
+- isolated tests from repository and user configuration through a temporary `BATLLM_HOME`.
 
-### Modelito 1.4.0 Integration
+### Research artefact
 
-- upgraded `modelito` dependency from `1.2.2` to `1.4.0`
-- implemented `ensure_model_ready_detailed()` for structured `ReadinessResult` objects instead of boolean polling
-- added configurable `warmup_timeout` parameter to `start_service()` orchestration (default 30.0s)
-- imported transport error handling types (`ErrorEnvelope`, `ResponseEnvelope`, `TransportPolicy`) from `modelito` for improved error normalization
-- updated Ollama config screen to use the new readiness result object for richer UI lifecycle feedback (phase, elapsed time, source details, error information)
-- updated service layer to pass `warmup_timeout` through to modelito's `start_service()` call
-- added a user-editable warmup-timeout control to the Ollama screen and CLI support for `python -m llm.service start --warmup-timeout ...`
-- added focused tests for detailed readiness success/failure handling and warmup-timeout config persistence
-- added saved `llm_metadata` snapshots to exported sessions and exposed that metadata in a new Game Analyzer inspector tab
+- added the schema-v3 headless research runtime and verifier;
+- added differential semantics, perturbation, serialization, and overhead experiments;
+- committed the implementation-owned URUCON reproducibility artefact; and
+- moved editable manuscript ownership to `krahd/academic-writing` while retaining software evidence here.
 
-### 1.0 Release Hardening
+### Dependencies and tooling
 
-- fixed `run_tests.py` path bootstrap so full mode works from repository root without ad-hoc environment setup
-- added unified packaging smoke validation with installer and Homebrew install-level smoke modes
-- tightened service stop behaviour so force-kill escalation only targets processes already terminated by BatLLM
-- regenerated API docs and aligned Doxygen metadata to the repository release version
-- verified full-suite test execution including live-Ollama gated smoke path
+- aligned the runtime on `modelito==1.4.5`, `ollama>=0.6.2`, `psutil==7.2.2`, `PyYAML==6.0.3`, and `requests>=2.34.2`;
+- restored the Python `3.10`–`3.12` multiplatform non-live CI matrix and maintained Pylint gate;
+- added focused dependency, packaging, mock-Ollama, and research workflows; and
+- retained repository version `0.3.6` while 1.0 release criteria remain unsigned.
 
-### Modelito 1.2.2 Direct Integration
+### Documentation and housekeeping
 
-- pinned BatLLM to `modelito==1.2.2`
-- moved gameplay requests to direct `modelito` usage in `src/game/ollama_connector.py`
-- switched the Ollama screen, configurator console, smoke helpers, and test CLI to direct `modelito` service and provider helpers
-- removed the remaining pre-release compatibility and stale backup files that kept obsolete non-gameplay HTTP paths alive
-- updated the then-current maintained docs and status report to describe the direct `modelito 1.2.2` architecture consistently
+- added a root project README and converted `docs/README.md` into a documentation index;
+- rewrote the User Guide, contributor guide, status report, release criteria, state reference, and maintainer checklists around current behaviour;
+- added automated documentation validation;
+- corrected stale release-bundle state, workflow, test-command, and URUCON CI descriptions; and
+- removed obsolete audit patches, overlay archives, duplicated implementation payloads, one-off PR helper files, and historical documentation-change reports.
 
 ## v0.3.3 - 2026-04-21
 
