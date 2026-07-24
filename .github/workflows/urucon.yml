@@ -90,7 +90,7 @@ jobs:
           retention-days: 7
 
   research-artifact:
-    name: Reproducibility artefact and Word paper
+    name: Reproducibility artefact
     runs-on: ubuntu-latest
     needs: tests
     env:
@@ -111,67 +111,40 @@ jobs:
           python -m pip install -r research/urucon2026/requirements.txt
       - name: Generate reference results
         run: python research/urucon2026/experiments/run_all.py
-      - name: Install Word-rendering dependencies
+      - name: Build research package
+        run: python research/urucon2026/build_artifact.py
+      - name: Validate manuscript separation
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends \
-            libreoffice-writer poppler-utils fonts-liberation
-      - name: Validate authoritative DOCX
-        run: |
-          set -euo pipefail
-          paper="research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx"
-          template="research/urucon2026/paper/conference-template-a4.docx"
-          test -s "$paper"
-          test -s "$template"
-          test -z "$(find research/urucon2026/paper -maxdepth 1 -type f \
-            \( -name '*.tex' -o -name '*.bib' -o -name '*.log' -o -name '*.pdf' \) -print -quit)"
           python - <<'PY'
           from pathlib import Path
           from zipfile import ZipFile
-          from docx import Document
 
-          paper = Path("research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx")
-          template = Path("research/urucon2026/paper/conference-template-a4.docx")
-          for path in (paper, template):
-              with ZipFile(path) as archive:
-                  assert archive.testzip() is None, path
-                  assert "word/document.xml" in archive.namelist(), path
+          research = Path("research/urucon2026")
+          paper_dir = research / "paper"
+          forbidden_suffixes = {".docx", ".pdf", ".tex", ".bib", ".log"}
+          local_forbidden = [
+              path for path in paper_dir.glob("*")
+              if path.is_file() and path.suffix.lower() in forbidden_suffixes
+          ]
+          assert not local_forbidden, local_forbidden
 
-          doc = Document(paper)
-          text = "\n".join(paragraph.text for paragraph in doc.paragraphs)
-          assert "From Prompt to State" in text
-          assert "Applications that let a large language model control software" in text
-          forbidden = (
-              "This electronic document is a ‘live’ template",
-              'This electronic document is a "live" template',
-              "Paper Title* (use style: paper title)",
-              "IEEE conference templates contain guidance text",
-          )
-          assert not any(fragment in text for fragment in forbidden)
-          assert len(doc.tables) == 2
-          assert len(doc.sections) >= 2
-          assert doc.core_properties.language == "en-GB"
+          pointer = paper_dir / "README.md"
+          assert pointer.is_file()
+          pointer_text = pointer.read_text(encoding="utf-8")
+          assert "krahd/academic-writing" in pointer_text
+          assert "787295f8259c2a9cefd592d9980b291cc9330393" in pointer_text
+
+          package = research / "artifact/BatLLM_URUCON_2026_Research_Artifact.zip"
+          with ZipFile(package) as archive:
+              names = set(archive.namelist())
+          assert "research/urucon2026/paper/README.md" in names
+          packaged_forbidden = [
+              name for name in names
+              if name.startswith("research/urucon2026/paper/")
+              and Path(name).suffix.lower() in forbidden_suffixes
+          ]
+          assert not packaged_forbidden, packaged_forbidden
           PY
-          rm -rf /tmp/urucon-paper /tmp/libreoffice-home
-          mkdir -p /tmp/urucon-paper /tmp/libreoffice-home
-          HOME=/tmp/libreoffice-home libreoffice --headless \
-            --convert-to pdf --outdir /tmp/urucon-paper "$paper"
-          rendered="/tmp/urucon-paper/BatLLM_URUCON_2026_Paper.pdf"
-          test -s "$rendered"
-          pages=$(pdfinfo "$rendered" | awk '/^Pages:/ {print $2}')
-          width=$(pdfinfo "$rendered" | awk '/^Page size:/ {print $3}')
-          height=$(pdfinfo "$rendered" | awk '/^Page size:/ {print $5}')
-          echo "Rendered page count: $pages"
-          test "$pages" -ge 3
-          test "$pages" -le 5
-          awk -v w="$width" 'BEGIN { exit !(w > 594 && w < 597) }'
-          awk -v h="$height" 'BEGIN { exit !(h > 840 && h < 843) }'
-          pdftotext "$rendered" /tmp/urucon-paper/paper.txt
-          grep -q "From Prompt to State" /tmp/urucon-paper/paper.txt
-          ! grep -q "Paper Title.*use style" /tmp/urucon-paper/paper.txt
-          pdfinfo "$rendered"
-      - name: Build research package
-        run: python research/urucon2026/build_artifact.py
       - name: Upload reproducibility artefact
         if: always()
         uses: actions/upload-artifact@v4
@@ -180,16 +153,13 @@ jobs:
           path: |
             research/urucon2026/results
             research/urucon2026/corpus/generated
-            research/urucon2026/paper/BatLLM_URUCON_2026_Paper.docx
-            research/urucon2026/paper/conference-template-a4.docx
             research/urucon2026/paper/README.md
             research/urucon2026/schema/batllm-session-v3.schema.json
             research/urucon2026/requirements.txt
             research/urucon2026/README.md
             research/urucon2026/CLAIMS.md
-            research/urucon2026/PAPER_REVIEW.md
-            research/urucon2026/PAPER_STYLE_AUDIT.md
             research/urucon2026/AUDIT.md
+            research/urucon2026/FINAL_AUDIT_STATUS.md
             research/urucon2026/artifact/MANIFEST.sha256
             research/urucon2026/artifact/PACKAGE.sha256
             research/urucon2026/artifact/BatLLM_URUCON_2026_Research_Artifact.zip
