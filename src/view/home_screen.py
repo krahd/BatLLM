@@ -9,6 +9,7 @@ from configs.app_config import config
 from kivy.uix.screenmanager import Screen
 import datetime
 import sys
+from pathlib import Path
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -331,7 +332,9 @@ class HomeScreen(Screen):
             bot_id (_type_): The bot id
         """
 
-        self.prompt_store_gui_set_text(bot_id, self.get_game_board().prompt_store.forward(bot_id))
+        new_prompt = self.get_game_board().prompt_store.forward(bot_id)
+        if new_prompt is not None:
+            self.prompt_store_gui_set_text(bot_id, new_prompt)
 
 
     def retrieve_prompt_history_selected_text(self, bot_id):
@@ -531,10 +534,15 @@ class HomeScreen(Screen):
         if not filename:
             return
 
+        filename = filename.strip()
+        if not filename or filename != Path(filename).name or Path(filename).is_absolute():
+            raise ValueError("Session filename must be a basename without directory components.")
         if not filename.lower().endswith(".json"):
             filename = f"{filename}.json"
 
         saved_sessions_folder = config.get("data", "saved_sessions_folder") or "saved_sessions"
         target_dir = resolve_saved_sessions_dir(saved_sessions_folder)
-        target_path = target_dir / filename
+        target_path = (target_dir / filename).resolve()
+        if target_path.parent != target_dir.resolve():
+            raise ValueError("Session filename escapes the saved-session directory.")
         self.ids.game_board.history_manager.save_session(target_path)

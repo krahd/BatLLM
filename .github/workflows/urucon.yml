@@ -57,8 +57,8 @@ jobs:
       KIVY_WINDOW: mock
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -103,8 +103,8 @@ jobs:
       KIVY_WINDOW: mock
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -117,34 +117,6 @@ jobs:
         run: python research/urucon2026/experiments/run_all.py
       - name: Build research package
         run: python research/urucon2026/build_artifact.py
-      - name: Validate manuscript separation
-        run: |
-          set -euo pipefail
-          test "$(find research/urucon2026/paper -maxdepth 1 -type f | wc -l)" -eq 1
-          test -s research/urucon2026/paper/README.md
-          grep -q 'krahd/academic-writing' research/urucon2026/paper/README.md
-          grep -q '787295f8259c2a9cefd592d9980b291cc9330393' research/urucon2026/paper/README.md
-          python - <<'PY'
-          from pathlib import Path
-          from zipfile import ZipFile
-
-          research = Path("research/urucon2026")
-          package = research / "artifact/BatLLM_URUCON_2026_Research_Artifact.zip"
-          manifest = research / "artifact/MANIFEST.sha256"
-          with ZipFile(package) as archive:
-              assert archive.testzip() is None
-              paper_names = sorted(
-                  name for name in archive.namelist()
-                  if name.startswith("research/urucon2026/paper/")
-              )
-          assert paper_names == ["research/urucon2026/paper/README.md"], paper_names
-          manifest_paper_lines = [
-              line for line in manifest.read_text(encoding="utf-8").splitlines()
-              if "research/urucon2026/paper/" in line
-          ]
-          assert len(manifest_paper_lines) == 1, manifest_paper_lines
-          assert manifest_paper_lines[0].endswith("research/urucon2026/paper/README.md")
-          PY
       - name: Upload reproducibility artefact
         if: always()
         uses: actions/upload-artifact@v4

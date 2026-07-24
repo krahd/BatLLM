@@ -648,7 +648,9 @@ class OllamaConfigScreen(Screen):
 
             self._set_status("Failed to start Ollama.")
             msg = combined or "Unknown startup error"
-            show_fading_alert("Start Ollama", msg, duration=2.5, fade_duration=1.0)
+            Clock.schedule_once(
+                lambda *_: show_fading_alert("Start Ollama", msg, duration=2.5, fade_duration=1.0), 0
+            )
 
             msg_lower = msg.lower()
             if (
@@ -675,8 +677,11 @@ class OllamaConfigScreen(Screen):
                 return
 
             self._set_status("Stop command returned non-zero exit.")
-            show_fading_alert("Stop Ollama", combined or "Unknown stop error",
-                              duration=2.0, fade_duration=1.0)
+            Clock.schedule_once(
+                lambda *_: show_fading_alert(
+                    "Stop Ollama", combined or "Unknown stop error", duration=2.0, fade_duration=1.0
+                ), 0
+            )
 
         self._run_in_thread(work)
 

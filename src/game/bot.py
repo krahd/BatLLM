@@ -28,7 +28,9 @@ from kivy.uix.widget import Widget
 
 from configs.app_config import config
 from game.bullet import Bullet
-from game.ollama_connector import LLMTimeoutError
+from game.ollama_connector import LLMRequestError, LLMTimeoutError
+from game.ollama_singleton import get_executor
+from kivy.clock import Clock
 from game.replay_engine import GameplaySettingsSnapshot, compute_move_target, parse_model_response
 from util.utils import markup
 
@@ -185,24 +187,26 @@ class Bot(Widget):
             distance if distance is not None else self.default_step,
         )
 
-        # cancel any in-flight move to avoid stacking
+        # Logical state must be committed synchronously. Animating x/y directly
+        # makes history snapshots and the next model request timing-dependent.
         Animation.cancel_all(self, 'x', 'y')
-        anim = Animation(x=nx, y=ny, duration=duration, t=easing)
+        self.x, self.y = nx, ny
         if on_complete:
-            anim.bind(on_complete=lambda *_: on_complete())
-        anim.start(self)
+            on_complete()
 
 
 
 
 
-    def move_instantaneously(self, step: float = default_step):
+    def move_instantaneously(self, step: float | None = None):
         """
         One step for a bot...
 
         Returns:
             None
         """
+        if step is None:
+            step = float(self.default_step)
         rad = math.radians(self.rot)
 
         self.x += (step) * cos(rad)
@@ -214,17 +218,11 @@ class Bot(Widget):
         """
         Smoothly rotate by delta_deg over 'duration' seconds.
         """
-        # cancel any in-flight rotation to avoid fighting animations TODO: test
-
+        # Rotation is gameplay state, so commit it before returning.
         Animation.cancel_all(self, 'rot')
-
-        target = (self.rot + angle)
-
-        anim = Animation(rot=target, duration=duration, t=easing)
+        self.rot = (self.rot + angle) % 360
         if on_complete:
-            anim.bind(on_complete=lambda *_: on_complete())
-            self.rot = self.rot % 360
-        anim.start(self)
+            on_complete()
 
 
     def rotate_instantaneously(self, angle: float):
@@ -312,18 +310,30 @@ class Bot(Widget):
 
 
     def submit_prompt_to_llm(self):
-        """Submits the prompt and sends the response for processing."""
+        """Submit inference off the Kivy thread and marshal completion through Clock."""
+        board = self.board_widget
+        token = board.current_callback_token()
+        future = get_executor().submit(
+            board.ollama_connector.send_prompt_to_llm_sync,
+            self.id,
+            game_state=self.get_game_state(),
+            user_text=self.get_current_prompt(),
+        )
 
-        try:
-            res = self.board_widget.ollama_connector.send_prompt_to_llm_sync(
-                self.id, game_state=self.get_game_state(),
-                user_text=self.get_current_prompt()
-            )
-        except LLMTimeoutError as exc:
-            self.board_widget.handle_bot_llm_timeout(self, exc)
-            return
+        def completed(done):
+            try:
+                result = done.result()
+            except LLMTimeoutError as exc:
+                Clock.schedule_once(lambda _dt, error=exc: board.handle_bot_llm_timeout(self, error, token=token))
+            except Exception as exc:
+                error = exc if isinstance(exc, LLMRequestError) else LLMRequestError(str(exc), exc)
+                Clock.schedule_once(lambda _dt, failure=error: board.handle_bot_llm_error(self, failure, token=token))
+            else:
+                Clock.schedule_once(
+                    lambda _dt: self.process_llm_response(result) if board.callback_token_is_current(token) else None
+                )
 
-        self.process_llm_response(res)
+        future.add_done_callback(completed)
 
 
 
@@ -358,11 +368,14 @@ class Bot(Widget):
         if parsed.valid:
             match parsed.kind:
                 case "move":
-                    self.move(parsed.value)
+                    rules = self.board_widget.current_round_settings or GameplaySettingsSnapshot.from_config()
+                    self.x, self.y = compute_move_target(
+                        {"x": self.x, "y": self.y, "rot": self.rot}, rules, parsed.value
+                    )
                 case "rotate_cw":
-                    self.rotate(parsed.value or 0.0)
+                    self.rotate_instantaneously(parsed.value or 0.0)
                 case "rotate_ccw":
-                    self.rotate(-(parsed.value or 0.0))
+                    self.rotate_instantaneously(-(parsed.value or 0.0))
                 case "shoot":
                     self.board_widget.shoot(self.id)
                 case "shield_toggle":

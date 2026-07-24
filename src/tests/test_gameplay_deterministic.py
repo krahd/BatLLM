@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+from concurrent.futures import Future
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -47,6 +48,18 @@ class _FakePopup:
             on_dismiss(self)
 
 
+class _ImmediateExecutor:
+    """Execute submitted work inline while preserving the Future interface."""
+
+    def submit(self, function, *args, **kwargs):
+        future = Future()
+        try:
+            future.set_result(function(*args, **kwargs))
+        except BaseException as exc:  # Future must preserve production exception delivery.
+            future.set_exception(exc)
+        return future
+
+
 def _instant_move(self, distance=None, duration: float = 0.48, easing: str = "out_quad", on_complete=None):
     step = self.default_step if distance is None else distance
     rad = math.radians(self.rot)
@@ -60,6 +73,14 @@ def _instant_rotate(self, angle: float, duration: float = 0.24, easing: str = "o
     self.rot = (self.rot + angle) % 360
     if on_complete:
         on_complete()
+
+
+def _complete_scheduled_turn(scheduled_once, *, finalize_round: bool = False) -> None:
+    """Run the turn callback and both UI-thread inference completions."""
+    for _ in range(3):
+        scheduled_once.pop(0)(0)
+    if finalize_round:
+        scheduled_once.pop(0)(0)
 
 
 def _build_board(monkeypatch, overrides: dict[tuple[str, str], object] | None = None):
@@ -89,6 +110,7 @@ def _build_board(monkeypatch, overrides: dict[tuple[str, str], object] | None = 
         lambda callback, *_args, **_kwargs: scheduled_once.append(callback),
     )
     monkeypatch.setattr("game.game_board.show_fading_alert", lambda *args, **kwargs: None)
+    monkeypatch.setattr("game.bot.get_executor", lambda: _ImmediateExecutor())
     monkeypatch.setattr(Bot, "move", _instant_move)
     monkeypatch.setattr(Bot, "rotate", _instant_rotate)
 
@@ -343,7 +365,7 @@ def test_play_turn_records_valid_and_invalid_commands(monkeypatch) -> None:
 
     board.submit_prompt_to_bot(1, "Reply with exactly M")
     board.submit_prompt_to_bot(2, "Reply with invalid text")
-    scheduled_once.pop(0)(0)
+    _complete_scheduled_turn(scheduled_once)
 
     assert board.current_turn == 1
     plays = board.history_manager.current_round["turns"][0]["plays"]
@@ -402,8 +424,7 @@ def test_play_turn_timeout_can_resolve_as_err(monkeypatch) -> None:
     board.submit_prompt_to_bot(2, "Reply with exactly M")
     board._round_timeout_action = "err"
 
-    scheduled_once.pop(0)(0)
-    scheduled_once.pop(0)(0)
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
 
     round_entry = board.history_manager.games[0]["rounds"][0]
     plays = round_entry["turns"][0]["plays"]
@@ -449,7 +470,7 @@ def test_play_turn_timeout_can_cancel_round_and_roll_back_state(monkeypatch) -> 
     board.submit_prompt_to_bot(2, "Reply slowly")
     board._round_timeout_action = "cancel"
 
-    scheduled_once.pop(0)(0)
+    _complete_scheduled_turn(scheduled_once)
 
     round_entry = board.history_manager.games[0]["rounds"][0]
     cancelled_turn = round_entry["turns"][0]
@@ -559,8 +580,7 @@ def test_round_completion_and_session_save(monkeypatch, tmp_path: Path) -> None:
     board.submit_prompt_to_bot(1, "Reply with exactly S1")
     board.submit_prompt_to_bot(2, "Reply with exactly S0")
 
-    scheduled_once.pop(0)(0)
-    scheduled_once.pop(0)(0)
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
 
     assert board.games_started == 2
     assert board.current_round == 0
@@ -594,8 +614,7 @@ def test_round_end_history_spacing_separates_next_round(monkeypatch) -> None:
     board.submit_prompt_to_bot(1, "Reply with exactly S0")
     board.submit_prompt_to_bot(2, "Reply with exactly S0")
 
-    scheduled_once.pop(0)(0)
-    scheduled_once.pop(0)(0)
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
 
     board.submit_prompt_to_bot(1, "Reply with exactly S0")
     board.submit_prompt_to_bot(2, "Reply with exactly S0")
@@ -622,8 +641,7 @@ def test_history_manager_exports_roundtrip_and_views(monkeypatch, tmp_path: Path
 
     board.submit_prompt_to_bot(1, "Reply with exactly M")
     board.submit_prompt_to_bot(2, "Reply with exactly B")
-    scheduled_once.pop(0)(0)
-    board.history_manager.end_round()
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
 
     history = board.history_manager.get_chat_history(shared=True)
     history_by_bot = {entry["bot_id"]: entry for entry in history}
@@ -665,8 +683,7 @@ def test_home_screen_save_session_file_uses_configured_folder(monkeypatch, tmp_p
     )
     board.submit_prompt_to_bot(1, "Reply with exactly S1")
     board.submit_prompt_to_bot(2, "Reply with exactly S0")
-    scheduled_once.pop(0)(0)
-    board.history_manager.end_round()
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
 
     screen = HomeScreen()
     screen.ids = {"game_board": board}
@@ -718,8 +735,7 @@ def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:
     assert board.current_round_settings.bullet_diameter == pytest.approx(0.02)
     assert board.current_round_settings.shield_size == 70
 
-    scheduled_once.pop(0)(0)
-    scheduled_once.pop(0)(0)
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
 
     board.submit_prompt_to_bot(1, "Reply with exactly S0")
     board.submit_prompt_to_bot(2, "Reply with exactly S0")
