@@ -305,6 +305,22 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
         report.elapsed_ms = (perf_counter() - started) * 1000.0
         return report
 
+    for game_index, game in enumerate(payload.get("games", []), start=1):
+        for round_index, round_entry in enumerate(game.get("rounds", []), start=1):
+            try:
+                GameplaySettingsSnapshot.from_mapping(
+                    round_entry.get("gameplay_settings_snapshot")
+                )
+            except (ArithmeticError, TypeError, ValueError) as exc:
+                report.add_issue(
+                    "R1",
+                    f"game[{game_index}].round[{round_index}]",
+                    "invalid-gameplay-settings",
+                    str(exc),
+                )
+                report.elapsed_ms = (perf_counter() - started) * 1000.0
+                return report
+
     try:
         canonical_json(payload)
     except (TypeError, ValueError) as exc:
@@ -344,7 +360,7 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
                 rules = GameplaySettingsSnapshot.from_mapping(
                     round_entry.get("gameplay_settings_snapshot")
                 )
-            except (TypeError, ValueError) as exc:
+            except (ArithmeticError, TypeError, ValueError) as exc:
                 report.add_issue(
                     "R1",
                     round_location,

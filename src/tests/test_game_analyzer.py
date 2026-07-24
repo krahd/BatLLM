@@ -9,6 +9,8 @@ from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from analyzer_model import AnalyzerSessionModel
 from game.session_schema import (
     SessionFormatError,
@@ -137,6 +139,14 @@ def test_validate_session_payload_rejects_legacy_list() -> None:
         assert "legacy BatLLM format" in str(exc)
     else:
         raise AssertionError("Legacy list payload should be rejected")
+
+
+def test_v2_validation_rejects_non_mapping_nested_bot_state() -> None:
+    payload = _sample_payload()
+    payload["games"][0]["rounds"][0]["turns"][0]["pre_state"]["1"] = "invalid"
+
+    with pytest.raises(SessionFormatError, match="must be a mapping"):
+        validate_session_payload(payload)
 
 
 def test_load_session_payload_reports_invalid_json(tmp_path: Path) -> None:

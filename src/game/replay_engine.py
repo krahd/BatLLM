@@ -22,6 +22,62 @@ GAMEPLAY_SNAPSHOT_KEYS = (
     "total_rounds",
 )
 
+BOT_STATE_KEYS = ("health", "x", "y", "rot", "shield")
+
+
+def validate_state_map(
+    state_map: Any, label: str = "state", *, require_id: bool = False
+) -> None:
+    """Reject state maps that replay cannot safely and meaningfully consume."""
+    if not isinstance(state_map, Mapping) or not state_map:
+        raise ValueError(f"{label} must be a non-empty mapping.")
+    for key, value in state_map.items():
+        if not isinstance(value, Mapping):
+            raise ValueError(f"{label} bot {key!r} must be a mapping.")
+        required = (*BOT_STATE_KEYS, "id") if require_id else BOT_STATE_KEYS
+        missing = [field for field in required if field not in value]
+        if missing:
+            raise ValueError(
+                f"{label} bot {key!r} is missing: {', '.join(missing)}."
+            )
+        if require_id and (
+            isinstance(value["id"], bool) or not isinstance(value["id"], int)
+        ):
+            raise ValueError(f"{label} bot {key!r} has an invalid id type.")
+        if isinstance(value["health"], bool) or not isinstance(value["health"], int):
+            raise ValueError(f"{label} bot {key!r} field 'health' must be an integer.")
+        for state_field in ("x", "y", "rot"):
+            if isinstance(value[state_field], bool) or not isinstance(
+                value[state_field], (int, float)
+            ):
+                raise ValueError(
+                    f"{label} bot {key!r} field {state_field!r} must be numeric."
+                )
+        try:
+            bot_id = int(value.get("id", key))
+            health = int(value["health"])
+            x = float(value["x"])
+            y = float(value["y"])
+            rotation = float(value["rot"])
+        except (OverflowError, TypeError, ValueError) as exc:
+            raise ValueError(f"{label} bot {key!r} has invalid numeric fields.") from exc
+        if bot_id <= 0 or health < 0:
+            raise ValueError(f"{label} bot {key!r} has an invalid id or health.")
+        if not all(math.isfinite(item) for item in (x, y, rotation)):
+            raise ValueError(f"{label} bot {key!r} has non-finite coordinates.")
+        if not 0 <= x <= 1 or not 0 <= y <= 1:
+            raise ValueError(f"{label} bot {key!r} is outside the game board.")
+        if not isinstance(value["shield"], bool) and value["shield"] not in (0, 1):
+            raise ValueError(f"{label} bot {key!r} has an invalid shield value.")
+        if "current_prompt" in value and not isinstance(value["current_prompt"], str):
+            raise ValueError(f"{label} bot {key!r} has an invalid current_prompt.")
+        if (
+            "last_llm_response" in value
+            and value["last_llm_response"] is not None
+            and not isinstance(value["last_llm_response"], str)
+        ):
+            raise ValueError(f"{label} bot {key!r} has an invalid last_llm_response.")
+
 
 def _to_float(value: Any, fallback: float = 0.0) -> float:
     try:
@@ -173,6 +229,7 @@ def normalize_state_map(state_map: Mapping[Any, Mapping[str, Any]] | None) -> di
     if not state_map:
         return normalized
 
+    validate_state_map(state_map)
     for key, value in state_map.items():
         bot_state = value or {}
         bot_id = _to_int(bot_state.get("id", key), _to_int(key))

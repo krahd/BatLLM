@@ -1,10 +1,23 @@
 # BatLLM Status
 
-Last updated: 2026-07-24 05:30
+Last updated: 2026-07-24 15:39
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
 The project should remain practical, critical, and educational. Destructive or expensive local-model actions must stay explicit because BatLLM can start and stop a real Ollama service, download or delete models, and save user-created sessions.
+
+## 2026-07-24: Post-PR #41 Audit Remediation
+
+- Every new game now receives a fresh `OllamaConnector`; an obsolete request on a retired executor can finish only against its retired connector history and cannot contaminate the replacement game's context.
+- Saved-session export filters every incomplete round and game, validates the resulting v2 payload before writing, and rejects saves with no completed turn. Nested bot-state maps and replay settings are validated deeply in both v2 and v3 paths, including non-finite and overflowing values.
+- Rejected prompt submissions preserve the editor contents and show an active-round warning. Expected filename, validation, serialisation, directory, permission, and disk errors during session save are reported without invoking save-on-exit completion.
+- The test process establishes an isolated `BATLLM_HOME` before importing the global configuration singleton, so collection and test defaults no longer depend on user or tracked mutable configuration.
+- Pylint's global `no-member` suppression was removed. Narrow suppressions document Kivy/KV-generated members, and five real model-management member errors exposed by the stricter gate were corrected.
+- Debug keyboard controls are disabled unless `BATLLM_DEBUG_SHORTCUTS=1`; the direct `q` exit bypass was removed and the debug LLM submission path now addresses bot IDs 1 and 2.
+- CI retains the 3 operating-system × 3 Python-version non-live matrix as the canonical compatibility suite. Multiplatform validation now focuses on bundles, Homebrew, and mock Ollama, while URUCON runs its focused contract tests and research pipeline once on Python 3.12.
+- Regression validation under Python 3.12.13: 185 tests passed and 2 live-Ollama tests were skipped. Focused gameplay/analyzer/research tests passed (60 tests); full Pylint passed at 8.90/10 and targeted `no-member` lint passed at 10.00/10; compile and `git diff --check` checks passed.
+- The full research pipeline passed with 60/60 valid sessions, 1,080/1,080 equivalent replays, 5,000/5,000 differential cases, all 1,560 applicable re-anchored faults detected, and all 180 benign serialisation variants accepted.
+- Interactive GUI, live Ollama, native Linux/Windows, Homebrew install-level validation, and the updated hosted workflows remain external validation gaps.
 
 ## 2026-07-24: Repository-Wide Audit And Branch Reconciliation
 
@@ -411,4 +424,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-07-24 05:30
+Last updated: 2026-07-24 15:39

@@ -1,3 +1,7 @@
+"""Dialog for loading prompt text from a file."""
+# Kivy injects event binding methods dynamically.
+# pylint: disable=no-member
+
 import os
 
 from kivy.clock import Clock

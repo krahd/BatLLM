@@ -1,3 +1,7 @@
+"""Application settings screen."""
+# Kivy's ids proxy is populated from KV at runtime.
+# pylint: disable=no-member
+
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 from kivy.properties import NumericProperty, BooleanProperty
