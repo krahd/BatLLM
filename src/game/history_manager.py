@@ -6,7 +6,7 @@ from datetime import datetime
 from kivy.utils import escape_markup
 
 from game.replay_engine import GameplaySettingsSnapshot
-from game.session_schema import build_session_payload
+from game.session_schema import build_session_payload, validate_session_payload
 from configs.app_config import config
 from game.bot import Bot
 import codecs
@@ -487,15 +487,28 @@ class HistoryManager:
         Save the entire session history to a JSON file.
         This will include all games played in this session.
         """
-        export_games = list(self.games)
-        while len(export_games) > 1 and not export_games[-1].get("rounds"):
-            export_games.pop()
+        export_games = []
+        for game in self.games:
+            completed_rounds = [
+                round_entry
+                for round_entry in game.get("rounds", [])
+                if isinstance(round_entry, dict) and round_entry.get("turns")
+            ]
+            if completed_rounds:
+                export_game = dict(game)
+                export_game["rounds"] = completed_rounds
+                export_games.append(export_game)
+        if not export_games:
+            raise ValueError(
+                "There is no completed turn to save. Play at least one turn first."
+            )
         payload = build_session_payload(
             games=export_games,
             app_version=current_app_version(),
             saved_at=self._now_iso(),
             llm_metadata=ollama_service.build_saved_llm_metadata_snapshot(),
         )
+        validate_session_payload(payload)
         destination = os.fspath(filepath)
         directory = os.path.dirname(os.path.abspath(destination))
         os.makedirs(directory, exist_ok=True)

@@ -478,9 +478,9 @@ def test_show_model_picker_uses_touching_rows_with_white_text(monkeypatch) -> No
 
     popup = screen._model_picker_popup
     assert popup is not None
-    assert popup.auto_dismiss is True
+    assert popup.auto_dismiss is True  # pylint: disable=no-member
 
-    layout = popup.content
+    layout = popup.content  # pylint: disable=no-member
     scroll = next(child for child in layout.children if isinstance(
         child, FakeContainer) and hasattr(child, "do_scroll_x"))
     items = scroll.children[0]

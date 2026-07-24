@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from game.replay_engine import GameplaySettingsSnapshot, validate_state_map
 
 SESSION_SCHEMA_VERSION = 2
 SESSION_TYPE = "batllm_saved_session"
@@ -73,6 +74,17 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
                 isinstance(round_entry.get("initial_state"), dict),
                 f"Game {game_index} round {round_index} is missing initial_state.",
             )
+            try:
+                GameplaySettingsSnapshot.from_mapping(
+                    round_entry["gameplay_settings_snapshot"]
+                )
+                validate_state_map(
+                    round_entry["initial_state"],
+                    f"Game {game_index} round {round_index} initial_state",
+                    require_id=True,
+                )
+            except (OverflowError, TypeError, ValueError) as exc:
+                raise SessionFormatError(str(exc)) from exc
             turns = round_entry.get("turns")
             _ensure(isinstance(turns, list) and bool(turns),
                     f"Game {game_index} round {round_index} must contain at least one turn.")
@@ -83,6 +95,19 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
                 _ensure(isinstance(turn.get("post_state"), dict),
                         f"Turn {turn_index} missing post_state.")
                 _ensure(isinstance(turn.get("plays"), list), f"Turn {turn_index} missing plays.")
+                try:
+                    validate_state_map(
+                        turn["pre_state"],
+                        f"Game {game_index} round {round_index} turn {turn_index} pre_state",
+                        require_id=True,
+                    )
+                    validate_state_map(
+                        turn["post_state"],
+                        f"Game {game_index} round {round_index} turn {turn_index} post_state",
+                        require_id=True,
+                    )
+                except (OverflowError, TypeError, ValueError) as exc:
+                    raise SessionFormatError(str(exc)) from exc
 
     return payload
 

@@ -184,6 +184,28 @@ def test_verifier_reports_invalid_gameplay_settings() -> None:
     assert "invalid-gameplay-settings" in {issue.code for issue in report.issues}
 
 
+def test_verifier_reports_infinite_integer_gameplay_setting() -> None:
+    corrupted = deepcopy(build())
+    corrupted["games"][0]["rounds"][0]["gameplay_settings_snapshot"][
+        "turns_per_round"
+    ] = float("inf")
+
+    report = verify_payload(corrupted)
+
+    assert not report.valid
+    assert "invalid-gameplay-settings" in {issue.code for issue in report.issues}
+
+
+def test_v3_validation_rejects_non_mapping_nested_bot_state() -> None:
+    corrupted = deepcopy(build())
+    corrupted["games"][0]["rounds"][0]["plays"][0]["pre_state"][1] = "invalid"
+
+    report = verify_payload(corrupted)
+
+    assert not report.valid
+    assert not report.schema_valid
+
+
 def test_full_request_history_is_independently_reconstructed() -> None:
     corrupted = deepcopy(build())
     play = corrupted["games"][0]["rounds"][0]["plays"][1]

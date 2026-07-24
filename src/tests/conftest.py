@@ -1,9 +1,16 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import os
+from pathlib import Path
+import tempfile
 from types import SimpleNamespace
 
 import pytest
+
+# Configuration is loaded during test-module imports, before fixtures run.
+_TEST_HOME = Path(tempfile.mkdtemp(prefix="batllm-pytest-"))
+os.environ["BATLLM_HOME"] = str(_TEST_HOME)
 
 from configs.app_config import config
 

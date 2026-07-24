@@ -1,4 +1,13 @@
-from util.utils import show_confirmation_dialog, show_text_input_dialog, switch_screen
+"""Primary gameplay screen."""
+# Kivy's ids proxy and event binding are populated from KV at runtime.
+# pylint: disable=no-member
+
+from util.utils import (
+    show_confirmation_dialog,
+    show_fading_alert,
+    show_text_input_dialog,
+    switch_screen,
+)
 from view.save_dialog import SaveDialog
 from view.load_text_dialog import LoadTextDialog
 from util.paths import prompt_asset_dir, resolve_saved_sessions_dir
@@ -367,12 +376,18 @@ class HomeScreen(Screen):
         new_prompt = self.get_prompt_gui_input_text(bot_id)
 
         if len(new_prompt) > 0:  # ignore empty prompts
-            self.set_prompt_gui_input_text(bot_id, "")  # Clear the editing field
-            self.set_prompt_history_text(bot_id, new_prompt)
-
             # Route prompt registration through the board so the store is updated once.
             gbw = self.ids.game_board
-            gbw.submit_prompt_to_bot(bot_id, new_prompt)
+            if gbw.submit_prompt_to_bot(bot_id, new_prompt) is False:
+                show_fading_alert(
+                    "Round in progress",
+                    "Finish or cancel the active round before submitting a new prompt.",
+                )
+                return False
+            self.set_prompt_gui_input_text(bot_id, "")
+            self.set_prompt_history_text(bot_id, new_prompt)
+            return True
+        return False
 
 
 
@@ -537,30 +552,46 @@ class HomeScreen(Screen):
         on_saved=None,
     ) -> bool:
         """Persist the current session into the configured save folder."""
-        if not filename:
-            return False
+        try:
+            if not filename:
+                return False
 
-        filename = filename.strip()
-        if not filename or filename != Path(filename).name or Path(filename).is_absolute():
-            raise ValueError("Session filename must be a basename without directory components.")
-        if not filename.lower().endswith(".json"):
-            filename = f"{filename}.json"
+            filename = filename.strip()
+            if (
+                not filename
+                or filename != Path(filename).name
+                or Path(filename).is_absolute()
+            ):
+                raise ValueError(
+                    "Session filename must be a basename without directory components."
+                )
+            if not filename.lower().endswith(".json"):
+                filename = f"{filename}.json"
 
-        saved_sessions_folder = config.get("data", "saved_sessions_folder") or "saved_sessions"
-        target_dir = resolve_saved_sessions_dir(saved_sessions_folder)
-        target_path = (target_dir / filename).resolve()
-        if target_path.parent != target_dir.resolve():
-            raise ValueError("Session filename escapes the saved-session directory.")
-        if target_path.exists() and not overwrite:
-            self._show_confirmation_popup(
-                "Replace Session",
-                f"{filename} already exists. Replace it?",
-                lambda: self._save_session_file(
-                    filename, overwrite=True, on_saved=on_saved
-                ),
+            saved_sessions_folder = (
+                config.get("data", "saved_sessions_folder") or "saved_sessions"
+            )
+            target_dir = resolve_saved_sessions_dir(saved_sessions_folder)
+            target_path = (target_dir / filename).resolve()
+            if target_path.parent != target_dir.resolve():
+                raise ValueError("Session filename escapes the saved-session directory.")
+            if target_path.exists() and not overwrite:
+                self._show_confirmation_popup(
+                    "Replace Session",
+                    f"{filename} already exists. Replace it?",
+                    lambda: self._save_session_file(
+                        filename, overwrite=True, on_saved=on_saved
+                    ),
+                )
+                return False
+            self.ids.game_board.history_manager.save_session(target_path)
+        except (OSError, TypeError, ValueError) as exc:
+            show_fading_alert(
+                "Session not saved",
+                f"{exc}\n\nCheck the filename and save-folder permissions, then try again.",
+                duration=3.0,
             )
             return False
-        self.ids.game_board.history_manager.save_session(target_path)
         if callable(on_saved):
             on_saved()
         return True

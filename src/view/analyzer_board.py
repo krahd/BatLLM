@@ -1,4 +1,6 @@
 """Read-only board renderer used by the Game Analyzer."""
+# Kivy injects Widget.bind dynamically.
+# pylint: disable=no-member
 
 from __future__ import annotations
 

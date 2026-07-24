@@ -22,6 +22,7 @@ from game.trace_contract import (
     sha256_json,
     utc_now_iso,
 )
+from game.replay_engine import validate_state_map
 
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -177,6 +178,12 @@ def validate_session_v3(payload: Any) -> dict[str, Any]:
     for game_index, game in enumerate(games, start=1):
         _require(isinstance(game, dict), f"Game {game_index} must be an object.")
         _require(isinstance(game.get("final_state"), dict), f"Game {game_index} lacks final_state.")
+        try:
+            validate_state_map(
+                game["final_state"], f"Game {game_index} final_state", require_id=True
+            )
+        except (OverflowError, TypeError, ValueError) as exc:
+            raise SessionV3Error(str(exc)) from exc
         _require(
             isinstance(game.get("rounds"), list) and bool(game["rounds"]),
             f"Game {game_index} needs at least one round.",
@@ -193,6 +200,15 @@ def validate_session_v3(payload: Any) -> dict[str, Any]:
                 f"{prefix} lacks initial_state.",
             )
             _require(isinstance(round_entry.get("final_state"), dict), f"{prefix} lacks final_state.")
+            for state_name in ("initial_state", "final_state"):
+                try:
+                    validate_state_map(
+                        round_entry[state_name],
+                        f"{prefix} {state_name}",
+                        require_id=True,
+                    )
+                except (OverflowError, TypeError, ValueError) as exc:
+                    raise SessionV3Error(str(exc)) from exc
             _require(
                 isinstance(round_entry.get("plays"), list) and bool(round_entry["plays"]),
                 f"{prefix} needs at least one play.",
@@ -236,6 +252,15 @@ def validate_session_v3(payload: Any) -> dict[str, Any]:
                         isinstance(play.get(key), expected_type),
                         f"{play_prefix}: {key} has an invalid type.",
                     )
+                for state_name in ("pre_state", "post_state"):
+                    try:
+                        validate_state_map(
+                            play[state_name],
+                            f"{play_prefix} {state_name}",
+                            require_id=True,
+                        )
+                    except (OverflowError, TypeError, ValueError) as exc:
+                        raise SessionV3Error(str(exc)) from exc
                 _require(play["sequence"] > 0, f"{play_prefix}: sequence must be positive.")
                 _require(play["bot_id"] > 0, f"{play_prefix}: bot_id must be positive.")
                 _require(play["attempts"] > 0, f"{play_prefix}: attempts must be positive.")

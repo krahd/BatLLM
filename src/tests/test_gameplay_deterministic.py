@@ -154,6 +154,27 @@ def test_home_screen_submit_prompt_being_edited_adds_prompt_once() -> None:
     assert screen.ids["prompt_store_viewer_1"].text == "Reply with exactly M"
 
 
+def test_home_screen_preserves_prompt_rejected_during_active_round(monkeypatch) -> None:
+    screen = HomeScreen()
+    alerts = []
+    screen.ids = {
+        "prompt_input_1": SimpleNamespace(text="Keep this prompt"),
+        "prompt_store_viewer_1": SimpleNamespace(text="Previous prompt"),
+        "game_board": SimpleNamespace(
+            submit_prompt_to_bot=lambda _bot_id, _prompt: False
+        ),
+    }
+    monkeypatch.setattr(
+        "view.home_screen.show_fading_alert",
+        lambda title, message, **_kwargs: alerts.append((title, message)),
+    )
+
+    assert screen.submit_prompt_being_edited(1) is False
+    assert screen.ids["prompt_input_1"].text == "Keep this prompt"
+    assert screen.ids["prompt_store_viewer_1"].text == "Previous prompt"
+    assert alerts[0][0] == "Round in progress"
+
+
 def test_ollama_connector_ensure_system_message_inserts_header_once(monkeypatch) -> None:
     monkeypatch.setattr("game.ollama_connector.Client", lambda *args, **kwargs: object())
     connector = OllamaConnector()
@@ -698,6 +719,21 @@ def test_manual_new_game_finalises_old_bots_before_replacement(monkeypatch) -> N
     assert board.bots != old_bots
 
 
+def test_new_game_replaces_connector_history_generation(monkeypatch) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    retired_connector = board.ollama_connector
+    retired_connector._history_shared = [{"role": "user", "content": "old game"}]
+
+    board.start_new_game()
+
+    assert board.ollama_connector is not retired_connector
+    assert board.ollama_connector._history_shared == []
+    retired_connector._history_shared.append(
+        {"role": "assistant", "content": "late"}
+    )
+    assert board.ollama_connector._history_shared == []
+
+
 def test_active_round_rejects_new_prompt_submissions(monkeypatch) -> None:
     board, scheduled_once, _history_log = _build_board(monkeypatch)
     board.submit_prompt_to_bot(1, "first")
@@ -760,7 +796,17 @@ def test_home_screen_save_session_file_uses_configured_folder(monkeypatch, tmp_p
 
 
 def test_home_screen_requires_confirmation_before_overwrite(monkeypatch, tmp_path: Path) -> None:
-    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+    board, scheduled_once, _history_log = _build_board(
+        monkeypatch, overrides={("game", "turns_per_round"): 1}
+    )
+    monkeypatch.setattr(
+        board.ollama_connector,
+        "send_prompt_to_llm_sync",
+        lambda bot_id, **_kwargs: "S1" if bot_id == 1 else "S0",
+    )
+    board.submit_prompt_to_bot(1, "one")
+    board.submit_prompt_to_bot(2, "two")
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
     screen = HomeScreen()
     screen.ids = {"game_board": board}
     original_get = config.get
@@ -786,6 +832,83 @@ def test_home_screen_requires_confirmation_before_overwrite(monkeypatch, tmp_pat
 
     prompts[0][2]()
     assert target.read_text(encoding="utf-8") != "original"
+
+
+def test_session_export_filters_all_incomplete_games_and_rounds(
+    monkeypatch, tmp_path: Path
+) -> None:
+    board, scheduled_once, _history_log = _build_board(
+        monkeypatch, overrides={("game", "turns_per_round"): 1}
+    )
+    manager = board.history_manager
+    manager.start_round(board)
+    board.start_new_game()
+    monkeypatch.setattr(
+        board.ollama_connector,
+        "send_prompt_to_llm_sync",
+        lambda _bot_id, **_kwargs: "S0",
+    )
+    board.submit_prompt_to_bot(1, "one")
+    board.submit_prompt_to_bot(2, "two")
+    _complete_scheduled_turn(scheduled_once, finalize_round=True)
+    manager.start_round(board)
+
+    target = tmp_path / "sanitised.json"
+    manager.save_session(target)
+    payload = json.loads(target.read_text(encoding="utf-8"))
+
+    assert len(payload["games"]) == 1
+    assert len(payload["games"][0]["rounds"]) == 1
+    assert payload["games"][0]["rounds"][0]["turns"]
+
+
+def test_session_export_rejects_session_without_completed_turn(
+    monkeypatch, tmp_path: Path
+) -> None:
+    board, _scheduled_once, _history_log = _build_board(monkeypatch)
+
+    with pytest.raises(ValueError, match="no completed turn"):
+        board.history_manager.save_session(tmp_path / "empty.json")
+
+    assert not (tmp_path / "empty.json").exists()
+
+
+def test_home_screen_save_failure_is_reported_and_does_not_exit(
+    monkeypatch, tmp_path: Path
+) -> None:
+    screen = HomeScreen()
+    saved_callbacks = []
+    alerts = []
+
+    def fail_save(_path):
+        raise PermissionError("read-only folder")
+
+    screen.ids = {
+        "game_board": SimpleNamespace(
+            history_manager=SimpleNamespace(save_session=fail_save)
+        )
+    }
+    original_get = config.get
+    monkeypatch.setattr(
+        config,
+        "get",
+        lambda section, key: str(tmp_path)
+        if (section, key) == ("data", "saved_sessions_folder")
+        else original_get(section, key),
+    )
+    monkeypatch.setattr(
+        "view.home_screen.show_fading_alert",
+        lambda title, message, **_kwargs: alerts.append((title, message)),
+    )
+
+    assert (
+        screen._save_session_file(
+            "failed", on_saved=lambda: saved_callbacks.append(True)
+        )
+        is False
+    )
+    assert saved_callbacks == []
+    assert alerts[0][0] == "Session not saved"
 
 
 def test_round_settings_snapshot_is_frozen_per_round(monkeypatch) -> None:

@@ -21,12 +21,13 @@ Key features:
 The GameBoard drives the game loop and delegates state recording to the
 HistoryManager. UI updates are handled through a small set of helper methods.
 """
+# Kivy injects Widget.bind dynamically.
+# pylint: disable=no-member
 
 from __future__ import annotations
 
 import os
 import random
-import sys
 from typing import Optional, Tuple
 
 from kivy.clock import Clock
@@ -136,11 +137,17 @@ class GameBoard(Widget):
         Starts a new game by resetting game state and initializing bots.
         Notifies the history manager to start tracking the new game.
         """
-        if self.history_manager.current_game is not None:
+        replacing_game = self.history_manager.current_game is not None
+        if replacing_game:
             self.history_manager.end_game(self)
 
         self._game_generation += 1
         reset_executor()
+        # An already-running request can outlive its retired executor. Give the
+        # replacement game a distinct connector so that obsolete work can only
+        # mutate its own message history.
+        if replacing_game:
+            self.ollama_connector = OllamaConnector()
         self.current_turn = 0
         self.current_round = 0
         self.shuffled_bots = None
@@ -238,6 +245,12 @@ class GameBoard(Widget):
         """
         Keyboard handler for the game board. For debug and testing purposes.
         """
+        if os.environ.get("BATLLM_DEBUG_SHORTCUTS") != "1":
+            if keycode[1] == "escape":
+                keyboard.release()
+                return True
+            return False
+
         # Shift selects bot 2, otherwise bot 1
         bot_id = 2 if (modifiers and "shift" in modifiers) else 1
         bot = self.get_bot_by_id(bot_id)
@@ -263,11 +276,9 @@ class GameBoard(Widget):
                 bot.toggle_shield()
             case "b":
                 self.shoot(bot.id)
-            case "q":
-                sys.exit(0)
             case "l":
                 # Example submission for testing
-                for i in range(2):
+                for i in (1, 2):
                     self.submit_prompt_being_edited(
                         i,
                         (

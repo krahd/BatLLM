@@ -379,11 +379,15 @@ class OllamaConfigScreen(Screen):
         config.save()
 
     def _list_local_models_via_modelito(self) -> list[str]:
-        return [name for name in ollama_service.list_local_models() if str(name).strip()]
+        return [
+            name
+            for name in modelito_ollama_service.list_local_models()
+            if str(name).strip()
+        ]
 
     def _list_remote_model_catalog_via_modelito(self) -> list[dict[str, str]]:
         entries = []
-        for entry in ollama_service.list_remote_model_catalog():
+        for entry in modelito_ollama_service.list_remote_model_catalog():
             display = entry.name
             if entry.installed:
                 display = f"{display} (installed)"
@@ -423,7 +427,7 @@ class OllamaConfigScreen(Screen):
             self._llm_timeout_config(model_name),
             model=model_name,
         )
-        result = ollama_service.ensure_model_ready_detailed(
+        result = modelito_ollama_service.ensure_model_ready_detailed(
             model_name,
             host=base_url,
             port=port,
@@ -440,7 +444,9 @@ class OllamaConfigScreen(Screen):
         return {"ready": True}
 
     def _pull_model_via_modelito(self, model_name: str):
-        for state in ollama_service.download_model_progress(model_name, timeout=600.0):
+        for state in modelito_ollama_service.download_model_progress(
+            model_name, timeout=600.0
+        ):
             status = state.message or state.phase or "working"
             self._set_status(f"Pull {model_name}: {status}")
             self._append_log(
@@ -448,7 +454,7 @@ class OllamaConfigScreen(Screen):
             )
 
     def _delete_model_via_modelito(self, model_name: str):
-        ok = ollama_service.delete_model(model_name)
+        ok = modelito_ollama_service.delete_model(model_name)
         self._append_log(f"modelito delete_model({model_name}) -> {ok}")
         if not ok:
             raise RuntimeError(f"Failed to delete model {model_name}")
