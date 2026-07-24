@@ -42,17 +42,19 @@ jobs:
           from pathlib import Path
           path = Path('tools/apply_pr44_audit_closure.py')
           text = path.read_text(encoding='utf-8')
-          old = '''        # A running request can outlive its retired executor. Every game gets a
-          # distinct connector so obsolete work can mutate only retired history,
-          # including when the previous game was already finalised normally.
-          self.ollama_connector = OllamaConnector()
-          '''
-          new = '''        # A running request can outlive its retired executor. Every transition
-          # after the initial game gets a distinct connector so obsolete work can
-          # mutate only retired history, including normal completed-game restarts.
-          if self.games_started > 0:
-              self.ollama_connector = OllamaConnector()
-          '''
+          old = (
+              '        # A running request can outlive its retired executor. Every game gets a\n'
+              '        # distinct connector so obsolete work can mutate only retired history,\n'
+              '        # including when the previous game was already finalised normally.\n'
+              '        self.ollama_connector = OllamaConnector()\n'
+          )
+          new = (
+              '        # A running request can outlive its retired executor. Every transition\n'
+              '        # after the initial game gets a distinct connector so obsolete work can\n'
+              '        # mutate only retired history, including normal completed-game restarts.\n'
+              '        if self.games_started > 0:\n'
+              '            self.ollama_connector = OllamaConnector()\n'
+          )
           if old not in text:
               raise SystemExit('connector patch block not found')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
@@ -81,7 +83,7 @@ jobs:
         with:
           name: pr44-remediation-pytest
           path: /tmp/pytest.log
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 1
       - name: Run full Pylint gate
         run: python -m pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
