@@ -56,6 +56,14 @@ jobs:
           code=$?
           tail -n 160 /tmp/pytest.log
           exit $code
+      - name: Upload test diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr44-remediation-pytest
+          path: /tmp/pytest.log
+          if-no-files-found: error
+          retention-days: 1
       - name: Run full Pylint gate
         run: python -m pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
       - name: Run complete research pipeline
