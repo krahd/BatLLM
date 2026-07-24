@@ -1,141 +1,116 @@
 # AGENTS.md
 
-Canonical operating instructions for AI coding agents working in this repository. These instructions apply to GitHub Copilot, OpenAI Codex, Anthropic Claude, and compatible agents.
+Operating instructions for coding agents working in this repository.
 
 ## Repository purpose
 
-BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local model workflows. Agents must preserve the project's practical, critical, and educational framing while keeping the application runnable across supported platforms.
+BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, model behaviour, and local-model workflows. Preserve the project's practical, critical, and educational framing while keeping the application reliable across supported platforms.
 
-## Important paths
+## Canonical documentation
 
-- `run_batllm.py`: main application launcher.
-- `run_game_analyzer.py`: standalone game-analyser launcher.
-- `src/`: application source code.
-- `src/configs/`: configuration files and defaults.
-- `requirements.txt`: Python dependencies.
-- `docs/README.md`: canonical project overview.
-- `docs/USER_GUIDE.md`: user-facing manual.
-- `docs/CONTRIBUTING.md`: developer setup, architecture, and testing guide.
-- `docs/ROADMAP.md`: planned product direction.
+- `README.md`: public project overview and installation.
+- `docs/README.md`: documentation index.
+- `docs/USER_GUIDE.md`: user-facing game and application manual.
+- `docs/CONTRIBUTING.md`: development setup, architecture, validation, and release work.
+- `docs/ROADMAP.md`: product direction.
 - `docs/RELEASE_CRITERIA_1_0.md`: release gates.
-- `STATUS.md`: complete current project status report; mandatory upkeep.
+- `docs/CHANGELOG.md`: chronological history.
+- `STATUS.md`: concise current project snapshot.
 
-## Mandatory STATUS.md upkeep
+Review the relevant documents before changing behaviour, setup, configuration, tests, packaging, or repository structure.
 
-`STATUS.md` must be kept up to date at all times.
+## STATUS.md upkeep
 
-Agents must review `STATUS.md` before making changes and update it whenever project state changes. This includes changes to code, architecture, dependencies, configuration, documentation, tests, known issues, setup instructions, pending tasks, release state, or repository structure.
+`STATUS.md` must describe the current repository, not accumulate a PR-by-PR audit diary.
 
-Agents must not finish a task that changes the project without ensuring that `STATUS.md` is accurate.
+Update it whenever a change affects:
 
-`STATUS.md` must be a complete project status report, not a short changelog. It must include, where relevant:
+- current capabilities or architecture;
+- supported platforms, Python versions, dependencies, or configuration;
+- validation state;
+- known limitations or risks;
+- release readiness;
+- important paths or repository structure; or
+- pending and longer-term work.
 
-- project purpose
-- setup and run instructions
-- current implementation state
-- architecture overview
-- important files and directories
-- recent changes
-- tests and verification status
-- known issues, risks, and limitations
-- pending tasks
-- next steps
-- longer-term steps
+Keep historical detail in `docs/CHANGELOG.md`, the pull request, or a dedicated research audit document.
 
-Timestamp requirements:
+`STATUS.md` should remain readable in one sitting and include, where relevant:
 
-- Include a `Last updated` line near the top using exactly this format: `Last updated: YYYY-MM-DD HH:MM`.
-- Use local wall-clock time.
-- Repeat the exact same `Last updated` line as the final line at the bottom of `STATUS.md`.
-- The top and bottom lines must match exactly.
-- Treat a stale, missing, mismatched, or incorrectly formatted timestamp as a blocking documentation error.
+- project purpose and release phase;
+- current capabilities;
+- setup and validation commands;
+- architecture summary;
+- configuration and state behaviour;
+- important files;
+- recent durable changes;
+- current validation evidence;
+- known limitations;
+- pending and longer-term work.
 
-## Diagrams in STATUS.md
+Timestamp contract:
 
-`STATUS.md` should include useful architecture diagram(s) and flow chart(s) as inline SVG when the repository structure, execution flow, or data flow is complex enough to benefit from visual documentation.
+- Put `Last updated: YYYY-MM-DD HH:MM` near the top.
+- Repeat the exact same line as the final line.
+- Use local wall-clock time in `America/Chicago`, the repository's maintained status timezone.
+- A missing, stale, or mismatched timestamp is a documentation error.
 
-SVG requirements:
-
-- Use inline SVG directly in `STATUS.md` when practical.
-- Ensure text remains inside boxes and inside the SVG canvas.
-- Ensure arrows and connector lines do not pass through unrelated boxes or labels.
-- Make the canvas larger when needed for correctness and legibility.
-- Prefer generous spacing over compactness.
-- Keep labels concise and readable.
-- Update diagrams when architecture, data flow, execution flow, or module relationships meaningfully change.
-- Avoid trivial diagram updates when no relevant structural change has occurred.
-
-## Communication style
-
-Do not use playful, whimsical, cute, or filler progress phrases.
-
-Do not say things like:
-
-- “combobulating”
-- “cooking”
-- “thinking...”
-- “working on it”
-- “let me dive in”
-- “I’ll get started”
-
-When doing work, either provide the result directly or, for long tasks, give terse factual status updates only.
-
-Allowed status style:
-
-- “Reading files.”
-- “Found the issue.”
-- “Applying patch.”
-- “Tests passed.”
-- “Tests failed: <reason>.”
-
-Do not anthropomorphise the process. Do not perform fake enthusiasm.
-
-Additional communication rules:
-
-- No decorative progress messages.
-- No jokes, metaphors, or playful status words.
-- No “I’m going to...” unless asking for confirmation.
-- Prefer concise technical updates in plain present tense.
-- When using tools, report only meaningful findings, blockers, or completed changes.
+Use a small Mermaid or text diagram only when it makes the current architecture easier to understand. Do not preserve obsolete diagrams or expand the status page merely to record diagram-edit history.
 
 ## Development rules
 
-- Inspect relevant files and tests before editing.
-- Prefer small, focused changes over broad rewrites.
-- Preserve public behaviour and compatibility unless explicitly asked to change them.
-- Do not delete or overwrite user-authored work unless explicitly requested.
-- Keep generated artifacts, caches, build outputs, local virtual environments, and temporary files out of git.
-- Do not commit secrets, API keys, local credentials, machine-specific absolute paths, or private data.
-- Use British English in prose documentation unless a file already follows another convention.
-- Keep user-facing documentation aligned with behaviour changes.
-- Keep release/version references consistent across all relevant files when changing versions.
+- Inspect relevant source, tests, configuration, and documentation before editing.
+- Prefer focused changes over broad rewrites unless the task explicitly asks for restructuring.
+- Preserve public behaviour and compatibility unless the change intends otherwise.
+- Do not delete user-authored work or evidence without understanding its purpose.
+- Remove generated artefacts, caches, one-off migration payloads, and temporary automation once they are no longer needed.
+- Do not commit secrets, credentials, private data, machine-specific absolute paths, or user state.
+- Use British English in maintained prose documentation.
+- Keep release and version references consistent with `VERSION` and `CITATION.cff`.
 
-## Safety rules
+## Safety
 
-BatLLM can interact with a real local Ollama installation and user-created saved sessions. Treat these as real user state.
+BatLLM can affect a real local Ollama installation and real saved sessions.
 
-- Preserve confirmation prompts for destructive or expensive operations.
-- Do not weaken safeguards around model deletion, downloads, local service control, saved-session handling, or configuration writes.
-- Do not make tests mutate repository defaults or user configuration unless the test uses an isolated temporary path.
-- Be explicit in `STATUS.md` about validation that was not run.
+- Preserve confirmation prompts for destructive or expensive actions.
+- Do not weaken safeguards around model deletion, downloads, service control, session handling, or configuration writes.
+- Tests must use an isolated temporary `BATLLM_HOME` and must not mutate repository defaults or user configuration.
+- Treat `python run_tests.py full` and install-level packaging checks as stateful operations requiring explicit maintainer intent.
 
 ## Validation
 
-Run the narrowest checks that cover the change, then broaden when shared behaviour may be affected. Prefer commands documented in `docs/CONTRIBUTING.md` when present.
+Run the narrowest checks that cover the change, then broaden when shared behaviour may be affected.
 
-Typical checks may include:
+Typical commands:
 
 ```bash
-python -m pytest -q
-python run_batllm.py
-python run_game_analyzer.py
+python run_tests.py core
+python run_tests.py non-live
+python tools/check_docs.py
+python -m pylint src run_batllm.py run_game_analyzer.py \
+  create_release_bundles.py create_homebrew_formula.py
 ```
 
-Only claim tests passed when they were actually run. Record tests run, tests not run, failures, and external validation gaps in `STATUS.md`.
+For public API documentation changes, regenerate Doxygen intentionally and inspect the generated diff.
+
+Only report checks that were actually run. Record significant unrun manual or stateful validation in `STATUS.md`.
+
+## Documentation rules
+
+- Keep each page within its defined role.
+- Avoid duplicating full configuration files, test logs, or release histories across pages.
+- Link to the source of truth when content is likely to drift.
+- Update UI labels, commands, paths, schema versions, and workflow descriptions with the code change that affects them.
+- Run `python tools/check_docs.py` after documentation or repository-structure changes.
 
 ## Git hygiene
 
 - Check the worktree before and after edits.
-- Do not revert user changes unless explicitly requested.
-- Stage only intended paths when the worktree is mixed.
-- Commit or push only when explicitly requested.
+- Do not revert unrelated user changes.
+- Stage only intended paths.
+- Use a branch and pull request unless the user explicitly requests another workflow.
+- Do not leave temporary workflows, marker files, downloaded artefacts, or patch payloads in the final tree.
+
+## Communication style
+
+Use terse factual progress updates. Do not use playful filler, metaphors, or fake enthusiasm. State findings, changes, validation, and blockers directly.
