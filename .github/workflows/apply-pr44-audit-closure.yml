@@ -89,6 +89,8 @@ jobs:
         run: python -m pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
       - name: Run complete research pipeline
         run: python research/urucon2026/experiments/run_all.py
+      - name: Restore generated research outputs
+        run: git restore research/urucon2026/results research/urucon2026/corpus/generated research/urucon2026/artifact
       - name: Check patch integrity
         shell: bash
         run: |
