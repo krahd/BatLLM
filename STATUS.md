@@ -1,10 +1,19 @@
 # BatLLM Status
 
-Last updated: 2026-07-24 15:39
+Last updated: 2026-07-24 15:14
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
 The project should remain practical, critical, and educational. Destructive or expensive local-model actions must stay explicit because BatLLM can start and stop a real Ollama service, download or delete models, and save user-created sessions.
+
+## 2026-07-24: PR #44 Follow-Up Audit Closure
+
+- Every game transition now creates a fresh `OllamaConnector`, including automatic restarts after an already-finalised game, so model conversation history cannot cross game boundaries.
+- Saved-session export now retains only turns with an end time, at least one recorded play, and a non-empty post-state; active and cancelled zero-play turns no longer invalidate otherwise usable history.
+- The opt-in debug `l` shortcut now calls the board's real prompt-submission API for bot IDs 1 and 2.
+- Replay-state validation now rejects map-key/embedded-ID disagreement and duplicate canonical bot IDs before normalisation can overwrite state.
+- Regression tests cover normal-completion connector replacement, active and cancelled turn filtering, debug submission, and state-ID invariants.
+- The remediation workflow runs the complete non-live test suite, full Pylint gate, compilation checks, and the complete URUCON research pipeline before committing the patch.
 
 ## 2026-07-24: Post-PR #41 Audit Remediation
 
@@ -424,4 +433,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-07-24 15:39
+Last updated: 2026-07-24 15:14

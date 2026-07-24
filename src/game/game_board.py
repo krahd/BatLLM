@@ -143,10 +143,10 @@ class GameBoard(Widget):
 
         self._game_generation += 1
         reset_executor()
-        # An already-running request can outlive its retired executor. Give the
-        # replacement game a distinct connector so that obsolete work can only
-        # mutate its own message history.
-        if replacing_game:
+        # A running request can outlive its retired executor. Every transition
+        # after the initial game gets a distinct connector so obsolete work can
+        # mutate only retired history, including normal completed-game restarts.
+        if self.games_started > 0:
             self.ollama_connector = OllamaConnector()
         self.current_turn = 0
         self.current_round = 0
@@ -279,7 +279,7 @@ class GameBoard(Widget):
             case "l":
                 # Example submission for testing
                 for i in (1, 2):
-                    self.submit_prompt_being_edited(
+                    self.submit_prompt_to_bot(
                         i,
                         (
                             "If you are looking towards your opponent and your shield is up, return S\n"

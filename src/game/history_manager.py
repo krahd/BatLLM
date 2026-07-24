@@ -489,11 +489,22 @@ class HistoryManager:
         """
         export_games = []
         for game in self.games:
-            completed_rounds = [
-                round_entry
-                for round_entry in game.get("rounds", [])
-                if isinstance(round_entry, dict) and round_entry.get("turns")
-            ]
+            completed_rounds = []
+            for round_entry in game.get("rounds", []):
+                if not isinstance(round_entry, dict):
+                    continue
+                completed_turns = [
+                    turn
+                    for turn in round_entry.get("turns", [])
+                    if isinstance(turn, dict)
+                    and bool(turn.get("end_time"))
+                    and bool(turn.get("plays"))
+                    and bool(turn.get("post_state"))
+                ]
+                if completed_turns:
+                    export_round = dict(round_entry)
+                    export_round["turns"] = completed_turns
+                    completed_rounds.append(export_round)
             if completed_rounds:
                 export_game = dict(game)
                 export_game["rounds"] = completed_rounds
