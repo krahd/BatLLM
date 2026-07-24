@@ -1,6 +1,6 @@
 # BatLLM Status
 
-Last updated: 2026-07-24 02:00
+Last updated: 2026-07-24 04:00
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
@@ -8,7 +8,7 @@ The project should remain practical, critical, and educational. Destructive or e
 
 ## 2026-07-22: Reliability Audit Remediation
 
-- Live model calls now run through the existing single-worker executor and return to Kivy through `Clock`; game/turn generation tokens discard stale completions.
+- Live model calls run through a single-worker executor and return to Kivy through `Clock`; game/turn generation tokens discard stale completions, and starting a new game retires the old pool so new inference is not queued behind an obsolete request.
 - Live movement and rotation commit their logical state atomically before history advances. Fatal shots are finalised as plays and turns before the completed game is replaced.
 - Provider failures now roll back the pending chat message and resolve through a provider-neutral error path; history trimming preserves the system message and complete role order within its cap.
 - History lifecycle guards reject unfinished turns, cancelled rounds retain completed turns, and chat-history filtering honours its arguments.
@@ -18,8 +18,21 @@ The project should remain practical, critical, and educational. Destructive or e
 - `run_tests.py` now separates minimal `core`, complete `non-live` (the default), and live-integration `full` modes; the standard CI matrix explicitly runs the complete non-live suite.
 - `run_tests.py` now uses `.venv_BatLLM` when available and otherwise uses the active supported Python interpreter, allowing isolated validation environments without changing repository-local user state.
 - All bot movement and rotation entry points now commit normalised gameplay state synchronously; prompt saves and the standalone configurator use atomic replacement, and prompt-save failures are surfaced in the GUI.
-- Validation on this checkout under Python 3.12.13: the complete non-live suite passed with 172 tests and 2 live-Ollama tests skipped; compile checks, dependency imports, workflow YAML parsing, `git diff --check`, and the research reproducibility pipeline passed. The research pipeline revalidated all 60 sessions and matched the independent semantics in all 5,000 differential cases.
-- Remaining release work: explicit overwrite-confirmation UX for existing session files and maintainer-owned live Ollama/manual GUI validation.
+- Validation on this checkout under Python 3.12.13: the complete non-live suite passed with 177 tests and 2 live-Ollama tests skipped; compile checks passed. Earlier remediation validation also covered dependency imports, workflow YAML parsing, and the research reproducibility pipeline. The research pipeline revalidated all 60 sessions and matched the independent semantics in all 5,000 differential cases.
+- Remaining release work: maintainer-owned live Ollama and manual GUI validation.
+
+## 2026-07-24: Lifecycle Re-audit Closure
+
+- Saved-session v2 export now omits trailing untouched games automatically created after normal game completion, so completed saves remain valid for Game Analyzer.
+- Manual New Game finalises the abandoned game before replacing its bots, preserving the actual winner and interrupted-turn snapshot.
+- Active-turn detection now uses lifecycle state directly. Interrupted turns receive an end time and final snapshot, while `end_round()` rejects every still-active turn.
+- Round cancellation reuses the interrupted turn number and records the actual restored round-start state. Completed earlier turns remain intact.
+- Prompt submission rejects attempts to start a round while another round is active, and `HistoryManager.start_round()` independently enforces the same invariant.
+- Schema-v3 verification converts invalid gameplay-setting snapshots into structured `invalid-gameplay-settings` failures instead of raising.
+- Schema-v3 writes now use flushed, fsynced temporary files and atomic replacement.
+- Starting a new game retires the prior inference executor with queued-future cancellation; an already-running obsolete request may finish on its retired worker but cannot delay the replacement game's first request.
+- Existing session filenames require explicit replacement confirmation in both normal save and save-on-exit flows.
+- Regression validation: 177 non-live tests passed and 2 live-Ollama tests were skipped; focused gameplay/research tests passed; launcher and `src/` compile checks passed. Interactive GUI, live Ollama, native Linux/Windows, and Homebrew install validation were not run.
 
 ## 2026-07-24: URUCON Ownership And Post-PR #38 Integration
 
@@ -376,4 +389,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-07-24 02:00
+Last updated: 2026-07-24 04:00
