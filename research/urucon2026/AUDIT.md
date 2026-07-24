@@ -2,7 +2,9 @@
 
 ## Verdict
 
-The paper is defensible as a narrow systems contribution: an evidence contract that connects an application-level LLM invocation and retained response to explicit grounding and deterministic state/event replay. It is not defensible as generic agent provenance, model-output reproducibility, transport capture, or authenticated chain of custody.
+The canonical paper is defensible as a narrow systems contribution: an evidence contract that connects an application-level LLM invocation and retained response to explicit grounding and deterministic state/event replay. It is not defensible as generic agent provenance, model-output reproducibility, transport capture, or authenticated chain of custody.
+
+The authoritative manuscript and its writing audits are maintained in `krahd/academic-writing`; this repository contains the implementation and reproducibility evidence.
 
 ## Novelty boundary
 
@@ -35,7 +37,7 @@ human instruction and context
 - The independent reference semantics imports no production gameplay module.
 - Fault injection re-anchors retained-content commitments and targets multiple trace positions.
 - Benign serialisation controls test false rejection.
-- The paper source compiles to four A4 IEEE pages without overfull boxes, undefined citations, or embedded hyperlinks.
+- Before migration, the canonical manuscript compiled to four A4 IEEE pages without overfull boxes, undefined citations, or embedded hyperlinks; the exact Word manuscript is now preserved in `academic-writing` with its source hash.
 
 ## Residual limitations
 
@@ -51,13 +53,13 @@ human instruction and context
 
 ## Release criterion
 
-The branch is complete only when:
+The software research artefact is complete only when:
 
 1. all nine OS/Python research matrix jobs pass;
 2. repository dependency and multiplatform workflows pass;
-3. the full experiment suite regenerates all summaries and `results.tex`;
-4. the paper job compiles a four- or five-page PDF and uploads it;
-5. generated metrics agree with the paper; and
+3. the full experiment suite regenerates all summaries;
+4. generated metrics agree with the canonical manuscript;
+5. the packaged artefact contains implementation evidence but no manuscript duplicate; and
 6. the final PR diff contains no corrupted or unrelated file.
 
 ## Final hardening pass
