@@ -34,6 +34,10 @@ on:
       - "run_batllm_verify.py"
       - "requirements.txt"
 
+concurrency:
+  group: urucon-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -115,35 +119,31 @@ jobs:
         run: python research/urucon2026/build_artifact.py
       - name: Validate manuscript separation
         run: |
+          set -euo pipefail
+          test "$(find research/urucon2026/paper -maxdepth 1 -type f | wc -l)" -eq 1
+          test -s research/urucon2026/paper/README.md
+          grep -q 'krahd/academic-writing' research/urucon2026/paper/README.md
+          grep -q '787295f8259c2a9cefd592d9980b291cc9330393' research/urucon2026/paper/README.md
           python - <<'PY'
           from pathlib import Path
           from zipfile import ZipFile
 
           research = Path("research/urucon2026")
-          paper_dir = research / "paper"
-          forbidden_suffixes = {".docx", ".pdf", ".tex", ".bib", ".log"}
-          local_forbidden = [
-              path for path in paper_dir.glob("*")
-              if path.is_file() and path.suffix.lower() in forbidden_suffixes
-          ]
-          assert not local_forbidden, local_forbidden
-
-          pointer = paper_dir / "README.md"
-          assert pointer.is_file()
-          pointer_text = pointer.read_text(encoding="utf-8")
-          assert "krahd/academic-writing" in pointer_text
-          assert "787295f8259c2a9cefd592d9980b291cc9330393" in pointer_text
-
           package = research / "artifact/BatLLM_URUCON_2026_Research_Artifact.zip"
+          manifest = research / "artifact/MANIFEST.sha256"
           with ZipFile(package) as archive:
-              names = set(archive.namelist())
-          assert "research/urucon2026/paper/README.md" in names
-          packaged_forbidden = [
-              name for name in names
-              if name.startswith("research/urucon2026/paper/")
-              and Path(name).suffix.lower() in forbidden_suffixes
+              assert archive.testzip() is None
+              paper_names = sorted(
+                  name for name in archive.namelist()
+                  if name.startswith("research/urucon2026/paper/")
+              )
+          assert paper_names == ["research/urucon2026/paper/README.md"], paper_names
+          manifest_paper_lines = [
+              line for line in manifest.read_text(encoding="utf-8").splitlines()
+              if "research/urucon2026/paper/" in line
           ]
-          assert not packaged_forbidden, packaged_forbidden
+          assert len(manifest_paper_lines) == 1, manifest_paper_lines
+          assert manifest_paper_lines[0].endswith("research/urucon2026/paper/README.md")
           PY
       - name: Upload reproducibility artefact
         if: always()
