@@ -38,6 +38,25 @@ jobs:
         run: |
           git fetch origin fix-pr44-audit-closure
           git show origin/fix-pr44-audit-closure:tools/apply_pr44_audit_closure.py > tools/apply_pr44_audit_closure.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('tools/apply_pr44_audit_closure.py')
+          text = path.read_text(encoding='utf-8')
+          old = '''        # A running request can outlive its retired executor. Every game gets a
+          # distinct connector so obsolete work can mutate only retired history,
+          # including when the previous game was already finalised normally.
+          self.ollama_connector = OllamaConnector()
+          '''
+          new = '''        # A running request can outlive its retired executor. Every transition
+          # after the initial game gets a distinct connector so obsolete work can
+          # mutate only retired history, including normal completed-game restarts.
+          if self.games_started > 0:
+              self.ollama_connector = OllamaConnector()
+          '''
+          if old not in text:
+              raise SystemExit('connector patch block not found')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
       - name: Apply deterministic patch
         run: python tools/apply_pr44_audit_closure.py
       - name: Install dependencies
