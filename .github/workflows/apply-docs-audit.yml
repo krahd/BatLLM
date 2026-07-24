@@ -1,0 +1,77 @@
+name: Apply documentation audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/docs-audit-payload.part*"
+      - ".github/workflows/apply-docs-audit.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-docs-audit-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.head_ref == 'docs-human-audit'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      BATLLM_RUN_OLLAMA_SMOKE: "0"
+      KIVY_NO_ARGS: "1"
+      KIVY_NO_CONSOLELOG: "1"
+      KIVY_WINDOW: mock
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: docs-human-audit
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Apply documentation payload
+        shell: bash
+        run: |
+          cat .github/docs-audit-payload.part* | base64 --decode > /tmp/docs-audit-payload.tar.xz
+          tar -xJf /tmp/docs-audit-payload.tar.xz
+          rm -rf \
+            PR_BODY.md \
+            PR_TITLE.txt \
+            batllm-audit-pr-overlay.zip \
+            batllm-audit-pr.patch \
+            batllm-pr-implementation \
+            scripts/apply_audit_pr.sh \
+            docs/DOCUMENTATION_CHANGE_REPORT.md \
+            docs/Related_Projects.md \
+            .github/DOCS_AUDIT_SNAPSHOT \
+            .github/workflows/docs-audit-snapshot.yml \
+            .github/docs-audit-payload.part* \
+            .github/workflows/apply-docs-audit.yml
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pytest "pylint>=4,<5"
+      - name: Compile maintained sources
+        run: python -m compileall -q src tools run_batllm.py run_game_analyzer.py run_tests.py create_release_bundles.py create_homebrew_formula.py validate_packaging_smoke.py
+      - name: Check documentation
+        run: python tools/check_docs.py
+      - name: Run complete non-live suite
+        run: python run_tests.py non-live
+      - name: Run full Pylint gate
+        run: python -m pylint src run_batllm.py run_game_analyzer.py create_release_bundles.py create_homebrew_formula.py
+      - name: Check patch integrity
+        run: git diff --check
+      - name: Commit validated documentation audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Make documentation current and readable"
+          git push origin HEAD:docs-human-audit
