@@ -200,6 +200,7 @@ def test_request_install_ollama_prompts_and_runs_install(monkeypatch) -> None:
     screen.request_install_ollama()
 
     assert prompt["title"] == "Install Ollama"
+    assert isinstance(prompt["message"], str)
     assert "not installed" in prompt["message"]
     assert any("Installing Ollama" in entry for entry in statuses)
     assert any("python -m llm.service install" in entry for entry in statuses)
@@ -257,6 +258,7 @@ def test_request_reinstall_ollama_uses_reinstall_prompt(monkeypatch) -> None:
     screen.request_install_ollama()
 
     assert prompt["title"] == "Reinstall Ollama"
+    assert isinstance(prompt["message"], str)
     assert "already installed" in prompt["message"]
     assert install_calls == [("install", ("--reinstall",))]
 

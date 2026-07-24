@@ -333,7 +333,7 @@ If you already manage Ollama elsewhere, you can keep doing that. The in-app Olla
 
 ## Required: `modelito`
 
-BatLLM requires the lightweight `modelito` package for gameplay and Ollama lifecycle/model-management helpers. Install `modelito` with the repository-supported version: `pip install modelito==1.4.0`.
+BatLLM requires the lightweight `modelito` package for gameplay and Ollama lifecycle/model-management helpers. Install `modelito` with the repository-supported version: `pip install modelito==1.4.5`.
 
 ## Safety Notes
 

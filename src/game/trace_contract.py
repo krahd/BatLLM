@@ -306,10 +306,27 @@ def transition_material(
     }
 
 
-def transition_hash(**kwargs: Any) -> str:
+def transition_hash(
+    *,
+    bot_id: int,
+    pre_state: Mapping[Any, Any],
+    command: str,
+    rules: Mapping[str, Any],
+    post_state: Mapping[Any, Any],
+    events: list[Mapping[str, Any]] | None = None,
+) -> str:
     """Return the canonical transition commitment."""
 
-    return sha256_json(transition_material(**kwargs))
+    return sha256_json(
+        transition_material(
+            bot_id=bot_id,
+            pre_state=pre_state,
+            command=command,
+            rules=rules,
+            post_state=post_state,
+            events=events,
+        )
+    )
 
 
 def finalise_play_hash(

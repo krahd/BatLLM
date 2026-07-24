@@ -1,10 +1,21 @@
 # BatLLM Status
 
-Last updated: 2026-07-24 04:00
+Last updated: 2026-07-24 05:30
 
 BatLLM is a Python/Kivy research, education, and game project for exploring AI-mediated play, prompt quality, LLM behaviour, and local-model workflows. The repository currently contains a playable local desktop game, a standalone read-only Game Analyzer, local Ollama lifecycle and model-management helpers routed through `modelito`, release-bundle tooling, Homebrew formula generation, generated API reference artefacts, and maintained user/developer documentation.
 
 The project should remain practical, critical, and educational. Destructive or expensive local-model actions must stay explicit because BatLLM can start and stop a real Ollama service, download or delete models, and save user-created sessions.
+
+## 2026-07-24: Repository-Wide Audit And Branch Reconciliation
+
+- The audit selected the canonical combined history based at `02b8ea9` for `main`; it contains the previous `origin/main` plus the reliability audit, lifecycle re-audit, dependency updates, and URUCON ownership cleanup. The superseded local integration commit remains recoverable on `origin/22-july-general-audit`; no recent alternative branch contains work that should replace the selected line.
+- The test suite now redirects the singleton configuration path to a per-test temporary directory. A fresh `BATLLM_HOME` no longer causes fixture setup failures, and tests no longer read, write, or restore the tracked default configuration as part of ordinary execution.
+- The Pylint gate now has a compatible Pylint 4 configuration, suppresses Kivy dynamic-member inference false positives, uses an explicit 8.5 quality floor, and fixes the remaining transition-hash signature and test-inference errors. CI installs the supported Pylint major explicitly.
+- URUCON workflow and artefact packaging references now point to the maintained deterministic gameplay/replay test module instead of the nonexistent `src/tests/test_replay_engine.py`.
+- Maintained README, user-guide, and contributor troubleshooting references now match the declared `modelito==1.4.5` dependency.
+- Audit validation under Python 3.12.13: 177 tests passed and 2 live-Ollama tests were skipped with an isolated fresh `BATLLM_HOME`; Pylint passed at 8.90/10; dependency imports and `pip check` passed; `pip-audit` found no known vulnerabilities; compile, schema-JSON, local documentation-link, and `git diff --check` checks passed.
+- The research pipeline passed with 60/60 sessions and 1,080/1,080 replayed transitions, 5,000/5,000 differential cases, all 1,560 applicable re-anchored faults detected, and all 180 benign serialisation controls accepted.
+- Interactive GUI, live Ollama, native Linux/Windows, and Homebrew install-level validation remain maintainer-owned release checks.
 
 ## 2026-07-22: Reliability Audit Remediation
 
@@ -273,6 +284,16 @@ This status update followed a repository-wide audit on 2026-05-09. The audit ins
 
 ## Tests And Verification Status
 
+### 2026-07-24 Repository-Wide Audit Validation
+
+- `BATLLM_HOME=/tmp/batllm-audit-isolated KIVY_NO_ARGS=1 KIVY_NO_CONSOLELOG=1 KIVY_WINDOW=mock PYTHONPATH=src /tmp/batllm-repo-audit-venv/bin/python -m pytest -q src/tests` -> `177 passed, 2 skipped`.
+- The same isolated suite initially exposed 177 fixture errors because `src/tests/conftest.py` assumed the runtime config already existed; the fixture now redirects configuration writes to each test's temporary directory and the rerun passed.
+- Pylint 4.0.6 over `src`, launchers, and release tooling -> passed at `8.90/10` against the maintained 8.5 baseline.
+- `pip check` -> no broken requirements; `pip-audit -r requirements.txt` -> no known vulnerabilities.
+- Python compilation, schema JSON parsing, local documentation-link validation, and `git diff --check` -> passed.
+- `research/urucon2026/experiments/run_all.py` -> passed: 60 valid sessions, 1,080 equivalent state/event transitions, 5,000 matching differential cases, 1,560/1,560 applicable faults detected, and 180/180 benign serialisation variants accepted.
+- Live Ollama, interactive GUI, native Linux/Windows, and Homebrew install-level checks were not run.
+
 ### 2026-07-24 Re-audit Closure Validation
 
 - Removed the obsolete URUCON manuscript-separation check and the conference template accidentally reintroduced by the audit branch; research CI now covers only BatLLM-owned implementation and reproducibility artefacts.
@@ -350,6 +371,7 @@ The previous status report recorded these successful checks from the same releas
 - GUI validation is limited in headless/non-interactive environments; many UI paths rely on Kivy event-loop behaviour and manual spot checks.
 - `run_tests.py full` can affect a real Ollama service and should be run only with explicit maintainer intent.
 - Generated API docs under `docs/code/` are current for this audit but remain large and noisy because Doxygen also tracks LaTeX PDF artefacts.
+- Pylint passes the maintained 8.5 floor at 8.90/10, but the remaining warnings identify longer-term documentation, import-order, complexity, and broad-exception debt.
 - Homebrew distribution remains source-based and macOS/Apple-Silicon oriented.
 - The saved-session v2 schema is the supported path; unsupported legacy sessions are intentionally rejected by schema helpers.
 
@@ -389,4 +411,4 @@ The previous status report recorded these successful checks from the same releas
 - Design the 2.0 server contract before adding web or repository-backed prompt/game sharing.
 - Add broader tests for malformed model responses, slow startup, missing models, session compatibility, analyzer edge cases, and packaged first-run behaviour.
 
-Last updated: 2026-07-24 04:00
+Last updated: 2026-07-24 05:30
