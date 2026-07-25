@@ -103,7 +103,6 @@ The model must return one valid command per action. The recognised commands are 
 - [Roadmap](docs/ROADMAP.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Security policy](SECURITY.md)
-- [URUCON 2026 research artefact](research/urucon2026/README.md)
 
 ## Research and educational framing
 
