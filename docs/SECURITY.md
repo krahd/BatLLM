@@ -1,8 +1,5 @@
-# Security Policy
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [User Guide](USER_GUIDE.md) · [FAQ](FAQ.md) · [Contributing](CONTRIBUTING.md) · [Status](../STATUS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
-This project follows responsible disclosure and dependency security best practices. See the root SECURITY.md for the canonical policy.
+# Security
 
-- Vulnerabilities should be reported privately to the maintainer.
-- Dependency and CI security are enforced via pip-audit, Dependabot, and GitHub Dependency Review.
-- No secrets, credentials, or sensitive data should be committed to the repository.
-- See [../SECURITY.md](../SECURITY.md) for the full policy and contact details.
+The canonical security policy is [SECURITY.md](../SECURITY.md) in the repository root. Use that page for supported versions, private reporting instructions, and disclosure expectations.

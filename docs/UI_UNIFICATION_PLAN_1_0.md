@@ -1,66 +1,71 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [Roadmap](ROADMAP.md) · [1.0 Criteria](RELEASE_CRITERIA_1_0.md) · [Status](../STATUS.md)**
 
-# UI Unification Plan for 1.0
+# UI unification plan for 1.0
 
-This document breaks the roadmap UX-unification goal into implementable work items.
+This plan records the remaining work needed to make gameplay and the Game Analyzer feel like one application. It is a release-planning document, not a claim that visual parity is complete.
 
-## Objectives
+## Principles
 
-- make gameplay and analyzer feel like one product
-- reduce context switching cost between modes
-- keep keyboard and button semantics consistent
+- Equivalent actions should use equivalent labels.
+- Back, cancel, and `Esc` behaviour should be predictable.
+- Status and error messages should use one severity vocabulary.
+- Layout consistency should not obscure the distinct purposes of gameplay and analysis.
+- Keyboard and accessibility behaviour should be documented and tested where practical.
 
-## Workstreams
+## Workstream 1: navigation and headers
 
-### 1) Shared Navigation and Header
+Current state:
 
-- align top-level navigation affordances between Home, Analyzer Load, and Analyzer Review
-- standardize back behavior and screen-title placement
+- Major navigation actions exist and use recognisable labels.
+- Gameplay, analyzer load, and analyzer review screens still use different header and spacing structures.
 
-Status: partially complete for 1.0.
+Before 1.0:
 
-- Done for 1.0: equivalent major navigation actions are present and labeled across gameplay/analyzer flows (`Back`, open/load flows, screen-title headers).
-- Deferred to 1.1: full shared header component and strict visual parity between gameplay and analyzer top bars.
+- verify screen titles and back actions on all primary screens;
+- remove contradictory or duplicated navigation controls; and
+- decide whether a shared header component is required for 1.0 or explicitly deferred.
 
-### 2) Shared Control Vocabulary
+## Workstream 2: control vocabulary
 
-- align button labels for load/save/back/cancel flows
-- standardize status text tone and severity wording
+Current state:
 
-Status: complete for 1.0 acceptance criteria.
+- Common actions such as **Load**, **Save**, **Back**, **Cancel**, and **Use Selected** are documented consistently.
 
-- Done for 1.0: shared action labels are aligned for equivalent operations (`Load`, `Save`, `Back`, `Cancel`) and no contradictory wording remains in maintained UX docs.
-- Deferred to 1.1: deeper tone harmonisation for all status/help copy across every screen.
+Before 1.0:
 
-### 3) Shared Layout Rhythm
+- review all user-facing button text against the User Guide;
+- align confirmation and failure wording; and
+- keep destructive operations visually distinct.
 
-- normalize spacing, section headers, and panel grouping
-- align prompt and response text treatment where possible
+## Workstream 3: layout and visual rhythm
 
-Status: partially complete for 1.0.
+Current state:
 
-- Done for 1.0: panel/grouping structure is stable and usable across gameplay/analyzer without contradictory control placement.
-- Deferred to 1.1: full spacing/typography consolidation and migration of gameplay screen styling to a central theme module.
+- Gameplay and analyzer screens are usable but do not share one complete spacing and typography system.
 
-### 4) Shared Accessibility and Keyboard Behavior
+Before 1.0:
 
-- ensure Esc behavior is predictable and documented on all major screens
-- ensure primary actions have clear keyboard-first paths where relevant
+- review section spacing, panel grouping, text hierarchy, and state summaries;
+- remove layout-specific instructions from documentation unless users genuinely need them; and
+- defer deep theme-module refactoring only with explicit sign-off.
 
-Status: complete for 1.0 acceptance criteria.
+## Workstream 4: keyboard and accessibility behaviour
 
-- Done for 1.0: Escape handling in modal prompt-loading flow is deterministic and covered by regression tests.
-- Deferred to 1.1: additional keyboard-first shortcuts beyond current modal/navigation parity.
+Current state:
 
-## 1.0 Gate Snapshot (2026-05-08)
+- `Esc` handling is deterministic for the main settings and modal flows covered by tests.
+- The application still relies primarily on pointer interaction.
 
-- Pass for 1.0: Workstreams 2 and 4.
-- Pass with explicit deferment to 1.1: Workstreams 1 and 3.
-- 1.1 carry-over scope: shared header component, full visual-system consolidation, gameplay-theme modularisation.
+Before 1.0:
 
-## Acceptance Criteria
+- manually verify `Esc` and back behaviour on every main screen;
+- ensure focus and modal dismissal remain understandable; and
+- record any keyboard-first limitations in release notes.
 
-- a contributor can map equivalent actions across gameplay and analyzer without guessing
-- no screen uses contradictory labels for the same operation
-- keyboard escape and back behavior is consistent for equivalent modal/navigation contexts
-- docs screenshots/text match the shipped UX labels
+## Acceptance criteria
+
+- A new user can move between gameplay, settings, history, Ollama configuration, and analysis without guessing how to return.
+- Equivalent actions do not use contradictory names.
+- Destructive operations require clear confirmation.
+- The User Guide matches the shipped labels and navigation.
+- Deferred visual work is explicit and does not hide functional inconsistency.

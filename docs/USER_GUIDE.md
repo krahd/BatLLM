@@ -1,355 +1,248 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [User Guide](USER_GUIDE.md) · [FAQ](FAQ.md) · [Contributing](CONTRIBUTING.md) · [Status](../STATUS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
 
 # User Guide
 
-BatLLM is a local, AI-mediated, human-vs-human battle game. Two human players write prompts, two model-backed bots interpret those prompts, and the bots act inside the arena. Players do not directly move the bots. The challenge is to guide them through language.
+BatLLM is a two-player battle game mediated by local language models. Each human player writes a prompt for a bot. The model reads that prompt and returns one command at a time; BatLLM executes the command in the arena.
 
-BatLLM is strictly human-vs-human in the current version. There are no NPC bots, autonomous opponents, or single-player campaign modes.
+Players do not control the bots directly during ordinary play. The point is to learn how strategy, wording, model choice, prompt augmentation, and conversation history affect what the model actually does.
 
-The screen recording below shows the basic flow: players enter prompts, submit them, and trigger a round once both bots are ready.
+![BatLLM gameplay demonstration](./screenshots/quick_demo.gif)
 
-Prompts can be loaded and saved to disk, the history screen can be used to inspect what each model received and returned, and the Game Analyzer can replay saved sessions later for study.
+## Before playing
 
-![BatLLM demo](./screenshots/quick_demo.gif)
+Install and launch BatLLM using the instructions in the [project README](../README.md).
 
-## Before You Begin
+For normal play you also need:
 
-### Install BatLLM
+- a local Ollama installation;
+- at least one model installed in Ollama; and
+- enough memory for the model you choose.
 
-If you are on macOS on Apple Silicon, you can install BatLLM with Homebrew:
-
-```bash
-brew tap krahd/tap
-brew install krahd/tap/batllm
-```
-
-Launch the main app with:
-
-```bash
-batllm
-```
-
-Launch the standalone analyzer with:
-
-```bash
-batllm-analyzer
-```
-
-The Homebrew install stores BatLLM's writable config and saved-session data under `~/Library/Application Support/BatLLM` by default, so updates do not try to write into the Homebrew cellar.
-
-If you are not using the Homebrew install, you can still run BatLLM from a source checkout or from one of the release bundles.
-
-Recommended first-run flow:
-
-1. install BatLLM
-2. install the Ollama CLI if it is not already available on the machine, or let BatLLM launch the official installer for you
-3. launch BatLLM with `batllm` if you installed it with Homebrew, otherwise launch it with `python run_batllm.py` from the repository checkout
-4. open `Settings`
-5. click `Ollama Config`
-6. start Ollama and choose a local model
-7. return to the home screen and begin play
-
-If Ollama is missing, BatLLM asks whether you want to launch the official install flow. If Ollama is installed but stopped, BatLLM asks whether you want to start it unless `Start Ollama Automatically on BatLLM Launch` is enabled.
-
-The release bundles also include platform-specific launchers:
-
-- Windows: `run-batllm.bat`
-- macOS: `run-batllm.command`
-- Linux: `run-batllm.sh`
-
-They also include the standalone analyzer launchers:
-
-- Windows: `run-game-analyzer.bat`
-- macOS: `run-game-analyzer.command`
-- Linux: `run-game-analyzer.sh`
+BatLLM can open the official Ollama installer and can manage the configured local service from **Settings → Ollama Config**.
 
 > [!CAUTION]
-> BatLLM's Ollama controls operate on your real local Ollama installation. Starting or stopping the service, downloading models, deleting models, or changing the selected model can affect other Ollama-based tools on the same machine.
+> The Ollama controls affect the real local installation. Starting or stopping the service, downloading a model, deleting a model, or changing the selected model can affect other Ollama-based tools on the same machine.
 
-## Your First Match
+## Your first game
 
-If you want the shortest possible route into the game, use this tutorial:
+1. Launch BatLLM.
+2. Open **Settings**.
+3. Open **Ollama Config**.
+4. Start Ollama if it is stopped.
+5. Select an installed model with **Local Models**, then press **Use Selected**.
+6. Return to the home screen.
+7. Each player writes a prompt and presses **Submit**.
+8. The round starts after both prompts have been submitted.
+9. Watch the actions, then open **History** to inspect the model inputs and outputs.
+10. Write revised prompts for the next round.
 
-1. Launch BatLLM and open `Settings`.
-2. Open `Ollama Config`, start Ollama, and choose a local model.
-3. Return to the home screen.
-4. Each player writes one prompt for their bot.
-5. Each player presses `Submit`.
-6. Once both prompts are submitted, BatLLM starts the round automatically.
-7. Watch what the bots do, then open `History` if you want to inspect the model inputs and outputs before the next round.
+A useful learning rhythm is: **prompt → observe → inspect → revise**.
 
-The main rhythm of the game is simple: write a prompt, submit it, watch the outcome, study what happened, and improve the next prompt.
+## Sessions, games, rounds, and turns
 
-## What You Are Trying To Do
+BatLLM uses four nested levels:
 
-BatLLM is a battle game. Your aim is to outplay the other human player by getting your bot to move, rotate, shield, and fire more effectively than theirs.
+- A **session** is one execution of the application.
+- A session can contain one or more **games**.
+- A game contains one or more **rounds**.
+- A round contains a sequence of **turns**.
 
-Because the bot only acts through the model, success depends on both strategy and prompt-writing. A good plan is not enough if your model misreads it, and a perfectly clear prompt is not enough if the plan behind it is weak.
+At the start of each round, both players submit the prompt that will guide their bot throughout that round. During each turn, both bots may execute one command, unless a bot is destroyed before the second action occurs.
 
-## Match Structure
+The configured round and turn limits are shown and edited in **Settings**.
 
-The game is easiest to understand in layers:
+## Objective and core rules
 
-- a session is one run of the app
-- a match is the full game played inside that session
-- a match contains one or more rounds
-- each round contains several turns
-- each turn contains up to two bot actions, one per bot
+The objective is to reduce the opposing bot's health to zero while keeping your own bot alive.
 
-By convention, BatLLM is built around a 1:1:1 correspondence between human players, bots, and model roles.
+- Bots can move, rotate, raise or lower their shields, and fire.
+- A bot cannot fire while its shield is raised.
+- A shot that reaches the opponent may be blocked by the shield or remove health.
+- The game ends immediately when a bot's health reaches zero.
+- A round also ends when its configured turn limit is reached.
+- If the game has more rounds remaining and both bots are alive, the players can submit new prompts for the next round.
 
-## How A Round Works
+The first bot to act is chosen at the start of a round. That order remains fixed for the round.
 
-Before a round begins, both players write a prompt for their bot. Once both prompts have been submitted, the round starts.
+## Command language
 
-During the round:
+The model should return exactly one recognised command. Extra prose or malformed output is treated as an invalid action.
 
-1. At the start of the round, BatLLM randomly chooses which bot acts first. That order is then used for the turns in that round.
-2. The first bot's prompt is sent to the model.
-3. The returned command is executed immediately in the arena.
-4. If the command is a shot, the bullet's full travel and collision resolution happen as part of that turn.
-5. The second bot then acts, unless the round already ended.
-6. This repeats until a bot is destroyed or the round reaches its configured turn limit.
-
-## Rules Of Play
-
-The core rules are:
-
-1. A round begins only after both players have submitted prompts.
-2. On each turn, both bots may act, unless one is destroyed before the second action happens.
-3. A bullet travels until it hits the other bot or leaves the arena.
-4. A bullet that hits outside the shield removes health according to `Bullet Damage`.
-5. A bot cannot fire while its shield is up.
-6. If a bot's health reaches zero, the match ends immediately.
-7. If the configured turn limit is reached and no bot has been destroyed, the round ends automatically.
-8. If multiple rounds are enabled and both bots are still in play, the next round can begin.
-
-Between rounds, players can adapt. That is a key part of the game: study what the model did in the previous round, then write a better prompt for the next one.
-
-## Bot Commands Reference
-
-The model is expected to return commands in a very strict format. If the output does not match one of the recognised commands below, that turn is treated as no valid action.
-
-| Command | Action | Example |
+| Command | Meaning | Example |
 | --- | --- | --- |
-| `C{angle}` | Rotate clockwise by `angle` degrees | `C90` |
-| `A{angle}` | Rotate anticlockwise by `angle` degrees | `A45` |
-| `M{step}` | Move forward by the supplied step value | `M0.3` |
-| `M` | Move forward by the configured default step length | `M` |
-| `S1` | Raise shield | `S1` |
-| `S0` | Lower shield | `S0` |
-| `S` | Toggle shield | `S` |
-| `B` | Fire one shot if the shield is down | `B` |
+| `C<angle>` | rotate clockwise | `C90` |
+| `A<angle>` | rotate anticlockwise | `A45` |
+| `M` | move forward using the configured default step | `M` |
+| `M<distance>` | move forward by a supplied normalised distance | `M0.2` |
+| `S1` | raise the shield | `S1` |
+| `S0` | lower the shield | `S0` |
+| `S` | toggle the shield | `S` |
+| `B` | fire, provided the shield is down | `B` |
 
-Anything else is ignored as a valid gameplay command.
+Angles and distances must be finite numbers with no surrounding text. Commands are case-insensitive after BatLLM strips leading and trailing whitespace, but prompts should still ask for the exact uppercase form to reduce ambiguity.
 
-## Playing Modes
+## Prompting modes
 
-BatLLM supports several ways to play the same core game.
+### Prompt augmentation
 
-### Standard Prompting
+When **Prompt Augmentation** is enabled, BatLLM prepends structured game-state information to the player's prompt. This gives the model direct information about positions, rotations, health, and shields.
 
-In the basic mode, each player writes a prompt at the beginning of a round and the model acts on that prompt without extra game-state augmentation.
+When it is disabled, the model receives the player's text without the structured game-state block.
 
-### Prompt Augmentation
+Prompt augmentation changes the information available to the model. It does not guarantee a valid or strategically useful command.
 
-If `Prompt Augmentation` is enabled, BatLLM prepends structured game-state information to the player's prompt before sending it to the model.
+### Independent and shared contexts
 
-This usually makes the model better informed, but it does not remove the need for a good prompt. It changes the style of play rather than eliminating prompt skill.
+When **Independent Models** is enabled, each bot has a separate conversation history.
 
-### Independent Models
+When it is disabled, both bots use one shared history. Shared context can expose one player's previous instructions or produce interference between strategies. This is an intentional experimental condition, not a private two-channel mode.
 
-If `Independent Models` is enabled, each bot keeps its own prompt and response history. The two players are effectively working through separate model contexts.
+Each new game starts with a fresh model conversation history.
 
-### Shared Context
+## Main screens
 
-If `Independent Models` is disabled, both bots share one model history. This can create interference, leakage between strategies, or unexpected model behaviour, which is part of the challenge.
+### Home
 
-## Screens And Menus
+The home screen contains:
 
-### Home Screen
+- one editable prompt area for each player;
+- prompt-history controls;
+- the arena and current bot state;
+- **Settings**;
+- **History**;
+- **Game Analyzer**;
+- **Save Session**; and
+- the control for starting a new game.
 
-The home screen is the main play surface. It contains:
+Prompts cannot be replaced while a round is already running. A rejected submission remains in the editor so it can be submitted after the round ends.
 
-- one prompt history area and one editable prompt area per player
-- `Submit`, `Load`, and `Save` buttons for each player
-- the game board and live state labels
-- `Settings`, `History`, `Game Analyzer`, and `Save Session` controls
+Pressing `Esc` follows the configured exit behaviour. BatLLM may ask for confirmation, offer to save the session, or exit immediately depending on the settings.
 
-This is where most play happens. Write prompts, submit them, and watch the arena.
+### Settings
 
-### `Esc` On The Home Screen
+The settings screen controls:
 
-Pressing `Esc` on the home screen runs the exit flow. The exact behaviour depends on the current settings:
+- total rounds;
+- turns per round;
+- initial health;
+- bullet damage;
+- shield size;
+- default movement step;
+- independent or shared model contexts;
+- prompt augmentation;
+- exit confirmation;
+- save-on-exit prompting;
+- automatic Ollama startup; and
+- automatic Ollama shutdown.
 
-- if `Confirm on Exit` is enabled, BatLLM asks for confirmation
-- if `Prompt to Save on Exit` is enabled, BatLLM offers a filename prompt before exit
-- if both are disabled, BatLLM exits immediately
+Use **Set Temporarily** to apply values for the current execution without saving them as defaults. Use **Set as Defaults** to write them to the active configuration file.
 
-### Settings Screen
+`Esc` behaves like **Cancel** and returns to the home screen.
 
-The settings screen controls the main gameplay values:
+### History
 
-- `Total Rounds`
-- `Total Turns`
-- `Initial Health`
-- `Bullet Damage`
-- `Shield Size (°)`
-- `Step Length`
-- `Independent Models`
-- `Prompt Augmentation`
-- `Confirm on Exit`
-- `Prompt to Save on Exit`
-- `Start Ollama Automatically on BatLLM Launch`
-- `Stop Ollama Automatically on BatLLM Quit`
+The History screen shows compact per-bot histories and the fuller session record. Use it to compare:
 
-Buttons on this screen:
+- the player's prompt;
+- any augmented game state;
+- the raw model response;
+- the parsed command; and
+- the resulting action.
 
-- `Cancel`
-- `Set as Defaults`
-- `Set Temporarily`
-- `Ollama Config`
-
-Use `Set Temporarily` when you want the current session to use those values without changing the saved defaults. Use `Set as Defaults` when you want the changes written back for future runs.
-
-### `Esc` On The Settings Screen
-
-Pressing `Esc` on the settings screen behaves like `Cancel` and returns to the home screen.
-
-### History Screen
-
-The history screen shows two synchronised views:
-
-- a compact, per-bot prompt history panel
-- the full session history panel from `HistoryManager`
-
-This is the best place to inspect what each model saw, what it returned, and how your prompt strategy is evolving across rounds.
-
-Use `Save Session` on the home screen to export the current session as a JSON file in `saved_sessions_folder`. Current exports use the BatLLM v2 session format and include a `gameplay_settings_snapshot` for every round plus a saved `llm_metadata` snapshot so the Game Analyzer can replay the same rules later and show the model/runtime context that was active when the session was exported.
-
-The current implementation uses the explicit `Back` button to return home.
+The explicit **Back** button returns to the home screen.
 
 ### Game Analyzer
 
-The Game Analyzer is a read-only review mode for saved sessions. You can open it either from the home screen or through the standalone launcher:
+The Game Analyzer is a read-only mode for saved sessions. Open it from the home screen or launch it separately with:
 
 ```bash
 python run_game_analyzer.py
 ```
 
-The analyzer lets you:
+The analyzer can:
 
-- load a saved session JSON
-- choose a game and round inside that session
-- move backward and forward across turn starts and individual plays
-- replay the board using the saved prompts, ordered plays, and that round's frozen gameplay settings snapshot
-- inspect prompts, raw model responses, parsed commands, state diffs, saved model metadata in the `Model` tab, round settings, and mismatch warnings
+- load one saved-session JSON file;
+- select a game and round;
+- step through turn starts and individual bot actions;
+- reconstruct the board from the saved rules and ordered plays;
+- show prompts, raw responses, parsed commands, state changes, model metadata, and replay warnings.
 
-Legacy saved sessions that predate the v2 schema are not replay-supported in the analyzer. Save a new session from the current app if you want to study it there.
+The user-facing analyzer supports the current BatLLM session schema v2. Older top-level list exports are rejected rather than replayed approximately.
 
-### Ollama Config Screen
+## Saving sessions
 
-The Ollama screen is the main control surface for BatLLM's local model workflow.
+**Save Session** writes an analyzer-compatible JSON file to the configured saved-session folder.
 
-It includes:
+Only completed turns are exported. An active turn or a cancelled zero-play turn is omitted so that unfinished state does not invalidate an otherwise useful session.
 
-- an `Ollama Status` section
-- an `Output` log
-- a warmup-timeout editor for Ollama startup
-- a `Local Models` section
-- a `Remote Models` section
-- a `Back to Settings` button
+Saved rounds include a frozen gameplay-settings snapshot. Saved sessions also include model/runtime metadata. The analyzer therefore uses the rules recorded with the session rather than the current settings file.
 
-### Start And Stop Ollama
+Configuration and save locations depend on how BatLLM was launched. See [Installation channels and mutable state](STATE_AND_INSTALLATION.md).
 
-- `Install Ollama` launches the official install or reinstall flow after confirmation
-- `Start Ollama` runs BatLLM's cross-platform Ollama helper with the effective warmup timeout
-- `Stop Ollama` runs the same helper in stop mode
-- `Refresh` reloads status plus both model lists
+## Ollama Config
 
-### Warmup Timeout
+The Ollama screen provides:
 
-BatLLM now treats Ollama startup warmup as a configurable setting.
+- installation or reinstallation launch;
+- service start and stop controls;
+- current service status;
+- an output log;
+- startup warm-up timeout controls;
+- local model selection and deletion; and
+- remote model discovery and download.
 
-- the warmup row shows the effective service-start timeout BatLLM will use
-- `Save Warmup` stores `llm.warmup_timeout`
-- `Use Default` clears the override and returns the service-start warmup timeout to `30s`
-- the same timeout is honored by the in-app `Start Ollama` button and the `python -m llm.service start --warmup-timeout ...` CLI path
+### Local models
 
-### Local Models
+A local model is already installed in Ollama.
 
-Press the local-model selector to:
+1. Open **Local Models**.
+2. Choose a model.
+3. Press **Use Selected**.
 
-1. refresh the local list through `modelito`'s local-model inventory helper
-2. open the `Local Models` picker
-3. choose a model from the modal list
+BatLLM saves the model name, attempts to warm it for gameplay, and records it as the last successfully served model when warm-up succeeds.
 
-The picker:
+The local-model timeout controls can save or remove a per-model request-timeout override.
 
-- is modal
-- shows the current selection with a darker highlighted row
-- renders list text in white
-- uses touching rows with no visual gap between models
-- closes on `Esc`
-- closes if you click outside the popup
-- closes if you click `Close`
+**Delete Selected** removes the model from the real local Ollama installation after confirmation.
 
-After choosing a local model:
+### Remote models
 
-- `Use Selected` saves the selected model into `llm.model`
-- BatLLM then attempts to make that model ready for gameplay
-- successful warm-up also updates `llm.last_served_model`
-- if BatLLM previously managed a different model itself, it may stop that earlier managed model first
-- the timeout row shows the effective timeout for the selected local model
-- `Save Timeout` stores a per-model timeout override for that installed model
-- `Use Default` removes the per-model override and returns that model to BatLLM's shared timeout rules
+A remote model is only a catalogue entry until it has been downloaded.
 
-`Delete Selected` asks for confirmation and then removes the selected local Ollama model.
+1. Open **Remote Models**.
+2. Choose a model name.
+3. Press **Download Selected**.
 
-### Remote Models
+After a successful download, the model appears in the local model list and can be selected for play.
 
-Press the remote-model selector to:
+### Warm-up timeout
 
-1. refresh the remote list through `modelito`'s remote catalog helper
-2. open the `Remote Models` picker
-3. choose a remote model candidate
+The warm-up timeout controls how long BatLLM waits when starting Ollama and preparing a model.
 
-`Download Selected` asks for confirmation and then pulls that model into the local Ollama installation.
+- **Save Warmup** stores the configured value.
+- **Use Default** removes the override and returns to the built-in 30-second default.
 
-Remote-model names are not immediately playable. They become local models only after a successful pull.
+This startup warm-up timeout is separate from per-request model timeouts.
 
-### `Esc` On The Ollama Screen
+## Troubleshooting
 
-- if a model picker is open, `Esc` closes the picker
-- otherwise, `Esc` returns to `Settings`
+### The game starts but no actions occur
 
-## Ollama And Model Management
+Check the History screen. The most common cause is a response that does not match the command language exactly.
 
-BatLLM uses `modelito` for both gameplay requests and Ollama lifecycle/model-management flows.
+### Ollama is installed but BatLLM cannot reach it
 
-The app routes gameplay prompts through `modelito`'s Ollama provider surface and uses `modelito`'s Ollama service helpers for local model discovery, warmup, download, delete, and readiness checks.
+- confirm that Ollama is running;
+- press **Refresh** in **Ollama Config**;
+- verify the configured host and port; and
+- inspect the Ollama output log.
 
-If you already manage Ollama elsewhere, you can keep doing that. The in-app Ollama screen is recommended, but it is not the only possible workflow.
+### The model list is empty
 
-## Required: `modelito`
+Refresh the Ollama screen and confirm that the configured service is reachable. Remote catalogue access may also require network connectivity.
 
-BatLLM requires the lightweight `modelito` package for gameplay and Ollama lifecycle/model-management helpers. Install `modelito` with the repository-supported version: `pip install modelito==1.4.5`.
+### A saved session will not open in the analyzer
 
-## Safety Notes
+The analyzer requires the current session-v2 envelope. Legacy top-level list exports are intentionally unsupported.
 
-> [!WARNING]
-> BatLLM's Ollama screen operates on the real local Ollama installation, not a private BatLLM-only copy.
-
-1. Deleting a model in BatLLM deletes the local model itself.
-2. Downloading a model in BatLLM adds it to the same local model inventory used by other Ollama-based tools on the machine.
-3. Starting or stopping Ollama in BatLLM affects the configured local host and port.
-
-## Final Advice
-
-Treat BatLLM like a game of strategy played through imperfect intermediaries. Short prompts, overcomplicated prompts, and beautifully reasoned prompts can all fail if the model interprets them badly. Experiment, inspect the history, and refine.
-
-## Where To Go Next
-
-- project overview and entry point: [README.md](README.md)
-- recurring non-trivial questions for both players and contributors: [FAQ.md](FAQ.md)
-- contributor and developer material: [CONTRIBUTING.md](CONTRIBUTING.md)
+More detailed developer troubleshooting is in [CONTRIBUTING.md](CONTRIBUTING.md).

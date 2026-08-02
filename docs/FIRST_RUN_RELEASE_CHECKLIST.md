@@ -1,72 +1,101 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [Release Criteria](RELEASE_CRITERIA_1_0.md) · [Status](../STATUS.md)**
 
-# First-Run and Release Bundle Checklist
+# First-run and release-bundle checklist
 
-Use this checklist before each release candidate.
+Use a fresh machine, virtual machine, or disposable user profile for each release candidate. Record results in the release pull request or release issue rather than editing old execution logs into this reusable checklist.
 
-## Environment Matrix
+## Release candidate
 
-- macOS (Apple Silicon)
-- Linux
-- Windows
+- Version/tag:
+- Commit:
+- Tester:
+- Date:
+- Platform and architecture:
+- Python version:
+- Installation channel:
 
-## Validation Steps
+## Fresh installation
 
-### A. Fresh Clone and Install
+- [ ] Install from the intended channel without using an existing BatLLM environment.
+- [ ] Confirm the documented Python version is accepted.
+- [ ] Confirm dependencies install without manual package substitutions.
+- [ ] Launch the main application.
+- [ ] Launch the standalone Game Analyzer.
+- [ ] Confirm the application writes only to the expected state location.
 
-- create a new virtual environment
-- install `requirements.txt`
-- confirm `python run_batllm.py` launches
-- confirm `python run_game_analyzer.py` launches
+## Ollama missing
 
-### B. First-Run Without Ollama Installed
+- [ ] Launch BatLLM without the Ollama CLI available.
+- [ ] Confirm the install prompt is understandable.
+- [ ] Decline installation and confirm the application remains usable.
+- [ ] Open **Ollama Config** and confirm **Install Ollama** remains available.
 
-- verify startup prompts for install path are shown
-- verify declining install keeps app usable
-- verify `Ollama Config` still exposes install action
+## Ollama installed but stopped
 
-### C. First-Run With Ollama Installed But Stopped
+- [ ] Launch with automatic startup disabled and confirm the start prompt appears.
+- [ ] Start Ollama from the application.
+- [ ] Confirm status and output log update.
+- [ ] Repeat with automatic startup enabled.
+- [ ] Confirm the configured warm-up timeout is respected.
 
-- verify startup prompt to start service appears when auto-start is off
-- verify auto-start path works when setting is on
-- verify selected or fallback startup model behavior is correct
+## Model workflow
 
-### D. Save/Load and Analyzer
+- [ ] Refresh local models.
+- [ ] Select an installed model and press **Use Selected**.
+- [ ] Confirm successful warm-up updates the selected and last-served model values.
+- [ ] Refresh remote models when network access is available.
+- [ ] Download a disposable test model only when storage and network use are acceptable.
+- [ ] Test deletion only with a disposable model and confirm the warning first.
 
-- play and save at least one session
-- load the session in analyzer mode
-- verify timeline/round navigation and prompts display correctly
+## Game and history
 
-### E. Release Bundles
+- [ ] Submit one prompt per player and complete at least one turn.
+- [ ] Complete a round and start another round.
+- [ ] Start a new game and confirm previous model history does not leak into it.
+- [ ] Confirm invalid model output is visible in History and does not crash the game.
+- [ ] Confirm prompt augmentation and independent/shared context settings behave as documented.
 
-- run `python create_release_bundles.py`
-- verify generated launchers exist for main app and analyzer on all platforms
-- launch from each wrapper and confirm expected entrypoint behavior
+## Save and analyzer
 
-### F. Homebrew (maintainer path)
+- [ ] Save a session after at least one completed turn.
+- [ ] Confirm the file is written to the documented location.
+- [ ] Load it in the in-app Game Analyzer.
+- [ ] Load it in the standalone analyzer.
+- [ ] Navigate games, rounds, turn starts, and individual plays.
+- [ ] Confirm prompts, responses, commands, settings, model metadata, and state differences are readable.
+- [ ] Confirm a legacy or malformed file is rejected clearly.
 
-- render formula from worktree:
-  - `python create_homebrew_formula.py --create-worktree-archive /tmp/BatLLM-homebrew-source.tar.gz --formula-out /tmp/batllm.rb`
-- confirm packaging tests pass:
-  - `python -m pytest -q src/tests/test_homebrew_packaging.py`
+## Exit and recovery
 
-## Sign-off
+- [ ] Verify exit confirmation when enabled.
+- [ ] Verify save-on-exit prompting when enabled.
+- [ ] Verify direct exit when both options are disabled.
+- [ ] Verify service shutdown behaviour when automatic stop is enabled.
+- [ ] Confirm save and service errors do not silently discard user input.
 
-- checklist completed by maintainer: in progress (Copilot-assisted local run)
-- date: 2026-05-09
-- release candidate tag: v0.3.6-rc1
+## Release bundle
 
-## Current Execution Record (2026-05-08)
+- [ ] Run `python create_release_bundles.py`.
+- [ ] Confirm the expected source and platform archives exist.
+- [ ] Extract the native platform bundle into a path containing spaces.
+- [ ] Run the included installer.
+- [ ] Run the main application launcher.
+- [ ] Run the analyzer launcher.
+- [ ] Confirm writable-state behaviour matches `STATE_AND_INSTALLATION.md`.
 
-- macOS: command-level checks completed (`create_release_bundles.py`, Homebrew formula render, Homebrew packaging tests, `run_tests.py full`).
-- Linux: pending manual first-run checklist execution on a Linux host.
-- Windows: pending manual first-run checklist execution on a Windows host.
-- Release policy note: keep the project on the `0.x` line pending maintainer testing sign-off.
+## Homebrew on Apple Silicon macOS
 
-## Current Execution Record (2026-05-09)
+- [ ] Generate a formula from the exact release source.
+- [ ] Install it through a temporary local tap.
+- [ ] Run `brew test batllm`.
+- [ ] Launch `batllm` and `batllm-analyzer`.
+- [ ] Confirm state is stored under `~/Library/Application Support/BatLLM` or an explicit override.
+- [ ] Uninstall and untap cleanly.
 
-- Re-ran the full automated validation stack locally: `pytest -q` (`151 passed, 2 skipped`) and `python run_tests.py full` (`4 passed` core smoke; `153 passed` full).
-- Re-ran packaging/release automation locally: `python create_release_bundles.py`, Homebrew formula generation to `/tmp/batllm.rb`, `python -m pytest -q src/tests/test_homebrew_packaging.py` (`7 passed`), and `python validate_packaging_smoke.py` (passed).
-- Reconfirmed `main` branch protection required checks: `ubuntu-latest`, `windows-latest`, `macos-latest`, `Homebrew dry-run`, `Smoke: Ollama integration`.
-- Linux: still pending manual first-run checklist execution on a Linux host.
-- Windows: still pending manual first-run checklist execution on a Windows host.
+## Final sign-off
+
+- [ ] Protected workflows pass on the release commit.
+- [ ] `python tools/check_docs.py` passes.
+- [ ] Known failures and deferred checks are recorded explicitly.
+- [ ] Version and release notes are consistent.
+- [ ] Maintainer approves the release.

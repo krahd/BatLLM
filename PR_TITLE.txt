@@ -1,1 +1,0 @@
-Harden CI, dependency security, and runtime state documentation

@@ -1,66 +1,75 @@
-> ![BatLLM logo](./images/logo-small.png) **[README](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [FAQ](FAQ.md) · [Changelog](CHANGELOG.md) · [Credits](CREDITS.md) · [Releases](https://github.com/krahd/BatLLM/releases)**
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [Roadmap](ROADMAP.md) · [Release Checklist](FIRST_RUN_RELEASE_CHECKLIST.md) · [Status](../STATUS.md)**
 
-# BatLLM 1.0 Release Criteria
+# BatLLM 1.0 release criteria
 
-This checklist turns the roadmap's 1.0 goals into explicit release gates.
+BatLLM remains on the `0.x` line. This document defines the gates for a future stable local-desktop 1.0 release; it is not a claim that the gates have already been completed.
 
-A 1.0 candidate is ready only when all sections below are complete.
+## Automated gates
 
-## 1) CI and Branch Protection Gates
+A release candidate must pass the protected `main` workflows:
 
-Required checks on `main` pull requests:
+- **CI**: Python `3.10`–`3.12` on Ubuntu, macOS, and Windows, including the complete non-live suite and the maintained Pylint gate.
+- **Multiplatform Validation**: platform release-bundle generation, Homebrew dry-run tests, and mock-Ollama integration smoke.
+- **Python dependency audit**.
+- **Dependency review** when the dependency graph is available.
+- **URUCON research validation** when research-facing paths change.
+- **Documentation check** through `python tools/check_docs.py`.
 
-- `ubuntu-latest`
-- `windows-latest`
-- `macos-latest`
-- `Homebrew dry-run`
-- `Smoke: Ollama integration`
+No required check may be bypassed for release tagging.
 
-Required workflow expectations:
+## Product reliability gates
 
-- non-live suite passes on Linux, macOS, and Windows
-- Homebrew dry-run formula rendering and packaging tests pass
-- smoke payload checks pass against the mock Ollama server
+- Missing, stopped, slow, and non-responsive Ollama states have understandable recovery paths.
+- Malformed model output cannot crash or corrupt the game lifecycle.
+- Game transitions cannot inherit conversation history or stale asynchronous callbacks from previous games.
+- Session saving is atomic and exports only completed analyzer-valid turns.
+- Current v2 sessions load and replay deterministically in the Game Analyzer.
+- Unsupported legacy sessions fail with a clear compatibility message.
+- Configuration and session paths are correct for source, Homebrew, and release-bundle use.
 
-## 2) Product Reliability Gates
+## User-interface gates
 
-Must be verified by tests and spot checks:
+- Equivalent actions use consistent labels across gameplay and analyzer screens.
+- Back, cancel, and `Esc` behaviour is predictable and documented.
+- Critical errors and destructive actions are visible and confirmed.
+- The remaining work in [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md) is either completed or explicitly deferred with maintainer sign-off.
 
-- startup flow covers missing Ollama, stopped Ollama, and auto-start paths
-- timeout handling remains deterministic and user-recoverable
-- malformed or incomplete model responses do not crash gameplay flow
-- save/load and analyzer replay compatibility remain stable for v2 sessions
+## Native first-run gates
 
-## 3) UX Consistency Gates
+The [first-run checklist](FIRST_RUN_RELEASE_CHECKLIST.md) must be completed on:
 
-Must be complete for both gameplay and analyzer modes:
+- macOS;
+- Linux; and
+- Windows.
 
-- navigation and key actions are consistent between screens
-- control and status panel structure follows one visual system
-- labels and button language are aligned in maintained docs
+For each platform, verify:
 
-## 4) First-Run and Bundle Gates
+- clean installation;
+- missing-Ollama flow;
+- installed-but-stopped flow;
+- normal model selection and one complete game;
+- session save and analyzer load;
+- launcher behaviour; and
+- writable-state behaviour.
 
-Must be validated per platform release bundle:
+Apple Silicon macOS additionally requires install-level Homebrew validation.
 
-- launcher scripts open the expected app mode
-- first-run config behavior is correct with and without `BATLLM_HOME`
-- startup guidance for Ollama install/start paths remains accurate
+## Documentation gates
 
-## 5) Documentation Gates
+- `README.md` reflects the supported install paths and current product.
+- `docs/USER_GUIDE.md` matches the game rules and UI labels.
+- `docs/CONTRIBUTING.md` matches the code structure, CI, and release workflow.
+- `STATUS.md` contains a current snapshot rather than historical audit logs.
+- `docs/CHANGELOG.md` distinguishes released history from current development.
+- Local links and the status timestamp contract pass `python tools/check_docs.py`.
 
-The maintained doc set must be in sync:
-
-- `README.md` and `USER_GUIDE.md` reflect current UX
-- `CONTRIBUTING.md` reflects current CI/test/release workflow
-- `CHANGELOG.md` has the release notes for the shipped 1.0 delta
-
-## Suggested Sign-off Process
+## Sign-off
 
 Before tagging `v1.0.0`:
 
-1. freeze scope to 1.0 roadmap items only
-2. run all required CI checks on the release branch
-3. run the first-run checklist in `FIRST_RUN_RELEASE_CHECKLIST.md`
-4. run Homebrew publish as a dry-run via formula generation
-5. tag and publish only after all checkboxes are complete
+1. Freeze scope to the signed-off 1.0 gates.
+2. Run all protected workflows on the exact release commit.
+3. Complete and record the native first-run checklist.
+4. Complete live Ollama and Homebrew checks on machines where their side effects are acceptable.
+5. Review version references in `VERSION`, `CITATION.cff`, the changelog, release notes, and generated packages.
+6. Tag only after explicit maintainer approval.

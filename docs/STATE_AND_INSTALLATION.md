@@ -1,32 +1,65 @@
+> ![BatLLM logo](./images/logo-small.png) **[Project](../README.md) · [Documentation](README.md) · [User Guide](USER_GUIDE.md) · [Contributing](CONTRIBUTING.md) · [Status](../STATUS.md)**
+
 # Installation channels and mutable state
 
-BatLLM should use one state model across all installation channels.
+BatLLM does not yet use one identical state location for every installation channel. This page records the behaviour implemented today.
 
-## Invariant
+## Source checkout
 
-Installed application files are read-only at runtime. User changes must not mutate the source tree, package installation directory, Homebrew cellar, application bundle, or release-bundle program directory.
+When `BATLLM_HOME` is not set:
 
-Runtime state belongs in a per-user application directory. `BATLLM_HOME` overrides the default location and is the canonical mechanism for tests, portable bundles, and package-manager integrations.
+- the shipped and mutable configuration path is `src/configs/config.yaml`;
+- a relative `data.saved_sessions_folder` resolves from the repository root; and
+- configuration changes therefore modify the checkout.
 
-## State categories
+This is convenient for development but is not suitable for a read-only package installation.
 
-| Category | Mutable | Location |
-|---|---:|---|
-| Packaged defaults | No | repository/package data |
-| Effective configuration | Yes | `$BATLLM_HOME/config.yaml` or platform app-data equivalent |
-| Saved sessions | Yes | `$BATLLM_HOME/sessions/` |
-| Logs | Yes | `$BATLLM_HOME/logs/` |
-| Cache/temp files | Yes | `$BATLLM_HOME/cache/` |
+## `BATLLM_HOME`
 
-## Required behaviour
+When `BATLLM_HOME` is set:
 
-- On first run, create the user state directory if it does not exist.
-- Copy packaged default configuration into the user state directory before applying user edits.
-- Treat repository-relative `src/configs/config.yaml` as a read-only default, not as runtime state.
-- Prefer atomic writes for configuration and saved sessions.
-- Do not write to the Homebrew cellar or any other package-manager-controlled directory.
-- Tests should set `BATLLM_HOME` to a temporary directory.
+- shipped defaults still come from `src/configs/config.yaml`;
+- mutable configuration is written to `$BATLLM_HOME/config.yaml`; and
+- relative saved-session folders resolve below `$BATLLM_HOME`.
 
-## Migration rule
+The directory is created as needed. Tests use this mechanism with a temporary directory.
 
-If an older install has user-edited configuration in a repository-relative path, migrate it once into the user state directory and leave the original file untouched after migration.
+## Homebrew
+
+The generated Homebrew wrappers set:
+
+```bash
+BATLLM_HOME="$HOME/Library/Application Support/BatLLM"
+```
+
+unless the environment already supplies another value. This keeps mutable state outside the Homebrew cellar.
+
+## Release bundles
+
+The current Windows, macOS, and Linux release-bundle launchers run from the extracted bundle directory and do not set `BATLLM_HOME` automatically.
+
+Consequences:
+
+- configuration changes can modify the extracted bundle's `src/configs/config.yaml`;
+- relative saved-session folders remain inside the extracted bundle; and
+- users who want a separate writable state directory should set `BATLLM_HOME` before launching.
+
+Moving release bundles to automatic platform-specific user-state directories remains a release-hardening task.
+
+## Default platform paths
+
+`src/util/paths.py` defines default user-state paths for future or packaging use:
+
+- macOS: `~/Library/Application Support/BatLLM`
+- Windows: `%APPDATA%\BatLLM` when `APPDATA` is available
+- Linux and other Unix systems: `~/.local/share/BatLLM`
+
+The application does not currently activate these defaults automatically for ordinary source or release-bundle launches; `BATLLM_HOME` must be set by the launcher or user.
+
+## Invariants
+
+- Tests must use an isolated temporary `BATLLM_HOME`.
+- Homebrew must not write into the cellar.
+- Configuration and session writes must remain atomic.
+- Documentation must distinguish shipped defaults from the active mutable path.
+- Changes to state-location behaviour require migration and release-bundle tests.
