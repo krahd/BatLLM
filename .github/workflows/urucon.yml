@@ -75,7 +75,7 @@ jobs:
         run: python research/urucon2026/build_artifact.py
       - name: Upload reproducibility artefact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: urucon-research-artifact
           path: |
