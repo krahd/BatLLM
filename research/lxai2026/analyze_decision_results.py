@@ -16,6 +16,7 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 DEFAULT_SUITE = HERE / "suite_decision_complexity.json"
+NUMBER_PATTERN = r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)"
 
 
 def canonical_command(command: str) -> str:
@@ -35,22 +36,35 @@ def first_terminal_command(english_instruction: str) -> str:
     text = english_instruction.lower()
     candidates: list[tuple[int, str]] = []
 
-    def add(pattern: str, command: str) -> None:
+    def add_literal(pattern: str, command: str) -> None:
         match = re.search(pattern, text)
         if match:
             candidates.append((match.start(), canonical_command(command)))
 
-    add(r"lower (?:it|the shield|your shield)", "S0")
-    add(r"raise (?:the |your )?shield", "S1")
-    add(r"fire", "B")
-    add(r"turn counterclockwise\s+([0-9.]+)\s+degrees", "A90")
-    add(r"turn clockwise\s+([0-9.]+)\s+degrees", "C90")
+    add_literal(r"lower (?:it|the shield|your shield)", "S0")
+    add_literal(r"raise (?:the |your )?shield", "S1")
+    add_literal(r"fire", "B")
 
-    move_match = re.search(r"move forward(?:\s+([0-9.]+))?", text)
+    ccw_match = re.search(
+        rf"turn counterclockwise\s+({NUMBER_PATTERN})\s+degrees", text
+    )
+    if ccw_match:
+        candidates.append(
+            (ccw_match.start(), canonical_command(f"A{ccw_match.group(1)}"))
+        )
+
+    cw_match = re.search(rf"turn clockwise\s+({NUMBER_PATTERN})\s+degrees", text)
+    if cw_match:
+        candidates.append((cw_match.start(), canonical_command(f"C{cw_match.group(1)}")))
+
+    move_match = re.search(rf"move forward(?:\s+({NUMBER_PATTERN}))?", text)
     if move_match:
         distance = move_match.group(1)
         candidates.append(
-            (move_match.start(), canonical_command("M" if distance is None else f"M{distance}"))
+            (
+                move_match.start(),
+                canonical_command("M" if distance is None else f"M{distance}"),
+            )
         )
 
     if not candidates:
@@ -94,11 +108,15 @@ def main() -> int:
     group_records: list[dict[str, Any]] = []
     for (model, condition, policy_id), items in sorted(grouped.items()):
         if len(items) != 4:
-            raise SystemExit(f"Expected four states for {(model, condition, policy_id)}, got {len(items)}")
+            raise SystemExit(
+                f"Expected four states for {(model, condition, policy_id)}, got {len(items)}"
+            )
         outputs = {item["normalized_command_canonical"] for item in items}
         expected = {item["expected_command_canonical"] for item in items}
         first = items[0]["first_terminal_command"]
-        first_selected = sum(item["normalized_command_canonical"] == first for item in items)
+        first_selected = sum(
+            item["normalized_command_canonical"] == first for item in items
+        )
         first_oracle = sum(item["expected_command_canonical"] == first for item in items)
         group_records.append(
             {
@@ -133,7 +151,11 @@ def main() -> int:
             "first_action_excess": first_sel - first_oracle,
         }
 
-    spanish = [r for r in group_records if r["condition"] in {"es_standard", "es_rioplatense"}]
+    spanish = [
+        r
+        for r in group_records
+        if r["condition"] in {"es_standard", "es_rioplatense"}
+    ]
     output: dict[str, Any] = {
         "results_dir": str(args.results_dir),
         "n_rows": len(rows),
@@ -153,17 +175,27 @@ def main() -> int:
         output["by_model_condition"][model] = {}
         for condition in sorted({r["condition"] for r in group_records}):
             output["by_model_condition"][model][condition] = summarise(
-                [r for r in group_records if r["model"] == model and r["condition"] == condition]
+                [
+                    r
+                    for r in group_records
+                    if r["model"] == model and r["condition"] == condition
+                ]
             )
     for tier in ["D1", "D2", "D3", "D4", "D5", "D6"]:
         output["by_tier_condition"][tier] = {}
         for condition in sorted({r["condition"] for r in group_records}):
             output["by_tier_condition"][tier][condition] = summarise(
-                [r for r in group_records if r["tier"] == tier and r["condition"] == condition]
+                [
+                    r
+                    for r in group_records
+                    if r["tier"] == tier and r["condition"] == condition
+                ]
             )
 
     json_path = args.results_dir / "decision_analysis.json"
-    json_path.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    json_path.write_text(
+        json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
 
     lines = [
         "# LXAI decision diagnostics",
@@ -175,7 +207,11 @@ def main() -> int:
         "| Condition | Policy-complete | State-invariant | First-action selected | Oracle first-action | Excess |",
         "|---|---:|---:|---:|---:|---:|",
     ]
-    labels = {"en": "English", "es_standard": "Standard Spanish", "es_rioplatense": "Rioplatense"}
+    labels = {
+        "en": "English",
+        "es_standard": "Standard Spanish",
+        "es_rioplatense": "Rioplatense",
+    }
     for condition in ["en", "es_standard", "es_rioplatense"]:
         s = output["by_condition"][condition]
         lines.append(
