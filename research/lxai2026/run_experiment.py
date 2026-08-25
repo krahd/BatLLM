@@ -18,15 +18,19 @@ import ast
 import csv
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+import hashlib
 import json
 import math
 import os
 from pathlib import Path
 import random
 import statistics
+import subprocess
 import sys
 from time import perf_counter
 from typing import Any, Iterable, Mapping, Sequence
+from urllib.error import URLError
+from urllib.request import urlopen
 
 # BatLLM's configuration layer imports Kivy. Disable Kivy's argv parser before
 # any BatLLM import so experiment-specific flags such as --models reach argparse.
@@ -391,6 +395,61 @@ def print_summary(summary):
     print(json.dumps(summary["failure_classes"], indent=2, ensure_ascii=False))
 
 
+def _command_output(args: Sequence[str]) -> str | None:
+    try:
+        completed = subprocess.run(
+            list(args), cwd=ROOT, capture_output=True, text=True, check=False, timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if completed.returncode != 0:
+        return None
+    return completed.stdout.strip() or completed.stderr.strip() or None
+
+
+def _ollama_base_url(host: str, port: int) -> str:
+    clean = str(host).rstrip("/")
+    suffix = f":{int(port)}"
+    return clean if clean.endswith(suffix) else clean + suffix
+
+
+def _ollama_json(host: str, port: int, path: str) -> dict[str, Any] | None:
+    try:
+        with urlopen(_ollama_base_url(host, port) + path, timeout=5) as response:  # nosec B310
+            payload = json.loads(response.read().decode("utf-8"))
+    except (OSError, URLError, ValueError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def collect_provenance(models: Sequence[str], host: str, port: int, suite_path: Path) -> dict[str, Any]:
+    tags_payload = _ollama_json(host, port, "/api/tags") or {}
+    available = tags_payload.get("models") if isinstance(tags_payload.get("models"), list) else []
+    model_records = {}
+    for requested in models:
+        matched = next(
+            (
+                item for item in available
+                if isinstance(item, Mapping)
+                and requested in {str(item.get("name") or ""), str(item.get("model") or "")}
+            ),
+            None,
+        )
+        model_records[requested] = dict(matched) if isinstance(matched, Mapping) else None
+    version_payload = _ollama_json(host, port, "/api/version") or {}
+    suite_bytes = suite_path.read_bytes()
+    return {
+        "git_commit": _command_output(("git", "rev-parse", "HEAD")),
+        "git_branch": _command_output(("git", "branch", "--show-current")),
+        "python_version": sys.version,
+        "python_executable": sys.executable,
+        "ollama_version": version_payload.get("version") or _command_output(("ollama", "--version")),
+        "models": model_records,
+        "suite_sha256": hashlib.sha256(suite_bytes).hexdigest(),
+        "system_prompt_sha256": hashlib.sha256(SYSTEM_PROMPT.encode("utf-8")).hexdigest(),
+    }
+
+
 def parser() -> argparse.ArgumentParser:
     value = argparse.ArgumentParser(description="Run the LXAI Rioplatense BatLLM action-fidelity experiment.")
     value.add_argument("--models", nargs="+", required=True, help="Installed Ollama model names.")
@@ -441,6 +500,7 @@ def main(argv=None) -> int:
         "host": args.host, "port": args.port, "rules": game_rules.to_dict(),
         "system_prompt": SYSTEM_PROMPT, "suite_source": str(args.suite),
         "suite_version": suite_payload.get("version"), "suite_status": suite_payload.get("status"),
+        "provenance": collect_provenance(models, args.host, args.port, args.suite),
         "primary_metric_note": (
             "Strict metrics use BatLLM's production parser unchanged. Diagnostic command recovery "
             "is reported separately and never changes executable scoring."
