@@ -125,15 +125,16 @@ def nearest_rank_p99(vals):
     return nearest_rank(vals, 0.99)
 
 
-def rounded_inclusive_iqr(vals):
-    """Q1/Q3 using linear interpolation over the observed sample range.
+def higher_iqr(vals):
+    """Q1/Q3 using the empirical 'higher' quantile convention.
 
-    This is Python statistics' inclusive quartile convention, equivalent to
-    linear percentile interpolation on positions 0..n-1. The paper reports
-    character counts as integers, so the two quartiles are rounded accordingly.
+    For a sample of n observations, each quantile is the observed value at
+    ceil(q * (n - 1)) in zero-based sorted order. This is the convention used
+    for the character-count IQRs reported in the paper.
     """
-    q1, _, q3 = statistics.quantiles(vals, n=4, method="inclusive")
-    return round(q1), round(q3)
+    vals = sorted(vals)
+    n = len(vals)
+    return vals[math.ceil(0.25 * (n - 1))], vals[math.ceil(0.75 * (n - 1))]
 
 
 def main():
@@ -234,8 +235,8 @@ def main():
     assert len(q_tuteo) == len(q_voseo) == 64
     tchars = [response_chars(r) for r in q_tuteo]
     vchars = [response_chars(r) for r in q_voseo]
-    t_iqr = rounded_inclusive_iqr(tchars)
-    v_iqr = rounded_inclusive_iqr(vchars)
+    t_iqr = higher_iqr(tchars)
+    v_iqr = higher_iqr(vchars)
     t_med = statistics.median(tchars)
     v_med = statistics.median(vchars)
     lang_key = lambda r: (r["order"], r["case_id"])
