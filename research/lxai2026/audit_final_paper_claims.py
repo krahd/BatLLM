@@ -29,6 +29,11 @@ def norm(v):
     return "" if v is None else str(v)
 
 
+def response_chars(row):
+    v = row.get("response_chars")
+    return int(v) if v not in (None, "") else len(row.get("full_response", ""))
+
+
 def metrics(rows):
     n = len(rows)
     correct = sum(bool(r.get("command_correct")) for r in rows)
@@ -111,9 +116,13 @@ def token_position(rows):
     return d
 
 
-def nearest_rank_p99(vals):
+def nearest_rank(vals, q):
     vals = sorted(vals)
-    return vals[math.ceil(0.99 * len(vals)) - 1]
+    return vals[math.ceil(q * len(vals)) - 1]
+
+
+def nearest_rank_p99(vals):
+    return nearest_rank(vals, 0.99)
 
 
 def main():
@@ -153,11 +162,94 @@ def main():
         print(f"  {token:5s}: first {x['first_selected']}/{x['first_n']}={pf:.3f}; second {x['second_selected']}/{x['second_n']}={ps:.3f}")
         assert pf > ps, f"Token {token} does not show the claimed positional direction"
 
+    # Direct and format-only ceilings are non-binding in the symmetric experiment.
+    direct_chars = [response_chars(r) for r in direct]
+    format_chars = [response_chars(r) for r in format_only]
+    direct_failures = sum(bool(r.get("final_extraction_error")) for r in direct)
+    format_failures = sum(bool(r.get("final_extraction_error")) for r in format_only)
+    print("\nNon-binding output ceilings")
+    print(f"  direct: max chars {max(direct_chars)}; extraction failures {direct_failures}")
+    print(f"  format-only: max chars {max(format_chars)}; extraction failures {format_failures}")
+    assert max(direct_chars) == 4
+    assert max(format_chars) == 11
+    assert direct_failures == 0 and format_failures == 0
+
+    # Paired 256 -> 1024 budget repair: every correctness change must be a
+    # repaired 256-token extraction failure, with no regression.
+    key = lambda r: (r["model"], r["language"], r["order"], r["case_id"])
+    old_by_key = {key(r): r for r in delib256}
+    new_by_key = {key(r): r for r in delib1024}
+    assert old_by_key.keys() == new_by_key.keys()
+    improved = []
+    regressed = []
+    changed_success_commands = []
+    prefix_repairs = 0
+    unchanged_success_responses = 0
+    for k in old_by_key:
+        old = old_by_key[k]
+        new = new_by_key[k]
+        if not old.get("command_correct") and new.get("command_correct"):
+            improved.append((old, new))
+        if old.get("command_correct") and not new.get("command_correct"):
+            regressed.append((old, new))
+        if old.get("valid"):
+            if norm(old.get("normalized_command")) != norm(new.get("normalized_command")):
+                changed_success_commands.append((old, new))
+            if old.get("full_response", "") == new.get("full_response", ""):
+                unchanged_success_responses += 1
+        if old.get("final_extraction_error") and new.get("valid"):
+            if new.get("full_response", "").startswith(old.get("full_response", "")):
+                prefix_repairs += 1
+
+    print("\nPaired 256 -> 1024 repair")
+    print(f"  improved correctness: {len(improved)}")
+    print(f"  regressions: {len(regressed)}")
+    print(f"  improved rows that were 256-token extraction failures: {sum(bool(o.get('final_extraction_error')) for o,_ in improved)}")
+    print(f"  successful final commands changed: {len(changed_success_commands)}")
+    print(f"  old successful full responses byte-identical: {unchanged_success_responses}/241")
+    print(f"  old failed response exact prefixes: {prefix_repairs}/15")
+    assert len(improved) == 15
+    assert not regressed
+    assert all(bool(o.get("final_extraction_error")) for o, _ in improved)
+    assert not changed_success_commands
+    assert unchanged_success_responses == 240
+    assert prefix_repairs == 14
+
+    # Qwen30 language-conditioned response-length distribution at the
+    # non-binding 1024-token ceiling. Internal es_standard = tuteo.
+    qwen = "qwen3:30b-a3b-instruct-2507-q4_K_M"
+    q_tuteo = [r for r in delib1024 if r["model"] == qwen and r["language"] == "es_standard"]
+    q_voseo = [r for r in delib1024 if r["model"] == qwen and r["language"] == "es_rioplatense"]
+    assert len(q_tuteo) == len(q_voseo) == 64
+    tchars = [response_chars(r) for r in q_tuteo]
+    vchars = [response_chars(r) for r in q_voseo]
+    t_iqr = (nearest_rank(tchars, .25), nearest_rank(tchars, .75))
+    v_iqr = (nearest_rank(vchars, .25), nearest_rank(vchars, .75))
+    t_med = statistics.median(tchars)
+    v_med = statistics.median(vchars)
+    lang_key = lambda r: (r["order"], r["case_id"])
+    t_by_cell = {lang_key(r): response_chars(r) for r in q_tuteo}
+    v_by_cell = {lang_key(r): response_chars(r) for r in q_voseo}
+    assert t_by_cell.keys() == v_by_cell.keys()
+    voseo_longer = sum(v_by_cell[k] > t_by_cell[k] for k in t_by_cell)
+
+    print("\nQwen30 1024-token response-length distribution")
+    print(f"  tuteo: mean {statistics.mean(tchars):.1f}; median {t_med:.1f}; IQR {t_iqr[0]}-{t_iqr[1]}; max {max(tchars)}")
+    print(f"  voseo: mean {statistics.mean(vchars):.1f}; median {v_med:.1f}; IQR {v_iqr[0]}-{v_iqr[1]}; max {max(vchars)}")
+    print(f"  voseo longer in paired cells: {voseo_longer}/64")
+    assert round(statistics.mean(tchars), 1) == 368.8
+    assert round(statistics.mean(vchars), 1) == 517.4
+    assert t_med == 304 and v_med == 436
+    assert t_iqr == (252, 401), t_iqr
+    assert v_iqr == (263, 735), v_iqr
+    assert max(tchars) == 842 and max(vchars) == 2459
+    assert voseo_longer == 39
+
     old = load(OLD_DELIB)
     failed = [r for r in old if r.get("final_extraction_error")]
     ok = [r for r in old if not r.get("final_extraction_error") and not r.get("provider_error")]
-    fchars = [int(r.get("response_chars", len(r.get("full_response", "")))) for r in failed]
-    ochars = [int(r.get("response_chars", len(r.get("full_response", "")))) for r in ok]
+    fchars = [response_chars(r) for r in failed]
+    ochars = [response_chars(r) for r in ok]
     print("\nOriginal 48-case deliberation extraction diagnostic")
     print(f"  extraction failures: {len(failed)}")
     print(f"  failed mean chars: {statistics.mean(fchars):.1f}; median {statistics.median(fchars):.1f}; min {min(fchars)}; max {max(fchars)}")
