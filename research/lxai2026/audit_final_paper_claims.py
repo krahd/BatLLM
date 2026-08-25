@@ -155,14 +155,22 @@ def main():
 
     # Submission-critical assertions.
     expected = {
-        "direct": (135,116,19,98,3,51),
-        "format_only": (130,99,31,83,3,40),
-        "deliberative_256": (238,120,118,16,54,1),
-        "deliberative_1024": (253,128,125,3,61,0),
+        "direct": (135,116,19,98,91,3,51),
+        "format_only": (130,99,31,83,58,3,40),
+        "deliberative_256": (238,120,118,16,2,54,1),
+        "deliberative_1024": (253,128,125,3,2,61,0),
     }
     for name, vals in expected.items():
         m = arms[name]
-        got = (m["correct"],m["oracle_first_correct"],m["oracle_second_correct"],m["order_changed"],m["complete"],m["invariant"])
+        got = (
+            m["correct"],
+            m["oracle_first_correct"],
+            m["oracle_second_correct"],
+            m["order_changed"],
+            m["follows_first_both"],
+            m["complete"],
+            m["invariant"],
+        )
         assert got == vals, f"{name}: expected {vals}, got {got}"
 
     print("\nDirect token-position diagnostic")
@@ -226,6 +234,69 @@ def main():
     assert not changed_success_commands
     assert unchanged_success_responses == 240
     assert prefix_repairs == 14
+
+    # The secondary command-derived diagnostics in the paper must change only
+    # in pairs/groups containing a repaired 256-token truncation. This is a
+    # stronger check than comparing aggregate counts alone.
+    pair_key = lambda r: (r["model"], r["language"], r["case_id"])
+    old_pairs = defaultdict(list)
+    new_pairs = defaultdict(list)
+    for r in delib256:
+        old_pairs[pair_key(r)].append(r)
+    for r in delib1024:
+        new_pairs[pair_key(r)].append(r)
+    assert old_pairs.keys() == new_pairs.keys()
+
+    def pair_changed(pair):
+        a, b = sorted(pair, key=lambda r: r["order"])
+        return norm(a.get("normalized_command")) != norm(b.get("normalized_command"))
+
+    def pair_follows_first(pair):
+        return all(bool(r.get("selected_first_position")) for r in pair)
+
+    resolved_swaps = [k for k in old_pairs if pair_changed(old_pairs[k]) and not pair_changed(new_pairs[k])]
+    introduced_swaps = [k for k in old_pairs if not pair_changed(old_pairs[k]) and pair_changed(new_pairs[k])]
+    pair_metric_changes = [
+        k
+        for k in old_pairs
+        if pair_changed(old_pairs[k]) != pair_changed(new_pairs[k])
+        or pair_follows_first(old_pairs[k]) != pair_follows_first(new_pairs[k])
+    ]
+    assert all(any(bool(r.get("final_extraction_error")) for r in old_pairs[k]) for k in pair_metric_changes)
+
+    group_key = lambda r: (r["model"], r["language"], r["order"], r["policy_id"])
+    old_groups = defaultdict(list)
+    new_groups = defaultdict(list)
+    for r in delib256:
+        old_groups[group_key(r)].append(r)
+    for r in delib1024:
+        new_groups[group_key(r)].append(r)
+    assert old_groups.keys() == new_groups.keys()
+
+    def group_complete(group):
+        return all(bool(r.get("command_correct")) for r in group)
+
+    def group_invariant(group):
+        return len({norm(r.get("normalized_command")) for r in group}) == 1
+
+    group_metric_changes = [
+        k
+        for k in old_groups
+        if group_complete(old_groups[k]) != group_complete(new_groups[k])
+        or group_invariant(old_groups[k]) != group_invariant(new_groups[k])
+    ]
+    assert all(any(bool(r.get("final_extraction_error")) for r in old_groups[k]) for k in group_metric_changes)
+
+    print("\nPost-repair secondary diagnostics")
+    print(f"  order changed: {arms['deliberative_256']['order_changed']}/128 -> {arms['deliberative_1024']['order_changed']}/128")
+    print(f"  resolved order swaps: {len(resolved_swaps)}; introduced order swaps: {len(introduced_swaps)}")
+    print(f"  follows first both: {arms['deliberative_256']['follows_first_both']}/128 -> {arms['deliberative_1024']['follows_first_both']}/128")
+    print(f"  policy complete: {arms['deliberative_256']['complete']}/64 -> {arms['deliberative_1024']['complete']}/64")
+    print(f"  state invariant: {arms['deliberative_256']['invariant']}/64 -> {arms['deliberative_1024']['invariant']}/64")
+    print(f"  changed pair diagnostics touching a 256-token truncation: {len(pair_metric_changes)}/{len(pair_metric_changes)}")
+    print(f"  changed group diagnostics touching a 256-token truncation: {len(group_metric_changes)}/{len(group_metric_changes)}")
+    assert len(resolved_swaps) == 13
+    assert not introduced_swaps
 
     # Qwen30 language-conditioned response-length distribution at the
     # non-binding 1024-token ceiling. Internal es_standard = tuteo.
