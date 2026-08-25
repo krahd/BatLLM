@@ -1,0 +1,90 @@
+{
+  "created_at_utc": "2026-08-25T18:51:06.028259+00:00",
+  "experiment": "LXAI 2026 deliberation output-budget post-freeze control",
+  "language_labels": {
+    "es_rioplatense": "Rioplatense voseo",
+    "es_standard": "Tuteo Spanish"
+  },
+  "languages": [
+    "es_standard",
+    "es_rioplatense"
+  ],
+  "models": [
+    "mistral-small3.2:24b-instruct-2506-q4_K_M",
+    "qwen3:30b-a3b-instruct-2507-q4_K_M"
+  ],
+  "n_invocations_planned": 256,
+  "n_semantic_states": 32,
+  "num_predict": 1024,
+  "order_seed": 20260825,
+  "orders": [
+    "a_first",
+    "b_first"
+  ],
+  "provenance": {
+    "clause_map_sha256": "7738338db977a32e69864212fe8ef7f1655bf68cbfa6762b592d5250ac8d5396",
+    "deliberation_prompt_sha256": "f09b124633ddbf3475d94030961640b5b4629f482ce9a6624dbcb6fa90e85255",
+    "direct_prompt_sha256": "14d70e9ce9933e32df96c4e225efcdc61b1fbbfaca740a6ddffb7f195cfb423f",
+    "git_branch": "lxai-rioplatense-experiment",
+    "git_commit": "8714b458ab3f1a28adbe410a81ffd6fdb9eb5cc0",
+    "models": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "capabilities": [
+          "vision",
+          "completion",
+          "tools"
+        ],
+        "details": {
+          "context_length": 131072,
+          "embedding_length": 5120,
+          "families": [
+            "mistral3"
+          ],
+          "family": "mistral3",
+          "format": "gguf",
+          "parameter_size": "24.0B",
+          "parent_model": "",
+          "quantization_level": "Q4_K_M"
+        },
+        "digest": "5a408ab55df5c1b5cf46533c368813b30bf9e4d8fc39263bf2a3338cfa3b895b",
+        "model": "mistral-small3.2:24b-instruct-2506-q4_K_M",
+        "modified_at": "2026-08-14T21:41:14.310503707-06:00",
+        "name": "mistral-small3.2:24b-instruct-2506-q4_K_M",
+        "size": 15177384862
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "capabilities": [
+          "completion",
+          "tools"
+        ],
+        "details": {
+          "context_length": 262144,
+          "embedding_length": 2048,
+          "families": [
+            "qwen3moe"
+          ],
+          "family": "qwen3moe",
+          "format": "gguf",
+          "parameter_size": "30.5B",
+          "parent_model": "",
+          "quantization_level": "Q4_K_M"
+        },
+        "digest": "19e422b0231392335cfc49cfd172de7034bb1aeabb08aa307cce745c60b272fe",
+        "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+        "modified_at": "2026-08-12T15:32:12.509959942-06:00",
+        "name": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+        "size": 18556699186
+      }
+    },
+    "ollama_version": "0.32.15",
+    "python_version": "3.12.14 (main, Aug 12 2026, 13:57:54) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "source_suite_sha256": "52f729d15c45a97a793866d9b775bf7b35ab5ac55b1892807b63e464352ff727"
+  },
+  "relation_to_symmetric_factorial": "Repeats the deliberative cells of the clean symmetric clause-order factorial with larger num_predict and records Ollama termination metadata.",
+  "repeats": 1,
+  "seed": 20260825,
+  "source_suite": "/Users/tom/devel/projects/BatLLM/research/lxai2026/suite_decision_complexity.json",
+  "source_suite_version": 2,
+  "system_prompt": "You control bot 1 in BatLLM.\nIn [GAME_STATE], bot 1 is you and bot 2 is the opponent.\n[PLAYER_INPUT] gives a policy for choosing the current action.\n\nWork through the supplied state and policy explicitly before choosing the\ncommand. Check every comparison, Boolean condition, arithmetic operation and\nordered or nested branch needed by the policy. You may write a short scratchpad.\n\nFinish with one line in exactly this form:\nFINAL: <command>\n\nwhere <command> is exactly one valid BatLLM command token:\nB = fire\nS1 = set shield on\nS0 = set shield off\nS = toggle shield\nM = move forward by the default step\nM<number> = move forward by that normalised distance\nC<number> = rotate clockwise by that many degrees\nA<number> = rotate counterclockwise by that many degrees\n\nThe JSON state fields are health, x, y, rot (degrees), and shield. true means\nthe shield is on and false means it is off. Put nothing after the FINAL line.",
+  "temperature": 0.0
+}
