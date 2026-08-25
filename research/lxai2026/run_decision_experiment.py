@@ -1,7 +1,8 @@
 """Run LXAI 2026 Experiment 2: decision complexity × Spanish variety.
 
 This wrapper preserves Experiment 1's runner and scoring while using an
-Experiment-2-specific system prompt that makes the state-use task explicit.
+Experiment-2-specific system prompt that makes the state-use task explicit and
+a strict direct Ollama transport so generation options are applied exactly.
 The linguistic manipulation remains confined to the matched player input.
 """
 from __future__ import annotations
@@ -10,6 +11,7 @@ from pathlib import Path
 import sys
 
 import run_experiment as base
+from direct_ollama_client import DirectOllamaChatClient
 
 HERE = Path(__file__).resolve().parent
 
@@ -42,6 +44,7 @@ the command token."""
 def main(argv: list[str] | None = None) -> int:
     args = list(sys.argv[1:] if argv is None else argv)
     base.SYSTEM_PROMPT = DECISION_SYSTEM_PROMPT
+    base.ModelitoChatClient = DirectOllamaChatClient
     if "--suite" not in args:
         args = ["--suite", str(HERE / "suite_decision_complexity.json"), *args]
     return base.main(args)
