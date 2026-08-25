@@ -6,7 +6,7 @@ This protocol defines the main decision-complexity experiment. An earlier baseli
 
 Does the difference in executable-action fidelity between broadly standardised written Spanish and voseo-marked Rioplatense Spanish change as selecting the action requires progressively more computation over game state?
 
-The experiment does not claim novelty for stateful tool use, state-dependent reasoning, or deterministic evaluation. Those are established in prior work including ToolSandbox and BFCL. The narrower object is the interaction between within-Spanish regional variation and controlled executable decision complexity.
+The experiment does not claim novelty for stateful tool use, state-dependent reasoning, or deterministic evaluation. Those are established in prior work including ToolSandbox and BFCL. The narrower object is the interaction between within-Spanish regional variation and controlled executable decision structure.
 
 ## Design
 
@@ -20,7 +20,7 @@ Each case has three semantically matched language conditions:
 
 The primary inferential comparison is standardised Spanish versus Rioplatense Spanish.
 
-## Decision-complexity levels
+## Decision-structure levels
 
 There are eight cases at each level, comprising two policies with four state variants each.
 
@@ -31,7 +31,7 @@ There are eight cases at each level, comprising two policies with four state var
 - **D5 — derived numerical state:** arithmetic or distance must be computed from state before selecting an action.
 - **D6 — composite policy:** derived or relational state is combined with nested/ordered multi-variable decisions.
 
-The levels are an experimental manipulation of decision structure, not a claim of a universal psychological or computational complexity scale.
+The levels are an experimental manipulation of decision structure, not a claim of a universal psychological or computational complexity scale. They differ not only in the number and type of state operations but also, at the upper levels, in branch structure. Raw accuracy across D1–D6 must therefore be interpreted together with the branch diagnostics below rather than as an isolated measure of reasoning complexity.
 
 ## Counter-state requirement
 
@@ -63,7 +63,7 @@ Primary reporting:
 - strict accuracy for standardised Spanish and Rioplatense Spanish at D1–D6;
 - paired standard-minus-Rioplatense difference at each level;
 - discordant-pair counts and exact McNemar result at each level;
-- the trajectory of the paired language difference as decision level increases.
+- the trajectory of the paired language difference as decision structure changes.
 
 Secondary outcomes:
 
@@ -74,11 +74,12 @@ Secondary outcomes:
 - per-model results;
 - per-policy counter-state consistency.
 
-Prospectively defined state-use diagnostics:
+Prospectively defined state-use and branch diagnostics:
 
 - **policy-complete correctness:** whether all four counter-states of a policy are answered correctly within a language/model condition;
 - **state-invariant output:** whether a model emits the same command for all four states of a policy despite the oracle requiring at least two commands;
-- **first-mentioned-action diagnostic:** the rate at which responses select the first terminal action mentioned in a policy, interpreted against that policy's oracle branch frequencies rather than as an accuracy baseline.
+- **first-mentioned-action diagnostic:** the rate at which responses select the first terminal action mentioned in a policy, interpreted against that policy's oracle branch frequencies rather than as an accuracy baseline;
+- **target branch position:** accuracy stratified by which terminal branch is correct, used to distinguish state/policy failure from language-variety effects when policies have different branch structures.
 
 These diagnostics are explanatory and do not replace strict command correctness as the primary outcome.
 
@@ -90,13 +91,19 @@ Pilot/debug calls collected before the final transport and task specification ar
 
 Early pilots revealed that Qwen3 4B and Qwen3 30B-A3B repeatedly selected the first action named by a conditional policy even when its condition was false, identically across English, standardised Spanish, and Rioplatense Spanish. Inspection confirmed that the expected actions and counter-states were correct. This motivated an explicit decision-task system prompt clarifying the mapping from bot identifiers to `you` and `opponent` and requiring evaluation of the supplied state.
 
-A subsequent audit found a separate transport defect: the pinned Modelito 1.4.5 Ollama provider accepts a `settings` argument but does not include those settings in its `/api/chat` request payload. Consequently, nominal temperature, seed, and output-token settings in the earlier runner were not actually applied. No data collected through that adapter are used in the main analysis. The final runner uses a strict direct Ollama transport that sends and records the exact request options.
+A subsequent audit found a separate transport defect: the pinned Modelito 1.4.5 Ollama provider accepts a `settings` argument but does not include those settings in its `/api/chat` request payload. Consequently, nominal temperature, seed, and output-token settings in the earlier runner were not actually applied. No data collected through that adapter are used in the main analysis. The final runner uses a strict direct Ollama transport that sends the exact request options.
+
+The final direct-transport state-use diagnostic isolated the Qwen failure further. Qwen3 30B-A3B correctly extracted bot 1 health (`5`/`25`) and correctly evaluated whether it was below 15 (`YES`/`NO`), but on the symbolic policy `if health < 15 return A; otherwise B` it returned `A` for both states. The same failure appeared when `A/B` were replaced by BatLLM commands `S1/M`. This shows that the failure occurs at conditional branch execution rather than state extraction, threshold comparison, or BatLLM command parsing.
+
+A final branch-order diagnostic compared two logically equivalent binary policies. Mistral Small 3.2 24B returned the correct action for both states under both formulations. Qwen3 30B-A3B and Qwen3 4B were correct for the true branch and for the complementary/reversed formulation, but returned the first branch's action when the original `health < 15` condition was false. Llama 3.2 produced explanatory prose rather than the requested single symbol in the original formulation and selected the first branch incorrectly for one reversed case. These observations establish that the policy syntax is executable by at least one tested model while motivating the branch-position diagnostics above. They are pilot findings only and are excluded from the main dataset.
 
 ## Interpretation constraints
 
-A decline shared by both Spanish conditions as D1–D6 increases is evidence about decision difficulty in this bounded task, not dialect disadvantage.
+The primary object is the **paired difference between the two matched Spanish conditions**. Because branch structure and oracle action are identical within each standardised-Spanish/Rioplatense pair, a branch-position or first-action bias that affects both conditions equally does not by itself constitute a regional-variety effect.
 
-A Spanish-variety effect is supported only by a difference between the matched Spanish conditions, especially if that difference changes systematically with decision level. English is contextual rather than the primary inferential baseline.
+A decline shared by both Spanish conditions across D1–D6 may reflect increasing state/policy difficulty, changing branch structure, or both. It must not be presented as a pure monotonic reasoning-complexity effect without the branch diagnostics.
+
+A Spanish-variety effect is supported only by a difference between the matched Spanish conditions, especially if that difference changes systematically with decision level or branch position. English is contextual rather than the primary inferential baseline.
 
 Nonsignificant differences do not establish equivalence unless an equivalence margin is defined separately and prospectively.
 
@@ -104,4 +111,4 @@ Claims remain limited to the constructions represented here. The Rioplatense con
 
 ## Freeze rule
 
-Before the main run, perform a final language/logic review, dry run, and state-use sanity check with the final prompt and direct transport. After the main run begins, do not alter prompts, expected actions, policy definitions, states, scoring rules, model set, transport, generation settings, or decision-level assignments for the reported main analysis. Any later changes constitute a separate robustness experiment.
+The language/logic review, direct-transport audit, state-use diagnostic, and branch-order diagnostic were completed before the main run. The suite, prompt, expected actions, policy definitions, states, scoring rules, model set, transport, generation settings, and D1–D6 assignments are now frozen for the reported main analysis. Any later change constitutes a separate robustness experiment.
