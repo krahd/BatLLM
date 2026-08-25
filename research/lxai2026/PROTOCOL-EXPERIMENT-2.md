@@ -10,7 +10,7 @@ The experiment does not claim novelty for stateful tool use, state-dependent rea
 
 ## Design
 
-The suite contains 48 cases: 12 decision policies, each instantiated in four counterbalanced game states. Each policy therefore maps the same linguistic instruction to different correct commands depending on state. This prevents success from being explained by a fixed association between an instruction and one command.
+The suite contains 48 cases: 12 decision policies, each instantiated in four counter-state game states. Each policy therefore maps the same linguistic instruction to different correct commands depending on state. This prevents success from being explained by a fixed association between an instruction and one command.
 
 Each case has three semantically matched language conditions:
 
@@ -36,6 +36,8 @@ The levels are an experimental manipulation of decision structure, not a claim o
 ## Counter-state requirement
 
 Every policy is evaluated in four state variants and must yield at least two distinct correct commands across those states. The instruction wording is held constant within a language condition across the four states. A model therefore has to use the supplied game state to obtain all variants correctly.
+
+This is a counter-state design, not a requirement that terminal commands occur equally often within every policy. Branch frequencies follow the policy logic; for example, a two-condition conjunction is true in one of its four Boolean state combinations. Command-frequency imbalance must therefore not be interpreted as evidence of model preference without comparison to the policy structure.
 
 ## Models and invocation
 
@@ -71,6 +73,14 @@ Secondary outcomes:
 - deterministic executable-consequence correctness;
 - per-model results;
 - per-policy counter-state consistency.
+
+Prospectively defined state-use diagnostics:
+
+- **policy-complete correctness:** whether all four counter-states of a policy are answered correctly within a language/model condition;
+- **state-invariant output:** whether a model emits the same command for all four states of a policy despite the oracle requiring at least two commands;
+- **first-mentioned-action diagnostic:** the rate at which responses select the first terminal action mentioned in a policy, interpreted against that policy's oracle branch frequencies rather than as an accuracy baseline.
+
+These diagnostics are explanatory and do not replace strict command correctness as the primary outcome.
 
 A formal language-condition × decision-level interaction analysis may supplement the paired results, but no post-hoc redefinition of the D1–D6 levels is permitted after seeing main-run outputs.
 
