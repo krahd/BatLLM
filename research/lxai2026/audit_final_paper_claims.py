@@ -173,6 +173,29 @@ def main():
         )
         assert got == vals, f"{name}: expected {vals}, got {got}"
 
+    # The factorial deliberately retains only the eight two-clause policies
+    # that admit exact semantic-preserving clause permutation. They instantiate
+    # six unordered terminal-action pairs.
+    expected_policy_ids = {
+        "D1-P1", "D1-P2", "D2-P1", "D2-P2",
+        "D3-P1", "D3-P2", "D5-P1", "D5-P2",
+    }
+    policy_ids = {r["policy_id"] for r in direct}
+    assert policy_ids == expected_policy_ids, policy_ids
+    action_pairs = set()
+    for policy_id in policy_ids:
+        rows = [r for r in direct if r["policy_id"] == policy_id]
+        pair_sets = {
+            frozenset((norm(r["first_position_command"]), norm(r["second_position_command"])))
+            for r in rows
+        }
+        assert len(pair_sets) == 1, (policy_id, pair_sets)
+        action_pairs.add(next(iter(pair_sets)))
+    print("\nFactorial policy scope")
+    print(f"  retained policies: {len(policy_ids)}; distinct unordered action pairs: {len(action_pairs)}")
+    print("  excluded strata from exact clause permutation: D4, D6")
+    assert len(action_pairs) == 6
+
     print("\nDirect token-position diagnostic")
     td = token_position(direct)
     for token in sorted(td):
@@ -181,6 +204,15 @@ def main():
         ps = x["second_selected"] / x["second_n"]
         print(f"  {token:5s}: first {x['first_selected']}/{x['first_n']}={pf:.3f}; second {x['second_selected']}/{x['second_n']}={ps:.3f}")
         assert pf > ps, f"Token {token} does not show the claimed positional direction"
+
+    direct_first = sum(bool(r.get("selected_first_position")) for r in direct)
+    direct_second = sum(bool(r.get("selected_second_position")) for r in direct)
+    direct_neither = len(direct) - direct_first - direct_second
+    print("\nDirect clause-membership diagnostic")
+    print(f"  first-position action: {direct_first}/256")
+    print(f"  second-position action: {direct_second}/256")
+    print(f"  neither presented action: {direct_neither}/256")
+    assert (direct_first, direct_second, direct_neither) == (214, 27, 15)
 
     # Direct and format-only ceilings are non-binding in the symmetric experiment.
     direct_chars = [response_chars(r) for r in direct]
@@ -234,6 +266,25 @@ def main():
     assert not changed_success_commands
     assert unchanged_success_responses == 240
     assert prefix_repairs == 14
+
+    # Completed token lengths of the 15 repaired Qwen30 cells, used by the
+    # manuscript's repaired-cell token plot.
+    tuteo_repair_tokens = sorted(
+        int(new.get("ollama_eval_count"))
+        for old, new in improved
+        if old.get("language") == "es_standard"
+    )
+    voseo_repair_tokens = sorted(
+        int(new.get("ollama_eval_count"))
+        for old, new in improved
+        if old.get("language") == "es_rioplatense"
+    )
+    print("\nRepaired-cell completed token counts")
+    print(f"  tuteo ({len(tuteo_repair_tokens)}): {tuteo_repair_tokens}")
+    print(f"  voseo ({len(voseo_repair_tokens)}): {voseo_repair_tokens}")
+    assert tuteo_repair_tokens == [265, 269, 271]
+    assert voseo_repair_tokens == [258, 259, 260, 260, 260, 291, 302, 324, 332, 336, 338, 600]
+    assert all(x > 256 for x in tuteo_repair_tokens + voseo_repair_tokens)
 
     # The secondary command-derived diagnostics in the paper must change only
     # in pairs/groups containing a repaired 256-token truncation. This is a
