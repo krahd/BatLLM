@@ -19,12 +19,17 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 import json
 import math
+import os
 from pathlib import Path
 import random
 import statistics
 import sys
 from time import perf_counter
 from typing import Any, Iterable, Mapping, Sequence
+
+# BatLLM's configuration layer imports Kivy. Disable Kivy's argv parser before
+# any BatLLM import so experiment-specific flags such as --models reach argparse.
+os.environ.setdefault("KIVY_NO_ARGS", "1")
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
