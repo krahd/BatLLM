@@ -2,7 +2,8 @@
 
 **Dataset:** `results/20260825T094526Z/`  
 **State:** frozen direct-transport main run complete; 576/576 calls; zero provider errors.  
-**Raw files:** `metadata.json`, `results.csv`, `results.jsonl`, `summary.json`.
+**Raw files:** `metadata.json`, `results.csv`, `results.jsonl`, `summary.json`.  
+**Derived diagnostics:** `results/20260825T094526Z/DECISION-ANALYSIS.md`, `decision_analysis.json`.
 
 ## Strict command correctness
 
@@ -44,7 +45,7 @@ The direction is heterogeneous across the four fixed model conditions. Do not in
 | D5 | 28.1% | 37.5% | −9.38 pp | 0.375 |
 | D6 | 21.9% | 21.9% | 0.0 pp | 1.000 |
 
-There is no monotonic Rioplatense penalty as D1–D6 increases. D1 and D2 are identical across Spanish conditions; the sign changes at D3/D4; Rioplatense is descriptively higher at D5; D6 is identical. D1–D6 are designed structural strata, not a validated interval-scale complexity measure.
+There is no monotonic Rioplatense penalty as D1–D6 changes. D1 and D2 are identical across Spanish conditions; the sign changes at D3/D4; Rioplatense is descriptively higher at D5; D6 is identical. D1–D6 are designed structural strata, not a validated interval-scale complexity measure.
 
 ## Other outcome metrics
 
@@ -92,30 +93,54 @@ Executable correctness by tier:
 
 All Mistral/Qwen responses were valid. The seven invalid outputs were confined to Llama 3.2. The dominant failure is therefore action selection rather than provider or formatting failure.
 
-## Interpretation currently supported
+## Policy-level state-use diagnostics
 
-The main run does not show the hypothesised pooled disadvantage for voseo-marked Rioplatense instructions. More importantly, it does not show a stable pooled language-variety direction at all: model-specific strict-command differences change sign, the strict and executable pooled metrics point in opposite directions by the same small magnitude, and the D1–D6 Spanish difference is non-monotonic.
+The prospectively declared diagnostics were derived from the frozen CSV by `analyze_decision_results.py`; the derived files are committed beside the raw results.
 
-The strongest bounded interpretation at this stage is:
+| Condition | Policy-complete | State-invariant | First-action selected | Oracle first-action | Excess |
+|---|---:|---:|---:|---:|---:|
+| English | 3/48 (6.2%) | 37/48 (77.1%) | 63.0% | 43.8% | +19.3 pp |
+| Standard Spanish | 0/48 (0.0%) | 37/48 (77.1%) | 57.8% | 43.8% | +14.1 pp |
+| Rioplatense | 0/48 (0.0%) | 36/48 (75.0%) | 59.9% | 43.8% | +16.1 pp |
 
-> In this controlled executable suite, regional Spanish marking is not the dominant source of failure. Action-selection failures and model-specific behaviour are substantially larger than the small, unstable pooled difference between standardised and voseo-marked Rioplatense Spanish.
+A policy group is `model × language condition × policy`, evaluated over its four counter-states. In the two Spanish conditions combined, none of 96 groups answered all four counter-states correctly, and 73/96 (76.0%) emitted one invariant command despite the oracle requiring more than one command across the four states. First-mentioned actions were selected substantially more often than their oracle frequency in both Spanish conditions.
 
-Do not convert this into an equivalence claim, a statement that models “understand” Rioplatense, or a general robustness claim.
+This is the strongest explanatory result of the study: the models frequently fail to condition action selection on the supplied state. The state-use failure is large in both Spanish varieties and is much larger than the small pooled standard-vs-Rioplatense difference.
 
-## Remaining prospectively declared diagnostics
+### Spanish policy diagnostics by model
 
-Run:
+| Model | Condition | Policy-complete | State-invariant | First-action excess |
+|---|---|---:|---:|---:|
+| Llama 3.2 | Standard | 0/12 | 10/12 (83.3%) | −29.2 pp |
+| Llama 3.2 | Rioplatense | 0/12 | 8/12 (66.7%) | −16.7 pp |
+| Mistral 24B | Standard | 0/12 | 7/12 (58.3%) | +14.6 pp |
+| Mistral 24B | Rioplatense | 0/12 | 9/12 (75.0%) | +25.0 pp |
+| Qwen3 30B-A3B | Standard | 0/12 | 11/12 (91.7%) | +50.0 pp |
+| Qwen3 30B-A3B | Rioplatense | 0/12 | 9/12 (75.0%) | +37.5 pp |
+| Qwen3 4B | Standard | 0/12 | 9/12 (75.0%) | +20.8 pp |
+| Qwen3 4B | Rioplatense | 0/12 | 10/12 (83.3%) | +18.8 pp |
 
-```bash
-python research/lxai2026/analyze_decision_results.py \
-  research/lxai2026/results/20260825T094526Z
-```
+The first-action diagnostic is explanatory rather than a universal bias measure: Llama often selected other recurrent actions, yielding negative excess, while the Qwen models showed especially strong first-action excess. The common cross-model feature is state-invariant output, not one single lexical heuristic.
 
-This derives, without altering raw rows:
+### Spanish state invariance by tier
 
-- policy-complete correctness;
-- state-invariant output rate;
-- first-mentioned-action selection relative to each policy's oracle branch frequency;
-- the same diagnostics by model/condition and tier/condition.
+| Tier | Standard | Rioplatense |
+|---|---:|---:|
+| D1 | 6/8 (75.0%) | 5/8 (62.5%) |
+| D2 | 7/8 (87.5%) | 8/8 (100.0%) |
+| D3 | 5/8 (62.5%) | 4/8 (50.0%) |
+| D4 | 7/8 (87.5%) | 6/8 (75.0%) |
+| D5 | 5/8 (62.5%) | 6/8 (75.0%) |
+| D6 | 7/8 (87.5%) | 7/8 (87.5%) |
 
-Commit `DECISION-ANALYSIS.md` and `decision_analysis.json` after generation. These diagnostics are explanatory and are required before attributing absolute D1–D6 performance to decision structure.
+State-invariant behaviour is already prevalent at D1 and remains high across the designed strata. This prevents interpreting a raw D1→D6 decline as a clean effect of increasing decision complexity.
+
+## Interpretation supported by the full analysis
+
+The main run does not show the hypothesised pooled disadvantage for voseo-marked Rioplatense instructions, nor a stable pooled regional-variety direction. More importantly, the counter-state analysis shows that model outputs are usually insensitive to state changes that require different actions.
+
+The strongest bounded interpretation is:
+
+> In this controlled executable suite, regional Spanish marking is not the dominant source of failure. Across both standardised and voseo-marked Rioplatense Spanish, models frequently fail to condition their selected action on the supplied state; state-invariant policy execution and model-specific action-selection behaviour dominate the small, unstable regional-variety difference.
+
+Do not convert this into an equivalence claim, a statement that models “understand” Rioplatense, a general robustness claim, or a claim about internal mechanisms. The experiment is behavioural and bounded to these constructions, policies and four fixed local model conditions.
