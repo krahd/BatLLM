@@ -1,6 +1,6 @@
-# LXAI 2026 Experiment 2: decision complexity × Spanish variety
+# LXAI 2026 decision complexity × Spanish variety
 
-This protocol defines the follow-up experiment. Experiment 1 and its stored main-run results remain unchanged.
+This protocol defines the main decision-complexity experiment. An earlier baseline run was discarded after a transport audit showed that the Modelito 1.4.5 Ollama adapter did not transmit the nominal generation settings. Its stored results and result-specific interpretation were removed and are not part of the evidence base for this study.
 
 ## Research question
 
@@ -39,14 +39,14 @@ Every policy is evaluated in four state variants and must yield at least two dis
 
 ## Models and invocation
 
-Use the same four local model conditions as Experiment 1:
+Use these four local model conditions:
 
 - `mistral-small3.2:24b-instruct-2506-q4_K_M`
 - `qwen3:30b-a3b-instruct-2507-q4_K_M`
 - `qwen3:4b-instruct-2507-q4_K_M`
 - `llama3.2:latest`
 
-Experiment 2 uses `run_decision_experiment.py`, which preserves Experiment 1's BatLLM command grammar, temperature (`0.0`), seed (`20260825`), output-token limit (`24`), strict parser, deterministic execution semantics, and condition randomisation procedure, but uses an Experiment-2-specific system prompt.
+Use `run_decision_experiment.py` with the strict direct Ollama `/api/chat` transport. The request must transmit and record the exact generation options: temperature `0.0`, seed `20260825` plus repeat index, output-token limit `24`, and `stream: false`. The runner retains BatLLM's production command grammar, strict parser, deterministic execution semantics, and condition randomisation procedure.
 
 The system prompt makes the state-use task explicit: bot 1 is the acting agent (`you`), bot 2 is the opponent, and the model must apply the policy to the supplied state before selecting a command. It instructs the model to evaluate comparisons, Boolean conditions, arithmetic, and ordered/nested branches as written, while keeping reasoning internal and returning only the BatLLM command token. This clarification is identical across all three language conditions and does not supply any Spanish lexical glosses.
 
@@ -54,7 +54,7 @@ Total main-run calls: 48 cases × 3 language conditions × 4 models = **576 call
 
 ## Outcomes
 
-The primary outcome remains **strict command correctness** under BatLLM's unchanged production parser.
+The primary outcome is **strict command correctness** under BatLLM's unchanged production parser.
 
 Primary reporting:
 
@@ -74,13 +74,13 @@ Secondary outcomes:
 
 A formal language-condition × decision-level interaction analysis may supplement the paired results, but no post-hoc redefinition of the D1–D6 levels is permitted after seeing main-run outputs.
 
-## Pre-freeze pilots
+## Pre-freeze pilots and transport audit
 
-Two pilot/debug runs were conducted before the final Experiment 2 prompt was frozen. They are excluded from the main dataset.
+Pilot/debug calls collected before the final transport and task specification are excluded from the main dataset.
 
-The first sampled two counter-state cases with Qwen3 4B. The second tested all four states of one D1 health-threshold policy with Qwen3 4B and Qwen3 30B-A3B. Both models repeatedly selected the first action named by the policy even when its condition was false, identically across English, standardised Spanish, and Rioplatense Spanish.
+Early pilots revealed that Qwen3 4B and Qwen3 30B-A3B repeatedly selected the first action named by a conditional policy even when its condition was false, identically across English, standardised Spanish, and Rioplatense Spanish. Inspection confirmed that the expected actions and counter-states were correct. This motivated an explicit decision-task system prompt clarifying the mapping from bot identifiers to `you` and `opponent` and requiring evaluation of the supplied state.
 
-Inspection confirmed that the expected actions and counter-states were correct. The pilots instead exposed an under-specification in the reused Experiment 1 system prompt: it defined the command grammar and said that the model controlled bot 1, but did not explicitly state the semantic mapping of bot 1/2 to `you`/`opponent` or require policy evaluation against the current state. The Experiment 2 system prompt was therefore clarified prospectively before the main run. No pilot result is included in the reported analysis.
+A subsequent audit found a separate transport defect: the pinned Modelito 1.4.5 Ollama provider accepts a `settings` argument but does not include those settings in its `/api/chat` request payload. Consequently, nominal temperature, seed, and output-token settings in the earlier runner were not actually applied. No data collected through that adapter are used in the main analysis. The final runner uses a strict direct Ollama transport that sends and records the exact request options.
 
 ## Interpretation constraints
 
@@ -94,4 +94,4 @@ Claims remain limited to the constructions represented here. The Rioplatense con
 
 ## Freeze rule
 
-Before the main Experiment 2 run, perform a final language/logic review, dry run, and state-use sanity check with the final Experiment 2 prompt. After the main Experiment 2 run begins, do not alter prompts, expected actions, policy definitions, states, scoring rules, model set, or decision-level assignments for the reported main analysis. Any later changes constitute a separate robustness experiment.
+Before the main run, perform a final language/logic review, dry run, and state-use sanity check with the final prompt and direct transport. After the main run begins, do not alter prompts, expected actions, policy definitions, states, scoring rules, model set, transport, generation settings, or decision-level assignments for the reported main analysis. Any later changes constitute a separate robustness experiment.
