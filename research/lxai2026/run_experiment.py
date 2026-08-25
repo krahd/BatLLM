@@ -14,6 +14,7 @@ Example:
 from __future__ import annotations
 
 import argparse
+import ast
 import csv
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -52,18 +53,20 @@ LABELS = {
     "es_rioplatense": "Rioplatense Spanish",
 }
 SYSTEM_PROMPT = """You control bot 1 in BatLLM.
-Return exactly one BatLLM command and no other text.
-B = fire / disparar
-S1 = raise or enable shield / levantar o activar escudo
-S0 = lower or disable shield / bajar o desactivar escudo
-S = toggle shield / cambiar el estado del escudo
-M = move forward by the default step / avanzar el paso predeterminado
-M<number> = move forward by that normalised distance / avanzar esa distancia normalizada
-C<number> = rotate clockwise by that many degrees / girar en sentido horario esos grados
-A<number> = rotate counterclockwise by that many degrees / girar en sentido antihorario esos grados
-The JSON state uses health/salud, x, y, rot/rotacion in degrees, and
-shield/escudo. true means raised/on and false means lowered/off.
-Return only the command token."""
+Return exactly one BatLLM command token and no other text.
+Valid command forms are:
+B = fire
+S1 = set shield on
+S0 = set shield off
+S = toggle shield
+M = move forward by the default step
+M<number> = move forward by that normalised distance
+C<number> = rotate clockwise by that many degrees
+A<number> = rotate counterclockwise by that many degrees
+The JSON state uses the fields health, x, y, rot (degrees), and shield.
+true means the shield is on and false means it is off.
+Do not return JSON, a dictionary, prose, Markdown, or code fences. Return only
+the command token."""
 
 
 @dataclass(frozen=True)
@@ -91,6 +94,14 @@ class Score:
     action_family_correct: bool
     parameter_correct: bool | None
     executable_correct: bool
+
+
+@dataclass(frozen=True)
+class Diagnostic:
+    command: str | None
+    method: str | None
+    command_correct: bool
+    failure_class: str
 
 
 def state_from_overrides(overrides: Mapping[str, Any]) -> dict[int, dict[str, Any]]:
@@ -194,13 +205,69 @@ def score_response(item: TrialCase, raw: str, game_rules: GameplaySettingsSnapsh
     )
 
 
+def recover_wrapped_command(raw: str) -> tuple[str | None, str | None]:
+    """Recover an unambiguous command for diagnostics without changing execution.
+
+    The primary metrics always use BatLLM's strict production parser. This
+    diagnostic only recognises a mapping with a string-valued ``command`` key,
+    covering outputs such as ``{'command': 'S1'}``. It deliberately does not
+    search arbitrary prose for command-looking substrings.
+    """
+    strict = parse_model_response(raw)
+    if strict.valid:
+        return strict.normalized_cmd, "strict"
+    text = str(raw or "").strip()
+    for loader, method in ((json.loads, "json_command_field"),
+                           (ast.literal_eval, "literal_command_field")):
+        try:
+            payload = loader(text)
+        except (ValueError, SyntaxError, TypeError):
+            continue
+        if not isinstance(payload, Mapping) or not isinstance(payload.get("command"), str):
+            continue
+        candidate = parse_model_response(payload["command"])
+        if candidate.valid:
+            return candidate.normalized_cmd, method
+    return None, None
+
+
+def diagnostic(item: TrialCase, raw: str, score: Score, error: str | None) -> Diagnostic:
+    if error is not None:
+        return Diagnostic(None, None, False, "provider_error")
+    expected = parse_model_response(item.expected_command).normalized_cmd
+    recovered, method = recover_wrapped_command(raw)
+    recovered_correct = recovered == expected if recovered is not None else False
+    if score.command_correct:
+        failure_class = "correct"
+    elif not score.valid and recovered_correct:
+        failure_class = "format_only"
+    elif not score.valid and recovered is not None:
+        failure_class = "format_and_action_error"
+    elif score.valid:
+        failure_class = "action_error"
+    else:
+        failure_class = "invalid_unrecoverable"
+    return Diagnostic(recovered, method, recovered_correct, failure_class)
+
+
 def build_trials(cases, models, conditions, repeats, order_seed, limit=None) -> list[TrialSpec]:
-    """Shuffle within models to randomise condition order without model-load thrashing."""
+    """Randomise case and condition order while preserving complete case groups."""
+    conditions = list(conditions)
+    if limit is not None and int(limit) % len(conditions) != 0:
+        raise ValueError(
+            f"--limit must be divisible by the number of conditions ({len(conditions)}) "
+            "so smoke tests preserve matched cases."
+        )
     all_trials = []
     for model_index, model in enumerate(models):
-        batch = [TrialSpec(model, repeat, item, condition)
-                 for repeat in range(repeats) for item in cases for condition in conditions]
-        random.Random(order_seed + model_index).shuffle(batch)
+        rng = random.Random(order_seed + model_index)
+        groups = [(repeat, item) for repeat in range(repeats) for item in cases]
+        rng.shuffle(groups)
+        batch = []
+        for repeat, item in groups:
+            condition_order = conditions[:]
+            rng.shuffle(condition_order)
+            batch.extend(TrialSpec(model, repeat, item, condition) for condition in condition_order)
         all_trials.extend(batch)
     return all_trials if limit is None else all_trials[:max(0, int(limit))]
 
@@ -261,9 +328,18 @@ def paired(rows, metric, model=None, task_class=None, tier=None):
 
 def summarise(rows, models):
     metrics = ("valid", "action_family_correct", "parameter_correct",
-               "command_correct", "executable_correct")
-    summary = {"n_rows": len(rows), "errors": sum(bool(row.get("error")) for row in rows),
-               "by_model_condition": {}, "paired_standard_vs_rioplatense": {}}
+               "command_correct", "executable_correct", "diagnostic_command_correct")
+    summary = {
+        "n_rows": len(rows),
+        "errors": sum(bool(row.get("error")) for row in rows),
+        "failure_classes": {
+            key: sum(row.get("failure_class") == key for row in rows)
+            for key in ("correct", "format_only", "format_and_action_error", "action_error",
+                        "invalid_unrecoverable", "provider_error")
+        },
+        "by_model_condition": {},
+        "paired_standard_vs_rioplatense": {},
+    }
     for model in models:
         summary["by_model_condition"][model] = {}
         for condition in CONDITIONS:
@@ -274,7 +350,8 @@ def summarise(rows, models):
             }
     task_classes = sorted({row["task_class"] for row in rows})
     tiers = sorted({row["tier"] for row in rows})
-    for metric in ("valid", "action_family_correct", "command_correct", "executable_correct"):
+    for metric in ("valid", "action_family_correct", "command_correct", "executable_correct",
+                   "diagnostic_command_correct"):
         summary["paired_standard_vs_rioplatense"][metric] = {
             "all_models": paired(rows, metric),
             "by_model": {model: paired(rows, metric, model=model) for model in models},
@@ -299,7 +376,7 @@ def rate(value):
 
 
 def print_summary(summary):
-    print("\nCommand correctness by model and condition")
+    print("\nStrict command correctness by model and condition")
     print("model\tEnglish\tstandard Spanish\tRioplatense\tstd-rio")
     for model, conditions in summary["by_model_condition"].items():
         standard = conditions["es_standard"]["command_correct"]
@@ -308,8 +385,10 @@ def print_summary(summary):
         print(f"{model}\t{rate(conditions['en']['command_correct'])}\t{rate(standard)}"
               f"\t{rate(rio)}\t{rate(delta)}")
     comparison = summary["paired_standard_vs_rioplatense"]["command_correct"]["all_models"]
-    print("\nPaired standardised-Spanish vs Rioplatense command correctness")
+    print("\nPaired standardised-Spanish vs Rioplatense strict command correctness")
     print(json.dumps(comparison, indent=2, ensure_ascii=False))
+    print("\nFailure classes")
+    print(json.dumps(summary["failure_classes"], indent=2, ensure_ascii=False))
 
 
 def parser() -> argparse.ArgumentParser:
@@ -325,7 +404,10 @@ def parser() -> argparse.ArgumentParser:
     value.add_argument("--num-predict", type=int, default=24)
     value.add_argument("--repeats", type=int, default=1)
     value.add_argument("--output-dir", type=Path)
-    value.add_argument("--limit", type=int, help="Run only N invocations for a live smoke test.")
+    value.add_argument(
+        "--limit", type=int,
+        help="Run only N invocations; N must preserve complete condition sets for each case.",
+    )
     value.add_argument("--dry-run", action="store_true")
     return value
 
@@ -359,6 +441,10 @@ def main(argv=None) -> int:
         "host": args.host, "port": args.port, "rules": game_rules.to_dict(),
         "system_prompt": SYSTEM_PROMPT, "suite_source": str(args.suite),
         "suite_version": suite_payload.get("version"), "suite_status": suite_payload.get("status"),
+        "primary_metric_note": (
+            "Strict metrics use BatLLM's production parser unchanged. Diagnostic command recovery "
+            "is reported separately and never changes executable scoring."
+        ),
         "suite": [{
             "case_id": item.case_id, "task_class": item.task_class, "tier": item.tier,
             "expected_command": item.expected_command, "state": normalize_state_map(item.state),
@@ -377,6 +463,7 @@ def main(argv=None) -> int:
             raw, latency, error = invoke(client, trial.model, trial.case, trial.condition, options)
             parsed = parse_model_response(raw)
             score = score_response(trial.case, raw, game_rules) if error is None else Score(False, False, False, None, False)
+            diag = diagnostic(trial.case, raw, score, error)
             row = {
                 "model": trial.model, "repeat": trial.repeat, "case_id": trial.case.case_id,
                 "task_class": trial.case.task_class, "tier": trial.case.tier,
@@ -388,14 +475,22 @@ def main(argv=None) -> int:
                 "valid": score.valid, "action_family_correct": score.action_family_correct,
                 "parameter_correct": score.parameter_correct, "command_correct": score.command_correct,
                 "executable_correct": score.executable_correct,
+                "diagnostic_command": diag.command,
+                "diagnostic_method": diag.method,
+                "diagnostic_command_correct": diag.command_correct,
+                "failure_class": diag.failure_class,
                 "latency_ms": round(latency, 3), "error": error,
             }
             rows.append(row)
             jsonl.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
             jsonl.flush()
             marker = "ERR" if error else ("OK" if score.command_correct else "MISS")
+            diagnostic_suffix = ""
+            if not score.command_correct and diag.command is not None:
+                diagnostic_suffix = f"; diagnostic={diag.command}/{diag.failure_class}"
             print(f"[{index:>4}/{len(trials)}] {marker:4} {trial.model} {trial.condition:15} "
-                  f"{trial.case.case_id} -> {parsed.normalized_cmd} (expected {row['expected_command']})")
+                  f"{trial.case.case_id} -> {parsed.normalized_cmd} (expected {row['expected_command']})"
+                  f"{diagnostic_suffix}")
 
     write_csv(output / "results.csv", rows)
     summary = summarise(rows, models)
