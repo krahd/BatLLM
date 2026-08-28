@@ -1,0 +1,14 @@
+{
+  "br.criminal_record_certificate": {"result":{"certificate_status":"NADA_CONSTA","synthetic":true}},
+  "br.postal_code_lookup": {"result":{"postal_code":"01001000","street":"Praça da Sé","city":"São Paulo","state":"SP","synthetic":true}},
+  "br.cnpj_lookup": {"result":{"registration_number":"00000000000191","status":"ACTIVE","legal_name":"EMPRESA TESTE LTDA","synthetic":true}},
+  "br.cpf_status": {"result":{"registration_number":"00000000191","status":"REGULAR","synthetic":true}},
+  "br.cadunico_status": {"result":{"registration_number":"00000000191","registered":true,"synthetic":true}},
+  "br.sicar_lookup": {"result":{"registration_number":"00000000000191","properties":[],"synthetic":true}},
+  "br.ibge_municipalities": {"result":{"state_code":"RS","municipalities":["Porto Alegre","Pelotas","Santana do Livramento"],"synthetic":true}},
+  "br.public_service_details": {"result":{"service_id":1001,"name":"Serviço Público Sintético","status":"published","synthetic":true}},
+  "br.open_data_search": {"result":{"query":"compras públicas","datasets":["Compras Públicas do Governo Federal"],"synthetic":true}},
+  "br.pncp_contract": {"result":{"organisation_id":"00394460000141","year":2021,"sequence":1,"status":"published","synthetic":true}},
+  "br.bcb_selic": {"result":{"series":"Selic","value":15.0,"synthetic":true}},
+  "br.compras_suppliers": {"result":{"state_code":"DF","count":3,"suppliers":["FORNECEDOR TESTE A","FORNECEDOR TESTE B","FORNECEDOR TESTE C"],"synthetic":true}}
+}
