@@ -1,0 +1,50 @@
+{
+  "br.criminal_record_certificate": {
+    "goal_en": "Obtain the criminal-record certificate result for the synthetic test person PESSOA TESTE, CPF 00000000191, born 1990-01-01.",
+    "goal_pt": "Obtenha o resultado da certidão de antecedentes criminais para a pessoa sintética PESSOA TESTE, CPF 00000000191, nascida em 1990-01-01.",
+    "native": null,
+    "normalised": {"name":"get_criminal_record_certificate","description_en":"Obtain a criminal-record certificate result for an entitled person.","description_pt":"Obter o resultado da certidão de antecedentes criminais de uma pessoa habilitada.","fields":{"person_name":"string","cpf":"string","birth_date":"YYYY-MM-DD"},"arguments":{"person_name":"PESSOA TESTE","cpf":"00000000191","birth_date":"1990-01-01"},"provenance":"harness"}
+  },
+  "br.postal_code_lookup": {
+    "goal_en": "Look up the address associated with Brazilian postal code 01001000.",
+    "goal_pt": "Consulte o endereço associado ao CEP brasileiro 01001000.",
+    "native": {"name":"viacep_cep","description_en":"Third-party ViaCEP lookup by CEP. This is not an institutional government API.","description_pt":"Consulta de CEP pelo serviço terceiro ViaCEP. Esta não é uma API institucional do governo.","fields":{"cep":"string"},"arguments":{"cep":"01001000"},"provenance":"intermediary"},
+    "normalised": {"name":"lookup_postal_code","description_en":"Look up address fields from a postal code.","description_pt":"Consultar os campos de endereço a partir de um código postal.","fields":{"postal_code":"string"},"arguments":{"postal_code":"01001000"},"provenance":"harness"}
+  },
+  "br.cnpj_lookup": {
+    "goal_en": "Look up basic registration data for the synthetic CNPJ 00000000000191.",
+    "goal_pt": "Consulte os dados cadastrais básicos do CNPJ sintético 00000000000191.",
+    "native": null,
+    "normalised": {"name":"lookup_business_registration","description_en":"Look up basic business-registration data by national registration number.","description_pt":"Consultar dados cadastrais básicos de uma empresa pelo número nacional de registro.","fields":{"registration_number":"string"},"arguments":{"registration_number":"00000000000191"},"provenance":"harness"}
+  },
+  "br.cpf_status": {
+    "goal_en": "Check the CPF registration status for the synthetic CPF 00000000191.",
+    "goal_pt": "Verifique a situação cadastral do CPF sintético 00000000191.",
+    "native": null,
+    "normalised": {"name":"check_person_registration","description_en":"Check a person's national registration status.","description_pt":"Verificar a situação do registro nacional de uma pessoa.","fields":{"registration_number":"string"},"arguments":{"registration_number":"00000000191"},"provenance":"harness"}
+  },
+  "br.ibge_municipalities": {
+    "goal_en": "List the municipalities in the Brazilian state identified by UF RS.",
+    "goal_pt": "Liste os municípios do estado brasileiro identificado pela UF RS.",
+    "native": {"name":"localidades_municipios_por_uf","description_en":"IBGE Localities API: list municipalities for a state UF code.","description_pt":"API de Localidades do IBGE: listar municípios para uma sigla UF.","fields":{"UF":"string"},"arguments":{"UF":"RS"},"provenance":"institution"},
+    "normalised": {"name":"list_municipalities","description_en":"List municipalities for a state code.","description_pt":"Listar municípios para um código de estado.","fields":{"state_code":"string"},"arguments":{"state_code":"RS"},"provenance":"harness"}
+  },
+  "br.public_service_details": {
+    "goal_en": "Retrieve the metadata for the synthetic public-service identifier 1001.",
+    "goal_pt": "Recupere os metadados do identificador sintético de serviço público 1001.",
+    "native": {"name":"consultar_servico_completo","description_en":"Portal gov.br Services API: retrieve one service by servicoId.","description_pt":"API de Serviços do Portal gov.br: consultar um serviço pelo servicoId.","fields":{"servicoId":"integer"},"arguments":{"servicoId":1001},"provenance":"institution"},
+    "normalised": {"name":"get_public_service","description_en":"Retrieve one public service by service identifier.","description_pt":"Consultar um serviço público pelo identificador do serviço.","fields":{"service_id":"integer"},"arguments":{"service_id":1001},"provenance":"harness"}
+  },
+  "br.pncp_contract": {
+    "goal_en": "Retrieve the PNCP contract/empenho with organisation CNPJ 00394460000141, year 2021 and sequence 1.",
+    "goal_pt": "Consulte no PNCP o contrato/empenho do órgão CNPJ 00394460000141, ano 2021 e sequencial 1.",
+    "native": {"name":"consultar_contrato_empenho","description_en":"PNCP GET /v1/orgaos/{cnpj}/contratos/{ano}/{sequencial}.","description_pt":"PNCP GET /v1/orgaos/{cnpj}/contratos/{ano}/{sequencial}.","fields":{"cnpj":"string","ano":"integer","sequencial":"integer"},"arguments":{"cnpj":"00394460000141","ano":2021,"sequencial":1},"provenance":"institution"},
+    "normalised": {"name":"get_public_contract","description_en":"Retrieve a public contract by organisation identifier, year and sequence.","description_pt":"Consultar um contrato público pelo identificador do órgão, ano e sequência.","fields":{"organisation_id":"string","year":"integer","sequence":"integer"},"arguments":{"organisation_id":"00394460000141","year":2021,"sequence":1},"provenance":"harness"}
+  },
+  "br.compras_suppliers": {
+    "goal_en": "List public-procurement suppliers in Brazilian UF DF.",
+    "goal_pt": "Liste fornecedores de compras públicas na UF brasileira DF.",
+    "native": {"name":"fornecedores_json","description_en":"Compras.gov.br open-data supplier query in JSON; filter by uf.","description_pt":"Consulta de fornecedores dos dados abertos do Compras.gov.br em JSON; filtrar por uf.","fields":{"uf":"string"},"arguments":{"uf":"DF"},"provenance":"institution"},
+    "normalised": {"name":"list_public_suppliers","description_en":"List public-procurement suppliers for a state code.","description_pt":"Listar fornecedores de compras públicas para um código de estado.","fields":{"state_code":"string"},"arguments":{"state_code":"DF"},"provenance":"harness"}
+  }
+}
