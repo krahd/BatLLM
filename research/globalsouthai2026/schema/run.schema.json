@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GlobalSouthAI pilot run",
+  "type": "object",
+  "required": ["run_id", "timestamp", "task_id", "model", "backend", "arm", "language", "repetition", "surface_available", "agent_decision_correct", "task_completion", "latency_ms", "failure_class", "tool_provenance"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "task_id": {"type": "string"},
+    "model": {"type": "string"},
+    "backend": {"enum": ["deterministic", "ollama"]},
+    "arm": {"enum": ["native", "normalised", "synthetic_a", "synthetic_b"]},
+    "language": {"enum": ["pt", "en"]},
+    "repetition": {"type": "integer", "minimum": 0},
+    "surface_available": {"type": "boolean"},
+    "tool_names": {"type": "array", "items": {"type": "string"}},
+    "raw_response": {"type": "string"},
+    "parsed_tool": {"type": ["string", "null"]},
+    "arguments": {"type": ["object", "null"]},
+    "schema_valid": {"type": "boolean"},
+    "agent_decision_correct": {"type": "boolean"},
+    "execution_attempted": {"type": "boolean"},
+    "execution_success": {"type": "boolean"},
+    "task_completion": {"type": "boolean"},
+    "latency_ms": {"type": "number", "minimum": 0},
+    "prompt_chars": {"type": "integer", "minimum": 0},
+    "response_chars": {"type": "integer", "minimum": 0},
+    "failure_class": {"enum": ["none", "surface_unavailable", "wrong_tool", "invalid_arguments", "execution_error", "model_noncompliance"]},
+    "tool_provenance": {"enum": ["institution", "harness", "intermediary", "none"]},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
