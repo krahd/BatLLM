@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/krahd/BatLLM/research/globalsouthai2026/schema/operation.schema.json",
+  "title": "Institutional action-surface operation",
+  "type": "object",
+  "required": ["id", "jurisdiction", "institution", "operation", "actor_class", "classification", "human_route", "machine_route", "provenance", "sources", "audit_date"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z]{2}\\.[a-z0-9_]+$"},
+    "jurisdiction": {"type": "string"},
+    "institution": {"type": "string"},
+    "operation": {"type": "string"},
+    "actor_class": {"const": "external_non_governmental_unaccredited_delegate"},
+    "classification": {"enum": ["native_callable", "human_facing_only", "intermediary_required", "no_machine_actionable_path"]},
+    "human_route": {"type": "object", "required": ["available"], "properties": {"available": {"type": "boolean"}, "url": {"type": ["string", "null"]}, "authentication": {"type": "string"}, "notes": {"type": "string"}}},
+    "machine_route": {"type": "object", "required": ["documented", "callable_by_actor", "authentication", "sandbox"], "properties": {"documented": {"type": "boolean"}, "callable_by_actor": {"type": "boolean"}, "method": {"type": ["string", "null"]}, "url": {"type": ["string", "null"]}, "authentication": {"type": "string"}, "sandbox": {"type": "boolean"}, "documentation_language": {"type": "array", "items": {"type": "string"}}, "notes": {"type": "string"}}},
+    "intermediary": {"type": "object", "properties": {"known": {"type": "boolean"}, "name": {"type": ["string", "null"]}, "url": {"type": ["string", "null"]}, "notes": {"type": "string"}}},
+    "provenance": {"enum": ["institution", "harness", "intermediary", "none"]},
+    "safe_for_live_readonly": {"type": "boolean"},
+    "pilot": {"type": "boolean"},
+    "fixture": {"type": ["string", "null"]},
+    "sources": {"type": "array", "minItems": 1, "items": {"type": "string", "format": "uri"}},
+    "audit_date": {"type": "string", "format": "date"},
+    "notes": {"type": "string"}
+  },
+  "additionalProperties": false
+}
