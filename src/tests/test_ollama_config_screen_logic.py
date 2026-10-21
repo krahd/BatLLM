@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import pytest
+
 from view import ollama_config_screen as screen_module
 
 
@@ -194,6 +196,8 @@ def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
         lambda: ["llama3.2:latest", "mistral-small:latest"],
     )
 
+    fake_screen._list_local_models_via_modelito = lambda: (
+        screen_module.OllamaConfigScreen._list_local_models_via_modelito(fake_screen))
     screen_module.OllamaConfigScreen.refresh_local_models(fake_screen)
 
     assert fake_screen.selected_local_model == "llama3.2:latest"
@@ -566,60 +570,53 @@ def test_start_ollama_passes_configured_warmup_timeout(monkeypatch) -> None:
     assert statuses[-1] == "Ollama started successfully."
 
 
-def test_ensure_model_serving_uses_detailed_result_success(monkeypatch) -> None:
-    logs = []
-    fake_screen = SimpleNamespace(
-        _llm_endpoint=lambda: ("http://localhost", 11434),
-        _llm_timeout_config=lambda model_name: {"model": model_name, "timeout": 120},
-        _append_log=lambda text: logs.append(text),
-    )
+def test_ensure_model_serving_warms_canonical_name(monkeypatch) -> None:
+    screen = screen_module.OllamaConfigScreen()
+    calls = []
+    monkeypatch.setattr(screen, "_llm_endpoint", lambda: ("http://localhost", 11434))
+    monkeypatch.setattr(screen, "_llm_timeout_config", lambda _model: {"timeout": 120})
+    monkeypatch.setattr(screen_module.modelito_ollama_service, "list_local_models",
+                        lambda: ["smollm2   abc123   1 GB   2 months ago"])
+    monkeypatch.setattr(screen_module.modelito_ollama_service, "ensure_ollama_running_verbose",
+                        lambda **_kwargs: (True, "ready"))
+    monkeypatch.setattr(screen_module.ollama_service, "preload_model",
+                        lambda *args, **kwargs: calls.append((args, kwargs)))
 
-    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout",
-                        lambda _cfg, *, model=None: 120.0)
-    monkeypatch.setattr(
-        screen_module.modelito_ollama_service,
-        "ensure_model_ready_detailed",
-        lambda *args, **kwargs: SimpleNamespace(
-            success=True,
-            phase="ready",
-            elapsed_seconds=1.25,
-            source="probe",
-            message="ready",
-            error=None,
-        ),
-    )
-
-    result = screen_module.OllamaConfigScreen._ensure_model_serving(fake_screen, "smollm2")
-
-    assert result == {"ready": True}
-    assert any("phase=ready" in entry and "source=probe" in entry for entry in logs)
+    assert screen._ensure_model_serving("smollm2") == {"ready": True}
+    assert calls == [(("http://localhost", 11434, "smollm2"), {"timeout": 120.0})]
 
 
-def test_ensure_model_serving_uses_detailed_result_failure(monkeypatch) -> None:
-    fake_screen = SimpleNamespace(
-        _llm_endpoint=lambda: ("http://localhost", 11434),
-        _llm_timeout_config=lambda model_name: {"model": model_name, "timeout": 120},
-        _append_log=lambda _text: None,
-    )
-
-    monkeypatch.setattr(screen_module.ollama_service, "resolve_request_timeout",
-                        lambda _cfg, *, model=None: 120.0)
-    monkeypatch.setattr(
-        screen_module.modelito_ollama_service,
-        "ensure_model_ready_detailed",
-        lambda *args, **kwargs: SimpleNamespace(
-            success=False,
-            phase="failed",
-            elapsed_seconds=0.4,
-            source="probe",
-            message="warmup failed",
-            error="timed out waiting for readiness",
-        ),
-    )
+def test_ensure_model_serving_reports_service_failure(monkeypatch) -> None:
+    screen = screen_module.OllamaConfigScreen()
+    monkeypatch.setattr(screen_module.modelito_ollama_service, "ensure_ollama_running_verbose",
+                        lambda **_kwargs: (False, "timed out waiting for readiness"))
+    monkeypatch.setattr(screen_module.ollama_service, "preload_model",
+                        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                            AssertionError("Must not warm a model when the service failed")))
 
     try:
-        screen_module.OllamaConfigScreen._ensure_model_serving(fake_screen, "smollm2")
+        screen._ensure_model_serving("smollm2")
     except RuntimeError as exc:
         assert "timed out waiting for readiness" in str(exc)
     else:
-        raise AssertionError("Expected RuntimeError when detailed readiness fails")
+        raise AssertionError("Expected RuntimeError when service readiness fails")
+
+
+@pytest.mark.parametrize("installed", [False, True])
+def test_ensure_model_serving_reports_missing_or_failed_model(monkeypatch, installed) -> None:
+    screen = screen_module.OllamaConfigScreen()
+    calls = []
+    monkeypatch.setattr(screen_module.modelito_ollama_service, "list_local_models",
+                        lambda: ["smollm2  abc123  1 GB  now"] if installed else [])
+    monkeypatch.setattr(screen_module.modelito_ollama_service, "ensure_ollama_running_verbose",
+                        lambda **_kwargs: (True, "ready"))
+
+    def fail_to_preload(*_args, **_kwargs):
+        calls.append(True)
+        raise RuntimeError("Warm-up failed")
+
+    monkeypatch.setattr(screen_module.ollama_service, "preload_model", fail_to_preload)
+    message = "Warm-up failed" if installed else "not available locally"
+    with pytest.raises(RuntimeError, match=message):
+        screen._ensure_model_serving("smollm2")
+    assert calls == ([True] if installed else [])
