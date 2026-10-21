@@ -37,6 +37,12 @@ from util.utils import (
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def _local_model_name(value: str) -> str:
+    """Extract the name from a modelito name or an Ollama CLI table row."""
+    fields = value.split()
+    return fields[0] if fields else ""
+
+
 def build_ollama_install_command(platform_name: str | None = None) -> list[str]:
     """Return the platform-specific Ollama install command."""
     command, _display = ollama_service.install_command_for_current_platform(platform_name)
@@ -76,7 +82,7 @@ class OllamaConfigScreen(Screen):
         self._remote_model_entries: list[dict[str, str]] = []
         self._remote_model_display_map: dict[str, str] = {}
         self._model_picker_popup = None
-        managed_model = str(config.get("llm", "last_served_model") or "").strip()
+        managed_model = _local_model_name(str(config.get("llm", "last_served_model") or ""))
         self._managed_model_name: str | None = managed_model or None
 
     def on_pre_enter(self, *_args):
@@ -379,11 +385,11 @@ class OllamaConfigScreen(Screen):
         config.save()
 
     def _list_local_models_via_modelito(self) -> list[str]:
-        return [
-            name
+        return list(dict.fromkeys(
+            _local_model_name(str(name))
             for name in modelito_ollama_service.list_local_models()
             if str(name).strip()
-        ]
+        ))
 
     def _list_remote_model_catalog_via_modelito(self) -> list[dict[str, str]]:
         entries = []
@@ -422,26 +428,7 @@ class OllamaConfigScreen(Screen):
         return {"ok": True}
 
     def _ensure_model_serving_via_modelito(self, model_name: str) -> dict[str, Any]:
-        base_url, port = self._llm_endpoint()
-        request_timeout = ollama_service.resolve_request_timeout(
-            self._llm_timeout_config(model_name),
-            model=model_name,
-        )
-        result = modelito_ollama_service.ensure_model_ready_detailed(
-            model_name,
-            host=base_url,
-            port=port,
-            auto_start=True,
-            allow_download=False,
-            timeout=request_timeout,
-        )
-        if not result.success:
-            detail = result.error or result.message or "Model readiness check failed"
-            raise RuntimeError(detail)
-        self._append_log(
-            f"modelito ensure_model_ready_detailed -> phase={result.phase} elapsed={result.elapsed_seconds:.2f}s message={result.message or 'ready'} source={result.source}"
-        )
-        return {"ready": True}
+        return self._ensure_model_serving(model_name)
 
     def _pull_model_via_modelito(self, model_name: str):
         for state in modelito_ollama_service.download_model_progress(
@@ -737,14 +724,13 @@ class OllamaConfigScreen(Screen):
 
         def work():
             try:
-                names = [
-                    name for name in modelito_ollama_service.list_local_models() if str(name).strip()
-                ]
+                names = self._list_local_models_via_modelito()
 
                 def update(*_):
                     self._local_model_entries = [{"name": name, "display": name} for name in names]
                     self.local_models = names
-                    current = self.selected_local_model.strip() or str(config.get("llm", "model") or "")
+                    current = _local_model_name(
+                        self.selected_local_model or str(config.get("llm", "model") or ""))
                     self._set_local_selection(
                         current if current in names else (names[0] if names else ""))
                     self._set_status(f"Loaded {len(names)} local model(s).")
@@ -849,22 +835,25 @@ class OllamaConfigScreen(Screen):
             model=model_name,
         )
         try:
-            result = modelito_ollama_service.ensure_model_ready_detailed(
-                model_name,
+            ready, message = modelito_ollama_service.ensure_ollama_running_verbose(
                 host=base_url,
                 port=port,
                 auto_start=True,
-                allow_download=False,
-                timeout=request_timeout,
+                timeout=min(request_timeout, 30.0),
             )
+            if not ready:
+                raise RuntimeError(message or "Ollama is not ready")
+            # modelito 1.4.5 compares names against unparsed CLI table rows in
+            # ensure_model_ready_detailed. Check the normalised catalogue here.
+            if model_name not in self._list_local_models_via_modelito():
+                raise RuntimeError(f"Model {model_name} is not available locally")
+            ollama_service.preload_model(
+                base_url, port, model_name, timeout=request_timeout)
         except Exception as exc:
             self._append_log(f"Model readiness check failed for {model_name}: {exc}")
             raise RuntimeError(str(exc)) from exc
-        if not result.success:
-            detail = result.error or result.message or f"modelito could not make {model_name} ready"
-            raise RuntimeError(detail)
         self._append_log(
-            f"modelito ensure_model_ready_detailed\nmodel={model_name} phase={result.phase} elapsed={result.elapsed_seconds:.2f}s source={result.source}"
+            f"modelito preload_model\nmodel={model_name} ready timeout={request_timeout:g}"
         )
         return {"ready": True}
 
@@ -905,9 +894,9 @@ class OllamaConfigScreen(Screen):
                 self._set_status(f"Failed to serve model: {model}")
                 self._append_log(f"Failed to serve model {model}: {exc}")
                 Clock.schedule_once(
-                    lambda *_: show_fading_alert(
+                    lambda *_, message=str(exc): show_fading_alert(
                         "Use Selected",
-                        str(exc),
+                        message,
                         duration=2.0,
                         fade_duration=1.0,
                     ),

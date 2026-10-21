@@ -6,6 +6,8 @@
 
 ### Reliability and session integrity
 
+- extracted canonical local model names from Ollama CLI rows before selection, saving, and warm-up, and avoided modelito's unparsed-row availability check;
+- preserved model-selection error messages for deferred UI alerts, preventing a secondary `NameError`;
 - isolated model conversation histories across manual and normal game restarts;
 - guarded asynchronous game lifecycle callbacks against retired games and turns;
 - exported only completed analyzer-valid turns from saved sessions;

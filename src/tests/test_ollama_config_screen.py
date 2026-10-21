@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Callable
 
+from configs.app_config import config
 from view.history_screen import HistoryScreen
 from view.ollama_config_screen import OllamaConfigScreen
 from view.settings_screen import SettingsScreen
@@ -307,6 +308,62 @@ def test_refresh_status_reports_running_model(monkeypatch) -> None:
     assert "Server status: running" in screen.status_details
     assert "Running models: mistral-small:latest" in screen.status_details
     assert "BatLLM model: mistral-small:latest (running)" in screen.status_details
+
+
+def test_model_selection_uses_name_from_cli_row(monkeypatch) -> None:
+    screen = OllamaConfigScreen()
+    _run_sync(screen)
+    _run_clock_now(monkeypatch)
+    model = "mistral-small3.2:24b-instruct-2506-q4_K_M"
+    row = f"{model}    5a408ab55df5    15 GB    2 months ago"
+    calls = []
+    monkeypatch.setattr("view.ollama_config_screen.modelito_ollama_service.list_local_models",
+                        lambda: ["  ", row, "llama3.2:latest", row])
+    monkeypatch.setattr("view.ollama_config_screen.modelito_ollama_service."
+                        "ensure_ollama_running_verbose", lambda **_kwargs: (True, "ready"))
+    monkeypatch.setattr("view.ollama_config_screen.ollama_service.preload_model",
+                        lambda _url, _port, name, **_kwargs: calls.append(name))
+    monkeypatch.setattr(screen, "_get_running_model_names", lambda: [])
+    monkeypatch.setattr(screen, "refresh_ollama_status", lambda: None)
+    config.set("llm", "model", row)
+
+    screen.refresh_local_models()
+    assert screen.local_models == [model, "llama3.2:latest"]
+    assert screen.selected_local_model == model
+    assert screen._local_model_entries[0] == {"name": model, "display": model}
+    screen.set_model_from_selection()
+
+    assert calls == [model]
+    assert config.get("llm", "model") == model
+    assert config.get("llm", "last_served_model") == model
+
+
+def test_model_selection_failure_shows_deferred_error(monkeypatch) -> None:
+    screen = OllamaConfigScreen()
+    _run_sync(screen)
+    callbacks = []
+    alerts = []
+    monkeypatch.setattr("view.ollama_config_screen.Clock.schedule_once",
+                        lambda callback, _dt=0: callbacks.append(callback))
+    monkeypatch.setattr("view.ollama_config_screen.show_fading_alert",
+                        lambda title, message, **_kwargs: alerts.append((title, message)))
+    monkeypatch.setattr(screen, "_get_running_model_names", lambda: [])
+
+    def fail_to_serve(_model):
+        raise RuntimeError("Model readiness timed out")
+
+    monkeypatch.setattr(screen, "_ensure_model_serving", fail_to_serve)
+    screen.selected_local_model = "llama3.2:latest"
+
+    screen.set_model_from_selection()
+    assert alerts == []
+    # Execute after the worker and its exception handler have returned.
+    while callbacks:
+        callbacks.pop(0)(0)
+
+    assert alerts == [("Use Selected", "Model readiness timed out")]
+    assert screen.status_text == "Failed to serve model: llama3.2:latest"
+    assert "Model readiness timed out" in screen.output_log
 
 
 def test_set_model_from_selection_persists(monkeypatch) -> None:

@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-07-24 18:51
+Last updated: 2026-10-21 01:57
 
 ## Summary
 
@@ -46,6 +46,7 @@ The project is in a stable `0.x` hardening phase rather than a feature-complete 
 - Gameplay requests and model-management helpers are routed through `modelito==1.4.5`.
 - The application can open the official Ollama installer and manage the configured local service.
 - Local models can be selected, warmed, and deleted.
+- Local catalogue rows are reduced to canonical model names; selection checks service readiness and local availability before warming the model.
 - Remote catalogue entries can be downloaded into the local model inventory.
 - Global, per-model, and startup warm-up timeouts are supported.
 - Destructive and expensive actions use confirmation flows where implemented.
@@ -165,6 +166,14 @@ Historical detail belongs in `docs/CHANGELOG.md`, pull requests, and the researc
 
 ## Validation state
 
+Model selection: both Ollama configuration test modules pass locally
+(`44 passed`), covering CLI rows, canonical saved names and warm-up requests,
+readiness failures, and deferred error alerts. Live model selection has not been
+rechecked.
+Documentation validation is currently blocked by the tracked
+`batllm-pr-implementation` artefact. Pylint is unavailable in the local virtual
+environment.
+
 Latest validated application baseline from PR #46:
 
 - complete non-live suite: `189 passed, 2 skipped`;
@@ -218,4 +227,4 @@ Documentation audit validation on PR #47:
 - Preserve replay determinism and schema versioning through the 2.0 architecture change.
 - Treat shared prompt or game repositories as later work requiring authentication, moderation, provenance, and versioning.
 
-Last updated: 2026-07-24 18:51
+Last updated: 2026-10-21 01:57
