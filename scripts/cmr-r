@@ -9,9 +9,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Prefer the project virtualenv Python when available
-VENV_PY="$REPO_ROOT/.venv_BatLLM/bin/python"
+VENV_PY="$REPO_ROOT/.venv/bin/python"
+LEGACY_VENV_PY="$REPO_ROOT/.venv_BatLLM/bin/python"
 if [ -x "$VENV_PY" ]; then
   PYTHON="$VENV_PY"
+elif [ -x "$LEGACY_VENV_PY" ]; then
+  PYTHON="$LEGACY_VENV_PY"
 else
   PYTHON="$(command -v python3 || command -v python)"
 fi
