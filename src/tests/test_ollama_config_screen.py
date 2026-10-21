@@ -309,6 +309,34 @@ def test_refresh_status_reports_running_model(monkeypatch) -> None:
     assert "BatLLM model: mistral-small:latest (running)" in screen.status_details
 
 
+def test_model_selection_failure_shows_deferred_error(monkeypatch) -> None:
+    screen = OllamaConfigScreen()
+    _run_sync(screen)
+    callbacks = []
+    alerts = []
+    monkeypatch.setattr("view.ollama_config_screen.Clock.schedule_once",
+                        lambda callback, _dt=0: callbacks.append(callback))
+    monkeypatch.setattr("view.ollama_config_screen.show_fading_alert",
+                        lambda title, message, **_kwargs: alerts.append((title, message)))
+    monkeypatch.setattr(screen, "_get_running_model_names", lambda: [])
+
+    def fail_to_serve(_model):
+        raise RuntimeError("Model readiness timed out")
+
+    monkeypatch.setattr(screen, "_ensure_model_serving", fail_to_serve)
+    screen.selected_local_model = "llama3.2:latest"
+
+    screen.set_model_from_selection()
+    assert alerts == []
+    # Execute after the worker and its exception handler have returned.
+    while callbacks:
+        callbacks.pop(0)(0)
+
+    assert alerts == [("Use Selected", "Model readiness timed out")]
+    assert screen.status_text == "Failed to serve model: llama3.2:latest"
+    assert "Model readiness timed out" in screen.output_log
+
+
 def test_set_model_from_selection_persists(monkeypatch) -> None:
     screen = OllamaConfigScreen()
     saved = {"sets": [], "saved": False}

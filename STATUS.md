@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-07-24 18:51
+Last updated: 2026-10-21 01:50
 
 ## Summary
 
@@ -165,6 +165,13 @@ Historical detail belongs in `docs/CHANGELOG.md`, pull requests, and the researc
 
 ## Validation state
 
+Model-selection error handling: both Ollama configuration test modules pass locally
+(`41 passed`), including a deferred-callback regression. Live model selection has
+not been rechecked; the original service error is now shown by the alert.
+Documentation validation is currently blocked by the tracked
+`batllm-pr-implementation` artefact. Pylint is unavailable in the local virtual
+environment.
+
 Latest validated application baseline from PR #46:
 
 - complete non-live suite: `189 passed, 2 skipped`;
@@ -218,4 +225,4 @@ Documentation audit validation on PR #47:
 - Preserve replay determinism and schema versioning through the 2.0 architecture change.
 - Treat shared prompt or game repositories as later work requiring authentication, moderation, provenance, and versioning.
 
-Last updated: 2026-07-24 18:51
+Last updated: 2026-10-21 01:50

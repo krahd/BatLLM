@@ -6,6 +6,7 @@
 
 ### Reliability and session integrity
 
+- preserved model-selection error messages for deferred UI alerts, preventing a secondary `NameError`;
 - isolated model conversation histories across manual and normal game restarts;
 - guarded asynchronous game lifecycle callbacks against retired games and turns;
 - exported only completed analyzer-valid turns from saved sessions;

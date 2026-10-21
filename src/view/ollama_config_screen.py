@@ -905,9 +905,9 @@ class OllamaConfigScreen(Screen):
                 self._set_status(f"Failed to serve model: {model}")
                 self._append_log(f"Failed to serve model {model}: {exc}")
                 Clock.schedule_once(
-                    lambda *_: show_fading_alert(
+                    lambda *_, message=str(exc): show_fading_alert(
                         "Use Selected",
-                        str(exc),
+                        message,
                         duration=2.0,
                         fade_duration=1.0,
                     ),
