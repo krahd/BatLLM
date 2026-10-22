@@ -1,0 +1,35 @@
+{
+  "by_model_condition": {
+    "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+      "es_rioplatense": {
+        "command_correct": 0.9166666666666666,
+        "executable_correct": 0.9166666666666666,
+        "n": 48,
+        "valid_final": 0.9791666666666666
+      },
+      "es_standard": {
+        "command_correct": 0.9166666666666666,
+        "executable_correct": 0.9166666666666666,
+        "n": 48,
+        "valid_final": 1.0
+      }
+    },
+    "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+      "es_rioplatense": {
+        "command_correct": 0.9791666666666666,
+        "executable_correct": 0.9791666666666666,
+        "n": 48,
+        "valid_final": 0.9791666666666666
+      },
+      "es_standard": {
+        "command_correct": 0.9583333333333334,
+        "executable_correct": 0.9583333333333334,
+        "n": 48,
+        "valid_final": 0.9583333333333334
+      }
+    }
+  },
+  "final_extraction_errors": 4,
+  "n_rows": 192,
+  "provider_errors": 0
+}

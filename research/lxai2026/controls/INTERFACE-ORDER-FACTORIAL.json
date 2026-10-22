@@ -1,0 +1,81 @@
+{
+  "models": [
+    "mistral-small3.2:24b-instruct-2506-q4_K_M",
+    "qwen3:30b-a3b-instruct-2507-q4_K_M"
+  ],
+  "conditions": [
+    "es_rioplatense",
+    "es_standard"
+  ],
+  "n_per_cell": 128,
+  "cells": {
+    "direct_original": {
+      "n": 128,
+      "correct": 64,
+      "accuracy": 0.5,
+      "first_selected": 93,
+      "first_rate": 0.7265625,
+      "policy_groups": 32,
+      "policy_complete": 0,
+      "state_invariant": 22,
+      "provider_errors": 0,
+      "extraction_errors": 0
+    },
+    "direct_reordered": {
+      "n": 128,
+      "correct": 72,
+      "accuracy": 0.5625,
+      "first_selected": 106,
+      "first_rate": 0.828125,
+      "policy_groups": 32,
+      "policy_complete": 4,
+      "state_invariant": 27,
+      "provider_errors": 0,
+      "extraction_errors": 0
+    },
+    "deliberative_original": {
+      "n": 128,
+      "correct": 122,
+      "accuracy": 0.953125,
+      "first_selected": 58,
+      "first_rate": 0.453125,
+      "policy_groups": 32,
+      "policy_complete": 26,
+      "state_invariant": 0,
+      "provider_errors": 0,
+      "extraction_errors": 1
+    },
+    "deliberative_reordered": {
+      "n": 128,
+      "correct": 123,
+      "accuracy": 0.9609375,
+      "first_selected": 66,
+      "first_rate": 0.515625,
+      "policy_groups": 32,
+      "policy_complete": 29,
+      "state_invariant": 0,
+      "provider_errors": 0,
+      "extraction_errors": 4
+    }
+  },
+  "order_change": {
+    "direct": {
+      "n": 128,
+      "output_changed": 87,
+      "changed_to_new_first": 84,
+      "changed_to_new_first_given_change": 0.9655172413793104
+    },
+    "deliberative": {
+      "n": 128,
+      "output_changed": 11,
+      "changed_to_new_first": 2,
+      "changed_to_new_first_given_change": 0.18181818181818182
+    }
+  },
+  "directories": {
+    "main": "/Users/tom/devel/projects/BatLLM/research/lxai2026/results/20260825T094526Z",
+    "direct_reordered": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/branch_order/20260825T161504Z",
+    "deliberative_original": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/deliberation/20260825T153148Z",
+    "deliberative_reordered": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/deliberative_branch_order/20260825T162635Z"
+  }
+}
