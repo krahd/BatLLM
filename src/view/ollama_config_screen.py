@@ -858,7 +858,7 @@ class OllamaConfigScreen(Screen):
         return {"ready": True}
 
     def set_model_from_selection(self):
-        model = self.selected_local_model.strip()
+        model = _local_model_name(self.selected_local_model)
         if not model:
             show_fading_alert("Model Selection", "Select a local model first.",
                               duration=1.5, fade_duration=1.0)
