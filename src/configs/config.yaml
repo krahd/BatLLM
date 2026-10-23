@@ -21,13 +21,14 @@ ui:
   primary_color: '#0b0b0b'
   title: BatLLM
 llm:
-  last_served_model: gpt-oss:120b-cloud
+  last_served_model: ''
   timeout: null
   model_timeouts: {}
   warmup_timeout: 30.0
   debug_requests: false
   max_tokens: null
-  model: gpt-oss:120b-cloud
+  model: mistral-small3.2:24b-instruct-2506-q4_K_M                  5a408ab55df5    15
+    GB     2 months ago
   num_ctx: 4096
   num_predict: null
   num_thread: null
