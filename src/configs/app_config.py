@@ -101,6 +101,7 @@ class AppConfig:
         resolved_path = resolve_config_path(self._default_path) if path is None else path
         self._path = resolved_path
         self._config = load_config_data(resolved_path, shipped_path=self._default_path)
+        self._overrides = {}
 
 
 
@@ -138,6 +139,8 @@ class AppConfig:
 
     def get(self, section, key):
         """Gets a configuration value from the specified section and key."""
+        if key in self._overrides.get(section, {}):
+            return self._overrides[section][key]
         return self._config.get(section, {}).get(
             key, DEFAULTS.get(section, {}).get(key)
         )
@@ -152,11 +155,18 @@ class AppConfig:
             self._config[section] = {}
 
         self._config[section][key] = value
+        self._overrides.get(section, {}).pop(key, None)
 
+
+    def set_temporary(self, section, key, value):
+        """Apply an execution override without changing saved preferences."""
+        self._overrides.setdefault(section, {})[key] = value
 
     def as_dict(self):
         """Returns the configuration as a dictionary."""
-        return self._config
+        effective = copy.deepcopy(self._config)
+        _merge_config(effective, self._overrides)
+        return effective
 
 
 # Singleton instance

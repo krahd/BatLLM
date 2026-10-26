@@ -6,3 +6,4 @@ ollama>=0.6.2
 psutil==7.2.2
 PyYAML==6.0.3
 requests>=2.34.2
+jsonschema>=4.23,<5

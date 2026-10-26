@@ -372,3 +372,7 @@ Remote catalogue retrieval requires network access. Local gameplay does not requ
 Run Doxygen only when the source-level API docs should change, then inspect the generated diff before committing.
 
 Service start, inspection and shutdown resolve only BatLLM preferences. Shutdown requires a matching ownership receipt (endpoint, PID and creation time); independently started services are left running. Session saving performs no live metadata query. Platform bundles contain runtime files and launchers; full documentation and research material remain in the source archives.
+
+The standalone editor (`python -m configs.configurator` with `PYTHONPATH=src`) shares the strict chat transport and explicit-endpoint service facade. Its destructive actions and downloads require confirmation; console cancellation retires the request/output rather than stopping Ollama. Remote catalogue discovery reports its unsupported status, with explicit model-name entry as the download path. Service startup never pulls missing models. Model selection commits only the latest request on the Kivy thread and never automatically unloads another model.
+
+V3 structural validation uses the committed JSON Schema before semantic verification. Platform bundles copy that canonical schema into runtime assets. Imported v2 rules use `GameplaySettingsSnapshot.from_snapshot()` for strict validation; `from_mapping()` retains application-default construction. Research packages include the runtime source/resource closure and are tested by generating and verifying a trace after isolated extraction.

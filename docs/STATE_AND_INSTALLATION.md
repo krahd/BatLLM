@@ -16,6 +16,10 @@ The directory is created on save. Loading does not create a file. Values are loa
 
 Homebrew wrappers already set the macOS `BATLLM_HOME` default. Release-bundle launchers need no environment override to save preferences outside the extracted bundle.
 
+## Temporary settings
+
+**Set Temporarily** applies an execution-only overlay to the settings used by the game. Preference saves triggered by model selection, last-served metadata or timeout edits exclude that overlay. **Set as Defaults** explicitly writes the chosen settings and replaces those temporary values. Reloading configuration clears execution overrides.
+
 ## Existing preferences and upgrades
 
 Existing `$BATLLM_HOME/config.yaml` files continue to load in place. If an older source checkout or extracted bundle contains customised `src/configs/config.yaml` values, they still load as the base configuration and are copied into the user configuration on the next save. The legacy file is not rewritten.

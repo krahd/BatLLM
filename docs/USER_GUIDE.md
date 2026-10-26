@@ -135,7 +135,7 @@ The settings screen controls:
 - automatic Ollama startup; and
 - automatic Ollama shutdown.
 
-Use **Set Temporarily** to apply values for the current execution without saving them as defaults. Use **Set as Defaults** to write them to the active configuration file.
+Use **Set Temporarily** to apply values for the current execution without saving them as defaults. These execution overrides are excluded from later model and timeout preference saves. Use **Set as Defaults** to write them to the active configuration file.
 
 `Esc` behaves like **Cancel** and returns to the home screen.
 
@@ -205,13 +205,15 @@ The local-model timeout controls can save or remove a per-model request-timeout 
 
 **Delete Selected** removes the model from the real local Ollama installation after confirmation.
 
+Automatic remote-catalogue discovery is currently unavailable. Use **Enter model name** in Ollama Config, enter a name from https://ollama.com/library, then press **Download Selected** and confirm. The standalone configuration editor also accepts an explicit model name before its confirmed **Pull** action. Starting Ollama never downloads a model; a missing configured model produces a recovery message. Selecting a model does not automatically unload other models used by local clients.
+
 ### Remote models
 
-A remote model is only a catalogue entry until it has been downloaded.
+A model name identifies a downloadable model, whether or not automatic catalogue discovery is available.
 
-1. Open **Remote Models**.
-2. Choose a model name.
-3. Press **Download Selected**.
+1. Press **Enter model name** in the Remote Models section.
+2. Enter a name from https://ollama.com/library.
+3. Press **Download Selected** and confirm.
 
 After a successful download, the model appears in the local model list and can be selected for play.
 

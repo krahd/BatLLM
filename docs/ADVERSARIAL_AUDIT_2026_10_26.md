@@ -8,6 +8,35 @@ This audit identifies **11 remaining findings: four high and seven medium priori
 
 The previous repair materially improved the main gameplay/research inference boundary, service ownership, v2 action validation and test realism. Its broad service-safety claims did not cover the standalone configuration editor, and its packaging validation did not execute an extracted research package.
 
+## Repair disposition
+
+The repair accompanying PR [#63](https://github.com/krahd/BatLLM/pull/63) addresses R1–R10 in BatLLM and restores a usable, confirmed download workflow for R11. Modelito’s unsupported automatic catalogue discovery remains an upstream issue; BatLLM no longer runs its unsupported commands or presents their failure as an empty catalogue. The original baseline evidence is retained below.
+
+| Finding | Implemented change and regression coverage |
+| --- | --- |
+| R1 | The standalone editor uses the shared strict chat transport and explicit-endpoint management facade, with real provider deadlines. Delete, named-model unload and downloads wait for confirmation. Console Stop retires only its own output and closes its stream iterator. Endpoint, deadline, confirmation, streaming and cancellation tests pass. |
+| R2 | Initial and subsequent scheduled turns capture game/turn generations and active-round identity. Reset makes both callback kinds harmless; regression tests cover both windows. |
+| R3 | The verifier uses the committed Draft 2020-12 JSON Schema before semantic checks. Malformed roots/containers return invalid reports; boolean actor/count/latency fields are rejected. The schema is included in platform bundles from its canonical source. |
+| R4 | Research packages include the complete `src` tree, runtime resources, launchers and `VERSION`. An isolated extraction test generates a scripted trace and verifies it with the original checkout absent from the subprocess import path. |
+| R5 | `Set Temporarily` stores an execution-only overlay. Incidental model/timeout saves write persistent preferences without flushing that overlay. Explicit defaults replace the relevant temporary values. |
+| R6 | Effective context modes are loaded before headers and user content; changes reset histories. Generation options are frozen before message construction. Tests cover augmentation and independent-context changes, including cancellation after the mode changes. |
+| R7 | Saved model names no longer imply ownership, and selection never automatically unloads other models. Explicit standalone unload requires confirmation. |
+| R8 | Each selection has a generation token. Warm-up commits and failures return through the Kivy thread and ignore stale generations. A delayed older completion cannot replace the latest saved choice. |
+| R9 | Service startup performs no pull. Missing-model warm-up reports a download-recovery instruction without recording model readiness or downloading anything. |
+| R10 | Imported frozen rules use a strict required-field/type validator; application configuration retains its separate default/coercing constructor. Invalid or missing v2 rules are rejected instead of replaced silently. |
+| R11 | Both interfaces accept an explicit model name and preserve download confirmation. Automatic discovery raises an actionable unavailable-catalogue message. The upstream Modelito defect is documented in the handoff. |
+
+Repair validation on Python 3.12/macOS:
+
+- Complete isolated non-live suite: **291 passed, 2 intentional live-test skips**.
+- Full maintained Pylint gate: passed, **8.84/10**, no errors; existing warnings remain.
+- Compilation, documentation validation, KV parsing and diff checks: passed.
+- Homebrew formula generation with dependency resolution/hashes: passed, including the new `jsonschema` runtime dependency.
+- Full research pipeline and package build in a temporary copy: passed; 60 valid traces/1,080 transitions, 5,000 reference cases, all 1,560 injected faults detected and all 180 serialisation controls accepted. Canonical research outputs and manuscript were preserved.
+- Extracted research-package generation/verification is now a maintained regression test, rather than only an archive-construction check.
+
+Console cancellation is cooperative: pending UI fragments are retired immediately; a blocked provider read remains bounded by the configured request deadline, and the iterator is closed when control returns. No service-wide stop is used. Real-model, native GUI and installed-package acceptance remain explicit release gates.
+
 ## High-priority findings
 
 ### R1 — Standalone configuration editor bypasses the repaired safety boundary
@@ -101,7 +130,7 @@ ollama llms --remote
 
 The official [Ollama CLI reference](https://docs.ollama.com/cli) documents local listing, pull and named-model stop; [the tags API](https://docs.ollama.com/api/tags) lists available local models. The installed client’s help and unknown-flag response supplied the direct compatibility evidence for this audit.
 
-The previous [1.4.6 handoff](ADVERSARIAL_AUDIT_2026_10_25.md#modelito-handoff) remains applicable: lifecycle configuration, generic shutdown ownership, inconsistent subprocess-deadline parameters, ignored synchronous `settings['timeout']`, and completion-response validation. R1 demonstrates that BatLLM’s standalone editor still reaches several of those paths. No Modelito files were modified during this audit.
+The previous [1.4.6 handoff](ADVERSARIAL_AUDIT_2026_10_25.md#modelito-handoff) remains applicable: lifecycle configuration, generic shutdown ownership, inconsistent subprocess-deadline parameters, ignored synchronous `settings['timeout']`, and completion-response validation. At the audited baseline, R1 demonstrated that BatLLM’s standalone editor reached several of those paths; the repair routes it through the guarded facade. No Modelito files were modified during this audit.
 
 ## Validation and limits
 
@@ -123,4 +152,4 @@ Scope included gameplay scheduling, connector state, configuration/persistence, 
 3. Repair persistence and context changes (R5–R6), then selection ownership/concurrency (R7–R8).
 4. Separate daemon startup from downloads (R9), enforce imported rule types (R10), and coordinate the Modelito catalogue repair/recovery path (R11).
 
-The audit did not establish a new critical silent-inference-fallback defect in the repaired strict adapter. The remaining findings still prevent stable-release sign-off.
+The audit did not establish a new critical silent-inference-fallback defect in the repaired strict adapter. The baseline findings prevented stable-release sign-off. The repair disposition above records their current handling; native and real-model acceptance gates remain open.

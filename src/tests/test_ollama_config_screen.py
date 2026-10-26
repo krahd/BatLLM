@@ -366,6 +366,7 @@ def test_model_selection_failure_shows_deferred_error(monkeypatch) -> None:
 
 
 def test_set_model_from_selection_persists(monkeypatch) -> None:
+    _run_clock_now(monkeypatch)
     screen = OllamaConfigScreen()
     saved = {"sets": [], "saved": False}
     _run_sync(screen)

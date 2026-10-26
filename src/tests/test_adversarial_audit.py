@@ -35,6 +35,15 @@ def wire_server():
             self.end_headers()
             self.wfile.write(data)
 
+        def do_DELETE(self):
+            payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            requests.append((self.path, payload))
+            data = b'{"status":"success"}'
+            self.send_response(200)
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
         def do_POST(self):
             payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
             requests.append((self.path, payload))
@@ -268,7 +277,8 @@ def test_platform_bundle_excludes_research_and_development_files(monkeypatch, tm
     import create_release_bundles as bundles
     root = tmp_path / "repo"
     relative_paths = ["src/main.py", "src/tests/test_private.py", "requirements.txt",
-                      "research/corpus/large.json", "docs/screenshots/large.png"]
+                      "research/corpus/large.json", "docs/screenshots/large.png",
+                      "research/urucon2026/schema/batllm-session-v3.schema.json"]
     files = []
     for relative in relative_paths:
         path = root / relative
@@ -282,5 +292,6 @@ def test_platform_bundle_excludes_research_and_development_files(monkeypatch, tm
     assert (stage / "src/main.py").exists()
     assert (stage / "requirements.txt").exists()
     assert not (stage / "src/tests").exists()
+    assert (stage / "src/assets/batllm-session-v3.schema.json").exists()
     assert not (stage / "research").exists()
     assert not (stage / "docs").exists()
