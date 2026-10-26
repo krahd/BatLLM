@@ -60,6 +60,8 @@ def _summarize_once(llm: dict, prompt: str) -> str:
         host=str(llm["url"]).rstrip("/"),
         port=int(llm["port"]),
         model=str(llm["model"]),
+        timeout=timeout,
+        strict=True,
     )
     return _invoke_with_timeout_guard(
         lambda: provider.summarize(
@@ -95,4 +97,4 @@ def test_ollama_chat_returns_non_empty_content() -> None:
     llm = _load_llm_config()
     content = _summarize_once(llm, "Reply with exactly OK").strip()
 
-    assert content != ""
+    assert content == "OK"

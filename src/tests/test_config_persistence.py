@@ -115,13 +115,13 @@ def test_model_table_row_selection_persists_only_name(monkeypatch, runtime_home)
         selected_local_model="qwen3:8b   abc123   5 GB   2 months ago",
         _set_status=lambda _text: None,
         _append_log=lambda _text: None,
-        # Prevent any service work; only exercise the synchronous save boundary.
+        # Readiness has not completed: selection must not be persisted.
         _run_in_thread=lambda _work: None,
     )
     screen_module.OllamaConfigScreen.set_model_from_selection(screen)
-    assert AppConfig().get("llm", "model") == "qwen3:8b"
-    saved = yaml.safe_load((runtime_home / "config.yaml").read_text(encoding="utf-8"))
-    assert saved["llm"]["model"] == "qwen3:8b"
+    assert AppConfig().get("llm", "model") == "smollm2"
+    assert not (runtime_home / "config.yaml").exists()
+
 
 
 @pytest.mark.parametrize(

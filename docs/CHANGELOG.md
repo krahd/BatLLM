@@ -4,6 +4,18 @@
 
 ## Unreleased
 
+### Adversarial audit repair — 25 October 2026
+
+- upgraded runtime and Homebrew pins to Modelito 1.4.6 and shared strict, deadline-aware native inference between gameplay and research;
+- added wire-level payload, timeout, unavailable-server and malformed-response regressions; corrected streaming defaults in the CI mock;
+- removed independent Modelito configuration discovery from service operations and required endpoint/PID/birth-time ownership before shutdown;
+- restored conversation histories on round cancellation and added v2 action validation, grounding checks and turn-continuity warnings;
+- deferred model persistence until readiness succeeds, rejected non-finite timeout input and non-mapping YAML sections, escaped analyser content, and removed rendering mutations;
+- moved default saved sessions into the user data directory, copying legacy JSON files without overwriting originals or user files;
+- moved startup inspection off the UI thread, removed live metadata I/O from saving, bounded management subprocesses and opened the official download page instead of executing remote installer scripts;
+- separated platform runtime bundles from source/research archives and pinned all workflow actions to commits; and
+- recorded upstream Modelito lifecycle/deadline limitations and native validation gates in [the audit verification](ADVERSARIAL_AUDIT_2026_10_25.md).
+
 ### Reliability and session integrity
 
 - incorporated AlanJoskowicz’s PR #60 model-selection fix, preserving contributor commits;

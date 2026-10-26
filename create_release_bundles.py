@@ -179,9 +179,21 @@ def stage_release(base_name: str, extra_files: dict[str, str] | None = None) -> 
 
     for src in tracked_files():
         rel = src.relative_to(ROOT)
+        if extra_files is not None and not (
+            rel.parts[0] == "src" and (len(rel.parts) < 2 or rel.parts[1] != "tests")
+            or str(rel) in {"requirements.txt", "run_batllm.py", "run_game_analyzer.py",
+                            "VERSION", "CITATION.cff", "LICENSE", "README.md"}
+        ):
+            continue
         dest = stage_root / rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dest)
+
+    if extra_files is not None:
+        write_text_file(stage_root / "README.md",
+                        "# BatLLM runtime bundle\n\nRun the included install script, then the run script.\n"
+                        "User guide: https://github.com/krahd/BatLLM/blob/main/docs/USER_GUIDE.md\n"
+                        "Full source and research material: https://github.com/krahd/BatLLM\n")
 
     for rel, contents in (extra_files or {}).items():
         write_text_file(stage_root / rel, contents)
@@ -233,6 +245,8 @@ def create_bundles(version: str) -> list[Path]:
     build_tar_gz(linux_stage, linux_tgz)
     outputs.append(linux_tgz)
 
+    for stage in (source_stage, windows_stage, macos_stage, linux_stage):
+        shutil.rmtree(stage.parent)
     return outputs
 
 

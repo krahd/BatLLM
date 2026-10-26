@@ -1,17 +1,16 @@
-"""Centralized Modelito-based Ollama lifecycle helpers and BatLLM LLM helpers.
+"""Ollama service operations using BatLLM configuration and process ownership.
 
-This module delegates lifecycle operations to `modelito.ollama_service` and
-exposes the small set of BatLLM-specific helper utilities (timeouts, config
-loading, and a few CLI helpers) that the UI and tests expect.
-
-Modelito is required; this module re-exports commonly-used helpers and
-implements BatLLM-specific behaviour where appropriate.
+Modelito supplies explicit-endpoint HTTP helpers and remote catalogue parsing.
+Lifecycle policy and bounded local commands belong to BatLLM.
 """
 
 from __future__ import annotations
 
 from typing import Any, Mapping
 import json
+import math
+import hashlib
+import tempfile
 import logging
 import os
 import re
@@ -21,17 +20,15 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-import yaml
 import argparse
 
-from util.paths import resolve_config_path
+from util.paths import resolve_config_path, configured_batllm_home, default_batllm_home
 
 _logger = logging.getLogger(__name__)
 
 try:
     from modelito import ollama_service as _MODELITO  # type: ignore
     from modelito import Client, normalize_metadata  # type: ignore
-    from modelito import ErrorEnvelope, ResponseEnvelope, TransportPolicy  # type: ignore
 except Exception as exc:  # pragma: no cover - environment misconfiguration
     raise RuntimeError("`modelito` is required for `llm.service`; install modelito") from exc
 
@@ -75,55 +72,21 @@ def default_config_path() -> Path:
 
 def load_config_data(path: Path | None = None) -> dict[str, Any]:
     """Load the shipped config plus any active user overlay config."""
-    resolved_path = default_config_path() if path is None else path
-    data = yaml.safe_load(SHIPPED_CONFIG_PATH.read_text(encoding="utf-8")) or {}
-    if resolved_path.exists() and resolved_path != SHIPPED_CONFIG_PATH:
-        overlay = yaml.safe_load(resolved_path.read_text(encoding="utf-8")) or {}
-        if isinstance(overlay, dict):
-            for section, values in overlay.items():
-                if section not in data:
-                    data[section] = {}
-                if isinstance(values, dict):
-                    data[section].update(values)
-                else:
-                    data[section] = values
-    return data if isinstance(data, dict) else {}
+    from configs.app_config import load_config_data as load_preferences
+    return load_preferences(path, shipped_path=SHIPPED_CONFIG_PATH)
 
 
 def load_llm_config(path: Path | None = None) -> dict[str, Any]:
-    """Load the LLM configuration required to manage the local Ollama service.
-
-    Behavior:
-    - If `path` is None, prefer `modelito.load_llm_config()` to preserve modelito's
-      default behaviour.
-    - If `path` is provided, use the local shipped config (`SHIPPED_CONFIG_PATH`)
-      plus any overlay at `path`. This ensures callers (and tests) that monkeypatch
-      `SHIPPED_CONFIG_PATH` get the patched file.
-    """
-    loaded_llm: Mapping[str, Any] = {}
-    if path is None:
-        try:
-            loader = getattr(_MODELITO, "load_llm_config", None)
-            if callable(loader):
-                candidate = loader(None)
-                if isinstance(candidate, Mapping):
-                    loaded_llm = candidate
-        except Exception:
-            pass
-
-    data = load_config_data(path)
-    llm = data.get("llm") or {}
-    model_timeouts = loaded_llm.get("model_timeouts", llm.get("model_timeouts"))
-    if not isinstance(model_timeouts, dict):
-        model_timeouts = {}
+    """Resolve service configuration exclusively from BatLLM preferences."""
+    llm = load_config_data(path).get("llm", {})
     return {
-        "last_served_model": str(loaded_llm.get("last_served_model") or llm.get("last_served_model") or "").strip(),
-        "model": str(loaded_llm.get("model") or llm.get("model") or "").strip(),
-        "model_timeouts": dict(model_timeouts),
-        "timeout": loaded_llm.get("timeout", llm.get("timeout")),
-        "warmup_timeout": loaded_llm.get("warmup_timeout", llm.get("warmup_timeout")),
-        "url": str(loaded_llm.get("url") or llm.get("url") or "http://localhost").strip().rstrip("/"),
-        "port": int(loaded_llm.get("port") or llm.get("port") or 11434),
+        "timeout": llm.get("timeout"),
+        "warmup_timeout": llm.get("warmup_timeout"),
+        "last_served_model": str(llm.get("last_served_model") or "").strip(),
+        "model": str(llm.get("model") or "").strip(),
+        "model_timeouts": dict(llm.get("model_timeouts") or {}),
+        "url": str(llm.get("url") or "http://localhost").rstrip("/"),
+        "port": int(llm.get("port") or 11434),
     }
 
 
@@ -132,7 +95,7 @@ def _parse_positive_timeout(raw_timeout: Any) -> float | None:
         timeout = float(raw_timeout)
     except (TypeError, ValueError):
         return None
-    return timeout if timeout > 0 else None
+    return timeout if math.isfinite(timeout) and timeout > 0 else None
 
 
 def common_model_timeout(model_name: str) -> float | None:
@@ -175,7 +138,7 @@ def lookup_model_metadata(
 def build_saved_llm_metadata_snapshot(path: Path | None = None) -> dict[str, Any]:
     data = load_config_data(path)
     llm = data.get("llm") or {}
-    config_llm = load_llm_config(path)
+    config_llm = llm
     selected_model = str(config_llm.get("model") or "").strip()
     last_served_model = str(config_llm.get("last_served_model") or "").strip()
     snapshot = {
@@ -195,11 +158,7 @@ def build_saved_llm_metadata_snapshot(path: Path | None = None) -> dict[str, Any
             "top_p": llm.get("top_p"),
             "path": llm.get("path"),
         },
-        "provider_metadata": lookup_model_metadata(
-            selected_model,
-            host=str(config_llm.get("url") or "http://localhost"),
-            port=int(config_llm.get("port") or 11434),
-        ) if selected_model else {},
+        "provider_metadata": {},
     }
     snapshot["config_snapshot"] = {
         key: value for key, value in snapshot["config_snapshot"].items() if value is not None
@@ -418,24 +377,18 @@ def install_command_for_current_platform(platform_name: str | None = None) -> tu
 def ollama_version_text(host: str | None = None) -> str:
     try:
         proc = run_ollama_command("--version", host=host)
-    except FileNotFoundError:
+    except (FileNotFoundError, subprocess.TimeoutExpired):
         return ""
     return ((proc.stdout or "") + (proc.stderr or "")).strip()
 
 
 def install_service(reinstall: bool = False) -> tuple[int, str]:
-    try:
-        installer = getattr(_MODELITO, "install_service", None)
-        if callable(installer):
-            return installer(reinstall=reinstall)
-    except Exception:
-        pass
-    try:
-        _cmd, display = install_command_for_current_platform()
-        # Do not execute the installer automatically; return a launch message
-        return 0, display
-    except Exception as exc:
-        return 1, str(exc)
+    import webbrowser
+    del reinstall
+    url = "https://ollama.com/download"
+    if not webbrowser.open(url):
+        return 1, f"Open {url} to install Ollama."
+    return 0, "Opened the official Ollama download page. Complete installation, then refresh BatLLM."
 
 
 def endpoint_url(url: str, port: int, path: str) -> str:
@@ -467,14 +420,6 @@ def server_is_up(url: str, port: int) -> bool:
 
 
 def inspect_service_state(config_path: Path | None = None) -> dict[str, object]:
-    inspector = getattr(_MODELITO, "inspect_service_state", None)
-    if config_path is None and callable(inspector):
-        return inspector(None)
-    try:
-        if callable(inspector):
-            return inspector(str(config_path) if config_path is not None else None)
-    except Exception:
-        pass
     llm = load_llm_config(config_path)
     url = str(llm["url"])
     port = int(llm["port"])
@@ -492,17 +437,11 @@ def inspect_service_state(config_path: Path | None = None) -> dict[str, object]:
 
 
 def run_ollama_command(*args: str, host: str | None = None) -> subprocess.CompletedProcess:
-    try:
-        runner = getattr(_MODELITO, "run_ollama_command", None)
-        if callable(runner):
-            return runner(*args, host=host)
-    except Exception:
-        pass
     env = os.environ.copy()
     if host:
         env["OLLAMA_HOST"] = host
     command = resolve_ollama_command()
-    return subprocess.run([command, *args], cwd=ROOT, text=True, capture_output=True, check=False, env=env)
+    return subprocess.run([command, *args], cwd=ROOT, text=True, capture_output=True, check=False, env=env, timeout=600.0 if args and args[0] == "pull" else 30.0, encoding="utf-8")
 
 
 def start_detached_ollama_serve(host: str) -> subprocess.Popen:
@@ -513,7 +452,14 @@ def start_detached_ollama_serve(host: str) -> subprocess.Popen:
         kwargs["creationflags"] = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
     else:
         kwargs["start_new_session"] = True
-    return subprocess.Popen([command, "serve"], **kwargs)
+    process = subprocess.Popen([command, "serve"], **kwargs)
+    try:
+        _record_owned_server(host, process.pid)
+    except Exception:
+        process.terminate()
+        process.wait(timeout=3.0)
+        raise
+    return process
 
 
 def wait_until_ready(url: str, port: int, timeout_seconds: float = 60.0) -> None:
@@ -533,19 +479,12 @@ def preload_model(url: str, port: int, model: str, timeout: float = 120.0) -> No
 
 
 def start_service(config_path: Path | None = None, warmup_timeout: float | None = None) -> int:
-    # Prefer delegating to modelito when no explicit config path is provided; when
-    # a `config_path` is given, run the local implementation so callers and tests
-    # that monkeypatch module-level helpers are respected.
+    # Lifecycle decisions use only the resolved BatLLM configuration.
     llm = load_llm_config(config_path)
     resolved_warmup_timeout = resolve_warmup_timeout(
         llm, default=DEFAULT_WARMUP_TIMEOUT) if warmup_timeout is None else float(warmup_timeout)
-    if config_path is None:
-        try:
-            starter = getattr(_MODELITO, "start_service", None)
-            if callable(starter):
-                return int(starter(None, warmup_timeout=resolved_warmup_timeout))
-        except Exception:
-            pass
+    if _parse_positive_timeout(resolved_warmup_timeout) is None:
+        raise ValueError("Warmup timeout must be finite and positive")
     model = preferred_start_model(llm)
     timeout = resolve_request_timeout(llm, model=model)
 
@@ -597,10 +536,58 @@ def start_service(config_path: Path | None = None, warmup_timeout: float | None 
 
 
 def running_model_names(host: str) -> list[str]:
-    fn = getattr(_MODELITO, "running_model_names", None)
-    if callable(fn):
-        return fn(host)
-    return []
+    url = host if "://" in host else f"http://{host}"
+    return [entry["name"] for entry in json_get(f"{url}/api/ps").get("models", [])]
+
+
+def _management_client(timeout=30.0):
+    from ollama import Client as OllamaClient
+    llm = load_llm_config()
+    return OllamaClient(host=endpoint_url(llm["url"], llm["port"], ""), timeout=timeout)
+
+
+def list_local_models():
+    """List only the explicitly configured endpoint's local inventory."""
+    llm = load_llm_config()
+    payload = json_get(endpoint_url(llm["url"], llm["port"], "/api/tags"))
+    return [name for entry in payload.get("models", [])
+            if isinstance(entry, dict)
+            and isinstance(name := entry.get("name") or entry.get("model"), str) and name]
+
+
+def list_remote_model_catalog():
+    """Bound Modelito's remote catalogue lookup in a separate process."""
+    from types import SimpleNamespace
+    code = (
+        "import json; from dataclasses import asdict; "
+        "from modelito import ollama_service as m; "
+        "m.list_local_models = lambda: []; "
+        "print(json.dumps([asdict(e) for e in m.list_remote_model_catalog()]))"
+    )
+    result = subprocess.run([sys.executable, "-c", code], capture_output=True,
+                            text=True, encoding="utf-8", check=True, timeout=30.0)
+    installed = set(list_local_models())
+    entries = json.loads(result.stdout)
+    return [SimpleNamespace(**{**entry, "installed": entry["name"] in installed})
+            for entry in entries]
+
+
+def download_model_progress(model_name: str, timeout: float = 600.0):
+    """Pull through the configured endpoint, with an overall deadline."""
+    from types import SimpleNamespace
+    started = time.monotonic()
+    for event in _management_client(timeout=timeout).pull(model_name, stream=True):
+        if time.monotonic() - started > timeout:
+            raise TimeoutError(f"Model download exceeded {timeout:g}s")
+        total = event.total or 0
+        yield SimpleNamespace(model=model_name, phase=event.status, message=event.status,
+                              progress=(event.completed or 0) / total if total else 0,
+                              error=None)
+
+
+def delete_model(model_name: str) -> bool:
+    _management_client().delete(model_name)
+    return True
 
 
 def find_ollama_listener_pids(port: int) -> list[int]:
@@ -664,68 +651,58 @@ def find_ollama_listener_pids(port: int) -> list[int]:
     return sorted(pids)
 
 
+def _ownership_path(host: str) -> Path:
+    home = configured_batllm_home() or default_batllm_home()
+    key = hashlib.sha256(host.encode("utf-8")).hexdigest()[:24]
+    return home / f"ollama-owned-{key}.json"
+
+
+def _record_owned_server(host: str, pid: int) -> None:
+    """Record PID and birth time; PID reuse must never authorise termination."""
+    if psutil is None:
+        raise RuntimeError("psutil is required to track service ownership")
+    process = psutil.Process(pid)
+    path = _ownership_path(host)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=".ollama-owned-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump({"host": host, "pid": pid, "created": process.create_time()}, handle)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
 def stop_service(config_path: Path | None = None, verbose: bool = False) -> int:
-    # Prefer delegating to modelito when no explicit config path is provided.
-    if config_path is None:
-        try:
-            stopper = getattr(_MODELITO, "stop_service", None)
-            if callable(stopper):
-                return stopper(None, verbose=verbose)
-        except Exception:
-            pass
+    """Stop only a server launched by BatLLM, verified against its birth time."""
     llm = load_llm_config(config_path)
-    url = str(llm["url"])
-    port = int(llm["port"])
-    host = f"{url.removeprefix('http://').removeprefix('https://')}:{port}"
-    try:
-        run_ollama_command("--version", host=host)
-        models = running_model_names(host)
-        if models and verbose:
-            print(f"Stopping running models: {' '.join(models)}")
-        for model in models:
-            run_ollama_command("stop", model, host=host)
-    except FileNotFoundError:
+    host = f"{str(llm['url']).removeprefix('http://').removeprefix('https://')}:{llm['port']}"
+    path = _ownership_path(host)
+    if not path.exists():
         if verbose:
-            print("ollama CLI not found; skipping model stop.")
-    pids = find_ollama_listener_pids(port)
-    if not pids:
-        if verbose:
-            print(f"No process is listening on port {port} (already stopped?).")
+            print(f"No BatLLM-owned server at {host}; external service left running.")
         return 0
-    killed = False
-    terminated_procs = []
+    if psutil is None:
+        return 1
     try:
-        import psutil as _ps
-    except Exception:
-        _ps = None
-    if _ps is None:
-        return 0
-    for pid in pids:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        process = psutil.Process(record["pid"])
+        if (record["host"] != host or process.create_time() != record["created"]
+                or "ollama" not in process.name().lower()
+                or "serve" not in process.cmdline()):
+            return 1
+        process.terminate()
         try:
-            proc = _ps.Process(pid)
-        except _ps.Error:
-            continue
-        name = proc.name().lower()
-        if "ollama" not in name:
-            continue
-        if verbose:
-            print(f"Stopping ollama serve PID {pid} (port {port})")
-        proc.terminate()
-        killed = True
-        terminated_procs.append(proc)
-    alive = []
-    if terminated_procs:
-        _gone, alive = _ps.wait_procs(terminated_procs, timeout=3.0)
-    for proc in alive:
-        try:
-            proc.kill()
-        except _ps.Error:
-            continue
-    if verbose:
-        if killed:
-            print(f"Ollama server on {host} stopped.")
-        else:
-            print(f"No ollama serve process found on {host}.")
+            process.wait(timeout=3.0)
+        except psutil.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=3.0)
+    except psutil.NoSuchProcess:
+        pass
+    except (OSError, ValueError, KeyError, psutil.Error):
+        return 1
+    path.unlink(missing_ok=True)
     return 0
 
 
@@ -764,14 +741,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     config_path = Path(args.config).resolve() if args.config else None
     if args.action == "install":
-        try:
-            installer = getattr(_MODELITO, "install_service", None)
-            if callable(installer):
-                code, message = installer(reinstall=args.reinstall)
-            else:
-                code, message = install_command_for_current_platform()
-        except Exception:
-            code, message = install_command_for_current_platform()
+        code, message = install_service(reinstall=args.reinstall)
         if message:
             stream = sys.stderr if code else sys.stdout
             print(message, file=stream)

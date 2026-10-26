@@ -101,7 +101,10 @@ class BatLLM(MDApp):
 
     def _start_ollama_in_background(self) -> None:
         def work():
-            rc = ollama_service.start_service()
+            try:
+                rc = ollama_service.start_service()
+            except Exception:
+                rc = 1
 
             def finish(*_args):
                 if rc == 0:
@@ -190,7 +193,15 @@ class BatLLM(MDApp):
         if self._startup_ollama_flow_completed:
             return
         self._startup_ollama_flow_completed = True
-        self._handle_startup_ollama_state(ollama_service.inspect_service_state())
+        def inspect():
+            try:
+                state = ollama_service.inspect_service_state()
+            except Exception as exc:
+                Clock.schedule_once(lambda _dt, message=str(exc): show_fading_alert(
+                    "Ollama status", message, duration=3.0), 0)
+                return
+            Clock.schedule_once(lambda _dt: self._handle_startup_ollama_state(state), 0)
+        self._run_in_thread(inspect)
 
     def on_start(self):
         Clock.schedule_once(self._run_startup_ollama_flow, 0)

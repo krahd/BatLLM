@@ -656,10 +656,13 @@ def replay_turn(
     """Replay one turn from ordered plays."""
     current = normalize_state_map(pre_state)
     play_results: list[PlayResolution] = []
+    grounding_details: list[str] = []
     for play in plays or []:
         bot_id = _to_int(play.get("bot_id"), 0)
         llm_response = str(play.get("llm_response", "") or "")
         cmd_text = str(play.get("cmd", "") or "")
+        if parse_model_response(llm_response).normalized_cmd != cmd_text:
+            grounding_details.append(f"Bot {bot_id} response-command disagreement")
         resolution = apply_play(
             current,
             bot_id=bot_id,
@@ -671,6 +674,8 @@ def replay_turn(
         play_results.append(resolution)
 
     matches, mismatch_details = compare_state_maps(current, saved_post_state)
+    mismatch_details.extend(grounding_details)
+    matches = matches and not grounding_details
     return TurnReplay(
         initial_state=normalize_state_map(pre_state),
         play_results=play_results,

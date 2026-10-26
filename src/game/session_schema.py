@@ -85,6 +85,11 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
                 )
             except (OverflowError, TypeError, ValueError) as exc:
                 raise SessionFormatError(str(exc)) from exc
+            prompts = round_entry.get("prompts", [])
+            _ensure(isinstance(prompts, list), "Round prompts must be a list.")
+            for prompt in prompts:
+                _ensure(isinstance(prompt, dict) and type(prompt.get("bot_id")) is int
+                        and isinstance(prompt.get("prompt"), str), "Malformed round prompt.")
             turns = round_entry.get("turns")
             _ensure(isinstance(turns, list) and bool(turns),
                     f"Game {game_index} round {round_index} must contain at least one turn.")
@@ -95,6 +100,16 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
                 _ensure(isinstance(turn.get("post_state"), dict),
                         f"Turn {turn_index} missing post_state.")
                 _ensure(isinstance(turn.get("plays"), list), f"Turn {turn_index} missing plays.")
+                bot_ids = {int(key) for key in round_entry["initial_state"]}
+                for play_index, play in enumerate(turn["plays"], start=1):
+                    label = f"Turn {turn_index} play {play_index}"
+                    _ensure(isinstance(play, dict), f"{label} must be an object.")
+                    _ensure(type(play.get("bot_id")) is int and play["bot_id"] in bot_ids,
+                            f"{label} has an invalid bot_id.")
+                    _ensure(isinstance(play.get("llm_response"), str),
+                            f"{label} must retain a textual llm_response.")
+                    _ensure(isinstance(play.get("cmd"), str) and bool(play["cmd"]),
+                            f"{label} must contain a textual cmd.")
                 try:
                     validate_state_map(
                         turn["pre_state"],

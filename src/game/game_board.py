@@ -341,12 +341,6 @@ class GameBoard(Widget):
         # Clear the canvas before drawing
         self.canvas.clear()
 
-        # Keep bots inside bounds
-        for bot in self.bots:
-            r = bot.diameter / 2
-            bot.x = min(max(bot.x, r), 1 - r)
-            bot.y = min(max(bot.y, r), 1 - r)
-
         with NormalizedCanvas(self):
             # Background
             c = 1.0
@@ -467,6 +461,7 @@ class GameBoard(Widget):
         self.shuffled_bots = random.sample(self.bots, len(self.bots))
 
         # Tell the history manager a new round is starting, then kick the first turn
+        self._round_history_snapshot = self.ollama_connector.snapshot_histories()
         self.history_manager.start_round(self)
         Clock.schedule_once(self.play_turn)
         return True
@@ -480,6 +475,9 @@ class GameBoard(Widget):
         """Freeze round-level gameplay settings onto the live bot widgets."""
         for bot in self.bots:
             bot.diameter = rules.bot_diameter
+            radius = rules.bot_diameter / 2
+            bot.x = min(max(bot.x, radius), 1 - radius)
+            bot.y = min(max(bot.y, radius), 1 - radius)
             bot.default_step = rules.bot_step_length
             bot.shield_range_deg = rules.shield_size
             if reset_for_new_game:
@@ -748,6 +746,8 @@ class GameBoard(Widget):
     def cancel_current_round(self, bot: Bot, reason: str):
         """Cancel the active round, roll back state, and keep a cancelled-round history entry."""
         round_number = self.current_round
+        self._turn_generation += 1
+        self.ollama_connector.restore_histories(self._round_history_snapshot)
         self._restore_round_initial_state()
         rollback_state = self.history_manager._get_bots_state(self)
         self.history_manager.cancel_round(

@@ -37,6 +37,8 @@ def test_startup_prompts_install_when_ollama_missing(monkeypatch) -> None:
         lambda: prompted.__setitem__("install", True),
     )
 
+    monkeypatch.setattr(app, "_run_in_thread", lambda fn: fn())
+    monkeypatch.setattr(main_module.Clock, "schedule_once", lambda fn, _dt: fn(0))
     app._run_startup_ollama_flow()
 
     assert prompted["install"] is True

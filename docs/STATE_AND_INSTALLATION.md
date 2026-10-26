@@ -24,7 +24,7 @@ Before updating or replacing an older checkout or bundle, preserve its customise
 
 ## Saved sessions
 
-Session locations retain their existing behaviour. With `BATLLM_HOME`, relative saved-session folders resolve below that directory. Without it, they resolve from the checkout or extracted bundle root. Absolute saved-session paths are unchanged. No existing sessions are moved.
+Relative saved-session folders now resolve below the same user directory as preferences, with `BATLLM_HOME` taking precedence. Absolute paths are unchanged. On default-directory access, legacy JSON sessions in the checkout or bundle are copied into the user directory without moving originals or overwriting existing files. Conflicting filenames remain available at their original path through the analyser file chooser. Explicit `BATLLM_HOME` installations retain their existing directory and do not import checkout saves.
 
 ## Invariants
 

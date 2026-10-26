@@ -480,7 +480,11 @@ def test_play_turn_timeout_can_cancel_round_and_roll_back_state(monkeypatch) -> 
         ),
     }
 
+    board.ollama_connector._history_shared = [{"role": "user", "content": "retained"}]
+    retained = board.ollama_connector.snapshot_histories()
+
     def fake_send(bot_id, **_kwargs):
+        board.ollama_connector._history_shared.append({"role": "assistant", "content": "cancelled response"})
         value = responses[bot_id]
         if isinstance(value, Exception):
             raise value
@@ -508,6 +512,7 @@ def test_play_turn_timeout_can_cancel_round_and_roll_back_state(monkeypatch) -> 
     assert board.current_turn == 0
     assert board.history_manager.current_round is None
     assert scheduled_once == []
+    assert board.ollama_connector.snapshot_histories() == retained
 
 
 def test_shoot_damages_unshielded_target(monkeypatch) -> None:

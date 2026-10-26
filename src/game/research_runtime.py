@@ -127,33 +127,16 @@ class ModelitoChatClient:
     """Optional adapter for local Ollama models through Modelito."""
 
     def __init__(self, *, host: str = "http://localhost", port: int = 11434):
-        try:
-            from modelito import Client, Message, OllamaProvider
-        except Exception as exc:  # pragma: no cover - optional live integration
-            raise RuntimeError(
-                "Modelito is required for live Ollama research runs."
-            ) from exc
-        self._Message = Message
-        self._provider = OllamaProvider(host=host, port=port)
-        self._client = Client(provider=self._provider)
+        from llm.chat import Client
+        self._client = Client(host=f"{host.rstrip('/')}:{port}")
 
     def chat(
-        self,
-        *,
-        model: str,
-        messages: list[dict[str, str]],
-        options: dict[str, Any],
-        stream: bool = False,
+        self, *, model: str, messages: list[dict[str, str]],
+        options: dict[str, Any], stream: bool = False,
     ) -> str:
-        self._provider.model = model
-        self._client.model = model
-        converted = [
-            self._Message(role=message["role"], content=message["content"])
-            for message in messages
-        ]
-        if stream:
-            return "".join(self._client.stream(converted, settings=options))
-        return self._client.summarize(converted, settings=options)
+        return self._client.chat(
+            model=model, messages=messages, options=options, stream=stream,
+        )["message"]["content"]
 
 
 class MediatedGameRuntime:

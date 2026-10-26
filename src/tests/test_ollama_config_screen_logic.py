@@ -137,7 +137,7 @@ def test_refresh_remote_models_uses_modelito_catalog(monkeypatch) -> None:
 
     monkeypatch.setattr(screen_module.Clock, "schedule_once", fake_schedule_once)
     monkeypatch.setattr(
-        screen_module.modelito_ollama_service,
+        screen_module.ollama_service,
         "list_remote_model_catalog",
         lambda: [
             FakeEntry("all-minilm", raw={"parameter_size": "22m"}),
@@ -191,7 +191,7 @@ def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
     monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda callback, _dt=0: callback(0))
     monkeypatch.setattr(screen_module.config, "get", lambda _section, _key: "mistral-small:latest")
     monkeypatch.setattr(
-        screen_module.modelito_ollama_service,
+        screen_module.ollama_service,
         "list_local_models",
         lambda: ["llama3.2:latest", "mistral-small:latest"],
     )
@@ -575,10 +575,10 @@ def test_ensure_model_serving_warms_canonical_name(monkeypatch) -> None:
     calls = []
     monkeypatch.setattr(screen, "_llm_endpoint", lambda: ("http://localhost", 11434))
     monkeypatch.setattr(screen, "_llm_timeout_config", lambda _model: {"timeout": 120})
-    monkeypatch.setattr(screen_module.modelito_ollama_service, "list_local_models",
+    monkeypatch.setattr(screen_module.ollama_service, "list_local_models",
                         lambda: ["smollm2   abc123   1 GB   2 months ago"])
-    monkeypatch.setattr(screen_module.modelito_ollama_service, "ensure_ollama_running_verbose",
-                        lambda **_kwargs: (True, "ready"))
+    monkeypatch.setattr(screen_module.ollama_service, "server_is_up",
+                        lambda *_args: True)
     monkeypatch.setattr(screen_module.ollama_service, "preload_model",
                         lambda *args, **kwargs: calls.append((args, kwargs)))
 
@@ -588,8 +588,8 @@ def test_ensure_model_serving_warms_canonical_name(monkeypatch) -> None:
 
 def test_ensure_model_serving_reports_service_failure(monkeypatch) -> None:
     screen = screen_module.OllamaConfigScreen()
-    monkeypatch.setattr(screen_module.modelito_ollama_service, "ensure_ollama_running_verbose",
-                        lambda **_kwargs: (False, "timed out waiting for readiness"))
+    monkeypatch.setattr(screen_module.ollama_service, "server_is_up",
+                        lambda *_args: False)
     monkeypatch.setattr(screen_module.ollama_service, "preload_model",
                         lambda *_args, **_kwargs: (_ for _ in ()).throw(
                             AssertionError("Must not warm a model when the service failed")))
@@ -597,7 +597,7 @@ def test_ensure_model_serving_reports_service_failure(monkeypatch) -> None:
     try:
         screen._ensure_model_serving("smollm2")
     except RuntimeError as exc:
-        assert "timed out waiting for readiness" in str(exc)
+        assert "Start Ollama" in str(exc)
     else:
         raise AssertionError("Expected RuntimeError when service readiness fails")
 
@@ -606,10 +606,10 @@ def test_ensure_model_serving_reports_service_failure(monkeypatch) -> None:
 def test_ensure_model_serving_reports_missing_or_failed_model(monkeypatch, installed) -> None:
     screen = screen_module.OllamaConfigScreen()
     calls = []
-    monkeypatch.setattr(screen_module.modelito_ollama_service, "list_local_models",
+    monkeypatch.setattr(screen_module.ollama_service, "list_local_models",
                         lambda: ["smollm2  abc123  1 GB  now"] if installed else [])
-    monkeypatch.setattr(screen_module.modelito_ollama_service, "ensure_ollama_running_verbose",
-                        lambda **_kwargs: (True, "ready"))
+    monkeypatch.setattr(screen_module.ollama_service, "server_is_up",
+                        lambda *_args: True)
 
     def fail_to_preload(*_args, **_kwargs):
         calls.append(True)

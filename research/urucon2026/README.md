@@ -45,7 +45,7 @@ A live local-model trace can be created through Modelito and Ollama:
 python run_batllm_research.py --provider ollama --model smollm2 --output /tmp/live-session.json
 ```
 
-The live adapter is provided as an integration path; the reference evaluation uses scripted responses to isolate trace and transition semantics from network and model variability.
+The live adapter shares BatLLM’s strict Modelito 1.4.6 transport, including explicit request deadlines and native options. Wire-level mock tests establish the application transport contract; historical traces are not retroactively authenticated by this repair. The live adapter is provided as an integration path; the reference evaluation uses scripted responses to isolate trace and transition semantics from network and model variability.
 
 ## Evaluation
 

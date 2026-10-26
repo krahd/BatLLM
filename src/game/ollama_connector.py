@@ -10,14 +10,13 @@ from util.utils import _maybe_float, _maybe_int
 from util.paths import resolve_repo_relative
 from configs.app_config import config
 from llm import service as ollama_service
-from modelito import Client as ModelitoClient
-from modelito import Message as ModelitoMessage, OllamaProvider
+from llm.chat import Client
 
 import json
 
-from collections.abc import Mapping
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
+from modelito.exceptions import ModelitoTimeoutError
+from copy import deepcopy
 
 try:
     import httpcore
@@ -29,63 +28,12 @@ try:
 except ImportError:  # pragma: no cover - dependency is normally present via ollama/httpx
     httpx = None
 
-def _normalize_host_and_port(host: str) -> tuple[str, int]:
-    raw_host = str(host or "http://127.0.0.1").strip()
-    parsed = urlparse(raw_host if "://" in raw_host else f"http://{raw_host}")
-    scheme = parsed.scheme or "http"
-    hostname = parsed.hostname or "127.0.0.1"
-    port = int(parsed.port or 11434)
-    return f"{scheme}://{hostname}", port
-
-
-def _to_modelito_messages(messages: List[Dict[str, str]]) -> List[ModelitoMessage]:
-    return [
-        ModelitoMessage(
-            role=str(message.get("role") or "user"),
-            content=str(message.get("content") or ""),
-        )
-        for message in messages
-    ]
-
-
-class Client:
-    """Thin internal seam over modelito for BatLLM gameplay requests."""
-
-    def __init__(self, host: str, timeout: Optional[float | str] = None) -> None:
-        self.host = host.rstrip("/")
-        try:
-            self.timeout = float(timeout) if timeout is not None else None
-        except (TypeError, ValueError):
-            self.timeout = None
-        base_host, port = _normalize_host_and_port(self.host)
-        self._provider = OllamaProvider(host=base_host, port=port)
-        self._client = ModelitoClient(provider=self._provider)
-
-    def chat(
-        self,
-        *,
-        model: str,
-        messages: List[Dict[str, str]],
-        options: Optional[Dict[str, Any]] = None,
-        stream: bool = False,
-    ) -> Dict[str, Any]:
-        settings: Dict[str, Any] = dict(options or {})
-        if self.timeout is not None and "timeout" not in settings:
-            settings["timeout"] = self.timeout
-        self._provider.model = model
-        self._client.model = model
-        normalized_messages = _to_modelito_messages(messages)
-        if stream:
-            text = "".join(self._client.stream(normalized_messages, settings=settings))
-        else:
-            text = self._client.summarize(normalized_messages, settings=settings)
-        return {"message": {"content": text}, "response": text}
 
 
 Message = Dict[str, str]  # {"role": "system"|"user"|"assistant", "content": str}
 
 
-TIMEOUT_EXCEPTIONS: tuple[type[BaseException], ...] = (TimeoutError,)
+TIMEOUT_EXCEPTIONS: tuple[type[BaseException], ...] = (TimeoutError, ModelitoTimeoutError,)
 if httpx is not None:
     TIMEOUT_EXCEPTIONS += (httpx.TimeoutException,)
 if httpcore is not None:
@@ -189,6 +137,14 @@ class OllamaConnector:
         self._history_shared.clear()  # type: ignore[attr-defined]
 
 
+
+    def snapshot_histories(self):
+        """Freeze conversation state before a round starts."""
+        return deepcopy((self._history_by_bot, self._history_shared))
+
+    def restore_histories(self, snapshot):
+        """Replace histories so retired requests cannot modify active context."""
+        self._history_by_bot, self._history_shared = deepcopy(snapshot)
 
     def _build_user_message(self, *, game_state: Dict[str, Any], player_text: str) -> Message:
         """Build the user message content for the game mode
@@ -459,7 +415,6 @@ class OllamaConnector:
 
         options = self.gen_options()
         res: dict[str, Any] | Any
-        last_timeout: BaseException | None = None
 
         try:
             for attempt in range(1, 3):
@@ -469,7 +424,6 @@ class OllamaConnector:
                     )
                     break
                 except TIMEOUT_EXCEPTIONS as exc:
-                    last_timeout = exc
                     if attempt == 2:
                         raise LLMTimeoutError(
                             model=self.model, timeout=self.timeout, attempts=attempt,

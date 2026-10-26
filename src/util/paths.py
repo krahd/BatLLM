@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import shutil
+import tempfile
 import sys
 from pathlib import Path
 
@@ -44,12 +46,12 @@ def default_batllm_home() -> Path:
     return home / ".local" / "share" / "BatLLM"
 
 
-def active_batllm_home() -> Path | None:
-    """Return the active BatLLM home when packaged installs opt into a writable location."""
+def active_batllm_home() -> Path:
+    """Return the writable state directory for every installation channel."""
     configured = configured_batllm_home()
     if configured is not None:
         return configured
-    return None
+    return default_batllm_home()
 
 
 def resolve_config_path(default_path: Path | None = None) -> Path:
@@ -57,7 +59,7 @@ def resolve_config_path(default_path: Path | None = None) -> Path:
 
     ``default_path`` is retained for caller compatibility; shipped defaults are
     only read by the configuration loaders, never used as the save destination.
-    Session paths retain their existing resolution rules.
+    Session paths share the same user directory.
     """
     del default_path
     home_dir = configured_batllm_home() or default_batllm_home()
@@ -116,6 +118,24 @@ def resolve_saved_sessions_dir(folder_name: str | Path) -> Path:
         else:
             path = ROOT_DIR / path
     path.mkdir(parents=True, exist_ok=True)
+    # Copy legacy JSON saves once; never move or overwrite existing evidence.
+    if not Path(folder_name).is_absolute() and configured_batllm_home() is None:
+        legacy = ROOT_DIR / folder_name
+        if legacy.resolve() != path.resolve() and legacy.is_dir():
+            for source in legacy.glob("*.json"):
+                destination = path / source.name
+                if source.is_file() and not destination.exists():
+                    fd, temporary = tempfile.mkstemp(prefix=".legacy-session-", dir=path)
+                    try:
+                        with os.fdopen(fd, "wb") as target, source.open("rb") as origin:
+                            shutil.copyfileobj(origin, target)
+                        try:
+                            os.link(temporary, destination)
+                        except FileExistsError:
+                            pass
+                    finally:
+                        os.unlink(temporary)
+
     return path
 
 
