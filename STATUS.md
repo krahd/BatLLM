@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-26 00:59
+Last updated: 2026-10-26 01:19
 
 ## Project and release phase
 
@@ -49,11 +49,11 @@ Headless validation uses `KIVY_WINDOW=mock`, `KIVY_NO_ARGS=1` and `KIVY_NO_CONSO
 
 Shipped defaults in `src/configs/config.yaml` are read-only. Preferences and relative session directories use `BATLLM_HOME` when set, otherwise the platform user data directory. Legacy checkout JSON sessions are copied on default-directory access without moving originals or overwriting existing files. Absolute session paths retain their meaning. See [state and installation](docs/STATE_AND_INSTALLATION.md).
 
-All application service operations use BatLLM preferences; Modelito’s independent configuration files do not override them. Ownership receipts are stored in the user directory, allowing a helper subprocess to start a service that the application can later stop safely.
+The main application service facade uses BatLLM preferences. The standalone configuration editor still bypasses that facade and has endpoint, timeout and shutdown-safety defects. Ownership receipts are stored in the user directory, allowing a helper subprocess to start a service that the application can later stop safely.
 
 ## Validation evidence
 
-Current local Python 3.12/macOS audit repair:
+Fresh local Python 3.12/macOS validation of merged main `d86ae05` (PR #62):
 
 - isolated complete non-live suite: `247 passed, 2 skipped`;
 - HTTP-level checks cover desktop and research roles/options, non-streaming requests, request deadlines, unavailable servers, missing models, invalid JSON/streamed bodies and malformed or empty responses;
@@ -62,16 +62,18 @@ Current local Python 3.12/macOS audit repair:
 - release-bundle generation and Homebrew formula generation with dependency resolution/hashes: passed;
 - isolated research pipeline and research-package build: passed (60 valid traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected, 180 serialisation controls accepted).
 
-Additional packaging, research and documentation validation is recorded in [the audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md). Historical validation remains in the changelog and pull requests.
+The merged revision’s hosted CI, Multiplatform Validation, dependency audit and research workflow passed. A separate adversarial pass reproduced 11 remaining findings through 15 isolated evidence probes; these are documented in the [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md). Earlier packaging, research and documentation validation is recorded in [the repair verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md). Historical validation remains in the changelog and pull requests.
 
 ## Known limitations and pending work
 
-- Live Ollama generation and native GUI acceptance have not been run for this repair. Mock HTTP verification does not establish real-model behaviour.
+- Four high-priority audit findings remain: standalone-editor safety bypasses, unguarded queued-turn callbacks after reset, v3 schema/input-validation defects, and missing runtime imports in the extracted research package.
+- Medium-priority findings cover temporary-setting persistence, stale context headers, inferred model ownership, overlapping selections, implicit startup downloads, coercion of malformed v2 rules, and unsupported remote-catalogue discovery. See the post-merge audit for evidence and repair order.
+- Live Ollama generation and native GUI acceptance have not been run for this audit. Mock HTTP verification does not establish real-model behaviour.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
-- Modelito 1.4.6 still has independent lifecycle configuration, unsafe generic shutdown and unbounded CLI helpers. BatLLM avoids those entry points; upstream handoff details are in the audit verification.
+- Modelito 1.4.6 still has independent lifecycle configuration, unsafe generic shutdown and unbounded CLI helpers. The main facade avoids those entry points, while the standalone editor still reaches them. Remote discovery also relies on unsupported CLI flags; upstream details are in the audit reports.
 - v2 analysis is diagnostic and weaker than v3; neither format authenticates a serving binary or model weights.
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-26 00:59
+Last updated: 2026-10-26 01:19
