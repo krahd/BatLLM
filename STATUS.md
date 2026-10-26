@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-26 02:19
+Last updated: 2026-10-26 17:36
 
 ## Project and release phase
 
@@ -53,6 +53,10 @@ Shipped defaults in `src/configs/config.yaml` are read-only. Preferences and rel
 
 Both management interfaces use explicit BatLLM endpoints and the guarded service facade. Temporary game/UI settings are excluded from incidental preference saves. Ownership receipts are stored in the user directory, allowing a helper subprocess to start a service that the application can later stop safely.
 
+## Repository hygiene
+
+The workshop branch excludes local poster-capture staging and reproducible Doxygen print intermediates. Published HTML documentation, runtime assets and canonical URUCON corpus/results/packages remain tracked. See [workshop stabilisation](docs/WORKSHOP_STABILISATION_2026_10_27.md) for classification and acceptance limits.
+
 ## Validation evidence
 
 Current local Python 3.12/macOS post-merge repairs:
@@ -78,4 +82,4 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-26 02:19
+Last updated: 2026-10-26 17:36

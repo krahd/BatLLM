@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### Workshop repository hygiene — 26 October 2026
+
+- untracked local poster staging and Doxygen print intermediates, preserving local copies and source history;
+- retained canonical research evidence and published HTML documentation;
+- documented classification and candidate acceptance limits in [the workshop checkpoint](WORKSHOP_STABILISATION_2026_10_27.md).
+
 ### Post-merge audit repair — 26 October 2026
 
 - routed the standalone editor through strict, deadline-aware inference and explicit-endpoint service operations; confirmed deletion, unload and download actions; made console cancellation local to its request/output;
