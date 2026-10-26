@@ -18,7 +18,7 @@ For normal play you also need:
 - at least one model installed in Ollama; and
 - enough memory for the model you choose.
 
-BatLLM can open the official Ollama installer and can manage the configured local service from **Settings → Ollama Config**.
+BatLLM can open the official Ollama download page and can manage the configured local service from **Settings → Ollama Config**.
 
 > [!CAUTION]
 > The Ollama controls affect the real local installation. Starting or stopping the service, downloading a model, deleting a model, or changing the selected model can affect other Ollama-based tools on the same machine.
@@ -171,11 +171,11 @@ The user-facing analyzer supports the current BatLLM session schema v2. Older to
 
 ## Saving sessions
 
-**Save Session** writes an analyzer-compatible JSON file to the configured saved-session folder.
+**Save Session** writes an analyzer-compatible JSON file to the configured saved-session folder in the user data directory. See [state locations and legacy-session copying](STATE_AND_INSTALLATION.md).
 
 Only completed turns are exported. An active turn or a cancelled zero-play turn is omitted so that unfinished state does not invalidate an otherwise useful session.
 
-Saved rounds include a frozen gameplay-settings snapshot. Saved sessions also include model/runtime metadata. The analyzer therefore uses the rules recorded with the session rather than the current settings file.
+Saved rounds include a frozen gameplay-settings snapshot. Saved sessions also include a configuration metadata snapshot; saving does not query the live server. The analyzer therefore uses the rules recorded with the session rather than the current settings file.
 
 Configuration and save locations depend on how BatLLM was launched. See [Installation channels and mutable state](STATE_AND_INSTALLATION.md).
 
@@ -184,7 +184,7 @@ Configuration and save locations depend on how BatLLM was launched. See [Install
 The Ollama screen provides:
 
 - installation or reinstallation launch;
-- service start and stop controls;
+- service start and stop controls (only a server started by BatLLM can be stopped);
 - current service status;
 - an output log;
 - startup warm-up timeout controls;
@@ -193,7 +193,7 @@ The Ollama screen provides:
 
 ### Local models
 
-A local model is already installed in Ollama.
+A local model is already installed in Ollama. **Use Selected** saves the model choice only after readiness succeeds.
 
 1. Open **Local Models**.
 2. Choose a model.

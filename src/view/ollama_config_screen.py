@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 import json
+import math
 import subprocess
 import sys
 import threading
@@ -12,7 +13,6 @@ from pathlib import Path
 from typing import Any
 
 from llm import service as ollama_service
-from modelito import ollama_service as modelito_ollama_service
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.metrics import dp
@@ -250,7 +250,13 @@ class OllamaConfigScreen(Screen):
         Clock.schedule_once(update, 0)
 
     def _run_in_thread(self, fn):
-        threading.Thread(target=fn, daemon=True).start()
+        def guarded_work():
+            try:
+                fn()
+            except Exception as exc:
+                self._set_status(f"Ollama operation failed: {exc}")
+                self._append_log(f"Ollama operation failed: {exc}")
+        threading.Thread(target=guarded_work, daemon=True).start()
 
     def _schedule_ui_callback(self, callback):
         if callback is None:
@@ -353,27 +359,16 @@ class OllamaConfigScreen(Screen):
             text=True,
             capture_output=True,
             check=False,
+            timeout=900.0,
             env=env,
         )
 
     def _run_ollama_command(self, *args: str) -> subprocess.CompletedProcess:
-        command = ollama_service.resolve_ollama_command()
-        return subprocess.run(
-            [command, *args],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+        return ollama_service.run_ollama_command(*args, host=self._ollama_host())
 
-    def _run_ollama_install_command(self) -> subprocess.CompletedProcess:
-        return subprocess.run(
-            build_ollama_install_command(),
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+    def _ollama_host(self):
+        url, port = self._llm_endpoint()
+        return f"{url}:{port}"
 
     def _remember_served_model(self, model_name: str):
         model_name = model_name.strip()
@@ -387,13 +382,13 @@ class OllamaConfigScreen(Screen):
     def _list_local_models_via_modelito(self) -> list[str]:
         return list(dict.fromkeys(
             _local_model_name(str(name))
-            for name in modelito_ollama_service.list_local_models()
+            for name in ollama_service.list_local_models()
             if str(name).strip()
         ))
 
     def _list_remote_model_catalog_via_modelito(self) -> list[dict[str, str]]:
         entries = []
-        for entry in modelito_ollama_service.list_remote_model_catalog():
+        for entry in ollama_service.list_remote_model_catalog():
             display = entry.name
             if entry.installed:
                 display = f"{display} (installed)"
@@ -431,7 +426,7 @@ class OllamaConfigScreen(Screen):
         return self._ensure_model_serving(model_name)
 
     def _pull_model_via_modelito(self, model_name: str):
-        for state in modelito_ollama_service.download_model_progress(
+        for state in ollama_service.download_model_progress(
             model_name, timeout=600.0
         ):
             status = state.message or state.phase or "working"
@@ -441,7 +436,7 @@ class OllamaConfigScreen(Screen):
             )
 
     def _delete_model_via_modelito(self, model_name: str):
-        ok = modelito_ollama_service.delete_model(model_name)
+        ok = ollama_service.delete_model(model_name)
         self._append_log(f"modelito delete_model({model_name}) -> {ok}")
         if not ok:
             raise RuntimeError(f"Failed to delete model {model_name}")
@@ -565,20 +560,13 @@ class OllamaConfigScreen(Screen):
                     self._append_log(f"$ {command_text}\n{output or f'exit {proc.returncode}'}")
 
                     if proc.returncode == 0:
-                        state = ollama_service.inspect_service_state()
-                        if state.get("installed"):
-                            self._set_status("Ollama install completed.")
-                            self.refresh_ollama_status()
-                            self.refresh_local_models()
-                            return
-
-                        self._set_status("Ollama installer launched.")
+                        self._set_status("Ollama download page opened.")
                         Clock.schedule_once(
                             lambda *_: show_fading_alert(
                                 "Install Ollama",
                                 output
                                 or (
-                                    "Installer launched. Complete the install, then refresh "
+                                    "Download page opened. Complete the install, then refresh "
                                     "the Ollama screen or restart BatLLM."
                                 ),
                                 duration=3.0,
@@ -754,7 +742,7 @@ class OllamaConfigScreen(Screen):
         def work():
             try:
                 entries: list[dict[str, str]] = []
-                for entry in modelito_ollama_service.list_remote_model_catalog():
+                for entry in ollama_service.list_remote_model_catalog():
                     raw = entry.raw if isinstance(entry.raw, dict) else {}
                     size = str(
                         raw.get("parameter_size")
@@ -798,7 +786,7 @@ class OllamaConfigScreen(Screen):
         base_url, port = self._llm_endpoint()
         host = f"{base_url.removeprefix('http://').removeprefix('https://')}:{port}"
         try:
-            return modelito_ollama_service.running_model_names(host)
+            return ollama_service.running_model_names(host)
         except Exception:
             return []
 
@@ -835,16 +823,8 @@ class OllamaConfigScreen(Screen):
             model=model_name,
         )
         try:
-            ready, message = modelito_ollama_service.ensure_ollama_running_verbose(
-                host=base_url,
-                port=port,
-                auto_start=True,
-                timeout=min(request_timeout, 30.0),
-            )
-            if not ready:
-                raise RuntimeError(message or "Ollama is not ready")
-            # modelito 1.4.5 compares names against unparsed CLI table rows in
-            # ensure_model_ready_detailed. Check the normalised catalogue here.
+            if not ollama_service.server_is_up(base_url, port):
+                raise RuntimeError("Start Ollama before selecting a model")
             if model_name not in self._list_local_models_via_modelito():
                 raise RuntimeError(f"Model {model_name} is not available locally")
             ollama_service.preload_model(
@@ -864,23 +844,23 @@ class OllamaConfigScreen(Screen):
                               duration=1.5, fade_duration=1.0)
             return
 
-        config.set("llm", "model", model)
-        config.save()
         self._set_status(f"Loading model: {model}")
-        self._append_log(f"Configured BatLLM model: {model}")
+        self._append_log(f"Selected BatLLM model: {model}")
 
         def work():
             try:
                 running_before = set(self._get_running_model_names())
                 previous_managed = self._managed_model_name
 
+                self._ensure_model_serving(model)
                 if previous_managed and previous_managed != model and previous_managed in running_before:
                     self._set_status(f"Stopping previous BatLLM model: {previous_managed}")
                     self._append_log(f"Stopping previous BatLLM model: {previous_managed}")
                     self._stop_serving_model(previous_managed)
                     running_before.discard(previous_managed)
 
-                self._ensure_model_serving(model)
+                config.set("llm", "model", model)
+                config.save()
                 self._remember_served_model(model)
                 if model not in running_before or previous_managed == model:
                     self._managed_model_name = model
@@ -890,7 +870,7 @@ class OllamaConfigScreen(Screen):
                 self._append_log(f"Model ready: {model}")
                 self.refresh_ollama_status()
                 self.refresh_local_models()
-            except RuntimeError as exc:
+            except Exception as exc:
                 self._set_status(f"Failed to serve model: {model}")
                 self._append_log(f"Failed to serve model {model}: {exc}")
                 Clock.schedule_once(
@@ -928,7 +908,7 @@ class OllamaConfigScreen(Screen):
             )
             return
 
-        if timeout_seconds <= 0:
+        if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
             show_fading_alert(
                 "Model Timeout",
                 "Enter a positive timeout in seconds.",
@@ -960,7 +940,7 @@ class OllamaConfigScreen(Screen):
             )
             return
 
-        if timeout_seconds <= 0:
+        if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
             show_fading_alert(
                 "Warmup Timeout",
                 "Enter a positive warmup timeout in seconds.",
@@ -1005,7 +985,7 @@ class OllamaConfigScreen(Screen):
             self._append_log(f"No model timeout override to clear: {model}")
 
     def _pull_model(self, model_name: str):
-        for state in modelito_ollama_service.download_model_progress(model_name, timeout=600.0):
+        for state in ollama_service.download_model_progress(model_name, timeout=600.0):
             status = state.message or state.phase or state.error or "working"
             self._set_status(f"Pull {model_name}: {status}")
             event = {
@@ -1049,7 +1029,7 @@ class OllamaConfigScreen(Screen):
         )
 
     def _delete_model(self, model_name: str):
-        deleted = modelito_ollama_service.delete_model(model_name)
+        deleted = ollama_service.delete_model(model_name)
         self._append_log(f"modelito delete_model\n{model_name} -> {deleted}")
         if not deleted:
             raise RuntimeError(f"Failed to delete model {model_name}")

@@ -20,6 +20,8 @@ CORE_PATHS = [
     ROOT / "src/game/trace_contract.py",
     ROOT / "src/game/session_v3.py",
     ROOT / "src/game/research_runtime.py",
+    ROOT / "src/llm/__init__.py",
+    ROOT / "src/llm/chat.py",
     ROOT / "src/game/trace_verifier.py",
     ROOT / "src/game/replay_engine.py",
     ROOT / "src/tests/test_trace_contract.py",

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from kivy.utils import escape_markup
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.properties import ListProperty, StringProperty
@@ -56,7 +57,7 @@ class AnalyzerLoadScreen(Screen):
                           key=lambda path: path.stat().st_mtime, reverse=True)
         self._populate_recent_buttons(sessions[:12])
         if sessions:
-            lines = [f"{index + 1}. {path.name}" for index, path in enumerate(sessions[:6])]
+            lines = [f"{index + 1}. {escape_markup(path.name)}" for index, path in enumerate(sessions[:6])]
             self.recent_sessions_text = "\n".join(lines)
         else:
             self.recent_sessions_text = "No saved sessions found yet."
@@ -130,19 +131,19 @@ class AnalyzerLoadScreen(Screen):
         try:
             payload = load_session_payload(path)
         except SessionFormatError as exc:
-            self.status_text = f"Compatibility: {exc}"
+            self.status_text = f"Compatibility: {escape_markup(str(exc))}"
             self.status_color = list(analyzer_theme.ERROR_TEXT_DARK)
-            self.summary_text = f"File: {path.name}\nStatus: incompatible"
+            self.summary_text = f"File: {escape_markup(path.name)}\nStatus: incompatible"
             return
 
         summary = summarize_session_payload(payload)
         self.status_text = "Compatibility: analyzer-compatible"
         self.status_color = list(analyzer_theme.SUCCESS_TEXT)
         self.summary_text = (
-            f"File: {path.name}\n"
+            f"File: {escape_markup(path.name)}\n"
             f"Schema: v{summary['schema_version']}\n"
-            f"Saved: {summary.get('saved_at') or 'unknown'}\n"
-            f"App: {summary.get('app_version') or 'unknown'}\n"
+            f"Saved: {escape_markup(str(summary.get('saved_at') or 'unknown'))}\n"
+            f"App: {escape_markup(str(summary.get('app_version') or 'unknown'))}\n"
             f"Games: {summary['game_count']}\n"
             f"Rounds: {summary['round_count']}\n"
             f"Turns: {summary['turn_count']}\n"
@@ -160,7 +161,7 @@ class AnalyzerLoadScreen(Screen):
         try:
             payload = load_session_payload(path)
         except SessionFormatError as exc:
-            self.status_text = f"Compatibility: {exc}"
+            self.status_text = f"Compatibility: {escape_markup(str(exc))}"
             self.status_color = list(analyzer_theme.ERROR_TEXT_DARK)
             return
 

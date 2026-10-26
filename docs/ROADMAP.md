@@ -20,7 +20,7 @@ Version 2.0 is the planned architectural change towards networked play and addit
 - Complete native first-run testing on macOS, Linux, and Windows.
 - Finish the interface-consistency work in [UI_UNIFICATION_PLAN_1_0.md](UI_UNIFICATION_PLAN_1_0.md).
 - Improve recovery and messages for missing, stopped, slow, or non-responsive Ollama states.
-- Validate release-bundle state locations and move them to platform user directories if needed before 1.0.
+- Validate native release-bundle launchers and the shared platform user-directory behaviour.
 - Complete install-level Apple Silicon Homebrew validation.
 - Continue testing malformed model output, timeouts, save/load compatibility, and analyzer edge cases.
 - Sign off the [1.0 release criteria](RELEASE_CRITERIA_1_0.md) and [first-run checklist](FIRST_RUN_RELEASE_CHECKLIST.md).

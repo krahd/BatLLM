@@ -8,6 +8,8 @@ on:
       - "research/urucon2026/**"
       - "src/game/replay_engine.py"
       - "src/game/research_runtime.py"
+      - "src/llm/chat.py"
+      - "src/tests/test_adversarial_audit.py"
       - "src/game/session_v3.py"
       - "src/game/trace_contract.py"
       - "src/game/trace_verifier.py"
@@ -24,6 +26,8 @@ on:
       - "research/urucon2026/**"
       - "src/game/replay_engine.py"
       - "src/game/research_runtime.py"
+      - "src/llm/chat.py"
+      - "src/tests/test_adversarial_audit.py"
       - "src/game/session_v3.py"
       - "src/game/trace_contract.py"
       - "src/game/trace_verifier.py"
@@ -53,8 +57,8 @@ jobs:
       KIVY_WINDOW: mock
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
         with:
           python-version: "3.12"
           cache: pip
@@ -75,7 +79,7 @@ jobs:
         run: python research/urucon2026/build_artifact.py
       - name: Upload reproducibility artefact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: urucon-research-artifact
           path: |

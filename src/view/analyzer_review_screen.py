@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from kivy.utils import escape_markup
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.metrics import dp
@@ -54,7 +55,7 @@ class AnalyzerReviewScreen(Screen):
         self.stop_playback()
         self.model = model
         self.current_file = model.source_name
-        self.session_title = f"Game Analyzer | {model.source_name}"
+        self.session_title = f"Game Analyzer | {escape_markup(model.source_name)}"
         self._active_tree_filters.clear()
         self._sync_filter_buttons()
         self._refresh_view()
@@ -196,7 +197,7 @@ class AnalyzerReviewScreen(Screen):
             return
 
         self.current_file = model.source_name
-        self.session_title = f"Game Analyzer | {model.source_name}"
+        self.session_title = f"Game Analyzer | {escape_markup(model.source_name)}"
 
         game_spinner = self.ids.game_spinner
         game_spinner.values = model.game_labels()
@@ -212,7 +213,7 @@ class AnalyzerReviewScreen(Screen):
         bot_spinner.values = model.bot_filter_labels()
         bot_spinner.text = model.bot_filter
 
-        self.ids.file_name_label.text = model.source_name
+        self.ids.file_name_label.text = escape_markup(model.source_name)
         self.ids.prompts_text.text = model.format_prompts()
         self.ids.plays_text.text = model.format_plays()
         self.ids.state_diff_text.text = model.format_state_diff()

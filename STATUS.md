@@ -1,234 +1,77 @@
 # BatLLM status
 
-Last updated: 2026-10-25 20:12
+Last updated: 2026-10-26 00:59
 
-## Summary
+## Project and release phase
 
-BatLLM is a local, two-player, AI-mediated battle game and a research/education project. Two human players prompt two model-backed bots; the bots act inside a deterministic game world through a small command language.
-
-The current repository version is `0.3.6`. The core game, saved-session workflow, Game Analyzer, local Ollama integration, cross-platform launchers, Homebrew formula generation, and URUCON research artefact are implemented. `main` is protected by multiplatform, dependency, and research checks.
-
-The project is in a stable `0.x` hardening phase rather than a feature-complete 1.0 release. The remaining release work is primarily manual first-run validation, interface consistency, and packaging confidence on native platforms.
+BatLLM is a Python/Kivy research, education and two-player battle game. Human prompts mediate model commands inside a deterministic game world. Version `0.3.6` remains in `0.x` hardening; stable 1.0 gates are unsigned.
 
 ## Current capabilities
 
-### Game
+- Two players, two bots, round prompts, shared or independent conversation histories, and optional game-state prompt augmentation.
+- Asynchronous gameplay requests and guarded callbacks; fresh histories for new games and conversation/state rollback for cancelled rounds.
+- Strict native Ollama inference through the shared Modelito 1.4.6 adapter; structured roles, generation options, `stream: false`, explicit deadlines and propagated errors.
+- Ollama status, start, warm-up, local inventory, downloads and deletion at BatLLM’s configured endpoint. Shutdown requires an ownership receipt matching endpoint, PID and process creation time; external services remain running.
+- Model selection persists after readiness succeeds. Destructive and expensive actions retain confirmation flows.
+- Atomic configuration and session persistence. Session-v2 exports contain completed turns, frozen rules and a configuration metadata snapshot, without live metadata queries during saving.
+- Game Analyzer validates action records and replay states, and flags response–command disagreement and turn-continuity breaks.
+- Headless schema-v3 research runtime and verifier preserve application-level invocation evidence, grounding, replay and semantic-event checks. This does not authenticate model execution or historical traces.
 
-- Two human players control two bots by writing prompts.
-- A session can contain multiple games; games contain rounds; rounds contain turns.
-- Each round uses one prompt per player.
-- Commands cover movement, clockwise and anticlockwise rotation, shield control, and firing.
-- Independent-context and shared-context modes are supported.
-- Prompt augmentation can prepend structured game state.
-- Each new game starts with a fresh model conversation history.
-- Long-running model calls execute away from the Kivy UI thread.
-- Game and round lifecycle callbacks are guarded against stale asynchronous completion.
+## Environment and commands
 
-### History and saved sessions
-
-- `HistoryManager` is the authoritative record of games, rounds, turns, prompts, responses, commands, states, and outcomes.
-- User-facing exports use the validated BatLLM session-v2 envelope.
-- Saved rounds include frozen gameplay settings; sessions include model/runtime metadata.
-- Only completed turns are exported. Active and cancelled zero-play turns are omitted.
-- Writes are atomic and save failures are reported to the user.
-
-### Game Analyzer
-
-- Available from the main application and through `python run_game_analyzer.py`.
-- Loads one validated v2 session at a time.
-- Supports game, round, turn-start, and individual-play navigation.
-- Replays commands through the pure transition engine using saved rules.
-- Shows prompts, raw model responses, parsed commands, state differences, settings, and model metadata.
-- Rejects legacy list exports and malformed sessions rather than approximating them.
-
-### Ollama and model management
-
-- Gameplay requests and model-management helpers are routed through `modelito==1.4.5`.
-- The application can open the official Ollama installer and manage the configured local service.
-- Local models can be selected, warmed, and deleted.
-- Local catalogue rows are reduced to canonical model names; selection checks service readiness and local availability before warming the model.
-- Remote catalogue entries can be downloaded into the local model inventory.
-- Global, per-model, and startup warm-up timeouts are supported.
-- Destructive and expensive actions use confirmation flows where implemented.
-
-### Research runtime
-
-- The graphical application retains the v2 session format for user compatibility.
-- The URUCON research runtime records schema-v3 traces through headless entry points.
-- Verification covers trace structure, application-level invocation evidence, response-to-command grounding, and operative replay.
-- The implementation-owned research artefact, schema, corpus, results, and claim ledger remain in this repository.
-- The editable manuscript is maintained separately in `krahd/academic-writing`.
-
-## Supported environment
-
-| Area | Current support |
-| --- | --- |
-| Python | `3.10`, `3.11`, and `3.12`; `3.12` recommended |
-| Desktop platforms | macOS, Linux, Windows |
-| Model runtime | local Ollama through `modelito` |
-| Homebrew | source-based Apple Silicon macOS formula |
-| User session format | v2 |
-| Research trace format | v3 |
-| Licence | MIT |
-
-## Run and validate
-
-### Install from source
+Python `3.10`–`3.12` (`3.12` recommended); macOS, Linux and Windows. Homebrew targets Apple Silicon macOS. Runtime dependencies are maintained in `requirements.txt`; the Homebrew subset is in `packaging/homebrew/requirements.txt`.
 
 ```bash
-python3 -m venv .venv_BatLLM
-source .venv_BatLLM/bin/activate
 python -m pip install -r requirements.txt
-```
-
-On Windows PowerShell, activate with `.\.venv_BatLLM\Scripts\Activate.ps1`.
-
-### Launch
-
-```bash
 python run_batllm.py
 python run_game_analyzer.py
-```
-
-### Test
-
-```bash
 python run_tests.py core
 python run_tests.py non-live
 python tools/check_docs.py
 ```
 
-`python run_tests.py full` additionally starts and stops the configured real Ollama service. Run it only with explicit maintainer intent.
+Headless validation uses `KIVY_WINDOW=mock`, `KIVY_NO_ARGS=1` and `KIVY_NO_CONSOLELOG=1`. The non-live suite binds temporary loopback HTTP servers and isolates `BATLLM_HOME`. `python run_tests.py full` mutates a real Ollama service and requires explicit maintainer intent.
 
-## Architecture
+## Architecture and important paths
 
-```mermaid
-flowchart LR
-    Players[Two human players] --> Home[HomeScreen]
-    Home --> Board[GameBoard]
-    Board --> Connector[OllamaConnector]
-    Connector --> Modelito[modelito]
-    Modelito --> Ollama[Local Ollama model]
-    Ollama --> Connector
-    Board --> Replay[Replay engine]
-    Board --> History[HistoryManager]
-    History --> Session[Saved session v2]
-    Session --> Analyzer[Game Analyzer]
-    Replay --> Analyzer
-    Board --> Research[Headless research runtime]
-    Research --> Trace[Trace v3]
-    Trace --> Verifier[Trace verifier]
-    Replay --> Verifier
-```
-
-The most important separation is between Kivy presentation and deterministic state transitions. `replay_engine.py` provides command parsing and state transition logic without requiring the graphical interface; the analyzer and research verifier reuse this logic.
+- `src/game/`: Kivy coordination, pure replay semantics, histories, v2 sessions and v3 research traces.
+- `src/llm/chat.py`: shared strict inference adapter for desktop and research.
+- `src/llm/service.py`: BatLLM configuration, bounded management operations and owned-process lifecycle.
+- `src/configs/app_config.py`: section-validated defaults/overlay loading and atomic preference writes.
+- `src/util/paths.py`: resources, user state and legacy-session copying.
+- `src/view/` and `src/analyzer_model.py`: Kivy screens and analyser presentation.
+- `create_release_bundles.py`: full source archives and smaller platform runtime bundles; research packaging is separate.
+- `research/urucon2026/`: implementation-owned corpus, results, schema, claims and reproducibility package. The editable paper remains in `krahd/academic-writing`.
+- `.github/workflows/`: platform, dependency, research and release checks, with actions pinned by commit.
+- `README.md`, `docs/USER_GUIDE.md`, `docs/CONTRIBUTING.md` and `docs/RELEASE_CRITERIA_1_0.md`: public, user, developer and release references.
 
 ## Configuration and mutable state
 
-- `src/configs/config.yaml` contains shipped first-install defaults, including `smollm2`; configuration writers reject it as a save destination.
-- Preferences use `$BATLLM_HOME/config.yaml` when set, otherwise the platform user directory for all installation channels.
-- Existing user overlays retain precedence; customised legacy checkout settings survive through the next save. Preserve old checkout YAML before upgrading.
-- Relative saved-session locations remain below `BATLLM_HOME` when set, otherwise below the checkout or extracted bundle root.
-- Tests establish a temporary `BATLLM_HOME` before importing the application configuration.
+Shipped defaults in `src/configs/config.yaml` are read-only. Preferences and relative session directories use `BATLLM_HOME` when set, otherwise the platform user data directory. Legacy checkout JSON sessions are copied on default-directory access without moving originals or overwriting existing files. Absolute session paths retain their meaning. See [state and installation](docs/STATE_AND_INSTALLATION.md).
 
-See `docs/STATE_AND_INSTALLATION.md` for the maintained reference.
+All application service operations use BatLLM preferences; Modelito’s independent configuration files do not override them. Ownership receipts are stored in the user directory, allowing a helper subprocess to start a service that the application can later stop safely.
 
-## Important files
+## Validation evidence
 
-- `README.md`: project overview and installation.
-- `docs/README.md`: documentation index.
-- `docs/USER_GUIDE.md`: game and application manual.
-- `docs/CONTRIBUTING.md`: development, architecture, validation, and release work.
-- `docs/CHANGELOG.md`: chronological history.
-- `AGENTS.md`: operating rules for coding agents.
-- `VERSION` and `CITATION.cff`: version and citation metadata.
-- `run_batllm.py`, `run_game_analyzer.py`, `run_tests.py`: primary entry points.
-- `src/game/`: game, history, replay, session, and research logic.
-- `src/view/`: Kivy screens and layouts.
-- `src/llm/service.py`: Ollama/modelito lifecycle facade.
-- `research/urucon2026/`: reproducibility artefact.
-- `.github/workflows/`: CI, dependency, packaging, research, and release workflows.
+Current local Python 3.12/macOS audit repair:
 
-## Recent durable changes
+- isolated complete non-live suite: `247 passed, 2 skipped`;
+- HTTP-level checks cover desktop and research roles/options, non-streaming requests, request deadlines, unavailable servers, missing models, invalid JSON/streamed bodies and malformed or empty responses;
+- full Pylint gate: passed, rated `8.89/10` with existing warnings;
+- compilation, documentation validation and `git diff --check`: passed;
+- release-bundle generation and Homebrew formula generation with dependency resolution/hashes: passed;
+- isolated research pipeline and research-package build: passed (60 valid traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected, 180 serialisation controls accepted).
 
-- Closed asynchronous game-reset, fatal-shot, and retired-callback races.
-- Isolated model conversation history across every game transition.
-- Made session export retain only analyzer-valid completed turns.
-- Strengthened nested session and replay-state validation, including bot identity consistency.
-- Preserved rejected prompts and reported session-save errors without exiting.
-- Isolated tests from repository and user configuration.
-- Restored complete multiplatform non-live CI and focused URUCON reproducibility validation.
-- Moved manuscript ownership to `academic-writing` while retaining implementation evidence here.
-- Reorganised documentation around a root project README, a documentation index, a current status snapshot, and role-specific manuals.
-- Removed obsolete audit-bundle payloads and one-off PR helper files from the maintained tree.
+Additional packaging, research and documentation validation is recorded in [the audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md). Historical validation remains in the changelog and pull requests.
 
-Historical detail belongs in `docs/CHANGELOG.md`, pull requests, and the research audit files rather than in this status page.
+## Known limitations and pending work
 
-## Validation state
+- Live Ollama generation and native GUI acceptance have not been run for this repair. Mock HTTP verification does not establish real-model behaviour.
+- Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
+- Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
+- Modelito 1.4.6 still has independent lifecycle configuration, unsafe generic shutdown and unbounded CLI helpers. BatLLM avoids those entry points; upstream handoff details are in the audit verification.
+- v2 analysis is diagnostic and weaker than v3; neither format authenticates a serving binary or model weights.
+- Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
+- Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Configuration persistence validation on Python 3.12/Linux:
-
-- complete isolated non-live suite: `209 passed, 2 skipped`;
-- dedicated persistence regressions: `15 passed`, covering first launch, default platform paths, explicit `BATLLM_HOME`, legacy settings, existing overlays, model-row selection, service saves, standalone editor, and failed atomic writes;
-- full Pylint gate: passed (existing warnings remain);
-- Python compilation and `git diff --check`: passed;
-- documentation validation: passed;
-- repaired the CI matrix context and excluded dependency/generated Markdown from documentation scans;
-- release-bundle generation and Homebrew formula dry-run: passed.
-
-Live Ollama, native desktop interaction, and install-level packaging checks have not been run for this repair.
-
-Latest validated application baseline from PR #46:
-
-- complete non-live suite: `189 passed, 2 skipped`;
-- full Pylint gate: passed;
-- Python compilation: passed;
-- `git diff --check`: passed;
-- complete URUCON research experiment pipeline: passed;
-- Dependency review: passed;
-- Python dependency audit: passed;
-- Multiplatform Validation: passed;
-- URUCON research validation: passed.
-
-Documentation audit validation on PR #47:
-
-- documentation structure, local Markdown links, and local HTML links: passed;
-- complete non-live suite: passed;
-- full Pylint gate: passed;
-- Python compilation and `git diff --check`: passed;
-- Dependency review and Python dependency audit: passed;
-- Multiplatform Validation, including release bundles, Homebrew dry-run, and mock-Ollama smoke testing: passed;
-- URUCON research validation and reproducibility package build: passed;
-- stale command, state-path, workflow, packaging, and research-CI claims corrected.
-
-## Known limitations and risks
-
-- The desktop UI still requires manual spot checks on a machine with a display.
-- Live Ollama validation can start, stop, warm, download, or delete real local resources and is not safe to run casually.
-- Native first-run checks for Linux and Windows release bundles remain maintainer-owned release tasks.
-- Homebrew support is source-based and currently oriented towards Apple Silicon macOS.
-- Without `BATLLM_HOME`, relative saved-session folders still use the checkout or bundle root.
-- The graphical application supports saved-session v2 only; legacy exports are intentionally unsupported.
-- Doxygen output under `docs/code/` is large and noisy and should be regenerated only intentionally.
-- Some Kivy-bound coordination remains in `GameBoard`; further separation is desirable before networked play.
-
-## Pending work
-
-### Before a 1.0 release candidate
-
-1. Run manual gameplay and analyzer smoke checks on macOS, Linux, and Windows.
-2. Complete first-run checks with Ollama missing, installed-but-stopped, and already running.
-3. Validate each native release-bundle launcher and writable-state behaviour.
-4. Run live Ollama tests only on a machine where service mutation is acceptable.
-5. Run install-level Homebrew validation on Apple Silicon macOS.
-6. Complete the remaining UI consistency and accessibility work recorded in `docs/UI_UNIFICATION_PLAN_1_0.md`.
-7. Review the draft 1.0 release criteria and sign off explicitly.
-
-### Longer term
-
-- Continue moving deterministic game/session logic out of Kivy-bound coordination.
-- Design the server contract before implementing networked or web clients.
-- Preserve replay determinism and schema versioning through the 2.0 architecture change.
-- Treat shared prompt or game repositories as later work requiring authentication, moderation, provenance, and versioning.
-
-Last updated: 2026-10-25 20:12
+Last updated: 2026-10-26 00:59

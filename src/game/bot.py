@@ -93,8 +93,8 @@ class Bot(Widget):
         self.default_step = float(config.get("game", "bot_step_length"))
 
         # Random initial position and rotation
-        self.x = random.uniform(0, 1)
-        self.y = random.uniform(0, 1)
+        self.x = random.uniform(self.diameter / 2, 1 - self.diameter / 2)
+        self.y = random.uniform(self.diameter / 2, 1 - self.diameter / 2)
         self.rot = random.uniform(0, 359)  # degrees
 
 

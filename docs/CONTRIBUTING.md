@@ -89,7 +89,8 @@ BatLLM uses `modelito` for gameplay requests and model-management helpers. The r
 | `src/game/session_schema.py` | user-facing saved-session v2 validation |
 | `src/game/session_v3.py` | research trace-v3 structures |
 | `src/analyzer_model.py` | analyser navigation and replay model |
-| `src/llm/service.py` | BatLLM-specific Ollama/modelito lifecycle facade |
+| `src/llm/service.py` | BatLLM configuration, endpoint-specific management and owned-service lifecycle |
+| `src/llm/chat.py` | shared strict gameplay/research inference transport |
 | `src/configs/` | shipped defaults, alternate profiles, and config loader |
 | `src/util/paths.py` | repository, asset, user-state, and saved-session path resolution |
 | `src/tests/` | automated tests and smoke helpers |
@@ -122,18 +123,18 @@ flowchart LR
 1. `HomeScreen` collects one prompt per player.
 2. `GameBoard` starts the round when both prompts are ready.
 3. `OllamaConnector` builds the model messages and maintains independent or shared histories.
-4. `modelito` sends the request to Ollama.
+4. The shared `src/llm/chat.py` adapter uses strict Modelito 1.4.6 requests with native options, structured roles, `stream: false`, and an explicit transport timeout.
 5. `replay_engine.parse_model_response()` converts the returned text into BatLLM's bounded command grammar.
 6. The live bot executes the command.
 7. `HistoryManager` records prompts, responses, commands, states, and outcomes.
 
-Each new game receives a fresh connector history. This prevents late responses from a retired game contaminating the next game's model context.
+Cancelled rounds restore their initial conversation snapshot; each new game receives a fresh connector history. This prevents late responses from a retired game contaminating the next game's model context.
 
 ### Saved sessions and analysis
 
 The graphical application exports session schema v2. Each saved round includes a frozen gameplay-settings snapshot; the top-level envelope also records model/runtime metadata. Only completed turns are exported.
 
-The Game Analyzer validates the saved file, replays the ordered commands using the frozen rules, and reports state differences rather than silently approximating incompatible data. Legacy top-level list exports are intentionally rejected.
+The Game Analyzer validates the saved file, replays the ordered commands using the frozen rules, and reports state differences, response–command disagreement, and continuity breaks between turns. Legacy top-level list exports are intentionally rejected.
 
 ### Research runtime
 
@@ -147,7 +148,7 @@ The shipped defaults are in `src/configs/config.yaml`. `src/configs/app_config.p
 
 Configuration saves use `$BATLLM_HOME/config.yaml` when set, otherwise the platform user directory on every installation channel. Shipped defaults are never a save destination. Existing user overlays take precedence; customised legacy checkout defaults are retained on the next save. Preserve them before upgrading the checkout.
 
-Relative saved-session paths retain their existing rules: below `BATLLM_HOME` when set, otherwise inside the checkout or extracted bundle. Tests set an isolated temporary `BATLLM_HOME` before application configuration is imported.
+Relative saved-session paths use the same user directory as preferences, with non-destructive copying of legacy checkout JSON files when no `BATLLM_HOME` is set. Tests set an isolated temporary `BATLLM_HOME` before application configuration is imported.
 
 See [STATE_AND_INSTALLATION.md](STATE_AND_INSTALLATION.md) for the compact reference.
 
@@ -369,3 +370,5 @@ Remote catalogue retrieval requires network access. Local gameplay does not requ
 ### Generated API documentation is stale
 
 Run Doxygen only when the source-level API docs should change, then inspect the generated diff before committing.
+
+Service start, inspection and shutdown resolve only BatLLM preferences. Shutdown requires a matching ownership receipt (endpoint, PID and creation time); independently started services are left running. Session saving performs no live metadata query. Platform bundles contain runtime files and launchers; full documentation and research material remain in the source archives.

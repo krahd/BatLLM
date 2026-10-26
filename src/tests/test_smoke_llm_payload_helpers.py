@@ -75,8 +75,8 @@ def test_summarize_once_uses_provider_and_timeout(monkeypatch) -> None:
     calls = {}
 
     class FakeProvider:
-        def __init__(self, host: str, port: int, model: str):
-            calls["init"] = {"host": host, "port": port, "model": model}
+        def __init__(self, host: str, port: int, model: str, timeout: float, strict: bool):
+            calls["init"] = {"host": host, "port": port, "model": model, "timeout": timeout, "strict": strict}
 
         def summarize(self, messages, settings=None):
             calls["message"] = messages[0].content
@@ -96,6 +96,8 @@ def test_summarize_once_uses_provider_and_timeout(monkeypatch) -> None:
         "host": "http://localhost",
         "port": 11434,
         "model": "qwen3:30b",
+        "timeout": 88.0,
+        "strict": True,
     }
     assert calls["message"] == "Reply with exactly OK"
     assert calls["settings"] == {"timeout": 88.0}

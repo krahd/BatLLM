@@ -489,52 +489,27 @@ def test_build_parser_accepts_warmup_timeout() -> None:
     assert args.warmup_timeout == 45.0
 
 
-def test_start_service_without_config_uses_modelito_path(monkeypatch) -> None:
-    called = {}
-
-    monkeypatch.setattr(
-        ollama_service,
-        "load_llm_config",
-        lambda _path=None: {"warmup_timeout": 12, "model": "smollm2",
-                            "url": "http://localhost", "port": 11434},
-    )
-    monkeypatch.setattr(
-        ollama_service,
-        "run_ollama_command",
-        lambda *_args, **_kwargs: (_ for _ in ()
-                                   ).throw(AssertionError("local orchestration should not run")),
-    )
-    monkeypatch.setattr(
-        ollama_service._MODELITO,
-        "start_service",
-        lambda _path=None, warmup_timeout=None: called.update(
-            {"path": _path, "warmup_timeout": warmup_timeout}) or 3,
-    )
-
-    assert ollama_service.start_service(None) == 3
-    assert called == {"path": None, "warmup_timeout": 12.0}
+def test_service_operations_do_not_discover_modelito_config(monkeypatch, tmp_path):
+    path = tmp_path / "config.yaml"
+    path.write_text("llm:\n  model: custom\n  url: http://localhost\n  port: 12345\n")
+    monkeypatch.setattr(ollama_service, "default_config_path", lambda: path)
+    monkeypatch.setattr("configs.app_config.resolve_config_path", lambda _path=None: path)
+    for name in ("load_llm_config", "start_service", "inspect_service_state", "stop_service"):
+        monkeypatch.setattr(ollama_service._MODELITO, name,
+                            lambda *a, **k: (_ for _ in ()).throw(AssertionError("independent config")))
+    monkeypatch.setattr(ollama_service, "ollama_installed", lambda: True)
+    monkeypatch.setattr(ollama_service, "ollama_version_text", lambda **k: "test")
+    monkeypatch.setattr(ollama_service, "server_is_up", lambda u, p: p == 12345)
+    monkeypatch.setattr(ollama_service, "run_ollama_command", lambda *a, **k: SimpleNamespace(returncode=0, stdout="", stderr=""))
+    monkeypatch.setattr(ollama_service, "preload_model", lambda *a, **k: None)
+    monkeypatch.setattr(ollama_service, "save_last_served_model", lambda *a: None)
+    assert ollama_service.load_llm_config()["model"] == "custom"
+    assert ollama_service.inspect_service_state()["port"] == 12345
+    assert ollama_service.start_service() == 0
+    assert ollama_service.stop_service() == 0
 
 
-def test_inspect_service_state_without_config_uses_modelito_path(monkeypatch) -> None:
-    monkeypatch.setattr(
-        ollama_service,
-        "load_llm_config",
-        lambda _path=None: (_ for _ in ()).throw(AssertionError("local fallback should not run")),
-    )
-    monkeypatch.setattr(
-        ollama_service._MODELITO,
-        "inspect_service_state",
-        lambda _path=None: {"installed": True, "running": True, "startup_model": "smollm2"},
-    )
-
-    assert ollama_service.inspect_service_state(None) == {
-        "installed": True,
-        "running": True,
-        "startup_model": "smollm2",
-    }
-
-
-def test_stop_service_only_force_kills_ollama_processes(monkeypatch, tmp_path: Path) -> None:
+def test_stop_service_leaves_unowned_listeners_running(monkeypatch, tmp_path: Path) -> None:
     config_path = tmp_path / "config.yaml"
     config_path.write_text(
         (
@@ -593,8 +568,8 @@ def test_stop_service_only_force_kills_ollama_processes(monkeypatch, tmp_path: P
     monkeypatch.setitem(sys.modules, "psutil", FakePsutilModule)
 
     assert ollama_service.stop_service(config_path) == 0
-    assert ollama_proc.terminated is True
-    assert ollama_proc.killed is True
+    assert ollama_proc.terminated is False
+    assert ollama_proc.killed is False
     assert other_proc.terminated is False
     assert other_proc.killed is False
 

@@ -52,19 +52,20 @@ def _read_yaml(path: Path) -> dict:
     if not path.exists():
         return {}
     with path.open("r", encoding="utf-8") as handle:
-        data = yaml.safe_load(handle) or {}
-    return data if isinstance(data, dict) else {}
+        data = yaml.safe_load(handle)
+    if data is None:
+        return {}
+    if not isinstance(data, dict):
+        raise ValueError(f"Configuration must be a mapping: {path}")
+    return data
 
 
 def _merge_config(target: dict, overlay: dict) -> None:
     """Merge a sectioned config mapping into the target mapping."""
     for section, values in overlay.items():
-        if section not in target:
-            target[section] = {}
-        if isinstance(values, dict):
-            target[section].update(values)
-        else:
-            target[section] = values
+        if not isinstance(values, dict):
+            raise ValueError(f"Configuration section {section!r} must be a mapping")
+        target.setdefault(section, {}).update(values)
 
 
 def load_config_data(

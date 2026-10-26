@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from kivy.utils import escape_markup
+
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
-from game.replay_engine import GameplaySettingsSnapshot, ReplayEvent, TurnReplay, replay_turn
+from game.replay_engine import GameplaySettingsSnapshot, ReplayEvent, TurnReplay, replay_turn, compare_state_maps
 
 
 BOT_FILTER_BOTH = "Both"
@@ -133,6 +135,7 @@ class AnalyzerSessionModel:
         round_entry = self.current_round()
         rules = GameplaySettingsSnapshot.from_mapping(round_entry.get("gameplay_settings_snapshot"))
         steps: list[dict[str, Any]] = []
+        previous_state = round_entry.get("initial_state", {})
         for turn_index, turn in enumerate(round_entry.get("turns", [])):
             replay = replay_turn(
                 turn.get("pre_state", {}),
@@ -140,6 +143,12 @@ class AnalyzerSessionModel:
                 rules,
                 saved_post_state=turn.get("post_state", {}),
             )
+            continuous, details = compare_state_maps(previous_state, turn.get("pre_state"))
+            if not continuous:
+                replay = replace(replay, mismatch=True, mismatch_details=[
+                    *replay.mismatch_details, *[f"Turn continuity: {detail}" for detail in details]
+                ])
+            previous_state = turn.get("post_state", {})
             badge_parts: list[str] = []
             badge_tokens: list[str] = []
             if any(
@@ -170,7 +179,7 @@ class AnalyzerSessionModel:
 
             steps.append(
                 {
-                    "label": f"Turn {turn.get('turn', turn_index + 1)} start",
+                    "label": f"Turn {escape_markup(str(turn.get('turn', turn_index + 1)))} start",
                     "turn_index": turn_index,
                     "step_index": 0,
                     "state_by_bot": replay.initial_state,
@@ -185,7 +194,7 @@ class AnalyzerSessionModel:
             for play_index, resolution in enumerate(replay.play_results, start=1):
                 steps.append(
                     {
-                        "label": f"Turn {turn.get('turn', turn_index + 1)} play {play_index}",
+                        "label": f"Turn {escape_markup(str(turn.get('turn', turn_index + 1)))} play {play_index}",
                         "turn_index": turn_index,
                         "step_index": play_index,
                         "state_by_bot": resolution.state_by_bot,
@@ -232,7 +241,7 @@ class AnalyzerSessionModel:
                 continue
             if self.bot_filter == "Bot 2" and bot_id != 2:
                 continue
-            lines.append(f"[b]Bot {bot_id}[/b]\n{prompt.get('prompt', '')}\n")
+            lines.append(f"[b]Bot {bot_id}[/b]\n{escape_markup(str(prompt.get('prompt', '')))}\n")
         return "\n".join(lines).strip() or "No prompts recorded."
 
     def format_plays(self) -> str:
@@ -249,7 +258,7 @@ class AnalyzerSessionModel:
                 continue
             prefix = "[b]>[/b] " if play_index == current_step else "  "
             lines.append(
-                f"{prefix}[b]Bot {bot_id}[/b] llm={play.get('llm_response', '')!r} cmd={play.get('cmd', '')}"
+                f"{prefix}[b]Bot {bot_id}[/b] llm={escape_markup(repr(play.get('llm_response', '')))} cmd={escape_markup(str(play.get('cmd', '')))}"
             )
         return "\n".join(lines).strip() or "No plays for this filter."
 
@@ -320,17 +329,17 @@ class AnalyzerSessionModel:
         configured_model = str(metadata.get("configured_model") or "").strip()
         last_served_model = str(metadata.get("last_served_model") or "").strip()
         if configured_model:
-            lines.append(f"[b]Configured model[/b]: {configured_model}")
+            lines.append(f"[b]Configured model[/b]: {escape_markup(configured_model)}")
         if last_served_model:
-            lines.append(f"[b]Last served model[/b]: {last_served_model}")
+            lines.append(f"[b]Last served model[/b]: {escape_markup(last_served_model)}")
         request_timeout = metadata.get("request_timeout")
         if request_timeout is not None:
-            lines.append(f"[b]Request timeout[/b]: {request_timeout!r}s")
+            lines.append(f"[b]Request timeout[/b]: {escape_markup(repr(request_timeout))}s")
         warmup_timeout = metadata.get("warmup_timeout")
         if warmup_timeout is not None:
-            lines.append(f"[b]Warmup timeout[/b]: {warmup_timeout!r}s")
+            lines.append(f"[b]Warmup timeout[/b]: {escape_markup(repr(warmup_timeout))}s")
         endpoint = f"{metadata.get('url') or 'http://localhost'}:{metadata.get('port') or 11434}"
-        lines.append(f"[b]Ollama endpoint[/b]: {endpoint}")
+        lines.append(f"[b]Ollama endpoint[/b]: {escape_markup(endpoint)}")
 
         config_snapshot = metadata.get("config_snapshot")
         if isinstance(config_snapshot, dict) and config_snapshot:
@@ -338,14 +347,14 @@ class AnalyzerSessionModel:
             lines.append("[b]Saved config snapshot[/b]")
             for key in ("path", "num_ctx", "num_predict", "num_thread", "max_tokens", "temperature", "top_k", "top_p"):
                 if key in config_snapshot:
-                    lines.append(f"{key}: {config_snapshot.get(key)!r}")
+                    lines.append(f"{key}: {escape_markup(repr(config_snapshot.get(key)))}")
 
         provider_metadata = metadata.get("provider_metadata")
         if isinstance(provider_metadata, dict) and provider_metadata:
             lines.append("")
             lines.append("[b]Saved provider metadata[/b]")
             for key in sorted(provider_metadata):
-                lines.append(f"{key}: {provider_metadata.get(key)!r}")
+                lines.append(f"{escape_markup(str(key))}: {escape_markup(repr(provider_metadata.get(key)))}")
 
         return "\n".join(lines).strip() or "No saved model metadata was recorded for this session."
 
@@ -360,7 +369,7 @@ class AnalyzerSessionModel:
                 rows.append(
                     AnalyzerTreeRow(
                         kind="subheader",
-                        label=f"Round {round_entry.get('round', round_index + 1)}",
+                        label=f"Round {escape_markup(str(round_entry.get('round', round_index + 1)))}",
                         game_index=game_index,
                         round_index=round_index,
                         flat_index=0,
