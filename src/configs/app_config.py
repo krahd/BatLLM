@@ -111,6 +111,11 @@ class AppConfig:
         if path is None:
             path = self._path
 
+        if path.resolve() in {
+            self._default_path.resolve(), SHIPPED_CONFIG_PATH.resolve()
+        }:
+            raise ValueError("Cannot save preferences over shipped configuration defaults")
+
         path.parent.mkdir(parents=True, exist_ok=True)
 
         with _SAVE_LOCK:

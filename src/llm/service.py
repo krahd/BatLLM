@@ -329,12 +329,13 @@ def preferred_start_model(llm: Mapping[str, Any]) -> str:
 
 
 def save_last_served_model(model: str, path: Path | None = None) -> None:
+    """Persist service preferences through the guarded atomic config writer."""
+    from configs.app_config import AppConfig  # pylint: disable=import-outside-toplevel
+
     resolved_path = default_config_path() if path is None else path
-    data = load_config_data(resolved_path)
-    llm = data.setdefault("llm", {})
-    llm["last_served_model"] = model.strip()
-    resolved_path.parent.mkdir(parents=True, exist_ok=True)
-    resolved_path.write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+    preferences = AppConfig(path=resolved_path, default_path=SHIPPED_CONFIG_PATH)
+    preferences.set("llm", "last_served_model", model.strip())
+    preferences.save()
 
 
 def ollama_binary_candidates() -> list[Path]:

@@ -82,6 +82,9 @@ def markdown_files() -> list[Path]:
         relative = path.relative_to(ROOT)
         if relative.parts[:2] == ("docs", "code"):
             continue
+        if any(part in {".git", ".venv", ".venv_BatLLM", "venv", "node_modules", "dist", "build"}
+               for part in relative.parts[:-1]):
+            continue
         files.append(path)
     return sorted(files)
 

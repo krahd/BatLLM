@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-21 01:57
+Last updated: 2026-10-25 20:12
 
 ## Summary
 
@@ -125,10 +125,10 @@ The most important separation is between Kivy presentation and deterministic sta
 
 ## Configuration and mutable state
 
-- `src/configs/config.yaml` is the shipped configuration and is mutable when running directly from a source checkout without `BATLLM_HOME`.
-- When `BATLLM_HOME` is set, mutable configuration is written to `$BATLLM_HOME/config.yaml` and relative saved-session folders resolve below that directory.
-- Homebrew wrappers set `BATLLM_HOME` to `~/Library/Application Support/BatLLM` by default.
-- Release-bundle launchers currently keep state relative to the extracted bundle unless the user sets `BATLLM_HOME`.
+- `src/configs/config.yaml` contains shipped first-install defaults, including `smollm2`; configuration writers reject it as a save destination.
+- Preferences use `$BATLLM_HOME/config.yaml` when set, otherwise the platform user directory for all installation channels.
+- Existing user overlays retain precedence; customised legacy checkout settings survive through the next save. Preserve old checkout YAML before upgrading.
+- Relative saved-session locations remain below `BATLLM_HOME` when set, otherwise below the checkout or extracted bundle root.
 - Tests establish a temporary `BATLLM_HOME` before importing the application configuration.
 
 See `docs/STATE_AND_INSTALLATION.md` for the maintained reference.
@@ -166,13 +166,17 @@ Historical detail belongs in `docs/CHANGELOG.md`, pull requests, and the researc
 
 ## Validation state
 
-Model selection: both Ollama configuration test modules pass locally
-(`44 passed`), covering CLI rows, canonical saved names and warm-up requests,
-readiness failures, and deferred error alerts. Live model selection has not been
-rechecked.
-Documentation validation is currently blocked by the tracked
-`batllm-pr-implementation` artefact. Pylint is unavailable in the local virtual
-environment.
+Configuration persistence validation on Python 3.12/Linux:
+
+- complete isolated non-live suite: `209 passed, 2 skipped`;
+- dedicated persistence regressions: `15 passed`, covering first launch, default platform paths, explicit `BATLLM_HOME`, legacy settings, existing overlays, model-row selection, service saves, standalone editor, and failed atomic writes;
+- full Pylint gate: passed (existing warnings remain);
+- Python compilation and `git diff --check`: passed;
+- documentation validation: passed;
+- repaired the CI matrix context and excluded dependency/generated Markdown from documentation scans;
+- release-bundle generation and Homebrew formula dry-run: passed.
+
+Live Ollama, native desktop interaction, and install-level packaging checks have not been run for this repair.
 
 Latest validated application baseline from PR #46:
 
@@ -203,7 +207,7 @@ Documentation audit validation on PR #47:
 - Live Ollama validation can start, stop, warm, download, or delete real local resources and is not safe to run casually.
 - Native first-run checks for Linux and Windows release bundles remain maintainer-owned release tasks.
 - Homebrew support is source-based and currently oriented towards Apple Silicon macOS.
-- Release bundles do not yet set a platform user-state directory automatically.
+- Without `BATLLM_HOME`, relative saved-session folders still use the checkout or bundle root.
 - The graphical application supports saved-session v2 only; legacy exports are intentionally unsupported.
 - Doxygen output under `docs/code/` is large and noisy and should be regenerated only intentionally.
 - Some Kivy-bound coordination remains in `GameBoard`; further separation is desirable before networked play.
@@ -227,4 +231,4 @@ Documentation audit validation on PR #47:
 - Preserve replay determinism and schema versioning through the 2.0 architecture change.
 - Treat shared prompt or game repositories as later work requiring authentication, moderation, provenance, and versioning.
 
-Last updated: 2026-10-21 01:57
+Last updated: 2026-10-25 20:12

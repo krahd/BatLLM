@@ -6,6 +6,10 @@
 
 ### Reliability and session integrity
 
+- incorporated AlanJoskowicz’s PR #60 model-selection fix, preserving contributor commits;
+- restored the `smollm2` first-install default and separated saved configuration from versioned defaults across installation channels;
+- preserved existing overlays and legacy checkout preferences, guarded shipped defaults, used the atomic writer for last-served-model persistence, and moved the standalone editor to user preferences;
+
 - extracted canonical local model names from Ollama CLI rows before selection, saving, and warm-up, and avoided modelito's unparsed-row availability check;
 - preserved model-selection error messages for deferred UI alerts, preventing a secondary `NameError`;
 - isolated model conversation histories across manual and normal game restarts;
@@ -23,6 +27,9 @@
 - moved editable manuscript ownership to `krahd/academic-writing` while retaining software evidence here.
 
 ### Dependencies and tooling
+
+- excluded virtual environments and generated files from documentation link scans, fixing Windows CI failures caused by third-party package documentation;
+- repaired the job-level CI interpreter expression to use the available matrix context so the Python/platform test matrix can start;
 
 - aligned the runtime on `modelito==1.4.5`, `ollama>=0.6.2`, `psutil==7.2.2`, `PyYAML==6.0.3`, and `requests>=2.34.2`;
 - restored the Python `3.10`–`3.12` multiplatform non-live CI matrix and maintained Pylint gate;
