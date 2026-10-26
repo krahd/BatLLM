@@ -1,0 +1,224 @@
+{
+  "frozen_main": "/Users/tom/devel/projects/BatLLM/research/lxai2026/results/20260825T094526Z",
+  "deliberation": {
+    "directory": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/deliberation/20260825T153148Z",
+    "paired_change": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "es_rioplatense": {
+          "n": 48,
+          "main_correct": 20,
+          "control_correct": 44,
+          "main_accuracy": 0.4166666666666667,
+          "control_accuracy": 0.9166666666666666,
+          "delta_control_minus_main": 0.5,
+          "main_only_correct": 1,
+          "control_only_correct": 25,
+          "output_changed": 28
+        },
+        "es_standard": {
+          "n": 48,
+          "main_correct": 24,
+          "control_correct": 44,
+          "main_accuracy": 0.5,
+          "control_accuracy": 0.9166666666666666,
+          "delta_control_minus_main": 0.4166666666666667,
+          "main_only_correct": 1,
+          "control_only_correct": 21,
+          "output_changed": 25
+        }
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "es_rioplatense": {
+          "n": 48,
+          "main_correct": 24,
+          "control_correct": 47,
+          "main_accuracy": 0.5,
+          "control_accuracy": 0.9791666666666666,
+          "delta_control_minus_main": 0.4791666666666667,
+          "main_only_correct": 1,
+          "control_only_correct": 24,
+          "output_changed": 25
+        },
+        "es_standard": {
+          "n": 48,
+          "main_correct": 22,
+          "control_correct": 46,
+          "main_accuracy": 0.4583333333333333,
+          "control_accuracy": 0.9583333333333334,
+          "delta_control_minus_main": 0.5,
+          "main_only_correct": 1,
+          "control_only_correct": 25,
+          "output_changed": 27
+        }
+      }
+    },
+    "policy_diagnostics": {
+      "es_rioplatense": {
+        "groups": 24,
+        "policy_complete": 19,
+        "state_invariant": 0
+      },
+      "es_standard": {
+        "groups": 24,
+        "policy_complete": 19,
+        "state_invariant": 0
+      }
+    },
+    "provider_errors": 0,
+    "final_extraction_errors": 4,
+    "max_full_response_chars": 809
+  },
+  "branch_order": {
+    "directory": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/branch_order/20260825T161504Z",
+    "paired_change": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "en": {
+          "n": 32,
+          "main_correct": 21,
+          "control_correct": 16,
+          "main_accuracy": 0.65625,
+          "control_accuracy": 0.5,
+          "delta_control_minus_main": -0.15625,
+          "main_only_correct": 13,
+          "control_only_correct": 8,
+          "output_changed": 21
+        },
+        "es_rioplatense": {
+          "n": 32,
+          "main_correct": 13,
+          "control_correct": 15,
+          "main_accuracy": 0.40625,
+          "control_accuracy": 0.46875,
+          "delta_control_minus_main": 0.0625,
+          "main_only_correct": 9,
+          "control_only_correct": 11,
+          "output_changed": 21
+        },
+        "es_standard": {
+          "n": 32,
+          "main_correct": 17,
+          "control_correct": 17,
+          "main_accuracy": 0.53125,
+          "control_accuracy": 0.53125,
+          "delta_control_minus_main": 0.0,
+          "main_only_correct": 10,
+          "control_only_correct": 10,
+          "output_changed": 20
+        }
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "en": {
+          "n": 32,
+          "main_correct": 15,
+          "control_correct": 19,
+          "main_accuracy": 0.46875,
+          "control_accuracy": 0.59375,
+          "delta_control_minus_main": 0.125,
+          "main_only_correct": 10,
+          "control_only_correct": 14,
+          "output_changed": 24
+        },
+        "es_rioplatense": {
+          "n": 32,
+          "main_correct": 18,
+          "control_correct": 21,
+          "main_accuracy": 0.5625,
+          "control_accuracy": 0.65625,
+          "delta_control_minus_main": 0.09375,
+          "main_only_correct": 8,
+          "control_only_correct": 11,
+          "output_changed": 19
+        },
+        "es_standard": {
+          "n": 32,
+          "main_correct": 16,
+          "control_correct": 19,
+          "main_accuracy": 0.5,
+          "control_accuracy": 0.59375,
+          "delta_control_minus_main": 0.09375,
+          "main_only_correct": 12,
+          "control_only_correct": 15,
+          "output_changed": 27
+        }
+      }
+    },
+    "policy_diagnostics": {
+      "en": {
+        "groups": 16,
+        "policy_complete": 2,
+        "state_invariant": 12
+      },
+      "es_rioplatense": {
+        "groups": 16,
+        "policy_complete": 2,
+        "state_invariant": 13
+      },
+      "es_standard": {
+        "groups": 16,
+        "policy_complete": 2,
+        "state_invariant": 14
+      }
+    },
+    "position_tracking": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "en": {
+          "n": 32,
+          "main_original_first": 26,
+          "main_new_first": 6,
+          "control_original_first": 5,
+          "control_new_first": 25,
+          "output_changed": 21,
+          "changed_to_new_first": 19
+        },
+        "es_rioplatense": {
+          "n": 32,
+          "main_original_first": 23,
+          "main_new_first": 3,
+          "control_original_first": 4,
+          "control_new_first": 22,
+          "output_changed": 21,
+          "changed_to_new_first": 19
+        },
+        "es_standard": {
+          "n": 32,
+          "main_original_first": 18,
+          "main_new_first": 7,
+          "control_original_first": 2,
+          "control_new_first": 26,
+          "output_changed": 20,
+          "changed_to_new_first": 19
+        }
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "en": {
+          "n": 32,
+          "main_original_first": 26,
+          "main_new_first": 6,
+          "control_original_first": 2,
+          "control_new_first": 30,
+          "output_changed": 24,
+          "changed_to_new_first": 24
+        },
+        "es_rioplatense": {
+          "n": 32,
+          "main_original_first": 23,
+          "main_new_first": 9,
+          "control_original_first": 4,
+          "control_new_first": 28,
+          "output_changed": 19,
+          "changed_to_new_first": 19
+        },
+        "es_standard": {
+          "n": 32,
+          "main_original_first": 29,
+          "main_new_first": 3,
+          "control_original_first": 2,
+          "control_new_first": 30,
+          "output_changed": 27,
+          "changed_to_new_first": 27
+        }
+      }
+    },
+    "provider_errors": 0
+  }
+}

@@ -1,0 +1,1907 @@
+model,repeat,case_id,task_class,tier,condition,condition_label,instruction,expected_command,full_response,scored_response,normalized_command,valid,action_family_correct,parameter_correct,command_correct,executable_correct,failure_class,final_extraction_error,latency_ms,error
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-d,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",M,"Scratchpad:
+- Bot 1 health: 25
+- 25 < 15 is False
+
+FINAL: M",M,M,True,True,,True,True,correct,,17429.973,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-d,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",M,"Scratchpad:
+- Bot 1 health: 25
+- 25 < 15? No
+
+FINAL: M",M,M,True,True,,True,True,correct,,2194.789,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-d,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",B,"Scratchpad:
+1. Bot 1 health: 20 (greater than 10)
+2. Bot 2 shield: false
+3. No condition met, so fire
+
+FINAL: B",B,B,True,True,,True,True,correct,,4022.789,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-d,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",B,"Scratchpad:
+
+1. Check bot 1's health: 20 (which is not less than 10)
+2. Check bot 2's shield: false (not raised)
+3. Since bot 1's health is not less than 10 and bot 2's shield is not raised, the policy dictates to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,5313.032,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-b,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",B,"Scratchpad:
+- Bot 1 shield status: false (shield is off)
+- Policy: If shield is on, turn it off; else, fire.
+
+Since the shield is off, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4039.702,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-b,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",B,"Let's analyze the current state and the policy:
+
+Current state of bot 1 (me):
+- health: 27
+- x: 0.2
+- y: 0.5
+- rot: 0.0
+- shield: false
+
+Policy:
+- If shield is on, set shield off
+- If shield is off, fire
+
+From the state, we can see that bot 1's shield is currently off (shield: false). According to the policy, if the shield is off, we should fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,7650.723,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-a,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Bot 1's x: 0.2
+- Bot 2's x: 0.8
+- Horizontal distance: |0.8 - 0.2| = 0.6
+- 0.6 >= 0.4, so move forward by 0.1
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,6170.62,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-a,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Bot 1's x: 0.2
+- Bot 2's x: 0.8
+- Horizontal distance: |0.8 - 0.2| = 0.6
+- 0.6 >= 0.4, so move forward by 0.1
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,5696.901,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-a,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",S1,"Let's analyze the given state and policy step by step.
+
+### Current State (Bot 1):
+- **health**: 10
+- **shield**: false
+- **x**: 0.2
+- **y**: 0.5
+- **rot**: 0.0
+
+### Policy:
+1. **If** health is less than 15 **and** shield is off, **then** set shield on.
+2. **Else**, fire.
+
+### Analysis:
+1. **health < 15**: 10 < 15 → True
+2. **shield is off**: false → True
+3. **Condition**: True AND True → True
+
+Since the condition is true, we should set the shield on.
+
+### FINAL: S1",,ERR,False,False,,False,False,final_extraction_error,"expected exactly one FINAL line, found 0",12617.879,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-a,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",S1,"Scratchpad:
+- Bot 1 health: 10 (less than 15)
+- Bot 1 shield: false (off)
+- Condition: health < 15 and shield is off → True
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,3976.12,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-d,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",B,"Scratchpad:
+- Bot 1 shield: true
+- Bot 2 shield: true
+- Both shields are up, so fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,3515.213,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-d,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",B,"Scratchpad:
+- Bot 1 shield: true
+- Bot 2 shield: true
+- Both shields are up, so fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,2740.766,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-a,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",S1,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - bot 1 x: 0.1
+   - bot 2 x: 0.7
+   - horizontal distance: 0.7 - 0.1 = 0.6
+
+2. Check if the horizontal distance is at least 0.4:
+   - 0.6 >= 0.4 is true
+
+3. Since the distance is at least 0.4, check the health of bot 1 and bot 2:
+   - bot 1 health: 10
+   - bot 2 health: 20
+   - bot 1 health < bot 2 health is true
+
+4. Since bot 1 has less health than bot 2, set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,14528.943,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-a,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",S1,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - x1 = 0.1, x2 = 0.7
+   - horizontal distance = |x2 - x1| = |0.7 - 0.1| = 0.6
+
+2. Compare the horizontal distance with 0.4:
+   - 0.6 >= 0.4 is true
+
+3. Since the distance is at least 0.4, compare the health of bot 1 and bot 2:
+   - health of bot 1 = 10
+   - health of bot 2 = 20
+   - 10 < 20 is true
+
+4. Since bot 1 has less health than bot 2, the action is to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,13774.918,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-c,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",B,"Let's analyze the given state and policy step by step.
+
+### Current State (Bot 1):
+- **health**: 20
+- **shield**: false
+
+### Policy:
+1. **If** health is less than 15 **and** shield is off, **then** set shield on.
+2. **Else**, fire.
+
+### Analysis:
+1. **health < 15**: 20 < 15 → False
+2. **shield is off**: false → True
+3. **Condition**: False AND True → False
+
+Since the condition is False, we proceed to the ""Else"" part of the policy.
+
+### Action:
+- **Fire**
+
+FINAL: B",B,B,True,True,,True,True,correct,,11189.254,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-c,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 20
+- Bot 1 shield: false
+- Bot 1 health < 15: False
+- Bot 1 shield is off: True
+- Since health is not less than 15, the policy dictates to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,5181.672,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-b,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",B,"Scratchpad:
+1. Bot 1's shield is off (shield: false).
+2. Bot 2's health is 5, which is less than 10.
+3. Since bot 1's shield is off and bot 2's health is less than 10, bot 1 should fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,6574.241,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-b,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",B,"Scratchpad:
+1. Bot 1's shield is off (shield: false).
+2. Bot 2's health is 5, which is less than 10.
+3. Since bot 1's shield is off and bot 2's health is less than 10, bot 1 should fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,5925.236,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-c,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",M,"Scratchpad:
+1. Bot 1 health: 20 (greater than 10)
+2. Bot 2 shield: true (shield is up)
+3. Since bot 1 health is greater than 10 and bot 2 shield is up, move forward.
+
+FINAL: M",M,M,True,True,,True,True,correct,,6257.515,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-c,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",M,"Scratchpad:
+
+1. Check bot 1's health: 20 (which is not less than 10)
+2. Check bot 2's shield: true (shield is on)
+3. Since bot 1's health is not less than 10 and bot 2's shield is on, bot 1 should move forward.
+
+FINAL: M",M,M,True,True,,True,True,correct,,6825.597,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-d,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1 x: 0.3
+- Bot 2 x: 0.31
+- Horizontal distance: |0.3 - 0.31| = 0.01
+- 0.01 < 0.4, so rotate 90 degrees clockwise
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,7856.795,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-d,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1's x: 0.3
+- Bot 2's x: 0.31
+- Horizontal distance: |0.3 - 0.31| = 0.01
+- 0.01 is less than 0.4, so rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,13188.905,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-c,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",S1,"Scratchpad:
+1. Bot 1's shield is off (shield: false).
+2. Bot 2's health is 20 (health: 20).
+3. Since bot 1's shield is off, check if bot 2's health is less than 10.
+4. Bot 2's health is not less than 10, so the condition is false.
+5. Therefore, the policy leads to the default case: raise the shield.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,26784.648,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-c,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",S1,"Scratchpad:
+1. Bot 1 shield status: false (shield is off)
+2. Since shield is off, check opponent's health
+3. Bot 2 health: 20 (which is not less than 10)
+4. Since opponent's health is not less than 10, raise shield
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,18069.65,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-b,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",M0.1,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - x1 = 0.1, x2 = 0.7
+   - horizontal distance = |x2 - x1| = |0.7 - 0.1| = 0.6
+
+2. Compare the horizontal distance with 0.4:
+   - 0.6 >= 0.4 is true
+
+3. Since the distance is at least 0.4, compare the health of bot 1 and bot 2:
+   - health of bot 1 = 25
+   - health of bot 2 = 20
+   - 25 < 20 is false
+
+4. Since the health of bot 1 is not less than the health of bot 2, move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,33711.024,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-b,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",M0.1,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - x_distance = abs(bot1.x - bot2.x) = abs(0.1 - 0.7) = 0.6
+
+2. Since the horizontal distance (0.6) is at least 0.4:
+   - Compare health of bot 1 and bot 2:
+     - bot1.health = 25
+     - bot2.health = 20
+     - bot1.health > bot2.health (25 > 20)
+
+3. Since bot 1 has more health than bot 2, move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,18596.345,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-d,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",M0.1,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is false, so no action needed for the first rule.
+2. Check if bot 2's health is 10 or less: bot 2's health is 20, so no action needed for the second rule.
+3. Compare bot 1's health (25) with bot 2's health (20): 25 is not less than or equal to 20, so no action needed for the third rule.
+4. Since none of the previous conditions were met, move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,16788.929,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-d,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",M0.1,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is false, so no action needed for the first rule.
+2. Check if bot 2's health is 10 or less: bot 2's health is 20, so no action needed for the second rule.
+3. Compare bot 1's health (25) with bot 2's health (20): 25 is not less than or equal to 20, so no action needed for the third rule.
+4. Since none of the above conditions were met, move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,16169.079,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-a,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",S1,"Scratchpad:
+1. Bot 1 health: 5 (less than 10)
+2. Therefore, set shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,5300.71,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-a,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",S1,"Scratchpad:
+
+1. Check if bot 1's health is less than 10:
+   - bot 1's health is 5, which is less than 10.
+   - Therefore, bot 1 should set shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,7152.972,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-a,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",B,"Scratchpad:
+- Bot 1 health: 30
+- Bot 2 health: 20
+- Difference in health: 30 - 20 = 10
+
+Since bot 1 has at least 10 more health points than bot 2, the policy dictates to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,9473.623,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-a,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",B,"Scratchpad:
+- Bot 1 health: 30
+- Bot 2 health: 20
+- Difference in health: 30 - 20 = 10
+
+Since bot 1 has at least 10 more health points than bot 2, the policy dictates to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,8757.921,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-b,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1 x-coordinate: 0.3
+- Bot 2 x-coordinate: 0.7
+- Comparison: 0.3 > 0.7? False
+
+Since the x-coordinate of bot 1 (0.3) is not greater than the x-coordinate of bot 2 (0.7), bot 1 should rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,12757.565,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-b,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1 x-coordinate: 0.3
+- Bot 2 x-coordinate: 0.7
+- Comparison: 0.3 > 0.7? False
+
+Since the x-coordinate of bot 1 (0.3) is not greater than the x-coordinate of bot 2 (0.7), bot 1 should rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,11799.886,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-c,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",S1,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is false, so no action needed for the first rule.
+2. Check if bot 2's health is 10 or less: bot 2's health is 20, so no action needed for the second rule.
+3. Compare bot 1's health (15) with bot 2's health (20): 15 is not less than or equal to 20, so no action needed for the third rule.
+4. Since none of the above conditions are met, move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,False,False,False,False,action_error,,19601.107,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-c,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",S1,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is false, so no action needed for the first rule.
+2. Check if bot 2's health is 10 or less: bot 2's health is 20, so no action needed for the second rule.
+3. Compare bot 1's health (15) with bot 2's health (20): 15 is not less than or equal to 20, so no action needed for the third rule.
+4. Since none of the above conditions are met, bot 1 should move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,False,False,False,False,action_error,,21149.11,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-b,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",B,"Let's break down the policy step by step:
+
+1. **Check if the shield is on**:
+   - Bot 1's shield is off (shield: false). So, we skip the first rule.
+
+2. **Check if the opponent's health is 10 or less**:
+   - Bot 2's health is 10. So, we proceed to the second rule.
+   - Since the opponent's health is exactly 10, we fire.
+
+Since the second rule is satisfied, we don't need to check the other rules.
+
+FINAL: B",B,B,True,True,,True,True,correct,,17869.762,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-b,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",B,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is false, so no action needed for the first rule.
+2. Check if bot 2's health is 10 or less: bot 2's health is 10, so according to the second rule, bot 1 should fire.
+3. Since the second rule is satisfied, the other rules are not evaluated.
+
+FINAL: B",B,B,True,True,,True,True,correct,,13546.599,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-b,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1 health: 20
+- Bot 2 health: 10
+- Bot 1 health < Bot 2 health? False
+
+FINAL: B",B,B,True,True,,True,True,correct,,7596.827,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-b,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 20
+- Bot 2 health: 10
+- Bot 1 health < Bot 2 health? False
+
+FINAL: B",B,B,True,True,,True,True,correct,,6313.17,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-d,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",A90.0,"Scratchpad:
+- Bot 1 x: 0.51
+- Bot 2 x: 0.5
+- 0.51 > 0.5 is true
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,8976.474,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-d,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",A90.0,"Scratchpad:
+- Bot 1 x: 0.51
+- Bot 2 x: 0.5
+- 0.51 > 0.5 is true
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,7391.572,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-c,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Bot 1's x: 0.1
+- Bot 2's x: 0.5
+- Horizontal distance: |0.5 - 0.1| = 0.4
+- Since the distance is exactly 0.4, it is not greater than 0.4, so we rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,False,False,False,False,action_error,,14272.529,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-c,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Bot 1's x: 0.1
+- Bot 2's x: 0.5
+- Horizontal distance: |0.5 - 0.1| = 0.4
+- Since the distance is exactly 0.4, it is not greater than 0.4, so we rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,False,False,False,False,action_error,,13685.703,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-d,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 20
+- Bot 1 shield: true
+- Bot 1 health < 15: False
+- Bot 1 shield is off: False
+- Condition for shield: False AND False = False
+- Action: Fire
+
+FINAL: B",B,B,True,True,,True,True,correct,,11009.382,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-d,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",B,"Let's analyze the given state and policy step by step.
+
+### Current State (Bot 1):
+- **health**: 20
+- **shield**: true
+
+### Policy:
+1. **If** health < 15 **and** shield is off, **then** set shield on.
+2. **Else**, fire.
+
+### Analysis:
+- **health** (20) is not less than 15.
+- **shield** is true (on).
+
+Since the condition for setting the shield on is not met, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,18115.652,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-d,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",B,"Scratchpad:
+- Bot 1 health: 25
+- Bot 2 health: 10
+- Health difference: 25 - 10 = 15
+- 15 >= 10: True
+
+FINAL: B",B,B,True,True,,True,True,correct,,9593.073,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-d,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",B,"Scratchpad:
+- Bot 1 health: 25
+- Bot 2 health: 10
+- Difference in health: 25 - 10 = 15
+- 15 >= 10 is true
+
+FINAL: B",B,B,True,True,,True,True,correct,,8786.946,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-b,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",S1,"Scratchpad:
+- Bot 1 health: 29
+- Bot 2 health: 20
+- Difference in health: 29 - 20 = 9
+
+Since the health difference is less than 10, the policy dictates to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,11134.821,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-b,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",S1,"Let's analyze the given state and policy step by step.
+
+### Current State:
+- **Bot 1 (You):**
+  - Health: 29
+  - Shield: false
+  - Position: (x=0.2, y=0.5)
+  - Rotation: 0.0 degrees
+
+- **Bot 2 (Opponent):**
+  - Health: 20
+  - Shield: false
+  - Position: (x=0.8, y=0.5)
+  - Rotation: 180.0 degrees
+
+### Policy:
+1. **If** your health is at least 10 points more than the opponent's health, **then** fire.
+2. **Else**, set the shield on.
+
+### Analysis:
+1. **Health Comparison:**
+   - Your health: 29
+   - Opponent's health: 20
+   - Difference: 29 - 20 = 9
+
+2. **Condition Check:**
+   - Is 9 >= 10? No.
+
+### Decision:
+Since the condition is not met, the action is to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,37082.246,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-c,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",S0,"Let's analyze the current state and the policy:
+
+Current state of bot 1 (me):
+- health: 8
+- x: 0.2
+- y: 0.5
+- rot: 0.0
+- shield: true
+
+Policy:
+- If shield is on, turn it off
+- If shield is off, fire
+
+From the state, we can see that bot 1's shield is true, which means it's on.
+
+Following the policy, since the shield is on, we should turn it off.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,18817.294,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-c,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",S0,"Scratchpad:
+- Bot 1 shield status: true (shield is on)
+- Policy: If shield is on, turn it off; else, fire
+
+Since the shield is on, the action is to turn it off.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,8229.661,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-c,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",S1,"Scratchpad:
+- Bot 1 health: 10
+- Bot 2 health: 25
+- Health difference: 10 - 25 = -15
+
+Since the health difference is not at least 10, the policy dictates to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,11635.585,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-health-difference-c,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",S1,"Scratchpad:
+- Bot 1 health: 10
+- Bot 2 health: 25
+- Health difference: 10 - 25 = -15
+
+Since the health difference is not at least 10, the policy dictates to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,10091.875,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-b,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1's x: 0.4
+- Bot 2's x: 0.7
+- Horizontal distance: |0.7 - 0.4| = 0.3
+- 0.3 is less than 0.4, so rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,13058.058,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d5-x-distance-b,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1's x: 0.4
+- Bot 2's x: 0.7
+- Horizontal distance: |0.7 - 0.4| = 0.3
+- 0.3 is less than 0.4, so rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,12216.799,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-a,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",S0,"Scratchpad:
+1. Bot 1's shield is on (shield: true).
+2. Since the shield is on, the first condition is met, so we lower the shield.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,8375.157,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-a,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",S0,"Scratchpad:
+1. Bot 1's shield is on (shield: true).
+2. Since the shield is on, the first condition is met, so we should lower the shield.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,7524.972,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-b,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",S1,"Scratchpad:
+- Bot 1 health: 14
+- Condition: health < 15 → 14 < 15 → False
+- Action: move forward
+
+FINAL: M",M,M,True,False,False,False,False,action_error,,8304.92,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-b,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",S1,"Scratchpad:
+- Bot 1 health: 14
+- Condition: health < 15 → 14 < 15 → True
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,6194.224,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-a,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",S1,"Scratchpad:
+- Bot 1 health: 10
+- Bot 2 health: 20
+- Bot 1 health < Bot 2 health: True
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,8196.064,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-a,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",S1,"Scratchpad:
+- Bot 1 health: 10
+- Bot 2 health: 20
+- Bot 1 health < Bot 2 health: True
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,6774.0,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-b,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",S1,"Scratchpad:
+
+1. Check if bot 1's health is less than 10:
+   - bot 1's health is 5, which is less than 10.
+   - Therefore, bot 1 should set shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,10794.853,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-health-b,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",S1,"Scratchpad:
+1. Bot 1 health: 5 (less than 10)
+2. Therefore, set shield on
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,5630.363,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-c,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1 health: 15
+- Bot 2 health: 15
+- Bot 1 health <= Bot 2 health: 15 <= 15 is true
+
+FINAL: B",B,B,True,True,,True,True,correct,,8751.563,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-c,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 15
+- Bot 2 health: 15
+- Bot 1 health <= Bot 2 health: 15 <= 15 is true
+
+FINAL: B",B,B,True,True,,True,True,correct,,7346.091,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-c,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1 x: 0.5
+- Bot 2 x: 0.5
+- Bot 1 x is not greater than Bot 2 x
+
+FINAL: A90",A90,A90.0,True,False,True,False,False,action_error,,8239.445,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-c,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1 x: 0.5
+- Bot 2 x: 0.5
+- Bot 1 x is not greater than Bot 2 x
+
+FINAL: A90",A90,A90.0,True,False,True,False,False,action_error,,6886.741,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-c,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",M,"Scratchpad:
+- Bot 1 shield: true
+- Bot 2 shield: false
+- Only one shield is up (Bot 1's shield is on, Bot 2's shield is off)
+
+According to the policy:
+- If exactly one shield is up, move forward.
+- Otherwise, fire.
+
+Since exactly one shield is up, the action is to move forward.
+
+FINAL: M",M,M,True,True,,True,True,correct,,12863.418,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-c,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",M,"Scratchpad:
+- Bot 1 shield: true
+- Bot 2 shield: false
+- Only one shield is up (Bot 1's shield is on, Bot 2's shield is off)
+
+According to the policy, if exactly one of the two shields is up, move forward; otherwise, fire.
+
+FINAL: M",M,M,True,True,,True,True,correct,,10169.345,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-d,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",B,"Scratchpad:
+- Bot 1 shield status: false (shield is off)
+- Policy: If shield is on, turn it off; else, fire.
+
+Since the shield is off, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,8678.727,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-d,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",B,"Let's analyze the current state and the policy:
+
+Current state of bot 1 (me):
+- health: 8
+- x: 0.2
+- y: 0.5
+- rot: 0.0
+- shield: false
+
+Policy:
+- If shield is on, set shield off
+- If shield is off, fire
+
+From the state, we can see that bot 1's shield is currently off (shield: false). According to the policy, if the shield is off, we should fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,17469.98,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-c,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",M,"Scratchpad:
+- Bot 1 health: 15
+- Condition: health < 15 → False
+- Action: Move forward
+
+FINAL: M",M,M,True,True,,True,True,correct,,6642.463,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-c,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",M,"Scratchpad:
+- Bot 1 health: 15
+- Condition: health < 15 → False
+- Action: Move forward
+
+FINAL: M",M,M,True,True,,True,True,correct,,5507.417,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-a,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",B,"Scratchpad:
+- Bot 1 shield: false
+- Bot 2 shield: false
+- Neither shield is up, so fire
+
+FINAL: B",B,B,True,True,,True,True,correct,,6494.719,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-a,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",B,"Scratchpad:
+- Bot 1 shield: false
+- Bot 2 shield: false
+- Neither shield is up, so fire
+
+FINAL: B",B,B,True,True,,True,True,correct,,5059.053,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-c,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",B,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - bot 1 x: 0.4
+   - bot 2 x: 0.6
+   - horizontal distance: |0.6 - 0.4| = 0.2
+
+2. Compare the horizontal distance with 0.4:
+   - 0.2 < 0.4
+
+3. Since the distance is less than 0.4, check the opponent's shield status:
+   - bot 2 shield: false
+
+4. Since the opponent's shield is off, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,23282.143,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-c,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",B,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - x_distance = abs(bot1.x - bot2.x) = abs(0.4 - 0.6) = 0.2
+
+2. Check if the horizontal distance is at least 0.4:
+   - 0.2 < 0.4, so we proceed to the second condition.
+
+3. Check if the horizontal distance is less than 0.4:
+   - 0.2 < 0.4, so we proceed to the nested conditions.
+
+4. Check if bot 2 has the shield down:
+   - bot2.shield = false, so we proceed to the first nested condition.
+
+5. Fire at bot 2.
+
+FINAL: B",B,B,True,True,,True,True,correct,,25841.208,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-a,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",A90.0,"Scratchpad:
+- Bot 1 x-coordinate: 0.7
+- Bot 2 x-coordinate: 0.3
+- 0.7 > 0.3 is true
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,9156.99,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-x-compare-a,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",A90.0,"Scratchpad:
+- Bot 1 x-coordinate: 0.7
+- Bot 2 x-coordinate: 0.3
+- 0.7 > 0.3 is true
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,7587.082,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-a,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",S0,"Scratchpad:
+- Bot 1 shield status: true (shield is on)
+- Policy: If shield is on, turn it off; else, fire.
+
+Since the shield is on, the action is to turn it off.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,9184.193,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-shield-a,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",S0,"Let's analyze the current state and the policy:
+
+Current state of bot 1 (me):
+- health: 27
+- x: 0.2
+- y: 0.5
+- rot: 0.0
+- shield: true
+
+Policy:
+- If shield is on, set shield off
+- If shield is off, fire
+
+From the state, we can see that bot 1's shield is true (on). According to the policy, we should set the shield off.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,16711.346,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-d,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",A90.0,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - x_distance = abs(bot1.x - bot2.x) = abs(0.4 - 0.6) = 0.2
+
+2. Check if the horizontal distance is at least 0.4:
+   - 0.2 < 0.4, so we proceed to the second condition.
+
+3. Check if the horizontal distance is less than 0.4:
+   - 0.2 < 0.4, so we proceed to the nested conditions.
+
+4. Check if the opponent's shield is down:
+   - bot2.shield = true, so the opponent's shield is up.
+
+5. Since the opponent's shield is up, rotate 90 degrees counterclockwise.
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,28559.071,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-distance-composite-d,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",A90.0,"Scratchpad:
+
+1. Calculate the horizontal distance between bot 1 and bot 2:
+   - x_distance = abs(bot1.x - bot2.x) = abs(0.4 - 0.6) = 0.2
+
+2. Compare the horizontal distance with 0.4:
+   - x_distance < 0.4
+
+3. Since the distance is less than 0.4, check the opponent's shield status:
+   - bot2.shield = true
+
+4. Since the opponent's shield is on, rotate 90 degrees counterclockwise.
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,20587.455,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-d,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",S0,"Scratchpad:
+1. Bot 1's shield is on (shield: true).
+2. Since the shield is on, the first condition is met, so we should lower the shield.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,8776.826,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d4-priority-shield-d,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",S0,"Scratchpad:
+1. Bot 1's shield is on (shield: true).
+2. Since the shield is on, the first condition is met, so we lower the shield.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,7255.234,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-b,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",M,"Scratchpad:
+- Bot 1 shield: false
+- Bot 2 shield: true
+- Only one shield is up (Bot 2's shield is on)
+- According to the policy, if exactly one shield is up, move forward
+
+FINAL: M",M,M,True,True,,True,True,correct,,9764.118,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-xor-shields-b,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",M,"Scratchpad:
+- Bot 1 shield: false
+- Bot 2 shield: true
+- Only one shield is up (Bot 2's shield is on)
+- According to the policy, move forward
+
+FINAL: M",M,M,True,True,,True,True,correct,,7927.211,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-d,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",S1,"Scratchpad:
+- Bot 1 health: 14
+- Bot 2 health: 15
+- Bot 1 health < Bot 2 health: True
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,8357.341,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d2-health-compare-d,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",S1,"Scratchpad:
+- Bot 1 health: 14
+- Bot 2 health: 15
+- Bot 1 health < Bot 2 health: True
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,7235.32,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-a,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",S0,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is true.
+2. Since the shield is on, the first rule applies: turn off the shield.
+3. No need to check other rules as the first one is satisfied.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,12103.013,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d6-priority-composite-a,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",S0,"Scratchpad:
+
+1. Check if bot 1's shield is on: shield is true.
+   - Since the shield is on, we need to turn it off.
+   - No need to check other conditions.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,8984.793,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-b,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",B,"Let's analyze the given state and policy step by step.
+
+### Current State (Bot 1):
+- **health**: 10
+- **shield**: true
+
+### Policy:
+1. **If** health is less than 15 **and** shield is off, **then** set shield on.
+2. **Else**, fire.
+
+### Analysis:
+1. **health < 15**: 10 < 15 → True
+2. **shield is off**: shield is true → False
+
+Since the condition (health < 15 **and** shield is off) is not met (True **and** False → False), the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,24647.558,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d3-conjunction-b,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 10 (less than 15)
+- Bot 1 shield: true (shield is on)
+
+Since the bot's health is less than 15 and the shield is already on, the policy dictates to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,10098.66,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-a,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",S1,"Scratchpad:
+- Bot 1 health: 5
+- 5 < 15 is true
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,6541.54,
+mistral-small3.2:24b-instruct-2506-q4_K_M,0,d1-health-a,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",S1,"Scratchpad:
+- Bot 1 health: 5 (less than 15)
+- Bot 1 shield: false
+
+Since bot 1 has less than 15 health, it should set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,9087.274,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-c,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",S1,"Analicemos la política paso a paso:
+
+1. ""si tienes el escudo levantado, bájalo"":
+   - Actualmente, el escudo del bot 1 está apagado (`shield: false`).
+   - Por lo tanto, esta condición no se cumple, no se hace nada.
+
+2. ""si no, si el rival tiene menos de 10 puntos de salud, dispara"":
+   - El rival (bot 2) tiene 20 puntos de salud.
+   - 20 no es menor que 10 → condición falsa → no se dispara.
+
+3. ""en cualquier otro caso, levanta el escudo"":
+   - Como las dos condiciones anteriores no se cumplieron, se ejecuta esta acción.
+   - Por lo tanto, debemos activar el escudo.
+
+La acción correcta es: `S1` (set shield on).
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,16585.145,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-c,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",S1,"Analicemos la política paso a paso:
+
+1. ""si tenés el escudo levantado, bajalo"":
+   - Actualmente, el escudo de bot 1 está en `false` (apagado), así que esta condición no se cumple.
+
+2. ""si no, si el rival tiene menos de 10 puntos de salud, dispará"":
+   - El rival (bot 2) tiene 20 puntos de salud → no es menor que 10 → esta condición tampoco se cumple.
+
+3. ""en cualquier otro caso, levantá el escudo"":
+   - Como las dos condiciones anteriores no se cumplen, se aplica esta acción.
+   - Por lo tanto, debemos activar el escudo.
+
+El comando para activar el escudo es `S1`.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,5660.417,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-b,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",S1,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 29
+2. **Current health of bot 2 (opponent):** 20
+3. **Difference in health:** 29 - 20 = 9
+
+The policy says:
+- If you have **at least 10 points of health more** than the rival, **discharge (B)**.
+- Otherwise, **raise the shield (S1)**.
+
+Since 9 < 10, the condition ""at least 10 points more"" is **not satisfied**.
+
+Therefore, the correct action is to **raise the shield**.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4482.57,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-b,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",S1,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 29
+2. **Current health of bot 2 (opponent):** 20
+3. **Difference in health:** 29 - 20 = 9
+
+The policy says:
+- If you have **at least 10 points of health more** than the rival, **dispará** (fire).
+- Otherwise, **levantá el escudo** (raise the shield).
+
+Since 9 < 10, the condition ""at least 10 points more"" is **not satisfied**.
+
+Therefore, the correct action is to **raise the shield**.
+
+In the command set, raising the shield means turning it on: **S1**.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4718.81,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-d,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",A90.0,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.4, x2 = 0.6
+   - |x2 - x1| = |0.6 - 0.4| = 0.2
+
+2. Check if distance >= 0.4:
+   - 0.2 < 0.4 → condition is false → proceed to the ""distance < 0.4"" branch.
+
+3. Since distance < 0.4:
+   - Check if rival's shield is off:
+     - bot 2's shield = true → shield is on → condition false
+   - Therefore, execute: rotate 90 degrees counterclockwise.
+
+4. Command: A90
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,5074.961,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-d,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",A90.0,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.4, x2 = 0.6
+   - |x2 - x1| = |0.6 - 0.4| = 0.2
+
+2. Check if distance >= 0.4:
+   - 0.2 < 0.4 → condition is false → proceed to the ""else"" branch (distance < 0.4)
+
+3. Since distance < 0.4, check if the rival's shield is off:
+   - bot 2's shield = true → shield is on → condition is false
+
+4. Therefore, execute the ""else"" part: rotate 90 degrees counterclockwise.
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,4745.311,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-a,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",S1,"Analicemos la política paso a paso:
+
+1. **Si tienes menos de 10 puntos de salud, levanta el escudo.**
+   - Tu salud es 5, que es menor que 10 → condición verdadera.
+   - Por lo tanto, debes activar el escudo.
+
+2. **Si no, si el rival tiene el escudo levantado, avanza.**
+   - Esta rama no se evalúa porque la primera condición ya se cumplió.
+
+3. **En cualquier otro caso, dispara.**
+   - No se aplica porque ya se activó el escudo.
+
+Por lo tanto, la acción correcta es activar el escudo.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4410.562,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-a,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",S1,"Analicemos la política paso a paso:
+
+1. **Si tenés menos de 10 puntos de salud, levantá el escudo.**
+   - Tu salud es 5, que es menor que 10 → condición verdadera.
+   - Por lo tanto, debes activar el escudo.
+
+2. **Si no, si el rival tiene el escudo levantado, avanzá.**
+   - Esta rama no se evalúa porque la primera condición ya se cumplió.
+
+3. **En cualquier otro caso, dispará.**
+   - No se aplica porque ya se activó el escudo.
+
+Por lo tanto, la acción correcta es: **S1** (activar el escudo).
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4383.931,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-c,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",M,"Scratchpad:
+- Bot 1 (current bot) has shield = true.
+- Bot 2 (opponent) has shield = false.
+- So, exactly one shield is raised (bot 1's shield is up, bot 2's is down).
+- The condition ""exactly one of the two shields is raised"" is true.
+- Therefore, according to the policy: ""avanza"" (move forward).
+- Since no specific distance is given, use the default move: M.
+
+FINAL: M",M,M,True,True,,True,True,correct,,3233.317,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-c,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",M,"Scratchpad:
+- Bot 1's shield status: true
+- Bot 2's shield status: false
+- Exactly one shield is raised: true (only bot 1 has shield on)
+- Condition: ""Si exactamente uno de los dos escudos está levantado"" → true
+- Therefore, action should be: ""avanzá"" → move forward
+- Default move is M (move forward by default step)
+
+FINAL: M",M,M,True,True,,True,True,correct,,2516.349,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-d,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",B,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 25
+2. **Current health of bot 2 (opponent):** 10
+3. **Difference in health:** 25 - 10 = 15
+
+The policy says:
+- If you have **at least 10 points of health more than the rival**, then **dispará** (fire).
+- Otherwise, **levantá el escudo** (raise the shield).
+
+Since 15 ≥ 10, the condition is satisfied.
+
+Therefore, the correct action is to **fire**.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4074.485,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-d,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",B,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 25
+2. **Current health of bot 2 (opponent):** 10
+3. **Difference in health:** 25 - 10 = 15
+
+The policy says:
+- If you have **at least 10 points of health more than the rival**, then **fire (B)**.
+- Otherwise, **raise the shield (S1)**.
+
+Since 15 ≥ 10, the condition is satisfied.
+
+Therefore, the correct action is to **fire**.
+
+FINAL: B",B,B,True,True,,True,True,correct,,3942.902,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-b,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",S1,"Scratchpad:
+- Bot 1's health is 14.
+- 14 is less than 15.
+- Therefore, according to the policy, I should raise the shield.
+- Raising the shield means setting shield to true.
+- The command to set shield on is S1.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2280.26,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-b,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",S1,"Scratchpad:
+- Bot 1's health is 14.
+- 14 is less than 15.
+- Therefore, according to the policy, the action is to ""levantá el escudo"" → set shield on.
+- The command for setting shield on is S1.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,1864.964,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-d,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",S0,"Analicemos la política paso a paso:
+
+1. ""si tenés el escudo levantado, bajalo"":
+   - Actualmente, bot 1 tiene shield = true → el escudo está levantado.
+   - Por lo tanto, debemos bajarlo → comando S0.
+
+2. ""Si no, si el rival tiene menos de 10 puntos de salud, dispará"":
+   - Esta condición no se evalúa porque ya se cumplió la primera (el escudo está levantado), y la política se sigue en orden.
+   - Pero como ya decidimos bajar el escudo, no se considera esta parte.
+
+3. ""En cualquier otro caso, levantá el escudo"":
+   - No se aplica porque ya se ejecutó la primera condición.
+
+Por lo tanto, la acción correcta es bajar el escudo.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,5307.788,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-d,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",S0,"Analicemos la política paso a paso:
+
+1. ""si tienes el escudo levantado, bájalo"":
+   - Actualmente, el escudo del bot 1 está encendido (`shield: true`).
+   - Por lo tanto, debemos bajar el escudo → comando: `S0`.
+
+2. ""si no, si el rival tiene menos de 10 puntos de salud, dispara"":
+   - Esta condición no se evalúa porque ya se cumplió la primera condición (escudo encendido), y se ejecutó la acción correspondiente.
+
+3. ""en cualquier otro caso, levanta el escudo"":
+   - No se aplica porque ya se ejecutó la acción de bajar el escudo.
+
+Por lo tanto, la única acción que debe tomarse es bajar el escudo.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,4913.287,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-b,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",M0.1,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.1, x2 = 0.7
+   - |x2 - x1| = |0.7 - 0.1| = 0.6
+
+2. Check if distance >= 0.4:
+   - 0.6 >= 0.4 → True
+
+3. Since distance >= 0.4:
+   - Compare health: bot 1 has 25, bot 2 has 20
+   - 25 >= 20 → bot 1 has more health
+   - Therefore, do not raise shield
+   - Instead, advance forward by 0.1
+
+4. Command: M0.1
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,4850.785,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-b,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",M0.1,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.1, x2 = 0.7
+   - distance = |x2 - x1| = |0.7 - 0.1| = 0.6
+
+2. Check if distance >= 0.4:
+   - 0.6 >= 0.4 → True
+
+3. Since distance >= 0.4:
+   - Compare health: bot 1 health = 25, bot 2 health = 20
+   - 25 >= 20 → bot 1 has more health
+   - Therefore, do not raise shield
+   - Instead, advance by 0.1
+
+4. Command: M0.1
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,4767.687,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-c,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",S1,"Scratchpad:
+
+- Bot 1 health: 15
+- Bot 2 health: 20
+- Bot 1 shield: false
+- Bot 2 shield: false
+- Bot 1 rot: 0.0
+- Bot 1 x: 0.2, y: 0.5
+- Bot 2 x: 0.8, y: 0.5
+
+Rule 1: If shield is raised, lower it.
+- Current shield state: false → do nothing.
+
+Rule 2: If rival health ≤ 10, shoot.
+- Rival health is 20 → not ≤ 10 → skip.
+
+Rule 3: If your health ≤ rival health, raise shield.
+- Your health: 15, rival health: 20 → 15 ≤ 20 → true → raise shield.
+
+So, we should set shield on.
+
+Rule 4: Otherwise, move forward by 0.1.
+- Not reached, since Rule 3 applied.
+
+Therefore, command is S1 (set shield on).
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,6350.383,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-c,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",S1,"Analicemos paso a paso según las reglas dadas:
+
+1. **Si tienes el escudo levantado, bájalo.**
+   - Actualmente, `shield` de bot 1 es `false` → no está levantado.
+   - Esta condición no se aplica.
+
+2. **Si no, si el rival tiene 10 puntos de salud o menos, dispara.**
+   - El rival (bot 2) tiene `health: 20` → más de 10.
+   - Esta condición no se aplica.
+
+3. **Si no, si tu salud es menor o igual que la del rival, levanta el escudo.**
+   - Tu salud: 15
+   - Salud del rival: 20
+   - 15 ≤ 20 → verdadero.
+   - Por lo tanto, debes levantar el escudo.
+
+   → Acción: `S1` (set shield on)
+
+4. **En cualquier otro caso, avanza 0.1.**
+   - Esta regla no se aplica porque ya se cumplió la condición anterior.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,6522.529,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-a,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",S1,"Scratchpad:
+- Bot 1's health is 10, which is less than 15.
+- Bot 1's shield is currently off (false).
+- Since health < 15 and shield is off, the condition ""levantá el escudo"" (raise the shield) applies.
+- Therefore, the action should be to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2515.167,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-a,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",S1,"Scratchpad:
+- Bot 1's health is 10, which is less than 15.
+- Bot 1's shield is currently off (false).
+- Since health < 15 and shield is off, the condition ""levanta el escudo"" (raise the shield) applies.
+- Therefore, the action should be to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2288.14,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-c,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 15
+- Bot 2 health: 15
+- Compare: bot 1 health < bot 2 health → 15 < 15 → False
+- Since health is not less than opponent's, the condition ""Si tienes menos salud que el rival"" is false.
+- Therefore, the action is ""dispara"" → fire.
+- Command: B
+
+FINAL: B",B,B,True,True,,True,True,correct,,2779.084,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-c,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1's health: 15
+- Bot 2's health: 15
+- Compare: health of bot 1 (15) < health of bot 2 (15)? → No, they are equal.
+- Since health is not less than the opponent's, the condition ""Si tenés menos salud que el rival"" is false.
+- Therefore, the action is ""dispará"" → fire (B).
+
+FINAL: B",B,B,True,True,,True,True,correct,,2766.319,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-a,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",S0,"Scratchpad:
+- Bot 1's current shield state is true (shield is on).
+- According to the policy: ""Si tienes el escudo levantado, bájalo; si no, dispara.""
+  - Since the shield is on, the action should be to lower it.
+- The command to lower the shield is S0.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,2384.251,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-a,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",S0,"Scratchpad:
+- Bot 1's shield status is true (shield is on).
+- According to the policy: ""Si tenés el escudo levantado, bajalo; si no, dispará.""
+  - Since the shield is up (true), the action should be to lower it.
+- The command to lower the shield is S0.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,2137.365,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-b,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",B,"Analicemos paso a paso según las reglas dadas:
+
+1. **Si tienes el escudo levantado, bájalo.**  
+   - Actualmente, `shield` de bot 1 es `false` → no está levantado.  
+   → Esta condición no se aplica.
+
+2. **Si no, si el rival tiene 10 puntos de salud o menos, dispara.**  
+   - El rival (bot 2) tiene `health: 10` → cumple la condición (10 o menos).  
+   → Se debe disparar.
+
+3. **Si no, si tu salud es menor o igual que la del rival, levanta el escudo.**  
+   - Esta regla no se evalúa porque ya se cumplió la anterior (disparar).
+
+4. **En cualquier otro caso, avanza 0.1.**  
+   - No se aplica porque ya se disparó.
+
+Por lo tanto, la acción correcta es **disparar**.
+
+FINAL: B",B,B,True,True,,True,True,correct,,6053.352,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-b,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",B,"Scratchpad:
+
+1. Check if shield is on (current state: shield = false) → so we don't need to lower it.
+2. Check if opponent health ≤ 10 → opponent health is 10 → condition is true → we should fire.
+3. Since the second condition is true, we proceed to fire.
+4. No need to check further rules.
+
+FINAL: B",B,B,True,True,,True,True,correct,,2373.648,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-a,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",S0,"Analicemos la política paso a paso:
+
+1. ""si tienes el escudo levantado, bájalo"":
+   - Actualmente, el escudo del bot 1 está encendido (`shield: true`).
+   - Por lo tanto, debemos bajar el escudo → comando: `S0`.
+
+2. ""si no, si el rival tiene menos de 10 puntos de salud, dispara"":
+   - Esta condición no se evalúa porque ya se cumplió la primera (el escudo está levantado), y se ejecutó el comando correspondiente.
+
+3. ""en cualquier otro caso, levanta el escudo"":
+   - No se aplica porque ya se ejecutó la primera acción.
+
+Sin embargo, la política se debe aplicar en orden, y solo se ejecuta una acción. Dado que el escudo está levantado, la primera condición se cumple, y se debe bajar el escudo.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,5447.73,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-a,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",S0,"Analicemos la política paso a paso:
+
+1. ""si tenés el escudo levantado, bajalo"":
+   - Actualmente, bot 1 tiene shield = true → el escudo está levantado.
+   - Por lo tanto, debemos bajarlo → comando S0.
+
+2. ""Si no, si el rival tiene menos de 10 puntos de salud, dispará"":
+   - Esta condición no se evalúa porque ya se cumplió la primera (el escudo está levantado), y la política se sigue en orden.
+   - Pero como ya decidimos bajar el escudo, no se considera esta parte.
+
+3. ""En cualquier otro caso, levantá el escudo"":
+   - No se aplica porque ya se ejecutó la primera condición.
+
+Por lo tanto, la acción correcta es bajar el escudo.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,5006.97,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-b,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Your x-coordinate: 0.4
+- Opponent's x-coordinate: 0.7
+- Horizontal distance = |0.7 - 0.4| = 0.3
+- 0.3 < 0.4 → condition not met
+- Therefore, rotate 90 degrees clockwise
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2510.135,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-b,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Current bot 1 x-coordinate: 0.4
+- Opponent bot 2 x-coordinate: 0.7
+- Horizontal distance = |0.7 - 0.4| = 0.3
+- Is 0.3 >= 0.4? No → condition false
+- Therefore, execute the ""else"" branch: rotate 90 degrees clockwise
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2627.431,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-b,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",M,"Scratchpad:
+- Bot 1 (current bot) has shield = false
+- Bot 2 (opponent) has shield = true
+- Exactly one shield is raised: yes (only bot 2 has shield on)
+- Condition: ""Si exactamente uno de los dos escudos está levantado"" → true
+- Therefore, action should be: ""avanzá"" → move forward
+- Default move is M (move forward by default step)
+
+FINAL: M",M,M,True,True,,True,True,correct,,2770.231,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-b,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",M,"Scratchpad:
+- Bot 1 (me): shield = false
+- Bot 2 (opponent): shield = true
+- Exactly one shield is raised: yes (only bot 2 has shield on)
+- Condition: ""Si exactamente uno de los dos escudos está levantado"" → true
+- Therefore, action: ""avanza"" → move forward
+- Default move is M (move forward by default step)
+
+FINAL: M",M,M,True,True,,True,True,correct,,2471.316,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-d,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",B,"Scratchpad:
+- Bot 1's shield: true
+- Bot 2's shield: true
+- Both shields are up → condition ""exactly one shield is raised"" is false
+- Therefore, the rule says: ""if not, shoot""
+- So the action should be to fire
+
+FINAL: B",B,B,True,True,,True,True,correct,,2038.521,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-d,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",B,"Scratchpad:
+- Bot 1's shield status: true
+- Bot 2's shield status: true
+- Condition: ""Si exactamente uno de los dos escudos está levantado"" → check if exactly one shield is on.
+- Both shields are on → not exactly one → condition is false.
+- Therefore, according to the policy: ""si no, dispará"" → fire.
+- Command: B
+
+FINAL: B",B,B,True,True,,True,True,correct,,2407.889,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-c,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Bot 1's x coordinate: 0.5
+- Bot 2's x coordinate: 0.5
+- Since bot 1's x (0.5) is not greater than bot 2's x (0.5), the condition ""x > rival_x"" is false.
+- Therefore, the action is to rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2546.771,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-c,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- My x coordinate (0.5) is equal to the opponent's x coordinate (0.5).
+- Since it is not greater, the condition ""Si tu coordenada x es mayor que la del rival"" is false.
+- Therefore, the action is to rotate 90 degrees clockwise.
+- The command for rotating 90 degrees clockwise is C90.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2357.374,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-b,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1's health is 10, which is less than 15 → condition ""less than 15"" is true.
+- Bot 1's shield is currently on (shield = true) → condition ""shield is under"" (i.e., off) is false.
+- The policy says: ""Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.""
+  - First part: ""less than 15 AND shield is off"" → false (because shield is on).
+  - Therefore, the ""si no"" (else) clause applies: ""dispará"" → fire.
+- So the correct action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4343.816,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-b,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1's health is 10, which is less than 15.
+- Bot 1's shield is currently on (true).
+- The policy says: ""Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.""
+  - Condition 1: health < 15 → true (10 < 15)
+  - Condition 2: shield is under (i.e., shield is off) → false (shield is on)
+  - Since both conditions must be true for the first branch, and the second is false, the first branch is not triggered.
+  - Therefore, the ""si no"" (else) clause applies: ""dispara"" (fire).
+- So, the correct action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4535.629,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-a,decision_complexity,D3,es_standard,Tuteo Spanish,"Si exactamente uno de los dos escudos está levantado, avanza; si no, dispara.",B,"Scratchpad:
+- Bot 1's shield: false
+- Bot 2's shield: false
+- Exactly one shield is raised? → No (both are off)
+- Therefore, condition ""exactly one shield is raised"" is false
+- So, follow the ""else"" branch: ""dispara"" → fire
+- Command: B
+
+FINAL: B",B,B,True,True,,True,True,correct,,2227.266,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-xor-shields-a,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si exactamente uno de los dos escudos está levantado, avanzá; si no, dispará.",B,"Scratchpad:
+- Bot 1's shield status: false
+- Bot 2's shield status: false
+- Exactly one shield raised? No, both are down.
+- Therefore, condition ""exactly one shield raised"" is false.
+- So, according to the policy: ""if not, fire""
+- Command: B (fire)
+
+FINAL: B",B,B,True,True,,True,True,correct,,1961.741,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-b,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",S1,"Analicemos la política paso a paso:
+
+1. **Si tienes menos de 10 puntos de salud, levanta el escudo.**
+   - Tu salud es 5, que es menor que 10 → condición verdadera.
+   - Por lo tanto, debes activar el escudo.
+
+2. **Si no, si el rival tiene el escudo levantado, avanza.**
+   - Esta rama no se evalúa porque la primera condición ya se cumplió.
+
+3. **En cualquier otro caso, dispara.**
+   - No se aplica porque ya se activó el escudo.
+
+Por lo tanto, la acción correcta es activar el escudo.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4033.729,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-b,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",S1,"Analicemos la política paso a paso:
+
+1. **Si tenés menos de 10 puntos de salud, levantá el escudo.**
+   - Tu salud es 5, que es menor que 10 → condición verdadera.
+   - Por lo tanto, debes activar el escudo.
+
+2. **Si no, si el rival tiene el escudo levantado, avanzá.**
+   - Esta rama no se evalúa porque la primera condición ya se cumplió.
+
+3. **En cualquier otro caso, dispará.**
+   - No se aplica porque ya se activó el escudo.
+
+Por lo tanto, la acción correcta es: **S1** (activar el escudo).
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4094.089,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-a,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Your x-coordinate: 0.2
+- Opponent's x-coordinate: 0.8
+- Horizontal distance = |0.8 - 0.2| = 0.6
+- 0.6 >= 0.4 → condition is true
+- Therefore, move forward by 0.1
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,2480.101,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-a,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Your x-coordinate: 0.2
+- Opponent's x-coordinate: 0.8
+- Horizontal distance = |0.8 - 0.2| = 0.6
+- 0.6 >= 0.4 → condition is true
+- Therefore, move forward by 0.1
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,2192.026,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-d,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",A90.0,"Scratchpad:
+- My x-coordinate (bot 1): 0.51
+- Opponent's x-coordinate (bot 2): 0.5
+- Since 0.51 > 0.5, the condition ""my x > opponent x"" is true.
+- Therefore, according to the policy: rotate 90 degrees counterclockwise.
+
+Command: A90
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,2518.862,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-d,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",A90.0,"Scratchpad:
+- My x coordinate (0.51) is greater than the opponent's x coordinate (0.5).
+- Since my x > opponent's x, I should rotate 90 degrees counterclockwise.
+- The command for rotating 90 degrees counterclockwise is A90.
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,1931.647,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-a,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",A90.0,"Scratchpad:
+- My x-coordinate (0.7) is greater than the opponent's x-coordinate (0.3).
+- Therefore, according to the policy, I should rotate 90 degrees counterclockwise.
+- The command for rotating 90 degrees counterclockwise is A90.
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,2185.754,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-a,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",A90.0,"Scratchpad:
+- My x-coordinate (0.7) is greater than the opponent's x-coordinate (0.3).
+- According to the policy: if my x > opponent's x, rotate 90 degrees counterclockwise.
+- Therefore, the command should be A90.
+
+FINAL: A90",A90,A90.0,True,True,True,True,True,correct,,1801.713,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-c,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1's health is 20, which is not less than 15.
+- The shield is currently off (false).
+- The condition ""Si tienes menos de 15 puntos de salud y el escudo está bajo"" is false because health is 20 (not less than 15).
+- Therefore, the ""si no, dispara"" (else, shoot) branch applies.
+- The action to take is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,2821.311,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-c,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1's health is 20, which is not less than 15.
+- The shield is currently off (false).
+- Since health is not less than 15, the condition ""Si tenés menos de 15 puntos de salud y el escudo está bajo"" is false.
+- Therefore, the action is ""dispará"" (fire).
+- The command for firing is ""B"".
+
+FINAL: B",B,B,True,True,,True,True,correct,,2467.852,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-b,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",B,"Scratchpad:
+- Bot 1's shield status is false (off).
+- According to the policy: ""Si tienes el escudo levantado, bájalo; si no, dispara.""
+  - If shield is on → set shield off (S0).
+  - If shield is off → fire (B).
+- Since shield is off, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,2414.834,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-b,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",B,"Scratchpad:
+- Bot 1's shield status is false (off).
+- According to the policy: ""Si tenés el escudo levantado, bajalo; si no, dispará.""
+  - If shield is on (true), then turn it off (S0).
+  - If shield is off (false), then fire (B).
+- Since shield is off, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,2285.596,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-c,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",B,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.4, x2 = 0.6
+   - |x2 - x1| = |0.6 - 0.4| = 0.2
+
+2. Check if distance >= 0.4:
+   - 0.2 < 0.4 → condition is false → proceed to the ""distance < 0.4"" branch.
+
+3. Since distance < 0.4:
+   - Check if rival's shield is off:
+     - bot 2's shield = false → shield is off → condition true → action is to fire.
+
+4. Therefore, the correct command is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4266.03,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-c,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",B,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.4, x2 = 0.6
+   - |x2 - x1| = |0.6 - 0.4| = 0.2
+
+2. Check if distance >= 0.4:
+   - 0.2 < 0.4 → condition is false → proceed to the ""else"" branch (distance < 0.4)
+
+3. Since distance < 0.4, check if the rival's shield is off:
+   - bot 2's shield = false → shield is off
+
+4. Since rival's shield is off, the rule says: ""dispará"" → fire
+
+FINAL: B",B,B,True,True,,True,True,correct,,4200.652,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-d,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",B,"Analicemos la política paso a paso:
+
+1. **Si tenés menos de 10 puntos de salud, levantá el escudo.**
+   - Tu salud es 20, que no es menor que 10 → no se aplica.
+
+2. **Si no, si el rival tiene el escudo levantado, avanzá.**
+   - El rival (bot 2) tiene `shield: false` → el escudo está apagado → no se aplica.
+
+3. **En cualquier otro caso, dispará.**
+   - Ninguna de las condiciones anteriores se cumplió → se aplica esta acción.
+
+Por lo tanto, la acción a tomar es: **disparar**.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4600.65,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-d,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",B,"Analicemos la política paso a paso:
+
+1. **Si tienes menos de 10 puntos de salud, levanta el escudo.**
+   - Tu salud es 20, que no es menor que 10 → esta condición no se cumple.
+
+2. **Si no, si el rival tiene el escudo levantado, avanza.**
+   - El rival (bot 2) tiene `shield: false` → el escudo está apagado → esta condición no se cumple.
+
+3. **En cualquier otro caso, dispara.**
+   - Como ninguna de las condiciones anteriores se cumplió, se ejecuta esta acción.
+
+Por lo tanto, la acción a tomar es disparar.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4380.511,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-d,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",B,"Scratchpad:
+- Bot 1's shield status is false (off).
+- According to the policy: ""Si tenés el escudo levantado, bajalo; si no, dispará.""
+  - If shield is on (true), then turn it off (S0).
+  - If shield is off (false), then fire (B).
+- Since shield is off, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,2808.719,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-d,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",B,"Scratchpad:
+- Bot 1's shield status is false (off).
+- According to the policy: ""Si tienes el escudo levantado, bájalo; si no, dispara.""
+  - Since the shield is not raised (shield == false), the action is to fire.
+- Therefore, the correct command is B (fire).
+
+FINAL: B",B,B,True,True,,True,True,correct,,2236.607,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-d,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Your x-coordinate: 0.3
+- Opponent's x-coordinate: 0.31
+- Horizontal distance = |0.3 - 0.31| = 0.01
+- 0.01 < 0.4 → condition not met
+- Therefore, rotate 90 degrees clockwise
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2894.643,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-d,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- Your x-coordinate: 0.3
+- Opponent's x-coordinate: 0.31
+- Horizontal distance = |0.3 - 0.31| = 0.01
+- Is 0.01 >= 0.4? No.
+- Therefore, follow the ""else"" branch: rotate 90 degrees clockwise.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2461.597,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-a,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Primero calculá la distancia horizontal entre vos y el rival. Si la distancia es de al menos 0.4: si tenés menos salud que el rival, levantá el escudo; si no, avanzá 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispará; si no, girá 90 grados en sentido antihorario.",S1,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.1, x2 = 0.7
+   - distance = |x2 - x1| = |0.7 - 0.1| = 0.6
+
+2. Check if distance >= 0.4:
+   - 0.6 >= 0.4 → True
+
+3. Since distance >= 0.4:
+   - Compare health: bot 1 health = 10, bot 2 health = 20
+   - 10 < 20 → True → condition ""tenés menos salud que el rival"" is true
+
+4. Therefore, according to the policy: ""levantá el escudo"" → set shield on
+
+5. Command: S1
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,5301.743,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-distance-composite-a,decision_complexity,D6,es_standard,Tuteo Spanish,"Primero calcula la distancia horizontal entre tú y el rival. Si la distancia es de al menos 0.4: si tienes menos salud que el rival, levanta el escudo; si no, avanza 0.1. Si la distancia es menor que 0.4: si el rival tiene el escudo bajo, dispara; si no, gira 90 grados en sentido antihorario.",S1,"Scratchpad:
+
+1. Calculate horizontal distance between bot 1 and bot 2:
+   - x1 = 0.1, x2 = 0.7
+   - |x2 - x1| = |0.7 - 0.1| = 0.6
+
+2. Check if distance >= 0.4:
+   - 0.6 >= 0.4 → True
+
+3. Since distance >= 0.4:
+   - Compare health: bot 1 has 10, bot 2 has 20 → bot 1 has less health
+   - Therefore, according to policy: ""levanta el escudo"" → set shield on
+
+4. Command: S1 (set shield on)
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,4345.004,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-c,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",M,"Scratchpad:
+- Bot 1's health is 15.
+- The condition ""Si tienes menos de 15 puntos de salud"" translates to ""If you have less than 15 health points"".
+- Since bot 1 has exactly 15 health points, it does not satisfy the condition ""less than 15"".
+- Therefore, the else branch applies: ""avanza"" (advance).
+- Advancing means moving forward by the default step, which is represented by the command M.
+
+FINAL: M",M,M,True,True,,True,True,correct,,3072.694,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-c,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",M,"Scratchpad:
+- Bot 1's health is 15.
+- The condition ""Si tenés menos de 15 puntos de salud"" translates to ""if you have less than 15 health points"".
+- Since bot 1 has exactly 15 health, it does not satisfy the condition ""less than 15"".
+- Therefore, the else branch applies: ""avanzá"" (advance).
+- The default move forward is M.
+
+FINAL: M",M,M,True,True,,True,True,correct,,2704.75,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-d,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",S1,"Scratchpad:
+- Bot 1 health: 14
+- Bot 2 health: 15
+- Since 14 < 15, bot 1 has less health than the opponent.
+- According to the policy: ""Si tienes menos salud que el rival, levanta el escudo; si no, dispara.""
+  - Condition: if health of bot 1 < health of bot 2 → raise shield
+  - This condition is true (14 < 15)
+  - Therefore, the action is to set shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,3422.708,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-d,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",S1,"Scratchpad:
+- Bot 1 health: 14
+- Bot 2 health: 15
+- Since 14 < 15, bot 1 has less health than the opponent.
+- According to the policy: ""Si tenés menos salud que el rival, levantá el escudo""
+- Therefore, the action should be to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2287.349,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-d,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",M0.1,"Scratchpad:
+
+1. Check if shield is on (current state: shield = false) → so we do not need to lower it.
+2. Check if opponent health ≤ 10 → opponent health is 20 → no.
+3. Check if my health ≤ opponent health → my health is 25, opponent is 20 → 25 > 20 → condition false.
+4. Since none of the above conditions are true, default action is to move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,3467.602,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-d,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",M0.1,"Analicemos paso a paso según las reglas dadas:
+
+1. **Si tienes el escudo levantado, bájalo.**
+   - Actualmente, `shield` de bot 1 es `false` → no está levantado.
+   - Esta condición no se cumple → pasamos al siguiente paso.
+
+2. **Si no, si el rival tiene 10 puntos de salud o menos, dispara.**
+   - El rival (bot 2) tiene `health: 20` → más de 10.
+   - Esta condición no se cumple → pasamos al siguiente paso.
+
+3. **Si no, si tu salud es menor o igual que la del rival, levanta el escudo.**
+   - Tu salud: 25
+   - Salud del rival: 20
+   - 25 > 20 → tu salud no es menor o igual → condición no se cumple → pasamos al siguiente paso.
+
+4. **En cualquier otro caso, avanza 0.1.**
+   - Ninguna de las condiciones anteriores se cumplió → se aplica esta acción.
+   - Avanzar 0.1 → comando",,ERR,False,False,,False,False,final_extraction_error,"expected exactly one FINAL line, found 0",6553.987,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-b,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes el escudo levantado, bájalo. Si no, si el rival tiene menos de 10 puntos de salud, dispara. En cualquier otro caso, levanta el escudo.",B,"Analicemos la política paso a paso:
+
+1. ""si tienes el escudo levantado, bájalo"":
+   - Actualmente, el escudo del bot 1 está apagado (`shield: false`).
+   - Por lo tanto, esta condición no se cumple, no se hace nada.
+
+2. ""si no, si el rival tiene menos de 10 puntos de salud, dispara"":
+   - El rival (bot 2) tiene 5 puntos de salud.
+   - 5 < 10 → condición verdadera.
+   - Por lo tanto, se debe disparar.
+
+3. ""En cualquier otro caso, levanta el escudo"":
+   - Esta parte no se ejecuta porque ya se cumplió la condición anterior (disparar).
+
+Conclusión: la acción a tomar es disparar.
+
+FINAL: B",B,B,True,True,,True,True,correct,,5120.426,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-shield-b,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés el escudo levantado, bajalo. Si no, si el rival tiene menos de 10 puntos de salud, dispará. En cualquier otro caso, levantá el escudo.",B,"Analicemos la política paso a paso:
+
+1. ""si tenés el escudo levantado, bajalo"":
+   - Actualmente, el escudo de bot 1 está en `false` (apagado), por lo tanto, esta condición no se cumple.
+
+2. ""Si no, si el rival tiene menos de 10 puntos de salud, dispará"":
+   - El rival (bot 2) tiene `health: 5`, que es menor que 10 → condición verdadera.
+   - Por lo tanto, debemos disparar.
+
+3. ""En cualquier otro caso, levantá el escudo"":
+   - No se aplica, porque ya se cumplió la condición de disparar.
+
+Conclusión: la acción a tomar es disparar.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4575.611,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-d,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",M,"Scratchpad:
+- Bot 1's health is 25.
+- 25 is not less than 15.
+- Therefore, the condition ""Si tenés menos de 15 puntos de salud"" is false.
+- The action to take is ""avanzá"", which means move forward by the default step.
+- The command for moving forward by the default step is ""M"".
+
+FINAL: M",M,M,True,True,,True,True,correct,,2598.319,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-d,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",M,"Scratchpad:
+- Bot 1's health is 25.
+- 25 is not less than 15.
+- Therefore, the condition ""Si tienes menos de 15 puntos de salud"" is false.
+- The action to take is ""avanza"" (advance).
+- The default move is M (move forward by the default step).
+
+FINAL: M",M,M,True,True,,True,True,correct,,2164.309,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-a,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",S1,"Scratchpad:
+- Bot 1 health: 10
+- Bot 2 health: 20
+- Bot 1 health < Bot 2 health → True
+- Condition: ""Si tienes menos salud que el rival"" → True
+- Therefore, action: ""levanta el escudo"" → S1 (set shield on)
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2399.516,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-a,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",S1,"Scratchpad:
+- Bot 1's health: 10
+- Bot 2's health: 20
+- Since 10 < 20, bot 1 has less health than the rival.
+- According to the policy: ""Si tenés menos salud que el rival, levantá el escudo""
+- Therefore, the action should be to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2385.077,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-b,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tu coordenada x es mayor que la del rival, gira 90 grados en sentido antihorario; si no, gira 90 grados en sentido horario.",C90.0,"Scratchpad:
+- My x-coordinate (bot 1): 0.3
+- Opponent's x-coordinate (bot 2): 0.7
+- Since 0.3 <= 0.7, the condition ""my x > opponent x"" is false.
+- Therefore, according to the policy: ""if not, gira 90 grados en sentido horario"" → rotate 90 degrees clockwise.
+- The command for rotating 90 degrees clockwise is C90.
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,3280.778,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-x-compare-b,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tu coordenada x es mayor que la del rival, girá 90 grados en sentido antihorario; si no, girá 90 grados en sentido horario.",C90.0,"Scratchpad:
+- My x-coordinate (bot 1): 0.3
+- Opponent's x-coordinate (bot 2): 0.7
+- Since 0.3 <= 0.7, the condition ""my x > opponent x"" is false.
+- Therefore, according to the policy: ""if not, rotate 90 degrees clockwise"".
+- So, the command should be: C90
+
+FINAL: C90",C90,C90.0,True,True,True,True,True,correct,,2642.608,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-a,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",B,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 30
+2. **Current health of bot 2 (opponent):** 20
+3. **Difference in health:** 30 - 20 = 10
+
+The policy says:
+- If you have **at least 10 points of health more than the rival**, then **discharge (fire)**.
+- Otherwise, **raise the shield**.
+
+Since you have exactly 10 points more (30 > 20 by 10), the condition ""at least 10 points more"" is satisfied.
+
+Therefore, the correct action is to **fire**.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4292.146,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-a,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",B,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 30
+2. **Current health of bot 2 (opponent):** 20
+3. **Difference in health:** 30 - 20 = 10
+
+The policy says:
+- If you have **at least 10 points of health more than the rival**, then **fire (B)**.
+- Otherwise, **raise the shield (S1)**.
+
+Since you have exactly 10 points more than the opponent (30 ≥ 20 + 10), the condition is satisfied.
+
+Therefore, the correct action is to **fire**.
+
+FINAL: B",B,B,True,True,,True,True,correct,,3899.786,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-b,decision_complexity,D2,es_standard,Tuteo Spanish,"Si tienes menos salud que el rival, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1 health: 20
+- Bot 2 health: 10
+- Compare: 20 < 10? → False
+- Since health of bot 1 is not less than bot 2, the condition ""Si tienes menos salud que el rival"" is false.
+- Therefore, the action is ""dispara"" → B (fire)
+
+FINAL: B",B,B,True,True,,True,True,correct,,2458.598,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d2-health-compare-b,decision_complexity,D2,es_rioplatense,Rioplatense voseo,"Si tenés menos salud que el rival, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1's health: 20
+- Bot 2's health: 10
+- Compare: 20 < 10? → False
+- Since health of bot 1 is not less than bot 2, the condition ""Si tenés menos salud que el rival"" is false.
+- Therefore, the action is: ""dispará"" → fire (B)
+
+FINAL: B",B,B,True,True,,True,True,correct,,2433.001,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-d,decision_complexity,D3,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.",B,"Scratchpad:
+- Bot 1's health is 20, which is not less than 15.
+- The shield is currently on (true).
+- The policy says: ""Si tenés menos de 15 puntos de salud y el escudo está bajo, levantá el escudo; si no, dispará.""
+  - Condition 1: health < 15 → false (20 is not < 15)
+  - Condition 2: shield is off → false (shield is on)
+  - Since both conditions of the ""if"" are not met, we proceed to the ""else"" part: ""dispará"" → fire.
+- Therefore, the action is to fire.
+
+FINAL: B",B,B,True,True,,True,True,correct,,4192.874,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d3-conjunction-d,decision_complexity,D3,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud y el escudo está bajo, levanta el escudo; si no, dispara.",B,"Scratchpad:
+- Bot 1's health is 20, which is not less than 15.
+- Bot 1's shield is currently on (true).
+- The condition ""if health < 15 and shield is off"" is false because health is not less than 15.
+- Therefore, the else branch applies: ""dispara"" (fire).
+- The command to fire is ""B"".
+
+FINAL: B",B,B,True,True,,True,True,correct,,2397.821,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-a,decision_complexity,D6,es_rioplatense,Rioplatense voseo,"Aplicá estas reglas en orden. Primero, si tenés el escudo levantado, bajalo. Si no, si el rival tiene 10 puntos de salud o menos, dispará. Si no, si tu salud es menor o igual que la del rival, levantá el escudo. En cualquier otro caso, avanzá 0.1.",S0,"Analicemos paso a paso según las reglas dadas:
+
+1. **Si tenés el escudo levantado, bajalo.**  
+   - Actualmente, bot 1 tiene `shield: true`.  
+   → Por lo tanto, debemos **bajar el escudo** → comando: `S0`.
+
+2. **Si no, si el rival tiene 10 puntos de salud o menos, dispará.**  
+   - El rival (bot 2) tiene `health: 5`, que es ≤ 10.  
+   - Pero como ya se cumplió la primera regla (y se debe aplicar en orden), no se evalúa esta condición si la anterior se cumplió.
+
+3. **Si no, si tu salud es menor o igual que la del rival, levantá el escudo.**  
+   - Tu salud: 5, salud del rival: 5 → 5 ≤ 5 → condición verdadera.  
+   - Pero como ya se bajó el escudo en el paso 1, y no se puede aplicar esta regla si la anterior ya se ejecutó, no se aplica.
+
+4. **En cualquier otro caso, avanzá ",,ERR,False,False,,False,False,final_extraction_error,"expected exactly one FINAL line, found 0",6648.523,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d6-priority-composite-a,decision_complexity,D6,es_standard,Tuteo Spanish,"Aplica estas reglas en orden. Primero, si tienes el escudo levantado, bájalo. Si no, si el rival tiene 10 puntos de salud o menos, dispara. Si no, si tu salud es menor o igual que la del rival, levanta el escudo. En cualquier otro caso, avanza 0.1.",S0,"Analicemos paso a paso según las reglas dadas:
+
+1. **Primero, si tienes el escudo levantado, bájalo.**
+   - Estado actual: `shield = true` → el escudo está levantado.
+   - Por lo tanto, debemos **bajar el escudo** → comando: `S0`.
+
+2. **Si no, si el rival tiene 10 puntos de salud o menos, dispara.**
+   - Esta regla no se aplica porque ya se ejecutó la primera regla (bajar el escudo), y el orden es secuencial: solo se evalúa la siguiente si la anterior no se cumple.
+   - Pero en este caso, la primera condición se cumplió, así que no se evalúa esta.
+
+3. **Si no, si tu salud es menor o igual que la del rival, levanta el escudo.**
+   - Tu salud: 5
+   - Salud del rival: 5
+   - 5 <= 5 → verdadero → deberías levantar el escudo.
+   - Pero ya bajaste el escudo en el paso 1, y esta regla se evalúa solo si la",,ERR,False,False,,False,False,final_extraction_error,"expected exactly one FINAL line, found 0",6416.752,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-a,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés menos de 15 puntos de salud, levantá el escudo; si no, avanzá.",S1,"Scratchpad:
+- Bot 1's health is 5, which is less than 15.
+- Therefore, according to the policy, I should raise the shield.
+- Raising the shield means setting shield to true, which corresponds to command S1.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,1758.738,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-health-a,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes menos de 15 puntos de salud, levanta el escudo; si no, avanza.",S1,"Scratchpad:
+- Bot 1's health is 5, which is less than 15.
+- According to the policy: ""Si tienes menos de 15 puntos de salud, levanta el escudo"" → if health < 15, raise the shield.
+- Therefore, the action should be to set the shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,2008.099,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-c,decision_complexity,D1,es_rioplatense,Rioplatense voseo,"Si tenés el escudo levantado, bajalo; si no, dispará.",S0,"Scratchpad:
+- Bot 1's shield status is true (shield is on).
+- According to the policy: ""Si tenés el escudo levantado, bajalo; si no, dispará.""
+  - Since the shield is up (true), the action should be to lower it.
+- The command to lower the shield is S0.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,2372.286,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d1-shield-c,decision_complexity,D1,es_standard,Tuteo Spanish,"Si tienes el escudo levantado, bájalo; si no, dispara.",S0,"Scratchpad:
+- Bot 1's shield status is true (shield is on).
+- According to the policy: ""Si tienes el escudo levantado, bájalo; si no, dispara.""
+  - Since the shield is up (true), the action should be to lower it.
+- The command to lower the shield is S0.
+
+FINAL: S0",S0,S0,True,True,True,True,True,correct,,2077.122,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-c,decision_complexity,D5,es_standard,Tuteo Spanish,"Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanza 0.1; si no, gira 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Your x-coordinate: 0.1
+- Opponent's x-coordinate: 0.5
+- Horizontal distance = |0.5 - 0.1| = 0.4
+- Since the distance is exactly 0.4, which satisfies ""at least 0.4"", you should advance.
+- The instruction says to advance by 0.1, so use M0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,2786.137,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-x-distance-c,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es de al menos 0.4, avanzá 0.1; si no, girá 90 grados en sentido horario.",M0.1,"Scratchpad:
+- Current bot 1 x-coordinate: 0.1
+- Opponent (bot 2) x-coordinate: 0.5
+- Horizontal distance = |0.5 - 0.1| = 0.4
+- Since the distance is exactly 0.4, which satisfies ""at least 0.4"", the condition is true.
+- Therefore, the action is to move forward by 0.1.
+
+FINAL: M0.1",M0.1,M0.1,True,True,True,True,True,correct,,2648.463,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-c,decision_complexity,D5,es_rioplatense,Rioplatense voseo,"Si tenés al menos 10 puntos de salud más que el rival, dispará; si no, levantá el escudo.",S1,"Scratchpad:
+- Bot 1 health: 10
+- Bot 2 health: 25
+- Difference in health: 10 - 25 = -15
+- Since bot 1 does not have at least 10 points of health more than bot 2 (in fact, it has 15 less), the condition ""Si tenés al menos 10 puntos de salud más que el rival"" is false.
+- Therefore, the action to take is: ""levantá el escudo"" → set shield on.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,3294.329,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d5-health-difference-c,decision_complexity,D5,es_standard,Tuteo Spanish,"Si tienes al menos 10 puntos de salud más que el rival, dispara; si no, levanta el escudo.",S1,"Let's analyze the game state and the policy step by step:
+
+1. **Current health of bot 1 (you):** 10
+2. **Current health of bot 2 (opponent):** 25
+3. **Difference in health:** 10 - 25 = -15
+
+The policy says:
+- If you have **at least 10 points of health more than the rival**, then **fire (B)**.
+- Otherwise, **raise the shield (S1)**.
+
+Since you have **15 points less** than the rival (not more), the condition ""at least 10 points more"" is **false**.
+
+Therefore, the correct action is to **raise the shield**.
+
+FINAL: S1",S1,S1,True,True,True,True,True,correct,,3899.273,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-c,decision_complexity,D4,es_standard,Tuteo Spanish,"Aplica esta política en orden: si tienes menos de 10 puntos de salud, levanta el escudo. Si no, si el rival tiene el escudo levantado, avanza. En cualquier otro caso, dispara.",M,"Analicemos la política paso a paso:
+
+1. **Si tienes menos de 10 puntos de salud, levanta el escudo.**
+   - Tu salud es 20, que no es menor que 10 → esta condición no se cumple.
+
+2. **Si no, si el rival tiene el escudo levantado, avanza.**
+   - El rival (bot 2) tiene `shield: true` → el escudo está levantado.
+   - Por lo tanto, debes avanzar.
+
+3. **En cualquier otro caso, dispara.**
+   - Esta condición no se aplica porque ya se cumplió la anterior.
+
+Como el rival tiene el escudo activo, la acción correcta es avanzar.
+
+FINAL: M",M,M,True,True,,True,True,correct,,4229.063,
+qwen3:30b-a3b-instruct-2507-q4_K_M,0,d4-priority-health-c,decision_complexity,D4,es_rioplatense,Rioplatense voseo,"Aplicá esta política en orden: si tenés menos de 10 puntos de salud, levantá el escudo. Si no, si el rival tiene el escudo levantado, avanzá. En cualquier otro caso, dispará.",M,"Analicemos la política paso a paso:
+
+1. **Si tenés menos de 10 puntos de salud, levantá el escudo.**
+   - Tu salud es 20, que no es menor que 10 → esta condición no se cumple.
+
+2. **Si no, si el rival tiene el escudo levantado, avanzá.**
+   - El rival (bot 2) tiene `shield: true` → el escudo está levantado.
+   - Por lo tanto, debes avanzar.
+
+3. **En cualquier otro caso, dispará.**
+   - Esta opción no se aplica porque ya se cumplió la condición anterior.
+
+Como el rival tiene el escudo activo, la acción correcta es avanzar.
+
+FINAL: M",M,M,True,True,,True,True,correct,,4206.436,

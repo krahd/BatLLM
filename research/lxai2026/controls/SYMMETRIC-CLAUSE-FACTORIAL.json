@@ -1,0 +1,468 @@
+{
+  "run": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/symmetric_clause_factorial/20260825T165129Z",
+  "n_rows": 512,
+  "aggregate": {
+    "deliberative": {
+      "a_first": {
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 32,
+            "valid": 32,
+            "first_position": 15,
+            "second_position": 17,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 5965.7865624999995,
+            "median_latency_ms": 5512.9165,
+            "mean_response_chars": 181.09375
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 29,
+            "valid": 29,
+            "first_position": 13,
+            "second_position": 16,
+            "provider_errors": 0,
+            "extraction_errors": 3,
+            "mean_latency_ms": 2514.95690625,
+            "median_latency_ms": 2047.1365,
+            "mean_response_chars": 425.625
+          }
+        },
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 31,
+            "valid": 32,
+            "first_position": 16,
+            "second_position": 16,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 5627.863875,
+            "median_latency_ms": 5485.548000000001,
+            "mean_response_chars": 165.21875
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 32,
+            "valid": 32,
+            "first_position": 15,
+            "second_position": 17,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 2003.2316875,
+            "median_latency_ms": 1790.6309999999999,
+            "mean_response_chars": 335.28125
+          }
+        }
+      },
+      "b_first": {
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 31,
+            "valid": 32,
+            "first_position": 18,
+            "second_position": 14,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 5429.5668125,
+            "median_latency_ms": 5271.5575,
+            "mean_response_chars": 160.09375
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 22,
+            "valid": 23,
+            "first_position": 12,
+            "second_position": 10,
+            "provider_errors": 0,
+            "extraction_errors": 9,
+            "mean_latency_ms": 3301.8315,
+            "median_latency_ms": 2760.5699999999997,
+            "mean_response_chars": 520.21875
+          }
+        },
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 32,
+            "valid": 32,
+            "first_position": 17,
+            "second_position": 15,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 5894.89025,
+            "median_latency_ms": 5569.8875,
+            "mean_response_chars": 168.75
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 29,
+            "valid": 29,
+            "first_position": 16,
+            "second_position": 13,
+            "provider_errors": 0,
+            "extraction_errors": 3,
+            "mean_latency_ms": 2343.87690625,
+            "median_latency_ms": 1973.682,
+            "mean_response_chars": 397.90625
+          }
+        }
+      }
+    },
+    "direct": {
+      "a_first": {
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 17,
+            "valid": 32,
+            "first_position": 23,
+            "second_position": 6,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 1278.94553125,
+            "median_latency_ms": 1225.073,
+            "mean_response_chars": 1.9375
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 17,
+            "valid": 32,
+            "first_position": 27,
+            "second_position": 4,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 344.2231875,
+            "median_latency_ms": 339.1865,
+            "mean_response_chars": 2.0625
+          }
+        },
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 16,
+            "valid": 32,
+            "first_position": 21,
+            "second_position": 7,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 1543.33215625,
+            "median_latency_ms": 1211.5430000000001,
+            "mean_response_chars": 1.65625
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 15,
+            "valid": 32,
+            "first_position": 31,
+            "second_position": 0,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 356.92778125,
+            "median_latency_ms": 348.81899999999996,
+            "mean_response_chars": 2.125
+          }
+        }
+      },
+      "b_first": {
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 16,
+            "valid": 32,
+            "first_position": 25,
+            "second_position": 5,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 1279.1305937500001,
+            "median_latency_ms": 1302.5414999999998,
+            "mean_response_chars": 1.75
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 18,
+            "valid": 32,
+            "first_position": 31,
+            "second_position": 1,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 337.350625,
+            "median_latency_ms": 335.829,
+            "mean_response_chars": 1.65625
+          }
+        },
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "n": 32,
+            "correct": 17,
+            "valid": 32,
+            "first_position": 26,
+            "second_position": 2,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 1196.782125,
+            "median_latency_ms": 1126.6480000000001,
+            "mean_response_chars": 1.4375
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "n": 32,
+            "correct": 19,
+            "valid": 32,
+            "first_position": 30,
+            "second_position": 2,
+            "provider_errors": 0,
+            "extraction_errors": 0,
+            "mean_latency_ms": 348.756625,
+            "median_latency_ms": 335.1975,
+            "mean_response_chars": 1.6875
+          }
+        }
+      }
+    }
+  },
+  "order_pairs": {
+    "direct": {
+      "es_standard": {
+        "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+          "pairs": 32,
+          "same_output": 13,
+          "output_changed": 19,
+          "correct_both": 7,
+          "wrong_both": 6,
+          "accuracy_changed": 19,
+          "follows_first_in_both": 19,
+          "follows_second_in_both": 0,
+          "a_first_correct": 16,
+          "b_first_correct": 17
+        },
+        "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+          "pairs": 32,
+          "same_output": 2,
+          "output_changed": 30,
+          "correct_both": 2,
+          "wrong_both": 0,
+          "accuracy_changed": 30,
+          "follows_first_in_both": 29,
+          "follows_second_in_both": 0,
+          "a_first_correct": 15,
+          "b_first_correct": 19
+        }
+      },
+      "es_rioplatense": {
+        "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+          "pairs": 32,
+          "same_output": 10,
+          "output_changed": 22,
+          "correct_both": 6,
+          "wrong_both": 5,
+          "accuracy_changed": 21,
+          "follows_first_in_both": 17,
+          "follows_second_in_both": 0,
+          "a_first_correct": 17,
+          "b_first_correct": 16
+        },
+        "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+          "pairs": 32,
+          "same_output": 5,
+          "output_changed": 27,
+          "correct_both": 4,
+          "wrong_both": 1,
+          "accuracy_changed": 27,
+          "follows_first_in_both": 26,
+          "follows_second_in_both": 0,
+          "a_first_correct": 17,
+          "b_first_correct": 18
+        }
+      }
+    },
+    "deliberative": {
+      "es_standard": {
+        "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+          "pairs": 32,
+          "same_output": 31,
+          "output_changed": 1,
+          "correct_both": 31,
+          "wrong_both": 0,
+          "accuracy_changed": 1,
+          "follows_first_in_both": 1,
+          "follows_second_in_both": 0,
+          "a_first_correct": 31,
+          "b_first_correct": 32
+        },
+        "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+          "pairs": 32,
+          "same_output": 29,
+          "output_changed": 3,
+          "correct_both": 29,
+          "wrong_both": 0,
+          "accuracy_changed": 3,
+          "follows_first_in_both": 0,
+          "follows_second_in_both": 0,
+          "a_first_correct": 32,
+          "b_first_correct": 29
+        }
+      },
+      "es_rioplatense": {
+        "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+          "pairs": 32,
+          "same_output": 31,
+          "output_changed": 1,
+          "correct_both": 31,
+          "wrong_both": 0,
+          "accuracy_changed": 1,
+          "follows_first_in_both": 1,
+          "follows_second_in_both": 0,
+          "a_first_correct": 32,
+          "b_first_correct": 31
+        },
+        "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+          "pairs": 32,
+          "same_output": 21,
+          "output_changed": 11,
+          "correct_both": 20,
+          "wrong_both": 1,
+          "accuracy_changed": 11,
+          "follows_first_in_both": 0,
+          "follows_second_in_both": 0,
+          "a_first_correct": 29,
+          "b_first_correct": 22
+        }
+      }
+    }
+  },
+  "policy_diagnostics": {
+    "direct": {
+      "a_first": {
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 1,
+            "state_invariant": 7
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 0,
+            "state_invariant": 7
+          }
+        },
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 0,
+            "state_invariant": 5
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 0,
+            "state_invariant": 5
+          }
+        }
+      },
+      "b_first": {
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 1,
+            "state_invariant": 7
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 1,
+            "state_invariant": 7
+          }
+        },
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 0,
+            "state_invariant": 6
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 0,
+            "state_invariant": 7
+          }
+        }
+      }
+    },
+    "deliberative": {
+      "b_first": {
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 8,
+            "state_invariant": 0
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 7,
+            "state_invariant": 0
+          }
+        },
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 7,
+            "state_invariant": 0
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 3,
+            "state_invariant": 1
+          }
+        }
+      },
+      "a_first": {
+        "es_rioplatense": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 8,
+            "state_invariant": 0
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 6,
+            "state_invariant": 0
+          }
+        },
+        "es_standard": {
+          "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+            "groups": 8,
+            "complete": 7,
+            "state_invariant": 0
+          },
+          "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+            "groups": 8,
+            "complete": 8,
+            "state_invariant": 0
+          }
+        }
+      }
+    }
+  },
+  "pooled_interface": {
+    "deliberative": {
+      "n": 256,
+      "correct": 238,
+      "first_position": 122,
+      "valid": 241,
+      "mean_latency_ms": 4135.2505625,
+      "median_latency_ms": 3773.364,
+      "mean_response_chars": 294.2734375
+    },
+    "direct": {
+      "n": 256,
+      "correct": 135,
+      "first_position": 214,
+      "valid": 256,
+      "mean_latency_ms": 835.681078125,
+      "median_latency_ms": 487.2415,
+      "mean_response_chars": 1.7890625
+    }
+  },
+  "provider_errors": 0,
+  "final_extraction_errors": 15
+}

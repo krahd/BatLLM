@@ -1,0 +1,369 @@
+{
+  "original": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/symmetric_clause_factorial/20260825T165129Z",
+  "budget": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/deliberation_budget/20260825T185106Z",
+  "n_pairs": 256,
+  "by_model_language": {
+    "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+      "es_rioplatense": {
+        "original_256": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "extraction_errors": 0,
+          "mean_chars": 170.59375,
+          "median_chars": 174.0,
+          "mean_eval_count": null,
+          "max_eval_count": null,
+          "done_reasons": {
+            "": 64
+          }
+        },
+        "budget_1024": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "extraction_errors": 0,
+          "mean_chars": 170.59375,
+          "median_chars": 174.0,
+          "mean_eval_count": 64.078125,
+          "max_eval_count": 124,
+          "done_reasons": {
+            "stop": 64
+          }
+        }
+      },
+      "es_standard": {
+        "original_256": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "extraction_errors": 0,
+          "mean_chars": 166.984375,
+          "median_chars": 175.5,
+          "mean_eval_count": null,
+          "max_eval_count": null,
+          "done_reasons": {
+            "": 64
+          }
+        },
+        "budget_1024": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "extraction_errors": 0,
+          "mean_chars": 166.984375,
+          "median_chars": 175.5,
+          "mean_eval_count": 63.8125,
+          "max_eval_count": 121,
+          "done_reasons": {
+            "stop": 64
+          }
+        }
+      }
+    },
+    "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+      "es_rioplatense": {
+        "original_256": {
+          "n": 64,
+          "correct": 51,
+          "valid": 52,
+          "correct_given_valid": 51,
+          "extraction_errors": 12,
+          "mean_chars": 472.921875,
+          "median_chars": 436.0,
+          "mean_eval_count": null,
+          "max_eval_count": null,
+          "done_reasons": {
+            "": 64
+          }
+        },
+        "budget_1024": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "extraction_errors": 0,
+          "mean_chars": 517.359375,
+          "median_chars": 436.0,
+          "mean_eval_count": 165.5625,
+          "max_eval_count": 600,
+          "done_reasons": {
+            "stop": 64
+          }
+        }
+      },
+      "es_standard": {
+        "original_256": {
+          "n": 64,
+          "correct": 61,
+          "valid": 61,
+          "correct_given_valid": 61,
+          "extraction_errors": 3,
+          "mean_chars": 366.59375,
+          "median_chars": 304.0,
+          "mean_eval_count": null,
+          "max_eval_count": null,
+          "done_reasons": {
+            "": 64
+          }
+        },
+        "budget_1024": {
+          "n": 64,
+          "correct": 64,
+          "valid": 64,
+          "correct_given_valid": 64,
+          "extraction_errors": 0,
+          "mean_chars": 368.796875,
+          "median_chars": 304.0,
+          "mean_eval_count": 119.890625,
+          "max_eval_count": 271,
+          "done_reasons": {
+            "stop": 64
+          }
+        }
+      }
+    }
+  },
+  "overall": {
+    "original_256": {
+      "n": 256,
+      "correct": 238,
+      "valid": 241,
+      "correct_given_valid": 238,
+      "extraction_errors": 15,
+      "mean_chars": 294.2734375,
+      "median_chars": 245.0,
+      "mean_eval_count": null,
+      "max_eval_count": null,
+      "done_reasons": {
+        "": 256
+      }
+    },
+    "budget_1024": {
+      "n": 256,
+      "correct": 253,
+      "valid": 256,
+      "correct_given_valid": 253,
+      "extraction_errors": 0,
+      "mean_chars": 305.93359375,
+      "median_chars": 245.0,
+      "mean_eval_count": 103.3359375,
+      "max_eval_count": 600,
+      "done_reasons": {
+        "stop": 256
+      }
+    }
+  },
+  "paired": {
+    "old_wrong_new_correct": 15,
+    "old_correct_new_wrong": 0,
+    "old_extraction_failure_new_valid": 15,
+    "old_extraction_failure_new_correct": 15,
+    "old_failure_exact_prefix_of_new": 14,
+    "old_success_exact_response_unchanged": 240,
+    "old_success_final_command_unchanged": 241,
+    "n_old_extraction_failures": 15,
+    "n_old_successes": 241
+  },
+  "old_failure_followup": [
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_standard",
+      "order": "b_first",
+      "case_id": "d3-xor-shields-d",
+      "old_chars": 798,
+      "new_chars": 842,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "269"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d2-health-compare-c",
+      "old_chars": 989,
+      "new_chars": 2459,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "600"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d5-health-difference-b",
+      "old_chars": 736,
+      "new_chars": 1019,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "336"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d3-xor-shields-c",
+      "old_chars": 760,
+      "new_chars": 903,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "291"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d3-conjunction-d",
+      "old_chars": 671,
+      "new_chars": 679,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "260"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "a_first",
+      "case_id": "d2-health-compare-d",
+      "old_chars": 750,
+      "new_chars": 754,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "260"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_standard",
+      "order": "b_first",
+      "case_id": "d3-xor-shields-c",
+      "old_chars": 758,
+      "new_chars": 839,
+      "old_is_exact_prefix": false,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "271"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_standard",
+      "order": "b_first",
+      "case_id": "d3-xor-shields-b",
+      "old_chars": 793,
+      "new_chars": 823,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "265"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d5-health-difference-d",
+      "old_chars": 716,
+      "new_chars": 978,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "332"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "a_first",
+      "case_id": "d2-health-compare-a",
+      "old_chars": 758,
+      "new_chars": 761,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "259"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d5-health-difference-a",
+      "old_chars": 755,
+      "new_chars": 1035,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "338"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d3-xor-shields-b",
+      "old_chars": 764,
+      "new_chars": 772,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "260"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d3-xor-shields-a",
+      "old_chars": 787,
+      "new_chars": 789,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "258"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "b_first",
+      "case_id": "d5-health-difference-c",
+      "old_chars": 727,
+      "new_chars": 950,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "324"
+    },
+    {
+      "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+      "language": "es_rioplatense",
+      "order": "a_first",
+      "case_id": "d5-health-difference-c",
+      "old_chars": 681,
+      "new_chars": 839,
+      "old_is_exact_prefix": true,
+      "new_correct": true,
+      "new_valid": true,
+      "new_done_reason": "stop",
+      "new_eval_count": "302"
+    }
+  ]
+}
