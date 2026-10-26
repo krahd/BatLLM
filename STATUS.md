@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-26 17:36
+Last updated: 2026-10-26 17:40
 
 ## Project and release phase
 
@@ -73,7 +73,7 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 
 ## Known limitations and pending work
 
-- Live Ollama generation and native GUI acceptance have not been run for this audit. Mock HTTP verification does not establish real-model behaviour.
+- Workshop branch: native timed launch and a real two-request smollm2 headless trace passed at `f3a08f2`; complete native game/save/analyser/restart acceptance remains untested. See the workshop verification ledger.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
 - Modelito 1.4.6 retains unsupported automatic catalogue discovery and generic lifecycle/deadline limitations. BatLLM avoids those paths and offers manual model-name download recovery; upstream details remain in the audit reports.
@@ -82,4 +82,4 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-26 17:36
+Last updated: 2026-10-26 17:40
