@@ -168,12 +168,12 @@ Historical detail belongs in `docs/CHANGELOG.md`, pull requests, and the researc
 
 Configuration persistence validation on Python 3.12/Linux:
 
-- complete isolated non-live suite: `208 passed, 2 skipped`;
+- complete isolated non-live suite: `209 passed, 2 skipped`;
 - dedicated persistence regressions: `15 passed`, covering first launch, default platform paths, explicit `BATLLM_HOME`, legacy settings, existing overlays, model-row selection, service saves, standalone editor, and failed atomic writes;
 - full Pylint gate: passed (existing warnings remain);
 - Python compilation and `git diff --check`: passed;
 - documentation validation: passed;
-- corrected a pre-existing invalid job-level CI context; remote matrix validation is pending;
+- repaired the CI matrix context and excluded dependency/generated Markdown from documentation scans;
 - release-bundle generation and Homebrew formula dry-run: passed.
 
 Live Ollama, native desktop interaction, and install-level packaging checks have not been run for this repair.

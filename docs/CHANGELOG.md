@@ -28,6 +28,7 @@
 
 ### Dependencies and tooling
 
+- excluded virtual environments and generated files from documentation link scans, fixing Windows CI failures caused by third-party package documentation;
 - repaired the job-level CI interpreter expression to use the available matrix context so the Python/platform test matrix can start;
 
 - aligned the runtime on `modelito==1.4.5`, `ollama>=0.6.2`, `psutil==7.2.2`, `PyYAML==6.0.3`, and `requests>=2.34.2`;
