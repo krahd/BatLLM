@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-25 20:03
+Last updated: 2026-10-25 20:12
 
 ## Summary
 
@@ -173,6 +173,7 @@ Configuration persistence validation on Python 3.12/Linux:
 - full Pylint gate: passed (existing warnings remain);
 - Python compilation and `git diff --check`: passed;
 - documentation validation: passed;
+- corrected a pre-existing invalid job-level CI context; remote matrix validation is pending;
 - release-bundle generation and Homebrew formula dry-run: passed.
 
 Live Ollama, native desktop interaction, and install-level packaging checks have not been run for this repair.
@@ -230,4 +231,4 @@ Documentation audit validation on PR #47:
 - Preserve replay determinism and schema versioning through the 2.0 architecture change.
 - Treat shared prompt or game repositories as later work requiring authentication, moderation, provenance, and versioning.
 
-Last updated: 2026-10-25 20:03
+Last updated: 2026-10-25 20:12

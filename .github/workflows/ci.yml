@@ -27,7 +27,7 @@ jobs:
       KIVY_NO_CONSOLELOG: "1"
       KIVY_WINDOW: mock
       PYTHONPATH: src
-      VENV_PYTHON: ${{ runner.os == 'Windows' && './.venv_BatLLM/Scripts/python.exe' || './.venv_BatLLM/bin/python' }}
+      VENV_PYTHON: ${{ matrix.os == 'windows-latest' && './.venv_BatLLM/Scripts/python.exe' || './.venv_BatLLM/bin/python' }}
 
     steps:
       - name: Checkout

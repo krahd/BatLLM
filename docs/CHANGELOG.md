@@ -28,6 +28,8 @@
 
 ### Dependencies and tooling
 
+- repaired the job-level CI interpreter expression to use the available matrix context so the Python/platform test matrix can start;
+
 - aligned the runtime on `modelito==1.4.5`, `ollama>=0.6.2`, `psutil==7.2.2`, `PyYAML==6.0.3`, and `requests>=2.34.2`;
 - restored the Python `3.10`–`3.12` multiplatform non-live CI matrix and maintained Pylint gate;
 - added focused dependency, packaging, mock-Ollama, and research workflows; and
