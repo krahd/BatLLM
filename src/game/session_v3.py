@@ -5,6 +5,8 @@ from __future__ import annotations
 
 from copy import deepcopy
 from importlib import metadata
+from functools import lru_cache
+from jsonschema import Draft202012Validator
 import json
 import os
 import platform
@@ -140,9 +142,22 @@ def _require_content_mode(
         )
 
 
+@lru_cache(maxsize=1)
+def _schema_validator():
+    root = Path(__file__).resolve().parents[2]
+    path = root / "src/assets/batllm-session-v3.schema.json"
+    if not path.exists():
+        path = root / "research/urucon2026/schema/batllm-session-v3.schema.json"
+    return Draft202012Validator(json.loads(path.read_text(encoding="utf-8")))
+
+
 def validate_session_v3(payload: Any) -> dict[str, Any]:
     """Perform structural checks before the verifier evaluates semantics."""
 
+    error = next(_schema_validator().iter_errors(payload), None)
+    if error is not None:
+        location = ".".join(str(part) for part in error.absolute_path) or "session"
+        raise SessionV3Error(f"{location}: {error.message}")
     _require(isinstance(payload, dict), "Session must be a JSON object.")
     _require(
         payload.get("schema_version") == TRACE_SCHEMA_VERSION,
@@ -388,6 +403,6 @@ def write_session_v3(payload: Mapping[str, Any], path: str | Path) -> Path:
 def load_session_v3(path: str | Path) -> dict[str, Any]:
     try:
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise SessionV3Error(str(exc)) from exc
     return validate_session_v3(payload)

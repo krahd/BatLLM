@@ -4,6 +4,22 @@
 
 ## Unreleased
 
+### Workshop repository hygiene — 26 October 2026
+
+- untracked local poster staging and Doxygen print intermediates, preserving local copies and source history;
+- retained canonical research evidence and published HTML documentation;
+- documented classification and candidate acceptance limits in [the workshop checkpoint](WORKSHOP_STABILISATION_2026_10_27.md).
+
+### Post-merge audit repair — 26 October 2026
+
+- routed the standalone editor through strict, deadline-aware inference and explicit-endpoint service operations; confirmed deletion, unload and download actions; made console cancellation local to its request/output;
+- guarded every scheduled turn against game/round changes and rejected stale model-selection completions without unloading other clients’ models;
+- separated temporary settings from persisted preferences and resolved context modes before constructing model input;
+- aligned v3 structural checks with the committed JSON Schema, added strict imported-v2 rule validation and included the schema in runtime bundles;
+- included the runtime import/resource closure in research packages and added isolated extracted generation/verification tests;
+- removed implicit model pulls from daemon startup and added explicit model-name download recovery while automatic Modelito catalogue discovery remains unsupported; and
+- recorded per-finding repair disposition and validation in [the post-merge audit](ADVERSARIAL_AUDIT_2026_10_26.md).
+
 ### Adversarial audit repair — 25 October 2026
 
 - upgraded runtime and Homebrew pins to Modelito 1.4.6 and shared strict, deadline-aware native inference between gameplay and research;

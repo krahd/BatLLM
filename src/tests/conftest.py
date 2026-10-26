@@ -37,7 +37,9 @@ def _disable_kivy_window_requirement(monkeypatch) -> None:
 @pytest.fixture(autouse=True)
 def _isolate_config_state(tmp_path) -> None:
     """Keep configuration writes inside the per-test temporary directory."""
-    original_config = deepcopy(config.as_dict())
+    original_config = deepcopy(config._config)
+    original_overrides = deepcopy(config._overrides)
+    config._overrides = {}
     original_path = getattr(config, "_path")
     setattr(config, "_path", tmp_path / "config.yaml")
 
@@ -45,3 +47,4 @@ def _isolate_config_state(tmp_path) -> None:
 
     setattr(config, "_config", deepcopy(original_config))
     setattr(config, "_path", original_path)
+    config._overrides = original_overrides

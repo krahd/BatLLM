@@ -268,11 +268,12 @@ class OllamaConnector:
         self.endpoint = f"{url}:{port}{path}"
         host = f"{url}:{port}"
 
+        old_mode = (self.independent_contexts, self.augmenting_prompt)
         self.independent_contexts = config.get("game", "independent_contexts")
         self.augmenting_prompt = config.get("game", "prompt_augmentation")
 
         # Reset contexts when requested
-        if force:
+        if force or old_mode != (self.independent_contexts, self.augmenting_prompt):
             self.reset_histories()
 
         # Client setup
@@ -310,12 +311,12 @@ class OllamaConnector:
         if augmenting_prompt is not None:
             self.augmenting_prompt = augmenting_prompt
             # store change in config without saving it
-            config.set("game", "prompt_augmentation", augmenting_prompt)
+            config.set_temporary("game", "prompt_augmentation", augmenting_prompt)
 
         if independent_contexts is not None:
             self.independent_contexts = independent_contexts
             # store change in config without saving it
-            config.set("game", "independent_contexts", independent_contexts)
+            config.set_temporary("game", "independent_contexts", independent_contexts)
 
         # Histories from a prior mode might be not compatible with the new mode so we allow them to be reset them if the mode changed.
         if reset_histories_on_mode_change and mode_changed:
@@ -325,11 +326,12 @@ class OllamaConnector:
         self._system_instructions = self._get_system_instructions_text()
         self._ensure_system_message(self._get_history_ref(bot_id))
 
-    def gen_options(self) -> Dict[str, Any]:
+    def gen_options(self, *, refresh=True) -> Dict[str, Any]:
         """Refresh connector options and return generation options for chat."""
 
-        # Load or refresh the options from the config and the UI
-        self.load_options()
+        # A request freezes options before building its messages.
+        if refresh:
+            self.load_options()
 
         res: Dict[str, Any] = {}
 
@@ -394,6 +396,7 @@ class OllamaConnector:
 
 
 
+        self.load_options()
         self.process_settings(bot_id=bot_id,
                               augmenting_prompt=new_augmenting_prompt,
                               independent_contexts=new_independent_contexts,
@@ -404,16 +407,13 @@ class OllamaConnector:
         if reset:
             self.reset_histories()
 
-        self.load_options()
-
-
         history = self._get_history_ref(bot_id)
         user_message = self._build_user_message(game_state=game_state, player_text=user_text)
         history.append(user_message)
         self._ensure_system_message(history)
         self._trim_history_inplace(history)
 
-        options = self.gen_options()
+        options = self.gen_options(refresh=False)
         res: dict[str, Any] | Any
 
         try:

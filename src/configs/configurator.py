@@ -21,8 +21,9 @@ import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import yaml
-from modelito import Message, OllamaProvider
-from modelito import ollama_service as modelito_ollama_service
+from llm.chat import Client as ChatClient
+from llm import service as ollama_service
+from util.utils import show_confirmation_dialog
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -142,61 +143,60 @@ class ConfigManager:
         self.save(data)
 
 class OllamaClient:
-    def __init__(self, base_url: str = 'http://localhost', port: int = 11434, timeout: float = 10.0):
+    """Standalone-editor adapter using the application's endpoint and transport policy."""
+    def __init__(self, base_url='http://localhost', port=11434, timeout=None, model_timeouts=None):
         self.base_url = base_url.rstrip('/')
         self.port = port
         self.timeout = timeout
-    def _u(self, path: str) -> str: return f"{self.base_url}:{self.port}{path}"
-    def list_local_models(self) -> List[Dict[str, Any]]:
-        return [{"name": name} for name in modelito_ollama_service.list_local_models()]
-    def run_once(self, model: str, prompt: str = 'test', num_predict: Optional[int] = 8) -> str:
-        provider = OllamaProvider(host=self.base_url, port=self.port, model=model)
-        settings: Dict[str, Any] = {"timeout": self.timeout}
+        self.model_timeouts = model_timeouts or {}
+        self.client = ChatClient(ollama_service.endpoint_url(self.base_url, port, ""))
+
+    def _options(self, model, num_predict):
+        settings = {"timeout": ollama_service.resolve_request_timeout(
+            {"timeout": self.timeout, "model_timeouts": self.model_timeouts}, model=model)}
         if num_predict is not None:
             settings["num_predict"] = num_predict
-        return provider.summarize([Message(role="user", content=prompt)], settings=settings)
-    def stream_generate(self, model: str, prompt: str, num_predict: Optional[int] = None):
-        provider = OllamaProvider(host=self.base_url, port=self.port, model=model)
-        settings: Dict[str, Any] = {"timeout": self.timeout}
-        if num_predict is not None:
-            settings["num_predict"] = num_predict
-        return provider.stream([Message(role="user", content=prompt)], settings=settings)
-    def stop(self, model: Optional[str] = None) -> Dict[str, Any]:
+        return settings
+
+    def _u(self, path):
+        return ollama_service.endpoint_url(self.base_url, self.port, path)
+
+    def list_local_models(self):
+        return [{"name": name} for name in ollama_service.list_local_models(
+            url=self.base_url, port=self.port)]
+
+    def run_once(self, model, prompt='test', num_predict=8):
+        return self.client.chat(model=model, messages=[{"role": "user", "content": prompt}],
+                                options=self._options(model, num_predict))["message"]["content"]
+
+    def stream_generate(self, model, prompt, num_predict=None):
+        return self.client.stream_text(model=model, messages=[{"role": "user", "content": prompt}],
+                                       options=self._options(model, num_predict))
+
+    def stop(self, model=None):
         if model:
-            host = f"{self.base_url.replace('http://', '').replace('https://', '')}:{self.port}"
-            proc = modelito_ollama_service.run_ollama_command("stop", model, host=host)
-            if proc.returncode != 0:
-                return {'error': f'stop failed {proc.returncode}', 'text': (proc.stdout or '') + (proc.stderr or '')}
-            return {'ok': True}
-        ok = modelito_ollama_service.stop_service(host=self.base_url, port=self.port) == 0
-        return {'ok': ok}
-    def delete_model(self, name: str) -> Dict[str, Any]:
-        ok = modelito_ollama_service.delete_model(name)
-        return {'ok': ok} if ok else {'error': 'delete failed'}
-    def pull_model(self, name: str, stream_callback=None) -> Dict[str, Any]:
-        last: Dict[str, Any] = {}
-        for state in modelito_ollama_service.download_model_progress(name, timeout=self.timeout):
-            last = {
-                'model': state.model,
-                'phase': state.phase,
-                'message': state.message,
-                'progress': state.progress,
-                'error': state.error,
-            }
+            ollama_service.stop_model(model, url=self.base_url, port=self.port)
+            return {"ok": True}
+        return {"ok": ollama_service.stop_service(url=self.base_url, port=self.port) == 0}
+
+    def delete_model(self, name):
+        return {"ok": ollama_service.delete_model(name, url=self.base_url, port=self.port)}
+
+    def pull_model(self, name, stream_callback=None):
+        last = {}
+        for state in ollama_service.download_model_progress(
+                name, timeout=600.0, url=self.base_url, port=self.port):
+            last = {"model": state.model, "phase": state.phase, "message": state.message,
+                    "progress": state.progress, "error": state.error}
             if stream_callback:
                 stream_callback(last)
         return last
+
     @staticmethod
-    def list_remote_models() -> List[Dict[str, Any]]:
-        return [
-            {
-                'name': entry.name,
-                'family': entry.family,
-                'installed': entry.installed,
-                'raw': entry.raw,
-            }
-            for entry in modelito_ollama_service.list_remote_model_catalog()
-        ]
+    def list_remote_models():
+        return [{"name": entry.name, "installed": entry.installed}
+                for entry in ollama_service.list_remote_model_catalog()]
+
 
 LLM_FIELDS = [
     ('url', str), ('port', int), ('model', str),
@@ -414,7 +414,7 @@ class LocalModelsPanel(BoxLayout):
                 names = [m.get('name', '') for m in models if m.get('name')]
                 Clock.schedule_once(lambda *_: self._update(names))
             except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'List failed: {e}'))
+                Clock.schedule_once(lambda *_, message=str(e): info_popup('Error', f'List failed: {message}'))
         threading.Thread(target=work, daemon=True).start()
     def _update(self, names):
         self.spinner.values = names
@@ -429,30 +429,37 @@ class LocalModelsPanel(BoxLayout):
                 out = self.run_fn(n)
                 Clock.schedule_once(lambda *_: setattr(self.output, 'text', f'Output:\n{out}'))
             except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Run failed: {e}'))
+                Clock.schedule_once(lambda *_, message=str(e): info_popup('Error', f'Run failed: {message}'))
         threading.Thread(target=work, daemon=True).start()
     def stop(self):
-        n = self.spinner.text if self.spinner.text and not self.spinner.text.startswith(
-            '(') else None
-        def work():
-            try:
-                out = self.stop_fn(n)
-                Clock.schedule_once(lambda *_: setattr(self.output, 'text', f'Stop: {out}'))
-            except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Stop failed: {e}'))
-        threading.Thread(target=work, daemon=True).start()
+        n = self.spinner.text
+        if not n or n.startswith('('):
+            return info_popup('Stop', 'Select a model to unload')
+        def confirmed():
+            def work():
+                try:
+                    out = self.stop_fn(n)
+                    Clock.schedule_once(lambda *_: setattr(self.output, 'text', f'Stop: {out}'))
+                except Exception as exc:
+                    Clock.schedule_once(lambda *_, message=str(exc): info_popup('Error', message))
+            threading.Thread(target=work, daemon=True).start()
+        show_confirmation_dialog('Unload Model', f"Unload '{n}' from the shared Ollama service?", confirmed)
+
     def delete(self):
         n = self.spinner.text
         if not n or n.startswith('('):
             return info_popup('Delete', 'Select model')
-        def work():
-            try:
-                out = self.delete_fn(n)
-                Clock.schedule_once(lambda *_: setattr(self.output, 'text', f'Delete: {out}'))
-                self.refresh()
-            except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Delete failed: {e}'))
-        threading.Thread(target=work, daemon=True).start()
+        def confirmed():
+            def work():
+                try:
+                    out = self.delete_fn(n)
+                    Clock.schedule_once(lambda *_: setattr(self.output, 'text', f'Delete: {out}'))
+                    Clock.schedule_once(lambda *_: self.refresh())
+                except Exception as exc:
+                    Clock.schedule_once(lambda *_, message=str(exc): info_popup('Error', message))
+            threading.Thread(target=work, daemon=True).start()
+        show_confirmation_dialog('Delete Model', f"Delete '{n}' from the configured Ollama service?", confirmed)
+
     def set_model(self):
         n = self.spinner.text
         if not n or n.startswith('('):
@@ -486,6 +493,10 @@ class RemoteModelsPanel(BoxLayout):
             b.bind(on_release=lambda *_, _cb=cb: _cb())
             row.add_widget(b)
         self.add_widget(row)
+        self.model_name = TextInput(hint_text='Model name from https://ollama.com/library',
+                                    multiline=False, size_hint_y=None, height=ROW_HEIGHT,
+                                    font_size=FONT_SMALL)
+        self.add_widget(self.model_name)
         out_wrap = ScrollView(size_hint=(1, 1), bar_width=12)
         self.output = TextInput(text='', readonly=True, font_size=FONT_SMALL)
         out_wrap.add_widget(self.output)
@@ -501,25 +512,30 @@ class RemoteModelsPanel(BoxLayout):
                         names.append(nm)
                 Clock.schedule_once(lambda *_: self._update(names))
             except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Remote list failed: {e}'))
+                Clock.schedule_once(lambda *_, message=str(e): info_popup('Error', f'Remote list failed: {message}'))
         threading.Thread(target=work, daemon=True).start()
     def _update(self, names):
         self.spinner.values = names
         self.spinner.text = names[0] if names else '(refresh)'
         self.output.text = f'Found {len(names)} remote models.'
     def pull(self):
-        n = self.spinner.text
-        if not n or n.startswith('('):
-            return info_popup('Pull', 'Select model')
-        self.output.text = f'Pulling {n}...\n'
-        def work():
-            try:
-                last = self.pull_fn(n, stream_callback=lambda obj: Clock.schedule_once(
-                    lambda *_: self._append(json.dumps(obj))))
-                Clock.schedule_once(lambda *_: self._append(f'Done: {last}'))
-            except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Pull failed: {e}'))
-        threading.Thread(target=work, daemon=True).start()
+        raw = self.model_name.text.strip() or self.spinner.text
+        try:
+            name = ollama_service.validate_model_name(raw)
+        except ValueError as exc:
+            return info_popup('Pull', str(exc))
+        def confirmed():
+            self.output.text = f'Pulling {name}...\n'
+            def work():
+                try:
+                    last = self.pull_fn(name, stream_callback=lambda obj: Clock.schedule_once(
+                        lambda *_, event=obj: self._append(json.dumps(event))))
+                    Clock.schedule_once(lambda *_: self._append(f'Done: {last}'))
+                except Exception as exc:
+                    Clock.schedule_once(lambda *_, message=str(exc): info_popup('Pull failed', message))
+            threading.Thread(target=work, daemon=True).start()
+        show_confirmation_dialog('Download Model', f"Download model '{name}' now?", confirmed)
+
     def _append(self, text): self.output.text += text + '\n'
 
 class ConsolePanel(BoxLayout):
@@ -556,17 +572,19 @@ class ConsolePanel(BoxLayout):
                 names = [m.get('name', '') for m in models if m.get('name')]
                 Clock.schedule_once(lambda *_: self._set_models(names))
             except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Model list failed: {e}'))
+                Clock.schedule_once(lambda *_, message=str(e): info_popup('Error', f'Model list failed: {message}'))
         threading.Thread(target=work, daemon=True).start()
     def _set_models(self, names: List[str]):
         self.model_spinner.values = names
         self.model_spinner.text = names[0] if names else '(models)'
     def stop(self):
+        # Cancel only this console's output. The worker closes its iterator on exit;
+        # a pending transport read remains bounded by the request deadline.
         self._stop_flag = True
-        try:
-            self.app_ref._stop_models(None)
-        except Exception:
-            pass
+        cancelled = getattr(self, "_cancel_generation", None)
+        if cancelled is not None:
+            cancelled.set()
+
     def generate(self):
         if self._gen_thread and self._gen_thread.is_alive():
             return info_popup('Busy', 'Generation already running')
@@ -578,16 +596,25 @@ class ConsolePanel(BoxLayout):
             return info_popup('Generate', 'Enter prompt')
         self.output.text = ''
         self._stop_flag = False
+        cancelled = threading.Event()
+        self._cancel_generation = cancelled
         def work():
+            stream = None
             try:
-                for fragment in self.app_ref.ollama.stream_generate(model, prompt):
-                    if self._stop_flag:
+                stream = self.app_ref.ollama.stream_generate(model, prompt)
+                for fragment in stream:
+                    if cancelled.is_set():
                         break
-                    if not fragment:
-                        continue
-                    Clock.schedule_once(lambda _dt, _frag=str(fragment): self._append(_frag))
-            except Exception as e:
-                Clock.schedule_once(lambda *_: info_popup('Error', f'Generate failed: {e}'))
+                    if fragment:
+                        Clock.schedule_once(lambda _dt, text=str(fragment):
+                                            self._append(text) if not cancelled.is_set() else None)
+            except Exception as exc:
+                if not cancelled.is_set():
+                    Clock.schedule_once(lambda *_, message=str(exc): info_popup('Error', message)
+                                        if not cancelled.is_set() else None)
+            finally:
+                if stream is not None and hasattr(stream, 'close'):
+                    stream.close()
         self._gen_thread = threading.Thread(target=work, daemon=True)
         self._gen_thread.start()
     def _append(self, text: str): self.output.text += text
@@ -750,8 +777,7 @@ class BatLLMConfigApp(App):
         llm = cfg.get('llm', {}) if isinstance(cfg.get('llm'), dict) else {}
         url = (llm.get('url') or 'http://localhost').rstrip('/')
         port = int(llm.get('port') or 11434)
-        timeout = float(llm.get('timeout') or 10.0)
-        self.ollama = OllamaClient(url, port, timeout)
+        self.ollama = OllamaClient(url, port, llm.get('timeout'), llm.get('model_timeouts'))
     def test_connection(self):
         def work():
             try:
@@ -777,10 +803,7 @@ class BatLLMConfigApp(App):
         except Exception as e:
             info_popup('Error', f'Undo failed: {e}')
     def _local_models(self) -> List[Dict[str, Any]]:
-        try:
-            return self.ollama.list_local_models()
-        except Exception:
-            return []
+        return self.ollama.list_local_models()
     def _run_model(self, name: str) -> str:
         try:
             return self.ollama.run_once(model=name, prompt='ping', num_predict=8)
@@ -812,16 +835,10 @@ class BatLLMConfigApp(App):
         self._mgr().save_snapshot_html(snap, self._read_cfg(), self._snapshot_dir())
         self.snap_panel.refresh()
         return snap
-    def _remote_models(self) -> List[Dict[str, Any]]:
-        try:
-            return OllamaClient.list_remote_models()
-        except Exception:
-            return []
+    def _remote_models(self):
+        return OllamaClient.list_remote_models()
     def _pull_model(self, name: str, stream_callback=None) -> Dict[str, Any]:
-        try:
-            return self.ollama.pull_model(name, stream_callback=stream_callback)
-        except Exception as e:
-            return {'error': str(e)}
+        return self.ollama.pull_model(name, stream_callback=stream_callback)
 
 if __name__ == '__main__':
     BatLLMConfigApp().run()

@@ -233,3 +233,10 @@ releases/
 *.avi
 logs/
 .idea/
+
+# Local poster staging; canonical research results remain tracked.
+/research/urucon2026/results/poster_capture/
+# Reproducible Doxygen print intermediates; published HTML remains tracked.
+/docs/code/latex/
+# Deliberately retained historical research audit log.
+!/research/urucon2026/FINAL_AUDIT.log

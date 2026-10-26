@@ -17,19 +17,13 @@ PACKAGE_HASH = ARTIFACT / "PACKAGE.sha256"
 
 CORE_PATHS = [
     RESEARCH,
-    ROOT / "src/game/trace_contract.py",
-    ROOT / "src/game/session_v3.py",
-    ROOT / "src/game/research_runtime.py",
-    ROOT / "src/llm/__init__.py",
-    ROOT / "src/llm/chat.py",
-    ROOT / "src/game/trace_verifier.py",
-    ROOT / "src/game/replay_engine.py",
-    ROOT / "src/tests/test_trace_contract.py",
-    ROOT / "src/tests/test_gameplay_deterministic.py",
-    ROOT / "src/tests/test_game_analyzer.py",
+    ROOT / "src",
+    ROOT / "run_batllm.py",
+    ROOT / "run_game_analyzer.py",
     ROOT / "run_batllm_research.py",
     ROOT / "run_batllm_verify.py",
     ROOT / "requirements.txt",
+    ROOT / "VERSION",
     ROOT / "CITATION.cff",
     ROOT / "LICENSE",
     ROOT / "STATUS.md",
@@ -56,7 +50,9 @@ def selected_files() -> list[Path]:
             files.add(item)
             continue
         for path in item.rglob("*"):
-            if not path.is_file():
+            if not path.is_file() or path.name == ".DS_Store":
+                continue
+            if path.is_relative_to(RESEARCH / "results" / "poster_capture"):
                 continue
             if path in {PACKAGE, MANIFEST, PACKAGE_HASH}:
                 continue

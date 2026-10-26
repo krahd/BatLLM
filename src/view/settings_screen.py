@@ -53,29 +53,30 @@ class SettingsScreen(Screen):
         config.save()
         self.go_to_home_screen()
 
-    def update_config(self):
+    def update_config(self, *, temporary=False):
         """Updates the configuration with the values from the sliders and checkboxes.
         """
 
+        set_value = config.set_temporary if temporary else config.set
         # TODO should settings changes be stored in HistoryManager?
 
-        config.set("game", "total_rounds", int(self.ids.rounds_slider.value))
-        config.set("game", "turns_per_round", int(self.ids.turns_slider.value))
-        config.set("game", "initial_health", int(self.ids.health_slider.value))
-        config.set("game", "bullet_damage", int(self.ids.damage_slider.value))
-        config.set("game", "shield_size", int(self.ids.shield_slider.value))
-        config.set("game", "bot_step_length", round(float(self.ids.step_slider.value), 2))
-        config.set("game", "independent_contexts", self.ids.independent_checkbox.active)
-        config.set("game", "prompt_augmentation", self.ids.augmentation_checkbox.active)
-        config.set("ui", "confirm_on_exit", self.ids.confirm_on_exit_checkbox.active)
-        config.set("ui", "prompt_save_on_exit", self.ids.save_on_exit_checkbox.active)
-        config.set("ui", "auto_start_ollama", self.ids.auto_start_ollama_checkbox.active)
-        config.set("ui", "stop_ollama_on_exit", self.ids.stop_ollama_on_exit_checkbox.active)
+        set_value("game", "total_rounds", int(self.ids.rounds_slider.value))
+        set_value("game", "turns_per_round", int(self.ids.turns_slider.value))
+        set_value("game", "initial_health", int(self.ids.health_slider.value))
+        set_value("game", "bullet_damage", int(self.ids.damage_slider.value))
+        set_value("game", "shield_size", int(self.ids.shield_slider.value))
+        set_value("game", "bot_step_length", round(float(self.ids.step_slider.value), 2))
+        set_value("game", "independent_contexts", self.ids.independent_checkbox.active)
+        set_value("game", "prompt_augmentation", self.ids.augmentation_checkbox.active)
+        set_value("ui", "confirm_on_exit", self.ids.confirm_on_exit_checkbox.active)
+        set_value("ui", "prompt_save_on_exit", self.ids.save_on_exit_checkbox.active)
+        set_value("ui", "auto_start_ollama", self.ids.auto_start_ollama_checkbox.active)
+        set_value("ui", "stop_ollama_on_exit", self.ids.stop_ollama_on_exit_checkbox.active)
 
     def set_and_return(self):
         """Updates the configuration and returns to the home screen.
         """
-        self.update_config()
+        self.update_config(temporary=True)
         self.go_to_home_screen()
 
 

@@ -1,6 +1,7 @@
 """Ollama service operations using BatLLM configuration and process ownership.
 
-Modelito supplies explicit-endpoint HTTP helpers and remote catalogue parsing.
+Modelito supplies explicit-endpoint HTTP helpers. Unsupported remote catalogue
+discovery is reported explicitly, with confirmed downloads by model name.
 Lifecycle policy and bounded local commands belong to BatLLM.
 """
 
@@ -515,17 +516,18 @@ def start_service(config_path: Path | None = None, warmup_timeout: float | None 
         started = True
         print(f"Ollama is ready at {host}")
     if model_provided:
-        pull_proc = run_ollama_command("pull", model, host=host)
-        if pull_proc.returncode != 0:
-            sys.stderr.write((pull_proc.stdout or "") + (pull_proc.stderr or ""))
-            return pull_proc.returncode
-        preload_model(url, port, model, timeout=timeout)
+        try:
+            preload_model(url, port, model, timeout=timeout)
+        except Exception as exc:
+            print(f"Ollama is running, but model '{model}' is not ready: {exc}. "
+                  "Use the confirmed Download Model action to install missing models.", file=sys.stderr)
+            return 1
         save_last_served_model(model, config_path)
         if started:
-            print(f"Completed: started ollama at {host}, pulled and warmed model '{model}'.")
+            print(f"Completed: started ollama at {host}, warmed model '{model}'.")
         else:
             print(
-                f"Completed: ollama already running at {host}; pulled and warmed model '{model}'.")
+                f"Completed: ollama already running at {host}; warmed model '{model}'.")
         return 0
     # No model configured: server started (or already running), nothing more to do.
     if started:
@@ -540,43 +542,53 @@ def running_model_names(host: str) -> list[str]:
     return [entry["name"] for entry in json_get(f"{url}/api/ps").get("models", [])]
 
 
-def _management_client(timeout=30.0):
-    from ollama import Client as OllamaClient
+def _endpoint_config(url=None, port=None):
+    if url is not None and port is not None:
+        return {"url": str(url).rstrip("/"), "port": int(port)}
     llm = load_llm_config()
+    return {"url": url or llm["url"], "port": port or llm["port"]}
+
+
+def _management_client(timeout=30.0, *, url=None, port=None):
+    from ollama import Client as OllamaClient
+    llm = _endpoint_config(url, port)
     return OllamaClient(host=endpoint_url(llm["url"], llm["port"], ""), timeout=timeout)
 
 
-def list_local_models():
+def list_local_models(*, url=None, port=None):
     """List only the explicitly configured endpoint's local inventory."""
-    llm = load_llm_config()
+    llm = _endpoint_config(url, port)
     payload = json_get(endpoint_url(llm["url"], llm["port"], "/api/tags"))
     return [name for entry in payload.get("models", [])
             if isinstance(entry, dict)
             and isinstance(name := entry.get("name") or entry.get("model"), str) and name]
 
 
+class RemoteCatalogueUnavailable(RuntimeError):
+    """The provider has no supported remote catalogue discovery contract."""
+
+
+def validate_model_name(name: str) -> str:
+    name = name.strip()
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/:@+-]*", name):
+        raise ValueError("Enter a model name or registry/model:tag without spaces.")
+    return name
+
+
 def list_remote_model_catalog():
-    """Bound Modelito's remote catalogue lookup in a separate process."""
-    from types import SimpleNamespace
-    code = (
-        "import json; from dataclasses import asdict; "
-        "from modelito import ollama_service as m; "
-        "m.list_local_models = lambda: []; "
-        "print(json.dumps([asdict(e) for e in m.list_remote_model_catalog()]))"
+    """Report unsupported discovery instead of treating CLI failure as an empty list."""
+    raise RemoteCatalogueUnavailable(
+        "Automatic catalogue discovery is unavailable. Enter a model name from "
+        "https://ollama.com/library, then confirm its download."
     )
-    result = subprocess.run([sys.executable, "-c", code], capture_output=True,
-                            text=True, encoding="utf-8", check=True, timeout=30.0)
-    installed = set(list_local_models())
-    entries = json.loads(result.stdout)
-    return [SimpleNamespace(**{**entry, "installed": entry["name"] in installed})
-            for entry in entries]
 
 
-def download_model_progress(model_name: str, timeout: float = 600.0):
+def download_model_progress(model_name: str, timeout: float = 600.0, *, url=None, port=None):
     """Pull through the configured endpoint, with an overall deadline."""
     from types import SimpleNamespace
     started = time.monotonic()
-    for event in _management_client(timeout=timeout).pull(model_name, stream=True):
+    for event in _management_client(timeout=timeout, url=url, port=port).pull(
+            validate_model_name(model_name), stream=True):
         if time.monotonic() - started > timeout:
             raise TimeoutError(f"Model download exceeded {timeout:g}s")
         total = event.total or 0
@@ -585,9 +597,15 @@ def download_model_progress(model_name: str, timeout: float = 600.0):
                               error=None)
 
 
-def delete_model(model_name: str) -> bool:
-    _management_client().delete(model_name)
+def delete_model(model_name: str, *, url=None, port=None) -> bool:
+    _management_client(url=url, port=port).delete(model_name)
     return True
+
+
+def stop_model(model_name: str, *, url=None, port=None):
+    """Unload one explicitly selected model at the requested endpoint."""
+    _management_client(url=url, port=port).generate(
+        model=model_name, prompt="", stream=False, keep_alive=0)
 
 
 def find_ollama_listener_pids(port: int) -> list[int]:
@@ -674,9 +692,10 @@ def _record_owned_server(host: str, pid: int) -> None:
             os.unlink(temporary)
 
 
-def stop_service(config_path: Path | None = None, verbose: bool = False) -> int:
+def stop_service(config_path: Path | None = None, verbose: bool = False, *, url=None, port=None) -> int:
     """Stop only a server launched by BatLLM, verified against its birth time."""
-    llm = load_llm_config(config_path)
+    llm = (_endpoint_config(url, port) if url is not None or port is not None
+           else load_llm_config(config_path))
     host = f"{str(llm['url']).removeprefix('http://').removeprefix('https://')}:{llm['port']}"
     path = _ownership_path(host)
     if not path.exists():

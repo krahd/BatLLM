@@ -18,8 +18,7 @@ class Client:
         self.host = host.rstrip("/")
         self.timeout = 120.0 if timeout is None else float(timeout)
 
-    def chat(self, *, model, messages, options=None, stream=False):
-        """Return generated text; transport and provider errors always propagate."""
+    def _prepare(self, model, messages, options):
         settings = dict(options or {})
         timeout = float(settings.pop("timeout", self.timeout))
         if not math.isfinite(timeout) or timeout <= 0:
@@ -33,8 +32,20 @@ class Client:
             model=model, timeout=timeout, strict=True,
         )
         converted = [Message(role=m["role"], content=m["content"]) for m in messages]
-        text = ("".join(provider.stream(converted, settings=settings)) if stream
-                else provider.summarize(converted, settings=settings))
+        return provider, converted, settings
+
+    def stream_text(self, *, model, messages, options=None):
+        """Yield strict native fragments; close the provider iterator on cancellation."""
+        provider, converted, settings = self._prepare(model, messages, options)
+        yield from provider.stream(converted, settings=settings)
+
+    def chat(self, *, model, messages, options=None, stream=False):
+        """Return generated text; transport and provider errors always propagate."""
+        if stream:
+            text = "".join(self.stream_text(model=model, messages=messages, options=options))
+        else:
+            provider, converted, settings = self._prepare(model, messages, options)
+            text = provider.summarize(converted, settings=settings)
         if not isinstance(text, str) or not text.strip():
             raise ValueError("Ollama returned no textual completion")
         return {"message": {"content": text}, "response": text}

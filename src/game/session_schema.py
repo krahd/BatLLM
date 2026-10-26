@@ -75,7 +75,7 @@ def validate_session_payload(payload: Any) -> dict[str, Any]:
                 f"Game {game_index} round {round_index} is missing initial_state.",
             )
             try:
-                GameplaySettingsSnapshot.from_mapping(
+                GameplaySettingsSnapshot.from_snapshot(
                     round_entry["gameplay_settings_snapshot"]
                 )
                 validate_state_map(
@@ -134,7 +134,7 @@ def load_session_payload(path: str | Path) -> dict[str, Any]:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError as exc:
         raise SessionFormatError(f"Invalid JSON: {exc.msg}") from exc
-    except OSError as exc:
+    except (OSError, UnicodeError) as exc:
         raise SessionFormatError(str(exc)) from exc
 
     return validate_session_payload(payload)
