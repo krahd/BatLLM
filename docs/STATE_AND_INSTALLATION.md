@@ -2,59 +2,29 @@
 
 # Installation channels and mutable state
 
-BatLLM does not yet use one identical state location for every installation channel. This page records the behaviour implemented today.
+Configuration preferences use a writable user directory for source checkouts, Homebrew installations, and release bundles. Shipped defaults remain in `src/configs/config.yaml` and are read only by configuration persistence.
 
-## Source checkout
+## Configuration paths
 
-When `BATLLM_HOME` is not set:
+When `BATLLM_HOME` is set, preferences are saved to `$BATLLM_HOME/config.yaml`. Otherwise the platform default is used:
 
-- the shipped and mutable configuration path is `src/configs/config.yaml`;
-- a relative `data.saved_sessions_folder` resolves from the repository root; and
-- configuration changes therefore modify the checkout.
+- macOS: `~/Library/Application Support/BatLLM/config.yaml`
+- Windows: `%APPDATA%\BatLLM\config.yaml`, falling back to `~/AppData/Roaming/BatLLM/config.yaml`
+- Linux and other Unix systems: `~/.local/share/BatLLM/config.yaml`
 
-This is convenient for development but is not suitable for a read-only package installation.
+The directory is created on save. Loading does not create a file. Values are loaded in order: built-in fallbacks, shipped YAML, then the user YAML. Existing user preferences take precedence, including custom sections. Writes are atomic, and explicit attempts to save over shipped defaults are rejected.
 
-## `BATLLM_HOME`
+Homebrew wrappers already set the macOS `BATLLM_HOME` default. Release-bundle launchers need no environment override to save preferences outside the extracted bundle.
 
-When `BATLLM_HOME` is set:
+## Existing preferences and upgrades
 
-- shipped defaults still come from `src/configs/config.yaml`;
-- mutable configuration is written to `$BATLLM_HOME/config.yaml`; and
-- relative saved-session folders resolve below `$BATLLM_HOME`.
+Existing `$BATLLM_HOME/config.yaml` files continue to load in place. If an older source checkout or extracted bundle contains customised `src/configs/config.yaml` values, they still load as the base configuration and are copied into the user configuration on the next save. The legacy file is not rewritten.
 
-The directory is created as needed. Tests use this mechanism with a temporary directory.
+Before updating or replacing an older checkout or bundle, preserve its customised YAML: copy it to the user configuration path above if that path does not already exist. If a user configuration already exists, retain it and merge only the desired legacy values into it. Do not reset the old checkout YAML before preserving its settings. Settings already overwritten by an earlier update cannot be recovered by the loader.
 
-## Homebrew
+## Saved sessions
 
-The generated Homebrew wrappers set:
-
-```bash
-BATLLM_HOME="$HOME/Library/Application Support/BatLLM"
-```
-
-unless the environment already supplies another value. This keeps mutable state outside the Homebrew cellar.
-
-## Release bundles
-
-The current Windows, macOS, and Linux release-bundle launchers run from the extracted bundle directory and do not set `BATLLM_HOME` automatically.
-
-Consequences:
-
-- configuration changes can modify the extracted bundle's `src/configs/config.yaml`;
-- relative saved-session folders remain inside the extracted bundle; and
-- users who want a separate writable state directory should set `BATLLM_HOME` before launching.
-
-Moving release bundles to automatic platform-specific user-state directories remains a release-hardening task.
-
-## Default platform paths
-
-`src/util/paths.py` defines default user-state paths for future or packaging use:
-
-- macOS: `~/Library/Application Support/BatLLM`
-- Windows: `%APPDATA%\BatLLM` when `APPDATA` is available
-- Linux and other Unix systems: `~/.local/share/BatLLM`
-
-The application does not currently activate these defaults automatically for ordinary source or release-bundle launches; `BATLLM_HOME` must be set by the launcher or user.
+Session locations retain their existing behaviour. With `BATLLM_HOME`, relative saved-session folders resolve below that directory. Without it, they resolve from the checkout or extracted bundle root. Absolute saved-session paths are unchanged. No existing sessions are moved.
 
 ## Invariants
 

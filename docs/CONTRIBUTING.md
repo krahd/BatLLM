@@ -145,13 +145,9 @@ The editable paper is not stored in this repository.
 
 The shipped defaults are in `src/configs/config.yaml`. `src/configs/app_config.py` overlays hard-coded fallback values, the shipped YAML, and an optional user YAML.
 
-The active location depends on how BatLLM is launched:
+Configuration saves use `$BATLLM_HOME/config.yaml` when set, otherwise the platform user directory on every installation channel. Shipped defaults are never a save destination. Existing user overlays take precedence; customised legacy checkout defaults are retained on the next save. Preserve them before upgrading the checkout.
 
-- **Source checkout without `BATLLM_HOME`:** configuration changes write to `src/configs/config.yaml`; relative saved-session folders resolve inside the repository.
-- **`BATLLM_HOME` set:** mutable configuration writes to `$BATLLM_HOME/config.yaml`; relative saved-session folders resolve below `$BATLLM_HOME`.
-- **Homebrew:** the generated wrappers set `BATLLM_HOME` to `~/Library/Application Support/BatLLM` unless the user overrides it.
-- **Release bundles:** the launchers currently run from the extracted bundle and do not set `BATLLM_HOME`; state therefore remains relative to that extracted directory unless the user sets the variable.
-- **Tests:** `src/tests/conftest.py` sets an isolated temporary `BATLLM_HOME` before application configuration is imported.
+Relative saved-session paths retain their existing rules: below `BATLLM_HOME` when set, otherwise inside the checkout or extracted bundle. Tests set an isolated temporary `BATLLM_HOME` before application configuration is imported.
 
 See [STATE_AND_INSTALLATION.md](STATE_AND_INSTALLATION.md) for the compact reference.
 

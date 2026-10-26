@@ -6,6 +6,10 @@
 
 ### Reliability and session integrity
 
+- incorporated AlanJoskowicz’s PR #60 model-selection fix, preserving contributor commits;
+- restored the `smollm2` first-install default and separated saved configuration from versioned defaults across installation channels;
+- preserved existing overlays and legacy checkout preferences, guarded shipped defaults, used the atomic writer for last-served-model persistence, and moved the standalone editor to user preferences;
+
 - extracted canonical local model names from Ollama CLI rows before selection, saving, and warm-up, and avoided modelito's unparsed-row availability check;
 - preserved model-selection error messages for deferred UI alerts, preventing a secondary `NameError`;
 - isolated model conversation histories across manual and normal game restarts;

@@ -53,13 +53,15 @@ def active_batllm_home() -> Path | None:
 
 
 def resolve_config_path(default_path: Path | None = None) -> Path:
-    """Return the mutable runtime config path for the current process."""
-    home_dir = active_batllm_home()
-    if home_dir is not None:
-        return home_dir / "config.yaml"
-    if default_path is not None:
-        return default_path
-    return SRC_DIR / "configs" / "config.yaml"
+    """Return writable preferences, independently of the shipped defaults path.
+
+    ``default_path`` is retained for caller compatibility; shipped defaults are
+    only read by the configuration loaders, never used as the save destination.
+    Session paths retain their existing resolution rules.
+    """
+    del default_path
+    home_dir = configured_batllm_home() or default_batllm_home()
+    return home_dir / "config.yaml"
 
 
 def src_path(*parts: str) -> Path:

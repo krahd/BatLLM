@@ -18,6 +18,7 @@ import json
 import shutil
 import tempfile
 import threading
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 import yaml
 from modelito import Message, OllamaProvider
@@ -34,6 +35,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
+from configs.app_config import SHIPPED_CONFIG_PATH, load_config_data
+from util.paths import resolve_config_path
 
 FONT_BASE = 38
 FONT_SMALL = 32
@@ -85,13 +88,12 @@ SNAPSHOT_HTML_TMPL = (
 
 class ConfigManager:
     def __init__(self, path: str):
+        if Path(path).resolve() == SHIPPED_CONFIG_PATH.resolve():
+            raise ValueError("Cannot edit shipped configuration defaults")
         self.path = path
         self.backup_path = os.path.join(os.path.dirname(path), 'config.yaml.bak')
     def load(self) -> Dict[str, Any]:
-        if not os.path.exists(self.path):
-            raise FileNotFoundError(self.path)
-        with open(self.path, 'r', encoding='utf-8') as f:
-            return yaml.safe_load(f) or {}
+        return load_config_data(Path(self.path))
     def save(self, data: Dict[str, Any]):
         directory = os.path.dirname(os.path.abspath(self.path))
         os.makedirs(directory, exist_ok=True)
@@ -739,14 +741,7 @@ class BatLLMConfigApp(App):
         ti.add_widget(widget)
         tabs.add_widget(ti)
     def _default_config_path(self) -> str:
-        candidates = [
-            os.path.join(os.getcwd(), 'src', 'configs', 'config.yaml'),
-            os.path.join(os.getcwd(), 'config.yaml'),
-        ]
-        for c in candidates:
-            if os.path.exists(c):
-                return c
-        return candidates[0]
+        return str(resolve_config_path())
     def _mgr(self) -> ConfigManager: return ConfigManager(self.cfg_path.text.strip())
     def _snapshot_dir(self) -> str: return os.path.dirname(self.cfg_path.text.strip()) or '.'
     def _read_cfg(self) -> Dict[str, Any]: return self._mgr().load()
