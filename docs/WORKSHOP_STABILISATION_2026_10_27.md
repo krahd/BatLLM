@@ -38,3 +38,11 @@ The original checkout and all pre-existing untracked files are preserved.
 Work in progress. Native connected workshop rehearsal, real-model generation,
 fresh dependency installation and candidate CI are not yet established.
 Historical PR #63 results are not candidate acceptance evidence.
+
+## Confirmed packaging defect
+
+The research builder walks the filesystem rather than the Git index. An ignored
+poster directory retained locally was still selected for distribution. An
+independent temporary-tree regression failed before the fix. The builder now
+excludes precisely that staging directory; canonical results remain selected.
+This packaging correction is separate from the untracking commit.

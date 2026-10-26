@@ -410,3 +410,19 @@ def test_extracted_research_package_generates_and_verifies_without_checkout(tmp_
                                 capture_output=True, text=True, timeout=30, check=False)
         assert result.returncode == 0, result.stderr
     assert json.loads(report.read_text())["valid"] is True
+
+
+def test_research_package_excludes_local_poster_state(tmp_path, monkeypatch):
+    spec = import_util.spec_from_file_location("package_hygiene", ROOT / "research/urucon2026/build_artifact.py")
+    package = import_util.module_from_spec(spec)
+    spec.loader.exec_module(package)
+    research = tmp_path / "research/urucon2026"
+    canonical = research / "results/replay.json"
+    local = research / "results/poster_capture/kivy_user/config.ini"
+    for path in (canonical, local):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("test")
+    monkeypatch.setattr(package, "ROOT", tmp_path)
+    monkeypatch.setattr(package, "RESEARCH", research)
+    monkeypatch.setattr(package, "CORE_PATHS", [research])
+    assert package.selected_files() == [canonical]
