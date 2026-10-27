@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-26 00:59
+Last updated: 2026-10-26 02:19
 
 ## Project and release phase
 
@@ -9,13 +9,14 @@ BatLLM is a Python/Kivy research, education and two-player battle game. Human pr
 ## Current capabilities
 
 - Two players, two bots, round prompts, shared or independent conversation histories, and optional game-state prompt augmentation.
-- Asynchronous gameplay requests and guarded callbacks; fresh histories for new games and conversation/state rollback for cancelled rounds.
+- Asynchronous gameplay requests, guarded inference callbacks and guarded scheduled turns; fresh histories for new games and conversation/state rollback for cancelled rounds.
 - Strict native Ollama inference through the shared Modelito 1.4.6 adapter; structured roles, generation options, `stream: false`, explicit deadlines and propagated errors.
 - Ollama status, start, warm-up, local inventory, downloads and deletion at BatLLM’s configured endpoint. Shutdown requires an ownership receipt matching endpoint, PID and process creation time; external services remain running.
-- Model selection persists after readiness succeeds. Destructive and expensive actions retain confirmation flows.
+- Only the latest model selection persists after readiness succeeds; selection never automatically unloads other models. Both management interfaces confirm deletion, unload and download actions. Startup never pulls missing models.
+- Unsupported remote-catalogue discovery is reported explicitly; both interfaces support confirmed downloads by entered model name.
 - Atomic configuration and session persistence. Session-v2 exports contain completed turns, frozen rules and a configuration metadata snapshot, without live metadata queries during saving.
 - Game Analyzer validates action records and replay states, and flags response–command disagreement and turn-continuity breaks.
-- Headless schema-v3 research runtime and verifier preserve application-level invocation evidence, grounding, replay and semantic-event checks. This does not authenticate model execution or historical traces.
+- Headless schema-v3 research runtime and verifier use the committed JSON Schema before semantic checks and preserve application-level invocation evidence, grounding, replay and semantic-event checks. This does not authenticate model execution or historical traces.
 
 ## Environment and commands
 
@@ -37,7 +38,8 @@ Headless validation uses `KIVY_WINDOW=mock`, `KIVY_NO_ARGS=1` and `KIVY_NO_CONSO
 - `src/game/`: Kivy coordination, pure replay semantics, histories, v2 sessions and v3 research traces.
 - `src/llm/chat.py`: shared strict inference adapter for desktop and research.
 - `src/llm/service.py`: BatLLM configuration, bounded management operations and owned-process lifecycle.
-- `src/configs/app_config.py`: section-validated defaults/overlay loading and atomic preference writes.
+- `src/configs/app_config.py`: section-validated loading, execution-only setting overrides and atomic preference writes.
+- `src/configs/configurator.py`: standalone editor using the same strict transport and explicit-endpoint management operations.
 - `src/util/paths.py`: resources, user state and legacy-session copying.
 - `src/view/` and `src/analyzer_model.py`: Kivy screens and analyser presentation.
 - `create_release_bundles.py`: full source archives and smaller platform runtime bundles; research packaging is separate.
@@ -49,29 +51,31 @@ Headless validation uses `KIVY_WINDOW=mock`, `KIVY_NO_ARGS=1` and `KIVY_NO_CONSO
 
 Shipped defaults in `src/configs/config.yaml` are read-only. Preferences and relative session directories use `BATLLM_HOME` when set, otherwise the platform user data directory. Legacy checkout JSON sessions are copied on default-directory access without moving originals or overwriting existing files. Absolute session paths retain their meaning. See [state and installation](docs/STATE_AND_INSTALLATION.md).
 
-All application service operations use BatLLM preferences; Modelito’s independent configuration files do not override them. Ownership receipts are stored in the user directory, allowing a helper subprocess to start a service that the application can later stop safely.
+Both management interfaces use explicit BatLLM endpoints and the guarded service facade. Temporary game/UI settings are excluded from incidental preference saves. Ownership receipts are stored in the user directory, allowing a helper subprocess to start a service that the application can later stop safely.
 
 ## Validation evidence
 
-Current local Python 3.12/macOS audit repair:
+Current local Python 3.12/macOS post-merge repairs:
 
-- isolated complete non-live suite: `247 passed, 2 skipped`;
-- HTTP-level checks cover desktop and research roles/options, non-streaming requests, request deadlines, unavailable servers, missing models, invalid JSON/streamed bodies and malformed or empty responses;
-- full Pylint gate: passed, rated `8.89/10` with existing warnings;
-- compilation, documentation validation and `git diff --check`: passed;
-- release-bundle generation and Homebrew formula generation with dependency resolution/hashes: passed;
-- isolated research pipeline and research-package build: passed (60 valid traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected, 180 serialisation controls accepted).
+- complete isolated non-live suite: `291 passed, 2 skipped`;
+- maintained regressions cover all eleven findings, including standalone endpoint/deadline/confirmation boundaries, cancellation, reset races, temporary settings, context changes, stale selections, imported rules and malformed v3 traces;
+- extracted research ZIP generates and verifies scripted traces with the original checkout absent from the subprocess import path;
+- full Pylint gate: passed, `8.84/10`, no errors; existing warnings remain;
+- compilation, documentation validation, KV parsing and diff checks: passed;
+- Homebrew formula generation with actual dependency resolution/hashes: passed; `jsonschema` is now a runtime dependency;
+- isolated research pipeline and package build: passed (60 traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected and 180 serialisation controls accepted).
 
-Additional packaging, research and documentation validation is recorded in [the audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md). Historical validation remains in the changelog and pull requests.
+The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the original `d86ae05` evidence and a separate current repair disposition. Hosted repair-branch checks are tracked in PR #63. Historical repair evidence remains in [the first audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md), the changelog and pull requests.
 
 ## Known limitations and pending work
 
-- Live Ollama generation and native GUI acceptance have not been run for this repair. Mock HTTP verification does not establish real-model behaviour.
+- Live Ollama generation and native GUI acceptance have not been run for this audit. Mock HTTP verification does not establish real-model behaviour.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
-- Modelito 1.4.6 still has independent lifecycle configuration, unsafe generic shutdown and unbounded CLI helpers. BatLLM avoids those entry points; upstream handoff details are in the audit verification.
+- Modelito 1.4.6 retains unsupported automatic catalogue discovery and generic lifecycle/deadline limitations. BatLLM avoids those paths and offers manual model-name download recovery; upstream details remain in the audit reports.
+- Console cancellation retires UI output immediately and closes its iterator when a fragment or configured read deadline returns; it does not abort a blocked provider read instantly.
 - v2 analysis is diagnostic and weaker than v3; neither format authenticates a serving binary or model weights.
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-26 00:59
+Last updated: 2026-10-26 02:19

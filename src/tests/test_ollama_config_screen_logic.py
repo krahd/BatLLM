@@ -204,7 +204,7 @@ def test_refresh_local_models_preserves_unsaved_selection(monkeypatch) -> None:
     assert fake_screen.selected_local_model_label == "llama3.2:latest"
 
 
-def test_start_ollama_marks_configured_model_as_managed(monkeypatch) -> None:
+def test_start_ollama_does_not_infer_exclusive_model_ownership(monkeypatch) -> None:
     statuses = []
     remembered = []
     fake_screen = SimpleNamespace(
@@ -230,12 +230,13 @@ def test_start_ollama_marks_configured_model_as_managed(monkeypatch) -> None:
 
     screen_module.OllamaConfigScreen.start_ollama(fake_screen)
 
-    assert fake_screen._managed_model_name == "mistral-small:latest"
+    assert fake_screen._managed_model_name is None
     assert remembered == ["mistral-small:latest"]
     assert statuses[-1] == "Ollama started successfully."
 
 
-def test_set_model_from_selection_saves_stops_previous_managed_and_serves(monkeypatch) -> None:
+def test_set_model_from_selection_saves_without_unloading_other_models(monkeypatch) -> None:
+    monkeypatch.setattr(screen_module.Clock, "schedule_once", lambda f, _dt=0: f(0))
     saved = {"set": None, "saved": False}
     statuses = []
     refreshed = {"status": False, "local": False}
@@ -268,10 +269,10 @@ def test_set_model_from_selection_saves_stops_previous_managed_and_serves(monkey
 
     assert saved["set"] == ("llm", "model", "llama3.2:latest")
     assert saved["saved"] is True
-    assert stop_calls == ["mistral-small:latest"]
+    assert stop_calls == []
     assert ensure_calls == ["llama3.2:latest"]
     assert remembered == ["llama3.2:latest"]
-    assert fake_screen._managed_model_name == "llama3.2:latest"
+    assert fake_screen._managed_model_name is None
     assert refreshed["status"] is True
 
 

@@ -82,8 +82,8 @@ class OllamaConfigScreen(Screen):
         self._remote_model_entries: list[dict[str, str]] = []
         self._remote_model_display_map: dict[str, str] = {}
         self._model_picker_popup = None
-        managed_model = _local_model_name(str(config.get("llm", "last_served_model") or ""))
-        self._managed_model_name: str | None = managed_model or None
+        self._managed_model_name: str | None = None
+        self._selection_generation = 0
 
     def on_pre_enter(self, *_args):
         Window.unbind(on_key_down=self.handle_window_key_down)
@@ -620,7 +620,7 @@ class OllamaConfigScreen(Screen):
                 configured_model = str(
                     config.get("llm", "last_served_model") or config.get("llm", "model") or ""
                 ).strip()
-                self._managed_model_name = configured_model or None
+                self._managed_model_name = None
                 self._remember_served_model(configured_model)
                 self._set_status("Ollama started successfully.")
                 self.refresh_ollama_status()
@@ -696,6 +696,9 @@ class OllamaConfigScreen(Screen):
         )
 
     def open_remote_model_selector(self):
+        if not self._remote_model_entries:
+            self.enter_remote_model_name()
+            return
         self._append_log("Refreshing remote models...")
 
         self.refresh_remote_models(
@@ -844,46 +847,59 @@ class OllamaConfigScreen(Screen):
                               duration=1.5, fade_duration=1.0)
             return
 
+        self._selection_generation = getattr(self, "_selection_generation", 0) + 1
+        generation = self._selection_generation
         self._set_status(f"Loading model: {model}")
         self._append_log(f"Selected BatLLM model: {model}")
 
-        def work():
+        def finish(*_args):
+            if generation != self._selection_generation:
+                return
             try:
-                running_before = set(self._get_running_model_names())
-                previous_managed = self._managed_model_name
-
-                self._ensure_model_serving(model)
-                if previous_managed and previous_managed != model and previous_managed in running_before:
-                    self._set_status(f"Stopping previous BatLLM model: {previous_managed}")
-                    self._append_log(f"Stopping previous BatLLM model: {previous_managed}")
-                    self._stop_serving_model(previous_managed)
-                    running_before.discard(previous_managed)
-
                 config.set("llm", "model", model)
                 config.save()
                 self._remember_served_model(model)
-                if model not in running_before or previous_managed == model:
-                    self._managed_model_name = model
-                else:
-                    self._managed_model_name = None
+                self._managed_model_name = None
                 self._set_status(f"Model ready: {model}")
                 self._append_log(f"Model ready: {model}")
                 self.refresh_ollama_status()
                 self.refresh_local_models()
             except Exception as exc:
-                self._set_status(f"Failed to serve model: {model}")
-                self._append_log(f"Failed to serve model {model}: {exc}")
-                Clock.schedule_once(
-                    lambda *_, message=str(exc): show_fading_alert(
-                        "Use Selected",
-                        message,
-                        duration=2.0,
-                        fade_duration=1.0,
-                    ),
-                    0,
-                )
+                failed(str(exc))
+
+        def failed(message):
+            if generation != self._selection_generation:
+                return
+            self._set_status(f"Failed to serve model: {model}")
+            self._append_log(f"Failed to serve model {model}: {message}")
+            show_fading_alert("Use Selected", message, duration=2.0, fade_duration=1.0)
+
+        def work():
+            if generation != self._selection_generation:
+                return
+            try:
+                self._ensure_model_serving(model)
+            except Exception as exc:
+                Clock.schedule_once(lambda *_, message=str(exc): failed(message), 0)
+                return
+            Clock.schedule_once(finish, 0)
 
         self._run_in_thread(work)
+
+    def enter_remote_model_name(self):
+        """Make confirmed downloads available when catalogue discovery is unsupported."""
+        def choose(value):
+            try:
+                model = ollama_service.validate_model_name(value)
+            except ValueError as exc:
+                show_fading_alert("Model name", str(exc), duration=2.0)
+                return
+            self._set_remote_selection(model)
+            self._set_status("Model name entered. Download Selected asks for confirmation.")
+        show_text_input_dialog(on_confirm=choose, title="Download model by name",
+                               message="Find names at https://ollama.com/library",
+                               default_text=self.selected_remote_model, confirm_text="Select",
+                               input_hint="registry/model:tag")
 
     def save_selected_model_timeout(self):
         model = self.selected_local_model.strip()

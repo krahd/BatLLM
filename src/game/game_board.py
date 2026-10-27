@@ -461,9 +461,10 @@ class GameBoard(Widget):
         self.shuffled_bots = random.sample(self.bots, len(self.bots))
 
         # Tell the history manager a new round is starting, then kick the first turn
+        self.ollama_connector.load_options()
         self._round_history_snapshot = self.ollama_connector.snapshot_histories()
         self.history_manager.start_round(self)
-        Clock.schedule_once(self.play_turn)
+        self._schedule_turn()
         return True
 
     def _apply_round_settings_to_live_bots(
@@ -485,6 +486,18 @@ class GameBoard(Widget):
                 bot.shield = rules.shield_initial_state
 
 
+
+    def _schedule_turn(self):
+        """Retire queued work when its game, turn or active round changes."""
+        token = self.current_callback_token()
+        active_round = self.history_manager.current_round
+
+        def begin(dt):
+            if (active_round is not None and self.callback_token_is_current(token)
+                    and self.history_manager.current_round is active_round):
+                self.play_turn(dt)
+
+        Clock.schedule_once(begin)
 
     def play_turn(self, dt):
         """Executes one turn. Game logic advances frame-by-frame via Kivy's Clock. TODO: does it?"""
@@ -561,7 +574,7 @@ class GameBoard(Widget):
         if all(b.ready_for_next_turn for b in self.bots):
             self.current_turn += 1
             self.history_manager.end_turn(self)
-            Clock.schedule_once(self.play_turn)
+            self._schedule_turn()
             return
 
         self._submit_next_bot_for_turn()

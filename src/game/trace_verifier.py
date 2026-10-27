@@ -297,8 +297,9 @@ def _compare_recorded_state(
 def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
     started = perf_counter()
     report = VerificationReport()
+    payload = dict(payload) if isinstance(payload, Mapping) else payload
     try:
-        validate_session_v3(dict(payload))
+        validate_session_v3(payload)
     except SessionV3Error as exc:
         report.schema_valid = False
         report.add_issue("R1", "session", "schema-invalid", str(exc))
@@ -308,7 +309,7 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
     for game_index, game in enumerate(payload.get("games", []), start=1):
         for round_index, round_entry in enumerate(game.get("rounds", []), start=1):
             try:
-                GameplaySettingsSnapshot.from_mapping(
+                GameplaySettingsSnapshot.from_snapshot(
                     round_entry.get("gameplay_settings_snapshot")
                 )
             except (ArithmeticError, TypeError, ValueError) as exc:
@@ -357,7 +358,7 @@ def verify_payload(payload: Mapping[str, Any]) -> VerificationReport:
                 )
             prior_post_state = deepcopy(round_entry.get("initial_state", {}))
             try:
-                rules = GameplaySettingsSnapshot.from_mapping(
+                rules = GameplaySettingsSnapshot.from_snapshot(
                     round_entry.get("gameplay_settings_snapshot")
                 )
             except (ArithmeticError, TypeError, ValueError) as exc:

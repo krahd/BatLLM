@@ -142,6 +142,28 @@ class GameplaySettingsSnapshot:
         return cls.from_mapping(values)
 
     @classmethod
+    def from_snapshot(cls, values: Mapping[str, Any]) -> "GameplaySettingsSnapshot":
+        """Validate imported frozen rules without coercion or invented defaults."""
+        if not isinstance(values, Mapping):
+            raise ValueError("Gameplay snapshot must be a mapping")
+        integer_fields = {"bullet_damage", "initial_health", "turns_per_round", "total_rounds"}
+        for key in GAMEPLAY_SNAPSHOT_KEYS:
+            if key not in values:
+                raise ValueError(f"Gameplay snapshot is missing {key}")
+            value = values[key]
+            if key == "shield_initial_state":
+                valid = type(value) is bool
+            elif key in integer_fields:
+                valid = type(value) is int
+            else:
+                valid = type(value) in (int, float)
+            if not valid:
+                raise ValueError(f"Gameplay snapshot {key} has an invalid type")
+        if values["turns_per_round"] < 1 or values["total_rounds"] < 1:
+            raise ValueError("Round and turn counts must be positive")
+        return cls.from_mapping(values)
+
+    @classmethod
     def from_mapping(cls, values: Mapping[str, Any] | None) -> "GameplaySettingsSnapshot":
         values = values or {}
         snapshot = cls(

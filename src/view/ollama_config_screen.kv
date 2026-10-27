@@ -272,6 +272,13 @@
                     halign: "left"
                     text_size: self.width, None
 
+                Button:
+                    text: "Enter model name"
+                    font_size: sp(18)
+                    size_hint_y: None
+                    height: dp(42)
+                    on_press: root.enter_remote_model_name()
+
                 BoxLayout:
                     size_hint_y: None
                     height: dp(50)

@@ -190,6 +190,9 @@ def stage_release(base_name: str, extra_files: dict[str, str] | None = None) -> 
         shutil.copy2(src, dest)
 
     if extra_files is not None:
+        schema = stage_root / "src/assets/batllm-session-v3.schema.json"
+        schema.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / "research/urucon2026/schema/batllm-session-v3.schema.json", schema)
         write_text_file(stage_root / "README.md",
                         "# BatLLM runtime bundle\n\nRun the included install script, then the run script.\n"
                         "User guide: https://github.com/krahd/BatLLM/blob/main/docs/USER_GUIDE.md\n"

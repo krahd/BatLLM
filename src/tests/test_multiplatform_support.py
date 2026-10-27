@@ -355,7 +355,7 @@ def test_start_service_uses_last_served_model_and_persists_it(monkeypatch, tmp_p
     assert ollama_service.start_service(config_path) == 0
     assert saved == {"model": "mistral-small:latest", "path": config_path}
     assert preload == {"timeout": 180.0, "model": "mistral-small:latest"}
-    assert commands[1][0] == ("pull", "mistral-small:latest")
+    assert [args for args, _host in commands] == [("--version",)]
 
 
 def test_start_service_uses_model_specific_timeout_override(monkeypatch, tmp_path: Path) -> None:
@@ -441,7 +441,7 @@ def test_start_service_uses_configured_model_for_fresh_install(monkeypatch, tmp_
     assert ollama_service.start_service(config_path) == 0
     assert saved == {"model": "smollm2", "path": config_path}
     assert preload == {"timeout": 35.0, "model": "smollm2"}
-    assert commands[1][0] == ("pull", "smollm2")
+    assert [args for args, _host in commands] == [("--version",)]
 
 
 def test_start_service_uses_configured_warmup_timeout(monkeypatch, tmp_path: Path) -> None:
