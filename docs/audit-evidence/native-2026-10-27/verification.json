@@ -1,0 +1,49 @@
+{
+  "sha256": "9979b9929e3ab867a8b1743b72737db0bb50d9d160161c7e79c8306288ab53a1",
+  "games": 2,
+  "rounds": 4,
+  "turns": 8,
+  "plays": 16,
+  "steps": 24,
+  "mismatches": [],
+  "invalid_outputs": [
+    {
+      "game": 2,
+      "round": 1,
+      "turn": 1,
+      "bot_id": 2,
+      "llm_response": "I'm sorry for the misunderstanding, but as an AI, I don't have the ability to access external databases or perform actions. If you need to return a specific value \"A45\" in a programming context, I can help you with that.",
+      "cmd": "ERR"
+    },
+    {
+      "game": 2,
+      "round": 1,
+      "turn": 1,
+      "bot_id": 1,
+      "llm_response": "BANANA",
+      "cmd": "ERR"
+    },
+    {
+      "game": 2,
+      "round": 1,
+      "turn": 2,
+      "bot_id": 1,
+      "llm_response": "BANANA",
+      "cmd": "ERR"
+    }
+  ],
+  "commands": {
+    "M0.03": 2,
+    "C90.0": 2,
+    "B": 2,
+    "S0": 2,
+    "ERR": 3,
+    "A45.0": 1,
+    "S1": 2,
+    "C45.0": 2
+  },
+  "legacy-audit.json": "This saved session uses the legacy BatLLM format. Save a new session to use Game Analyzer.",
+  "malformed-rules-audit.json": "Gameplay snapshot bullet_damage has an invalid type",
+  "tampered_state_detected": true,
+  "temporary_files_left": []
+}

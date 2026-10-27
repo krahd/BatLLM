@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### Native source rehearsal — 27 October 2026
+
+- completed two native macOS games with real Ollama responses, session saving, in-app and standalone analysis, malformed-output handling and save-on-exit;
+- independently replayed all 24 saved positions without a mismatch and ran all 293 automated tests with live smoke enabled; and
+- recorded three open usability findings, selected evidence and unrun release gates in [the native rehearsal audit](NATIVE_REHEARSAL_2026_10_27.md).
+
 ### Post-merge audit repair — 26 October 2026
 
 - routed the standalone editor through strict, deadline-aware inference and explicit-endpoint service operations; confirmed deletion, unload and download actions; made console cancellation local to its request/output;

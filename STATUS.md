@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-26 02:19
+Last updated: 2026-10-27 15:26
 
 ## Project and release phase
 
@@ -55,9 +55,10 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 ## Validation evidence
 
-Current local Python 3.12/macOS post-merge repairs:
+Current local Python 3.12/macOS validation:
 
-- complete isolated non-live suite: `291 passed, 2 skipped`;
+- complete isolated non-live suite: `291 passed, 2 skipped`; all tests with real-Ollama smoke enabled: `293 passed` (27 October 2026);
+- native source rehearsal: two complete games, four rounds, eight turns and sixteen real `smollm2:latest` responses; native save/save-on-exit and in-app/standalone analyser load, navigation, compatibility rejection and mismatch diagnosis passed; independent traversal of all 24 saved replay positions found zero mismatches; see [native rehearsal audit](docs/NATIVE_REHEARSAL_2026_10_27.md);
 - maintained regressions cover all eleven findings, including standalone endpoint/deadline/confirmation boundaries, cancellation, reset races, temporary settings, context changes, stale selections, imported rules and malformed v3 traces;
 - extracted research ZIP generates and verifies scripted traces with the original checkout absent from the subprocess import path;
 - full Pylint gate: passed, `8.84/10`, no errors; existing warnings remain;
@@ -69,7 +70,8 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 
 ## Known limitations and pending work
 
-- Live Ollama generation and native GUI acceptance have not been run for this audit. Mock HTTP verification does not establish real-model behaviour.
+- The bounded macOS source gameplay/save/analyser rehearsal passed. Three audited usability defects remain: overlapping compatible-file previews, Refresh leaving the main file list stale, and false stopped status for an untagged model alias. Native error/recovery and damage/exit combinations remain partially untested; see the native audit for exact scope.
+- Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity; use the research trace contract for research evidence.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
 - Modelito 1.4.6 retains unsupported automatic catalogue discovery and generic lifecycle/deadline limitations. BatLLM avoids those paths and offers manual model-name download recovery; upstream details remain in the audit reports.
@@ -78,4 +80,4 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-26 02:19
+Last updated: 2026-10-27 15:26
