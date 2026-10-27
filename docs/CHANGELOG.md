@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+### Native audit repairs — 27 October 2026
+
+- confirmed and repaired the three native-rehearsal findings: preview overflow, stale file-list refresh and false stopped status for an untagged model alias;
+- contained long-filename overflow in the Recent Sessions footer found during native resize checks;
+- added directory-refresh/selection and model-alias regressions, with native layout checks at three sizes; and
+- preserved gameplay, prompting, inference, v2/v3 formats, defaults and version while retaining the unsigned release gates in [the audit follow-up](NATIVE_REHEARSAL_2026_10_27.md#verification-and-repair--27-october-2026).
+
 ### Native source rehearsal — 27 October 2026
 
 - completed two native macOS games with real Ollama responses, session saving, in-app and standalone analysis, malformed-output handling and save-on-exit;

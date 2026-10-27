@@ -1,6 +1,6 @@
 # Native gameplay, saving and analyser audit — 27 October 2026
 
-The macOS source workflow completed with real Ollama inference: two complete games, native session saving, in-app analysis, standalone analysis and save-on-exit. The exported session replays without a mismatch. Three usability defects remain open below. This is bounded functional acceptance of this source checkout, not 1.0 or multiplatform release sign-off.
+The macOS source workflow completed with real Ollama inference: two complete games, native session saving, in-app analysis, standalone analysis and save-on-exit. The exported session replays without a mismatch. Three usability defects were confirmed and repaired in the follow-up recorded below. This is bounded functional acceptance of this source checkout, not 1.0 or multiplatform release sign-off.
 
 ## Tested environment and scope
 
@@ -55,7 +55,7 @@ SHA-256 of `native-rehearsal-multigame.json`:
 
 The original exports and full-resolution captures remain in the disposable rehearsal directory supplied with the audit handoff; they are not committed as application state. The [verification summary](audit-evidence/native-2026-10-27/verification.json) preserves the counts, commands, raw malformed outputs and rejection messages. Selected screenshots are retained below. The altered/invalid copies are controls, not gameplay results.
 
-## Open findings
+## Confirmed findings from the original rehearsal
 
 ### N1 — P2: compatible-file preview overlaps its heading
 
@@ -111,4 +111,24 @@ BATLLM_RUN_OLLAMA_SMOKE=1 BATLLM_CONFIG_PATH="$REHEARSAL_HOME/config.yaml" \
 - [Stale refresh and overlapping preview](audit-evidence/native-2026-10-27/refresh-and-preview.jpg).
 - [Model-alias status inconsistency](audit-evidence/native-2026-10-27/model-alias-status.jpg).
 
-The requested source gameplay/save/analyser path now has native macOS evidence. Open findings N1–N3 were audited, not repaired in this documentation change. Native missing/stopped/unresponsive-Ollama flows, in-flight cancellation/saving, filesystem-failure recovery, fatal damage and all exit-setting combinations were not exhaustively rehearsed; relevant automated coverage is not a native substitute. Clean installation, install-level Homebrew/bundle checks, native Linux/Windows checks and the remaining 1.0 UI/accessibility work remain unsigned. Neither this audit nor passing tests authorises a release.
+The requested source gameplay/save/analyser path now has native macOS evidence. The original rehearsal audited N1–N3; the follow-up below records their repair and separate validation. Native missing/stopped/unresponsive-Ollama flows, in-flight cancellation/saving, filesystem-failure recovery, fatal damage and all exit-setting combinations were not exhaustively rehearsed; relevant automated coverage is not a native substitute. Clean installation, install-level Homebrew/bundle checks, native Linux/Windows checks and the remaining 1.0 UI/accessibility work remain unsigned. Neither this audit nor passing tests authorises a release.
+
+## Verification and repair — 27 October 2026
+
+Rechecked the report against PR #65, its screenshots, the original exported file and the current source. N1–N3 are confirmed. The original save still has the SHA-256 above, and a fresh traversal through the production loader and analyser found zero mismatches across all 24 positions. The six analyser text-formatting methods also succeeded at every position. This corroborates the retained evidence; it is not a fresh real-model gameplay rehearsal.
+
+| Finding | Repair and evidence |
+| --- | --- |
+| N1 | The preview uses a measured text height inside a vertical scroll area, with a bounded panel height. Native SDL2 rendering at 1440×900, 1024×768 and 800×600 logical window sizes showed a clear heading and contained text; a long filename remains readable by scrolling. The resize check exposed the same overflow in the Recent Sessions footer, which now uses the same containment. |
+| N2 | Refresh rescans the currently browsed directory as well as Recent Sessions, retains an existing selection, revalidates its preview and clears a deleted selection. Regression tests exercise Kivy's actual directory scan in both the default save folder and another folder. A native check dispatched the Refresh button and verified file addition/removal and retained selection. |
+| N3 | Status comparison resolves an omitted tag to `latest`, including namespaced names and registry ports. Eleven cases cover aliases, explicit tags, different namespaces and no loaded model. The displayed/configured names and model-management operations are unchanged. |
+
+The Refresh and alias regressions produced six expected failures against the original code, then passed after repair. The complete non-live suite passed **304 tests, with 2 intentional live-test skips** (plus the runner's 4-test core phase). The focused analyser/Ollama screen suite passed **67 tests**. The maintained Pylint gate passed at **8.84/10**; documentation, KV parsing and diff checks passed. An initial sandboxed full-suite attempt could not bind its temporary HTTP servers; the successful rerun permitted loopback binding. The native render check likewise required desktop access.
+
+The native follow-up used the production standalone analyser screens with scheduled UI events, disposable `BATLLM_HOME`/`KIVY_HOME` directories and copies of the original export. It did not repeat the earlier mouse/keyboard gameplay rehearsal. Retained follow-up evidence:
+
+- [Native layout and refresh measurements](audit-evidence/native-2026-10-27/repair-verification.json).
+- [Preview at 1024×768](audit-evidence/native-2026-10-27/repaired-preview-1024x768.png).
+- [Long filename at 800×600, scrolled to the final summary lines](audit-evidence/native-2026-10-27/repaired-preview-800x600-bottom.png).
+
+These are UI repairs for RC hardening. Game rules, prompting/context modes, inference, session formats, defaults and version `0.3.6` are unchanged. The v2 provenance limitation remains unchanged and explicit. PR #65 remains stacked on unmerged PR #63; the protected-main workflow matrix has not run on this repair commit because the stacked PR targets the repair branch. Install-level Homebrew/bundle checks, native Linux/Windows acceptance and the other release gates above remain unsigned. No release tag or RC sign-off is implied.

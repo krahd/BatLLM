@@ -62,6 +62,14 @@ class AnalyzerLoadScreen(Screen):
         else:
             self.recent_sessions_text = "No saved sessions found yet."
 
+        chooser = self.ids.get("filechooser")
+        if chooser is not None:
+            # Kivy 2.3 has no public reload method. Use its scheduled rescan
+            # without changing the browsed directory.
+            chooser._trigger_update()
+            chooser.selection = [path for path in chooser.selection if Path(path).exists()]
+            self.on_file_selection(chooser.selection)
+
     def _populate_recent_buttons(self, paths: list[Path]) -> None:
         container = self.ids.get("recent_sessions_box")
         if container is None:

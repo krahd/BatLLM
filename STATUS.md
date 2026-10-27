@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-27 15:26
+Last updated: 2026-10-27 15:40
 
 ## Project and release phase
 
@@ -57,20 +57,21 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 Current local Python 3.12/macOS validation:
 
-- complete isolated non-live suite: `291 passed, 2 skipped`; all tests with real-Ollama smoke enabled: `293 passed` (27 October 2026);
+- current isolated non-live suite: `304 passed, 2 skipped`; focused analyser/Ollama screens: `67 passed` (27 October 2026). The earlier pre-repair rehearsal passed `293` tests with real-Ollama smoke enabled; live smoke was not repeated for these UI repairs;
 - native source rehearsal: two complete games, four rounds, eight turns and sixteen real `smollm2:latest` responses; native save/save-on-exit and in-app/standalone analyser load, navigation, compatibility rejection and mismatch diagnosis passed; independent traversal of all 24 saved replay positions found zero mismatches; see [native rehearsal audit](docs/NATIVE_REHEARSAL_2026_10_27.md);
-- maintained regressions cover all eleven findings, including standalone endpoint/deadline/confirmation boundaries, cancellation, reset races, temporary settings, context changes, stale selections, imported rules and malformed v3 traces;
+- native repair checks: clear/scrollable previews at 1440×900, 1024×768 and 800×600 logical sizes; file-list addition/removal and retained selection passed through scheduled native UI events; the original save checksum and all 24 replay positions reverified;
+- maintained regressions cover all eleven earlier audit findings and the new Refresh/alias cases, including standalone endpoint/deadline/confirmation boundaries, cancellation, reset races, temporary settings, context changes, stale selections, imported rules and malformed v3 traces;
 - extracted research ZIP generates and verifies scripted traces with the original checkout absent from the subprocess import path;
 - full Pylint gate: passed, `8.84/10`, no errors; existing warnings remain;
 - compilation, documentation validation, KV parsing and diff checks: passed;
 - Homebrew formula generation with actual dependency resolution/hashes: passed; `jsonschema` is now a runtime dependency;
 - isolated research pipeline and package build: passed (60 traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected and 180 serialisation controls accepted).
 
-The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the original `d86ae05` evidence and a separate current repair disposition. Hosted repair-branch checks are tracked in PR #63. Historical repair evidence remains in [the first audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md), the changelog and pull requests.
+The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the original `d86ae05` evidence and a separate current repair disposition. PR #65 remains stacked on unmerged PR #63. Its new repair commit has not run the protected-main workflow matrix; prior hosted repair-branch checks are tracked in PR #63. Historical repair evidence remains in [the first audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md), the changelog and pull requests.
 
 ## Known limitations and pending work
 
-- The bounded macOS source gameplay/save/analyser rehearsal passed. Three audited usability defects remain: overlapping compatible-file previews, Refresh leaving the main file list stale, and false stopped status for an untagged model alias. Native error/recovery and damage/exit combinations remain partially untested; see the native audit for exact scope.
+- The three native-audit usability defects are repaired: bounded/scrollable previews, both file lists refreshed and omitted-tag model status corrected. Native error/recovery and damage/exit combinations remain partially untested; see the native audit for exact scope.
 - Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity; use the research trace contract for research evidence.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
@@ -80,4 +81,4 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-27 15:26
+Last updated: 2026-10-27 15:40

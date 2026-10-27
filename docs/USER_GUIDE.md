@@ -167,6 +167,8 @@ The analyzer can:
 - reconstruct the board from the saved rules and ordered plays;
 - show prompts, raw responses, parsed commands, state changes, model metadata, and replay warnings.
 
+**Refresh** updates Recent Sessions and the current file-list directory. It keeps an existing selection and refreshes its preview; a deleted selection is cleared. Long previews and recent-file summaries can be scrolled.
+
 The user-facing analyzer supports the current BatLLM session schema v2. Older top-level list exports are rejected rather than replayed approximately.
 
 ## Saving sessions
@@ -200,6 +202,8 @@ A local model is already installed in Ollama. **Use Selected** saves the model c
 3. Press **Use Selected**.
 
 BatLLM saves the model name, attempts to warm it for gameplay, and records it as the last successfully served model when warm-up succeeds.
+
+The status report treats an omitted model tag as `latest`; distinct explicit tags remain separate.
 
 The local-model timeout controls can save or remove a per-model request-timeout override.
 
