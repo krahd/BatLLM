@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-27 15:44
+Last updated: 2026-10-27 17:48
 
 ## Project and release phase
 
@@ -55,7 +55,7 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 ## Validation evidence
 
-Current local Python 3.12/macOS validation:
+Current validation evidence (local runs use Python 3.12/macOS):
 
 - hosted Multiplatform Validation passed on repair commit `7e75061`: Linux/macOS/Windows bundle generation, Homebrew dry-run and mock-Ollama integration ([run](https://github.com/krahd/BatLLM/actions/runs/40580426888));
 - current isolated non-live suite: `304 passed, 2 skipped`; focused analyser/Ollama screens: `67 passed` (27 October 2026). The earlier pre-repair rehearsal passed `293` tests with real-Ollama smoke enabled; live smoke was not repeated for these UI repairs;
@@ -68,7 +68,7 @@ Current local Python 3.12/macOS validation:
 - Homebrew formula generation with actual dependency resolution/hashes: passed; `jsonschema` is now a runtime dependency;
 - isolated research pipeline and package build: passed (60 traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected and 180 serialisation controls accepted).
 
-The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the original `d86ae05` evidence and a separate current repair disposition. PR #65 remains stacked on unmerged PR #63. Its new repair commit has not run the protected-main workflow matrix; prior hosted repair-branch checks are tracked in PR #63. Historical repair evidence remains in [the first audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md), the changelog and pull requests.
+The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the original `d86ae05` evidence and a separate current repair disposition. The combined repairs target `main`; hosted validation of the combined source is tracked in [PR #65](https://github.com/krahd/BatLLM/pull/65). Earlier repair checks are retained in merged PR #63. Historical repair evidence remains in [the first audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md), the changelog and pull requests.
 
 ## Known limitations and pending work
 
@@ -82,4 +82,4 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-27 15:44
+Last updated: 2026-10-27 17:48
