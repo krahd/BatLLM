@@ -223,6 +223,61 @@ def test_analyzer_load_screen_escape_goes_back(monkeypatch) -> None:
     assert go_back_called["value"] is True
 
 
+@pytest.mark.parametrize("browse_elsewhere", [False, True])
+def test_refresh_rescans_directory_and_preserves_selection(tmp_path, monkeypatch,
+                                                         browse_elsewhere) -> None:
+    from kivy.clock import Clock
+    from kivy.uix.filechooser import FileChooserController
+
+    saved_dir = tmp_path / "saved"
+    saved_dir.mkdir()
+    browsed_dir = tmp_path / "elsewhere" if browse_elsewhere else saved_dir
+    browsed_dir.mkdir(exist_ok=True)
+    selected = browsed_dir / "selected.json"
+    selected.write_text(json.dumps(_sample_payload()), encoding="utf-8")
+    chooser = FileChooserController(path=str(browsed_dir), filters=["*.json"])
+    # Exercise Kivy's real directory scan and refresh trigger without rendering entries.
+    monkeypatch.setattr(chooser, "_create_entry_widget", lambda ctx: SimpleNamespace(
+        path=ctx["path"], selected=False))
+    screen = AnalyzerLoadScreen()
+    screen.ids["filechooser"] = chooser
+    monkeypatch.setattr(screen, "default_saved_sessions_dir", lambda: saved_dir)
+    chooser.bind(selection=lambda _chooser, selection: screen.on_file_selection(selection))
+    Clock.tick()
+    chooser.selection = [str(selected)]
+    assert "Games: 1" in screen.summary_text
+
+    added = browsed_dir / "new.json"
+    added.write_text(json.dumps(_sample_payload()), encoding="utf-8")
+    recent = saved_dir / "recent.json"
+    recent.write_text(json.dumps(_sample_payload()), encoding="utf-8")
+    # A selected file can also change in place; its preview must be revalidated.
+    selected.write_text("[]", encoding="utf-8")
+    assert str(added) not in chooser.files
+
+    screen.refresh_recent_sessions()
+    Clock.tick()
+
+    assert str(added) in chooser.files
+    assert "recent.json" in screen.recent_sessions_text
+    assert chooser.path == str(browsed_dir)
+    assert chooser.selection == [str(selected)]
+    assert screen.selected_path == str(selected)
+    assert "legacy BatLLM format" in screen.status_text
+
+    selected.unlink()
+    added.unlink()
+    screen.refresh_recent_sessions()
+    Clock.tick()
+
+    assert str(selected) not in chooser.files
+    assert str(added) not in chooser.files
+    assert chooser.selection == []
+    assert screen.selected_path == ""
+    assert screen.status_text == "Awaiting selection."
+    chooser._update_files_ev.cancel()
+
+
 def test_analyzer_review_screen_escape_goes_back(monkeypatch) -> None:
     screen = AnalyzerReviewScreen()
     go_back_called = {"value": False}

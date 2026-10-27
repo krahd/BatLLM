@@ -43,6 +43,11 @@ def _local_model_name(value: str) -> str:
     return fields[0] if fields else ""
 
 
+def _status_model_name(value: str) -> str:
+    """Resolve only an omitted tag for status comparisons, retaining registry ports."""
+    return value if ":" in value.rsplit("/", 1)[-1] else f"{value}:latest"
+
+
 def build_ollama_install_command(platform_name: str | None = None) -> list[str]:
     """Return the platform-specific Ollama install command."""
     command, _display = ollama_service.install_command_for_current_platform(platform_name)
@@ -492,7 +497,9 @@ class OllamaConfigScreen(Screen):
                 lines.append("Running models: none currently loaded")
 
             if configured_model != "not set":
-                suffix = "(running)" if configured_model in running_models else "(configured, not currently running)"
+                loaded = any(_status_model_name(configured_model) == _status_model_name(name)
+                             for name in running_models)
+                suffix = "(running)" if loaded else "(configured, not currently running)"
                 lines.append(f"BatLLM model: {configured_model} {suffix}")
             else:
                 lines.append("BatLLM model: not set")

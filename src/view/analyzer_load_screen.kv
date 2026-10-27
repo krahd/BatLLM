@@ -196,14 +196,20 @@
                         height: self.minimum_height
                         spacing: dp(6)
 
-                Label:
-                    text: root.recent_sessions_text
+                ScrollView:
                     size_hint_y: None
                     height: dp(120)
-                    halign: "left"
-                    valign: "top"
-                    text_size: self.width, None
-                    color: theme.TEXT_SECONDARY
+                    do_scroll_x: False
+                    bar_width: dp(8)
+
+                    Label:
+                        text: root.recent_sessions_text
+                        size_hint_y: None
+                        height: self.texture_size[1]
+                        halign: "left"
+                        valign: "top"
+                        text_size: self.width, None
+                        color: theme.TEXT_SECONDARY
 
             BoxLayout:
                 orientation: "vertical"
@@ -230,7 +236,7 @@
 
                 BoxLayout:
                     size_hint_y: None
-                    height: dp(152)
+                    height: min(dp(220), root.height * 0.4)
                     spacing: dp(12)
 
                     BoxLayout:
@@ -249,12 +255,18 @@
                             text: "[b]Selected File[/b]"
                             height: dp(24)
 
-                        Label:
-                            text: root.summary_text
-                            halign: "left"
-                            valign: "top"
-                            text_size: self.width, None
-                            color: theme.TEXT_PRIMARY
+                        ScrollView:
+                            do_scroll_x: False
+                            bar_width: dp(8)
+
+                            Label:
+                                text: root.summary_text
+                                size_hint_y: None
+                                height: self.texture_size[1]
+                                halign: "left"
+                                valign: "top"
+                                text_size: self.width, None
+                                color: theme.TEXT_PRIMARY
 
                     BoxLayout:
                         orientation: "vertical"

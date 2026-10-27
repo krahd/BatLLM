@@ -1,0 +1,66 @@
+{
+  "authentic_save_sha256": "9979b9929e3ab867a8b1743b72737db0bb50d9d160161c7e79c8306288ab53a1",
+  "replay_positions": 24,
+  "mismatches": 0,
+  "native_layout": [
+    {
+      "logical_window": [
+        1440,
+        900
+      ],
+      "framebuffer": [
+        2880,
+        1800
+      ],
+      "preview_viewport": [
+        1381.6,
+        336.0
+      ],
+      "text_height": 288,
+      "heading_clear": true,
+      "scrollable": false,
+      "capture": "repaired-preview-1440x900.png"
+    },
+    {
+      "logical_window": [
+        1024,
+        768
+      ],
+      "framebuffer": [
+        2048,
+        1536
+      ],
+      "preview_viewport": [
+        799.1999999999998,
+        336.0
+      ],
+      "text_height": 288,
+      "heading_clear": true,
+      "scrollable": false,
+      "capture": "repaired-preview-1024x768.png"
+    },
+    {
+      "logical_window": [
+        800,
+        600
+      ],
+      "framebuffer": [
+        1600,
+        1200
+      ],
+      "preview_viewport": [
+        485.5999999999999,
+        336.0
+      ],
+      "text_height": 504,
+      "heading_clear": true,
+      "scrollable": true,
+      "capture": "repaired-preview-800x600.png"
+    }
+  ],
+  "native_refresh_added_file": true,
+  "native_refresh_removed_file": true,
+  "scrolled_capture": "repaired-preview-800x600-bottom.png",
+  "recent_footer_contained": true,
+  "method": "Production standalone analyser screens, native SDL2 window, scheduled UI events, isolated profile and copied audit save."
+}

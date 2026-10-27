@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Callable
 
+import pytest
+
 from configs.app_config import config
 from view.history_screen import HistoryScreen
 from view.ollama_config_screen import OllamaConfigScreen
@@ -308,6 +310,32 @@ def test_refresh_status_reports_running_model(monkeypatch) -> None:
     assert "Server status: running" in screen.status_details
     assert "Running models: mistral-small:latest" in screen.status_details
     assert "BatLLM model: mistral-small:latest (running)" in screen.status_details
+
+
+@pytest.mark.parametrize("configured,running,loaded", [
+    ("smollm2", ["smollm2:latest"], True),
+    ("smollm2:latest", ["smollm2"], True),
+    ("smollm2:1.7b", ["smollm2:1.7b"], True),
+    ("smollm2:1.7b", ["smollm2:latest"], False),
+    ("smollm2", ["smollm2:1.7b"], False),
+    ("smollm2:latest", ["smollm2:1.7b"], False),
+    ("team/smollm2", ["team/smollm2:latest"], True),
+    ("team/smollm2", ["other/smollm2:latest"], False),
+    ("localhost:5000/team/smollm2", ["localhost:5000/team/smollm2:latest"], True),
+    ("localhost:5000/team/smollm2:1.7b", ["localhost:5000/team/smollm2:latest"], False),
+    ("smollm2", [], False),
+])
+def test_status_model_aliases_preserve_explicit_tags(configured, running, loaded) -> None:
+    screen = OllamaConfigScreen()
+    snapshot = {"found": True, "running": True,
+                "configured_model": configured, "running_models": running}
+
+    report = screen._format_status_report(snapshot)
+
+    suffix = "(running)" if loaded else "(configured, not currently running)"
+    assert f"BatLLM model: {configured} {suffix}" in report
+    assert snapshot["configured_model"] == configured
+    assert snapshot["running_models"] == running
 
 
 def test_model_selection_uses_name_from_cli_row(monkeypatch) -> None:
