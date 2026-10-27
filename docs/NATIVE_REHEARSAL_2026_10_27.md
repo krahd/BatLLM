@@ -125,6 +125,8 @@ Rechecked the report against PR #65, its screenshots, the original exported file
 
 The Refresh and alias regressions produced six expected failures against the original code, then passed after repair. The complete non-live suite passed **304 tests, with 2 intentional live-test skips** (plus the runner's 4-test core phase). The focused analyser/Ollama screen suite passed **67 tests**. The maintained Pylint gate passed at **8.84/10**; documentation, KV parsing and diff checks passed. An initial sandboxed full-suite attempt could not bind its temporary HTTP servers; the successful rerun permitted loopback binding. The native render check likewise required desktop access.
 
+Hosted [Multiplatform Validation](https://github.com/krahd/BatLLM/actions/runs/40580426888) passed all five jobs on repair commit `7e75061`: Linux/macOS/Windows bundle generation, Homebrew dry-run and mock-Ollama integration. This is separate from the Python 3.10–3.12 CI test matrix restricted to PRs targeting `main`.
+
 The native follow-up used the production standalone analyser screens with scheduled UI events, disposable `BATLLM_HOME`/`KIVY_HOME` directories and copies of the original export. It did not repeat the earlier mouse/keyboard gameplay rehearsal. Retained follow-up evidence:
 
 - [Native layout and refresh measurements](audit-evidence/native-2026-10-27/repair-verification.json).

@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-27 15:40
+Last updated: 2026-10-27 15:44
 
 ## Project and release phase
 
@@ -57,6 +57,7 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 Current local Python 3.12/macOS validation:
 
+- hosted Multiplatform Validation passed on repair commit `7e75061`: Linux/macOS/Windows bundle generation, Homebrew dry-run and mock-Ollama integration ([run](https://github.com/krahd/BatLLM/actions/runs/40580426888));
 - current isolated non-live suite: `304 passed, 2 skipped`; focused analyser/Ollama screens: `67 passed` (27 October 2026). The earlier pre-repair rehearsal passed `293` tests with real-Ollama smoke enabled; live smoke was not repeated for these UI repairs;
 - native source rehearsal: two complete games, four rounds, eight turns and sixteen real `smollm2:latest` responses; native save/save-on-exit and in-app/standalone analyser load, navigation, compatibility rejection and mismatch diagnosis passed; independent traversal of all 24 saved replay positions found zero mismatches; see [native rehearsal audit](docs/NATIVE_REHEARSAL_2026_10_27.md);
 - native repair checks: clear/scrollable previews at 1440×900, 1024×768 and 800×600 logical sizes; file-list addition/removal and retained selection passed through scheduled native UI events; the original save checksum and all 24 replay positions reverified;
@@ -81,4 +82,4 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-27 15:40
+Last updated: 2026-10-27 15:44
