@@ -359,6 +359,9 @@ def test_missing_startup_model_reports_failure_without_pulling(monkeypatch):
 
 
 def test_catalogue_unavailability_is_explicit_and_manual_entry_does_not_download(monkeypatch):
+    def fail_catalogue(**kwargs):
+        raise RuntimeError("catalogue offline")
+    monkeypatch.setattr(service._MODELITO, "list_remote_model_catalog", fail_catalogue)
     with pytest.raises(service.RemoteCatalogueUnavailable, match="Enter a model name"):
         service.list_remote_model_catalog()
     screen = OllamaConfigScreen()
@@ -369,13 +372,18 @@ def test_catalogue_unavailability_is_explicit_and_manual_entry_does_not_download
     assert screen.selected_remote_model == "registry/model:tag"
 
 
-def test_empty_remote_selector_opens_name_entry_instead_of_empty_catalogue(monkeypatch):
+def test_empty_remote_selector_attempts_discovery_before_manual_recovery(monkeypatch):
     screen = OllamaConfigScreen()
     opened = []
     monkeypatch.setattr(screen, "enter_remote_model_name", lambda: opened.append(True))
-    monkeypatch.setattr(screen, "refresh_remote_models", lambda **k: pytest.fail("unsupported catalogue"))
+    refreshed = []
+    def refresh(**kwargs):
+        refreshed.append(True)
+        kwargs["on_complete"]()
+    monkeypatch.setattr(screen, "refresh_remote_models", refresh)
     screen.open_remote_model_selector()
     assert opened == [True]
+    assert refreshed == [True]
 
 
 def test_extracted_research_package_generates_and_verifies_without_checkout(tmp_path, monkeypatch):
@@ -410,3 +418,44 @@ def test_extracted_research_package_generates_and_verifies_without_checkout(tmp_
                                 capture_output=True, text=True, timeout=30, check=False)
         assert result.returncode == 0, result.stderr
     assert json.loads(report.read_text())["valid"] is True
+
+
+def test_catalogue_uses_configured_endpoint_and_preserves_ui_entry_shape(monkeypatch):
+    from types import SimpleNamespace
+    entries = [SimpleNamespace(name="foo", installed=True)]
+    calls = []
+    monkeypatch.setattr(service, "load_llm_config",
+                        lambda: {"url": "http://localhost", "port": 12345})
+    def catalogue(**kwargs):
+        calls.append(kwargs)
+        return entries
+    monkeypatch.setattr(service._MODELITO, "list_remote_model_catalog", catalogue)
+    assert service.list_remote_model_catalog() == entries
+    assert calls == [{"host": "http://localhost", "port": 12345, "timeout": 30.0}]
+    screen = OllamaConfigScreen()
+    assert screen._list_remote_model_catalog_via_modelito() == [
+        {"name": "foo", "display": "foo (installed)", "size": ""}]
+
+
+def test_remote_selector_shows_discovered_models(monkeypatch):
+    screen = OllamaConfigScreen()
+    opened = []
+    def refresh(**kwargs):
+        screen._remote_model_entries = [{"name": "foo", "display": "foo"}]
+        screen.remote_models = ["foo"]
+        kwargs["on_complete"]()
+    monkeypatch.setattr(screen, "refresh_remote_models", refresh)
+    monkeypatch.setattr(screen, "enter_remote_model_name", lambda: pytest.fail("discovery succeeded"))
+    monkeypatch.setattr(screen, "_show_model_picker", lambda **kwargs: opened.append(kwargs))
+    screen.open_remote_model_selector()
+    assert opened[0]["entries"] == [{"name": "foo", "display": "foo"}]
+
+
+def test_editor_catalogue_uses_edited_endpoint(editor, monkeypatch):
+    calls = []
+    monkeypatch.setattr(service, "list_remote_model_catalog",
+                        lambda **kwargs: calls.append(kwargs) or [])
+    app = editor.BatLLMConfigApp()
+    app.ollama = editor.OllamaClient("http://localhost", 12345)
+    assert app._remote_models() == []
+    assert calls == [{"url": "http://localhost", "port": 12345}]

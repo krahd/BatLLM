@@ -1,7 +1,7 @@
 """Ollama service operations using BatLLM configuration and process ownership.
 
-Modelito supplies explicit-endpoint HTTP helpers. Unsupported remote catalogue
-discovery is reported explicitly, with confirmed downloads by model name.
+Modelito supplies explicit-endpoint HTTP helpers and remote catalogue discovery.
+Downloads require confirmation, including manual model-name recovery.
 Lifecycle policy and bounded local commands belong to BatLLM.
 """
 
@@ -575,12 +575,17 @@ def validate_model_name(name: str) -> str:
     return name
 
 
-def list_remote_model_catalog():
-    """Report unsupported discovery instead of treating CLI failure as an empty list."""
-    raise RemoteCatalogueUnavailable(
-        "Automatic catalogue discovery is unavailable. Enter a model name from "
-        "https://ollama.com/library, then confirm its download."
-    )
+def list_remote_model_catalog(*, url=None, port=None, timeout=30.0):
+    """Discover model families and installed state at the configured endpoint."""
+    llm = _endpoint_config(url, port)
+    try:
+        return _MODELITO.list_remote_model_catalog(
+            host=llm["url"], port=llm["port"], timeout=timeout)
+    except Exception as exc:
+        raise RemoteCatalogueUnavailable(
+            "Automatic catalogue discovery failed. Enter a model name from "
+            "https://ollama.com/library, then confirm its download."
+        ) from exc
 
 
 def download_model_progress(model_name: str, timeout: float = 600.0, *, url=None, port=None):

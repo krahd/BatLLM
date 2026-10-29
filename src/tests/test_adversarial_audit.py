@@ -50,7 +50,7 @@ def wire_server():
             time.sleep(behaviour.get("delay", 0))
             body = behaviour["body"]
             if isinstance(body, dict):
-                body = json.dumps(body)
+                body = json.dumps({"model": payload["model"], **body})
             data = body.encode("utf-8")
             self.send_response(behaviour["status"])
             self.send_header("Content-Length", str(len(data)))
