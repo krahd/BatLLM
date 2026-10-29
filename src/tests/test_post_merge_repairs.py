@@ -455,7 +455,6 @@ def test_editor_catalogue_uses_edited_endpoint(editor, monkeypatch):
     calls = []
     monkeypatch.setattr(service, "list_remote_model_catalog",
                         lambda **kwargs: calls.append(kwargs) or [])
-    app = editor.BatLLMConfigApp()
-    app.ollama = editor.OllamaClient("http://localhost", 12345)
-    assert app._remote_models() == []
+    app = SimpleNamespace(ollama=editor.OllamaClient("http://localhost", 12345))
+    assert editor.BatLLMConfigApp._remote_models(app) == []
     assert calls == [{"url": "http://localhost", "port": 12345}]

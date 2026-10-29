@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-29 02:19
+Last updated: 2026-10-29 02:22
 
 ## Project and release phase
 
@@ -78,10 +78,10 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity; use the research trace contract for research evidence.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
-- Both dependency pins target published Modelito 1.4.8. Fresh uncached public-package installation and the complete isolated BatLLM suite passed: **307 passed, 2 skipped**, with version/import path verified. Modelito release CI passed Python 3.10–3.12 (486 passed, 1 skipped each), 125 Windows regressions, lint, typing and docs. BatLLM retains no-download startup and owned-process shutdown. Consumer hosted CI and native cross-platform/install-level acceptance remain separate gates; current native acceptance covers catalogue and installed-model warm-up only.
+- Both dependency pins target published Modelito 1.4.8. Fresh uncached public-package installation and the complete isolated BatLLM suite passed: **307 passed, 2 skipped**, with version/import path verified. Modelito release CI passed Python 3.10–3.12 (486 passed, 1 skipped each), 125 Windows regressions, lint, typing and docs. BatLLM retains no-download startup and owned-process shutdown. Consumer hosted CI is tracked in [PR #66](https://github.com/krahd/BatLLM/pull/66). Its endpoint regression avoids constructing native widgets in headless runners; native cross-platform/install-level acceptance remains a separate gate; current native acceptance covers catalogue and installed-model warm-up only.
 - Console cancellation retires UI output immediately and closes its iterator when a fragment or configured read deadline returns; it does not abort a blocked provider read instantly.
 - v2 analysis is diagnostic and weaker than v3; neither format authenticates a serving binary or model weights.
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-29 02:19
+Last updated: 2026-10-29 02:22
