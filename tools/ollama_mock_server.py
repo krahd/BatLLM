@@ -62,22 +62,22 @@ class MockHandler(BaseHTTPRequestHandler):
                 reply = "mock reply"
 
             if payload.get("stream") is not False:
-                data = (json.dumps({"message": {"content": reply}, "done": False}) + "\n"
-                        + json.dumps({"message": {"content": ""}, "done": True}) + "\n").encode()
+                data = (json.dumps({"model": payload.get("model"), "message": {"content": reply}, "done": False}) + "\n"
+                        + json.dumps({"model": payload.get("model"), "message": {"content": ""}, "done": True}) + "\n").encode()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/x-ndjson")
                 self.send_header("Content-Length", str(len(data)))
                 self.end_headers()
                 self.wfile.write(data)
             else:
-                self._send_json({"message": {"role": "assistant", "content": reply}, "done": True})
+                self._send_json({"model": payload.get("model"), "message": {"role": "assistant", "content": reply}, "done": True})
             return
 
         if self.path == "/api/generate":
             model = payload.get("model")
             keep_alive = payload.get("keep_alive")
             # respond with a small payload acknowledging the request
-            self._send_json({"model": model, "keep_alive": keep_alive})
+            self._send_json({"model": model, "keep_alive": keep_alive, "response": "", "done": True})
             return
 
         # Unknown path

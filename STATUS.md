@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-29 02:22
+Last updated: 2026-10-29 02:26
 
 ## Project and release phase
 
@@ -57,7 +57,7 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 Current validation evidence (local runs use Python 3.12/macOS):
 
-- Modelito 1.4.8 source migration: full isolated non-live suite **307 passed, 2 skipped** (Python 3.12, native SDL2); documentation validation passed. Native catalogue selector displayed 264 families, local inventory displayed 18 models, and installed `smollm2:latest` selection/warm-up/persistence passed in a disposable profile. No model download/deletion or service control occurred. Native attachment/capture initially failed and recovered on retry. This does not repeat the full gameplay rehearsal below.
+- Modelito 1.4.8 migration: latest full isolated non-live suite **308 passed, 2 skipped** against the fresh public package (Python 3.12, headless mock); actual gated smoke tests against a test-owned mock server **2 passed**; documentation validation passed. The CI mock now provides requested model identity, terminal completion and valid empty warm-up text. Native catalogue selector displayed 264 families, local inventory displayed 18 models, and installed `smollm2:latest` selection/warm-up/persistence passed in a disposable profile. No model download/deletion or service control occurred. Native attachment/capture initially failed and recovered on retry. This does not repeat the full gameplay rehearsal below.
 
 - hosted Multiplatform Validation passed on repair commit `7e75061`: Linux/macOS/Windows bundle generation, Homebrew dry-run and mock-Ollama integration ([run](https://github.com/krahd/BatLLM/actions/runs/40580426888));
 - current isolated non-live suite: `304 passed, 2 skipped`; focused analyser/Ollama screens: `67 passed` (27 October 2026). The earlier pre-repair rehearsal passed `293` tests with real-Ollama smoke enabled; live smoke was not repeated for these UI repairs;
@@ -78,10 +78,10 @@ The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the origina
 - Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity; use the research trace contract for research evidence.
 - Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
-- Both dependency pins target published Modelito 1.4.8. Fresh uncached public-package installation and the complete isolated BatLLM suite passed: **307 passed, 2 skipped**, with version/import path verified. Modelito release CI passed Python 3.10–3.12 (486 passed, 1 skipped each), 125 Windows regressions, lint, typing and docs. BatLLM retains no-download startup and owned-process shutdown. Consumer hosted CI is tracked in [PR #66](https://github.com/krahd/BatLLM/pull/66). Its endpoint regression avoids constructing native widgets in headless runners; native cross-platform/install-level acceptance remains a separate gate; current native acceptance covers catalogue and installed-model warm-up only.
+- Both dependency pins target published Modelito 1.4.8. Fresh uncached public-package installation and the complete isolated BatLLM suite passed: **308 passed, 2 skipped**, with version/import path verified. Modelito release CI passed Python 3.10–3.12 (486 passed, 1 skipped each), 125 Windows regressions, lint, typing and docs. BatLLM retains no-download startup and owned-process shutdown. Consumer hosted CI is tracked in [PR #66](https://github.com/krahd/BatLLM/pull/66). Its endpoint regression avoids constructing native widgets in headless runners; native cross-platform/install-level acceptance remains a separate gate; current native acceptance covers catalogue and installed-model warm-up only.
 - Console cancellation retires UI output immediately and closes its iterator when a fragment or configured read deadline returns; it does not abort a blocked provider read instantly.
 - v2 analysis is diagnostic and weaker than v3; neither format authenticates a serving binary or model weights.
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-29 02:22
+Last updated: 2026-10-29 02:26
