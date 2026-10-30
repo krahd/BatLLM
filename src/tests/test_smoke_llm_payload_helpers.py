@@ -126,3 +126,31 @@ def test_version_endpoint_responds_uses_configured_url(monkeypatch) -> None:
         {"url": "http://127.0.0.1/", "port": 11434}
     )
     assert calls == {"url": "http://127.0.0.1:11434/api/version", "timeout": 5.0}
+
+
+def test_ci_mock_obeys_strict_ollama_chat_stream_and_warmup_contract():
+    from importlib.util import module_from_spec, spec_from_file_location
+    from http.server import ThreadingHTTPServer
+    from pathlib import Path
+    import threading
+    from modelito import OllamaProvider
+    from modelito.ollama_service import preload_model
+
+    path = Path(__file__).resolve().parents[2] / "tools" / "ollama_mock_server.py"
+    spec = spec_from_file_location("batllm_mock_contract", path)
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), module.MockHandler)
+    worker = threading.Thread(target=server.serve_forever, daemon=True)
+    worker.start()
+    try:
+        provider = OllamaProvider(host="http://127.0.0.1", port=server.server_port,
+                                  model="smollm2:latest", timeout=2)
+        messages = [{"role": "user", "content": "Reply with exactly OK"}]
+        assert provider.summarize(messages) == "OK"
+        assert "".join(provider.stream(messages)) == "OK"
+        preload_model("http://127.0.0.1", server.server_port, "smollm2:latest", timeout=2)
+    finally:
+        server.shutdown()
+        server.server_close()
+        worker.join(timeout=2)

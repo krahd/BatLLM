@@ -193,9 +193,9 @@ class OllamaClient:
         return last
 
     @staticmethod
-    def list_remote_models():
+    def list_remote_models(*, url=None, port=None):
         return [{"name": entry.name, "installed": entry.installed}
-                for entry in ollama_service.list_remote_model_catalog()]
+                for entry in ollama_service.list_remote_model_catalog(url=url, port=port)]
 
 
 LLM_FIELDS = [
@@ -836,7 +836,8 @@ class BatLLMConfigApp(App):
         self.snap_panel.refresh()
         return snap
     def _remote_models(self):
-        return OllamaClient.list_remote_models()
+        return OllamaClient.list_remote_models(
+            url=self.ollama.base_url, port=self.ollama.port)
     def _pull_model(self, name: str, stream_callback=None) -> Dict[str, Any]:
         return self.ollama.pull_model(name, stream_callback=stream_callback)
 

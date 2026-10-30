@@ -703,9 +703,6 @@ class OllamaConfigScreen(Screen):
         )
 
     def open_remote_model_selector(self):
-        if not self._remote_model_entries:
-            self.enter_remote_model_name()
-            return
         self._append_log("Refreshing remote models...")
 
         self.refresh_remote_models(
@@ -714,7 +711,7 @@ class OllamaConfigScreen(Screen):
                 entries=self._current_model_entries(self._remote_model_entries, self.remote_models),
                 selected_value=self.selected_remote_model,
                 on_select=self._select_remote_model,
-            )
+            ) if self._remote_model_entries else self.enter_remote_model_name()
         )
 
     def refresh_local_models(self, on_complete=None):
