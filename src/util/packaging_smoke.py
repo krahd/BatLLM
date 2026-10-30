@@ -194,6 +194,19 @@ def run_release_installer_smoke(
             errors.append(
                 f"installer smoke failed: expected virtualenv python not found: {expected_python}"
             )
+        else:
+            try:
+                code, out, err = run_command(
+                    [str(expected_python), "src/util/compat.py"],
+                    cwd=stage_root,
+                    timeout=timeout_seconds,
+                )
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                errors.append(f"installer smoke failed: cannot validate virtualenv Python: {exc}")
+            else:
+                if code != 0:
+                    errors.append("installer smoke failed: virtualenv Python compatibility check failed")
+                    errors.extend(value.strip() for value in (out, err) if value.strip())
 
     return errors
 

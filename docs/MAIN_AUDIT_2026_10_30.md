@@ -6,9 +6,9 @@
 
 [PR #66](https://github.com/krahd/BatLLM/pull/66), the published Modelito 1.4.8 consumer migration, was merged into `main` as `b1f7d3dafe3f02ee87183edffb007415c65bc4cf`. The audit below concerns that exact application source. Version remains `0.3.6`.
 
-The supported-Python source application passed the full automated suite and a complete native game/save/replay rehearsal. All five post-merge hosted workflows passed. Four findings remain open, including a bundle installation failure that the existing packaging smoke check misses. This establishes a tested development baseline, **not stable-release sign-off**. No runtime repairs or release publication form part of this audit.
+The supported-Python source application passed the full automated suite and a complete native game/save/replay rehearsal. All five post-merge hosted workflows passed. The initial audit found four open issues, including a bundle installation failure that the packaging smoke check missed. This establishes a tested development baseline, **not stable-release sign-off**. A subsequent, explicitly scoped repair addresses A1 and A2 only; see [repair verification](#targeted-repair-verification--30-october-2026). A3 and A4 remain open.
 
-## Open findings
+## Findings at the audited commit
 
 ### A1 — P1: bundle installation can succeed with an unsupported interpreter
 
@@ -105,4 +105,14 @@ The following gates remain unrun in this audit: native first-run on Linux and Wi
 
 The Homebrew check installed and removed a temporary BatLLM formula/tap; no prior BatLLM formula was installed. Homebrew dependency changes, including the Python patch upgrade, remain. This was not a machine-wide rollback test.
 
-Repair A1–A4, add focused coverage for the missed contracts, repeat their native/install acceptance, then complete the remaining [1.0 release gates](RELEASE_CRITERIA_1_0.md). Keep source stability, package installation, native usability and release sign-off as separate conclusions.
+The initial recommendation was to repair A1–A4, add focused coverage for the missed contracts and repeat their native/install acceptance before completing the remaining [1.0 release gates](RELEASE_CRITERIA_1_0.md). Keep source stability, package installation, native usability and release sign-off as separate conclusions.
+
+## Targeted repair verification — 30 October 2026
+
+The follow-up changes address **A1 and A2 only**. Gameplay layout (A3) and management-download deadlines (A4) are unchanged.
+
+- **A1:** macOS/Linux and Windows installers probe interpreters with the existing launcher compatibility check before creating a virtual environment. They stop before dependency installation if no supported interpreter is available, and check the created environment too. Installer smoke validation now rejects an existing but incompatible environment. On the audit machine, default `python3` remained **3.15.2**; a fresh macOS bundle in a path containing spaces installed under **3.12.16**. Both included launchers opened their native applications and exited normally.
+- **A2:** the custom chooser inherited an extra chooser layout and an extra list visual tree. The repair retains a single custom layout, its entry-event bindings and the controller's coordinate handling. The regression check fails against the original KV rules because they resolve two layouts. Native source and installed-bundle checks at 800×600 confirmed that clicking file rows updates the preview and opens the intended save, including switching between valid and incompatible files. Directory navigation and Refresh retained correct behaviour. See [corrected row selection](audit-evidence/main-2026-10-30/analyser-row-selection-fixed.png).
+- **Validation:** isolated non-live suite **314 passed, 2 live tests skipped**, following the four-test core preflight; maintained Pylint **8.83/10**; compilation, documentation and diff checks passed. The authentic saved-session checksum above remained unchanged. Focused regressions cover unsupported-default fallback, absence of a supported interpreter, the shared version bounds, rejection of an incompatible installed environment and inherited KV layout duplication.
+
+Windows/Linux native installation and GUI acceptance, live gameplay and Homebrew installation were not repeated for these scoped repairs. The wider unsigned release gates remain as recorded above.

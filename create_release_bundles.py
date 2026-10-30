@@ -53,9 +53,20 @@ def windows_wrapper_contents(version: str) -> dict[str, str]:
         "install-batllm.bat": (
             "@echo off\r\n"
             "setlocal\r\n"
-            "cd /d %~dp0\r\n"
-            "where py >nul 2>nul && (set PY_CMD=py) || (set PY_CMD=python)\r\n"
+            "cd /d \"%~dp0\"\r\n"
+            "for %%P in (\"py\" \"py -3.12\" \"py -3.11\" \"py -3.10\" \"python\") do (\r\n"
+            "  %%~P src\\util\\compat.py >nul 2>nul\r\n"
+            "  if not errorlevel 1 (\r\n"
+            "    set \"PY_CMD=%%~P\"\r\n"
+            "    goto python_found\r\n"
+            "  )\r\n"
+            ")\r\n"
+            "echo Install Python 3.10, 3.11, or 3.12, then run this installer again. 1>&2\r\n"
+            "exit /b 1\r\n"
+            ":python_found\r\n"
             "%PY_CMD% -m venv .venv_BatLLM\r\n"
+            "if errorlevel 1 exit /b 1\r\n"
+            ".\\.venv_BatLLM\\Scripts\\python src\\util\\compat.py\r\n"
             "if errorlevel 1 exit /b 1\r\n"
             ".\\.venv_BatLLM\\Scripts\\python -m pip install --upgrade pip\r\n"
             "if errorlevel 1 exit /b 1\r\n"
@@ -89,17 +100,33 @@ def windows_wrapper_contents(version: str) -> dict[str, str]:
     }
 
 
+def _posix_installer_contents() -> str:
+    return (
+        "#!/usr/bin/env bash\n"
+        "set -euo pipefail\n"
+        "cd \"$(dirname \"$0\")\"\n"
+        "PYTHON=\n"
+        "for candidate in python3 python3.12 python3.11 python3.10 python; do\n"
+        "  if \"$candidate\" src/util/compat.py >/dev/null 2>&1; then\n"
+        "    PYTHON=\"$candidate\"\n"
+        "    break\n"
+        "  fi\n"
+        "done\n"
+        "if [[ -z \"$PYTHON\" ]]; then\n"
+        "  echo 'Install Python 3.10, 3.11, or 3.12, then run this installer again.' >&2\n"
+        "  exit 1\n"
+        "fi\n"
+        "\"$PYTHON\" -m venv .venv_BatLLM\n"
+        "./.venv_BatLLM/bin/python src/util/compat.py\n"
+        "./.venv_BatLLM/bin/python -m pip install --upgrade pip\n"
+        "./.venv_BatLLM/bin/python -m pip install -r requirements.txt\n"
+    )
+
+
 def macos_wrapper_contents(version: str) -> dict[str, str]:
     """Return the macOS-specific wrapper files."""
     return {
-        "install-batllm.command": (
-            "#!/usr/bin/env bash\n"
-            "set -euo pipefail\n"
-            "cd \"$(dirname \"$0\")\"\n"
-            "python3 -m venv .venv_BatLLM\n"
-            "./.venv_BatLLM/bin/python -m pip install --upgrade pip\n"
-            "./.venv_BatLLM/bin/python -m pip install -r requirements.txt\n"
-        ),
+        "install-batllm.command": _posix_installer_contents(),
         "run-batllm.command": (
             "#!/usr/bin/env bash\n"
             "set -euo pipefail\n"
@@ -129,14 +156,7 @@ def macos_wrapper_contents(version: str) -> dict[str, str]:
 def linux_wrapper_contents(version: str) -> dict[str, str]:
     """Return the Linux-specific wrapper files."""
     return {
-        "install-batllm.sh": (
-            "#!/usr/bin/env bash\n"
-            "set -euo pipefail\n"
-            "cd \"$(dirname \"$0\")\"\n"
-            "python3 -m venv .venv_BatLLM\n"
-            "./.venv_BatLLM/bin/python -m pip install --upgrade pip\n"
-            "./.venv_BatLLM/bin/python -m pip install -r requirements.txt\n"
-        ),
+        "install-batllm.sh": _posix_installer_contents(),
         "run-batllm.sh": (
             "#!/usr/bin/env bash\n"
             "set -euo pipefail\n"
