@@ -123,7 +123,7 @@ flowchart LR
 1. `HomeScreen` collects one prompt per player.
 2. `GameBoard` starts the round when both prompts are ready.
 3. `OllamaConnector` builds the model messages and maintains independent or shared histories.
-4. The shared `src/llm/chat.py` adapter uses strict Modelito 1.4.6 requests with native options, structured roles, `stream: false`, and an explicit transport timeout.
+4. The shared `src/llm/chat.py` adapter uses strict Modelito 1.4.8 requests with native options, structured roles, `stream: false`, and an explicit transport timeout.
 5. `replay_engine.parse_model_response()` converts the returned text into BatLLM's bounded command grammar.
 6. The live bot executes the command.
 7. `HistoryManager` records prompts, responses, commands, states, and outcomes.

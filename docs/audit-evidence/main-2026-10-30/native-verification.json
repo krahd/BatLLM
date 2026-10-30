@@ -1,0 +1,26 @@
+{
+  "summary": {
+    "schema_version": 2,
+    "session_type": "batllm_saved_session",
+    "app_version": "0.3.6",
+    "saved_at": "2026-10-30T16:08:10.564338",
+    "configured_model": "smollm2:latest",
+    "game_count": 1,
+    "round_count": 2,
+    "turn_count": 16
+  },
+  "plays": 32,
+  "replay_positions": 48,
+  "mismatches": [],
+  "invalid_controls": {
+    "legacy": "This saved session uses the legacy BatLLM format. Save a new session to use Game Analyzer.",
+    "invalid_rules": "Gameplay snapshot turns_per_round has an invalid type"
+  },
+  "tamper_detected": true,
+  "sha256": "0c0be15ed87be76b6049b0f6292f64a1e7ca6d295c4af68b5da0bb72fce9e766",
+  "first_play": {
+    "bot_id": 2,
+    "llm_response": "M",
+    "cmd": "M"
+  }
+}

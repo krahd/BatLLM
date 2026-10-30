@@ -1,10 +1,10 @@
 # BatLLM status
 
-Last updated: 2026-10-29 02:26
+Last updated: 2026-10-30 17:19
 
 ## Project and release phase
 
-BatLLM is a Python/Kivy research, education and two-player battle game. Human prompts mediate model commands inside a deterministic game world. Version `0.3.6` remains in `0.x` hardening; stable 1.0 gates are unsigned.
+BatLLM is a Python/Kivy research, education and two-player battle game. Human prompts mediate model commands inside a deterministic game world. Version `0.3.6` remains in `0.x` hardening. The published Modelito 1.4.8 migration is merged into `main`; the source baseline is tested, but installation and native UI findings keep stable 1.0 gates unsigned.
 
 ## Current capabilities
 
@@ -37,7 +37,7 @@ Headless validation uses `KIVY_WINDOW=mock`, `KIVY_NO_ARGS=1` and `KIVY_NO_CONSO
 
 - `src/game/`: Kivy coordination, pure replay semantics, histories, v2 sessions and v3 research traces.
 - `src/llm/chat.py`: shared strict inference adapter for desktop and research.
-- `src/llm/service.py`: BatLLM configuration, bounded management operations and owned-process lifecycle.
+- `src/llm/service.py`: BatLLM configuration, explicit-endpoint management operations and owned-process lifecycle.
 - `src/configs/app_config.py`: section-validated loading, execution-only setting overrides and atomic preference writes.
 - `src/configs/configurator.py`: standalone editor using the same strict transport and explicit-endpoint management operations.
 - `src/util/paths.py`: resources, user state and legacy-session copying.
@@ -55,33 +55,29 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 ## Validation evidence
 
-Current validation evidence (local runs use Python 3.12/macOS):
+The [30 October main audit](docs/MAIN_AUDIT_2026_10_30.md) records results against merged application commit `b1f7d3d` and distinguishes source, live, native and installation acceptance:
 
-- Modelito 1.4.8 migration: latest full isolated non-live suite **308 passed, 2 skipped** against the fresh public package (Python 3.12, headless mock); actual gated smoke tests against a test-owned mock server **2 passed**; documentation validation passed. The CI mock now provides requested model identity, terminal completion and valid empty warm-up text. Native catalogue selector displayed 264 families, local inventory displayed 18 models, and installed `smollm2:latest` selection/warm-up/persistence passed in a disposable profile. No model download/deletion or service control occurred. Native attachment/capture initially failed and recovered on retry. This does not repeat the full gameplay rehearsal below.
+- All five post-merge hosted workflows passed, including the Python 3.10–3.12 Linux/macOS/Windows CI matrix, multiplatform validation, dependency audit, research validation and Pages deployment.
+- Fresh public Modelito 1.4.8 installation verified; `python run_tests.py full` passed **310 tests with no skips**, following the four-test core preflight. Live smoke used the existing Ollama service with isolated application state and left that external service running.
+- Native macOS SDL2 source rehearsal passed one complete game using the shipped two-round/eight-turn length: **32 real `smollm2:latest` plays**. Save, in-app/standalone analyser, replay navigation and compatibility rejection passed through Recent Sessions. Independent traversal of **48 replay positions found zero mismatches**; a tampered control was detected.
+- A test-owned Ollama server started, warmed the installed model, established ownership and stopped; the pre-existing external server remained running. No real model download, deletion or explicit unload was performed.
+- Compilation, documentation validation and `pip check` passed. Maintained Pylint passed at **8.83/10** with existing warnings. Runtime dependency audit reported no known vulnerabilities at audit time.
+- Isolated research experiments passed: 60 sessions, 1,080 equivalent plays, 5,000 reference cases, 1,560/1,560 injected faults detected and 180/180 serialisation controls accepted; the 206-file artefact built successfully.
+- Source/platform archive generation, actual formula dependency resolution, and Apple Silicon Homebrew install/test/uninstall passed. The existing bundle installer smoke also returned success, but an additional actual-launch check **failed**: the installer selected unsupported Python 3.15.2. Homebrew GUI launch was not tested.
 
-- hosted Multiplatform Validation passed on repair commit `7e75061`: Linux/macOS/Windows bundle generation, Homebrew dry-run and mock-Ollama integration ([run](https://github.com/krahd/BatLLM/actions/runs/40580426888));
-- current isolated non-live suite: `304 passed, 2 skipped`; focused analyser/Ollama screens: `67 passed` (27 October 2026). The earlier pre-repair rehearsal passed `293` tests with real-Ollama smoke enabled; live smoke was not repeated for these UI repairs;
-- native source rehearsal: two complete games, four rounds, eight turns and sixteen real `smollm2:latest` responses; native save/save-on-exit and in-app/standalone analyser load, navigation, compatibility rejection and mismatch diagnosis passed; independent traversal of all 24 saved replay positions found zero mismatches; see [native rehearsal audit](docs/NATIVE_REHEARSAL_2026_10_27.md);
-- native repair checks: clear/scrollable previews at 1440×900, 1024×768 and 800×600 logical sizes; file-list addition/removal and retained selection passed through scheduled native UI events; the original save checksum and all 24 replay positions reverified;
-- maintained regressions cover all eleven earlier audit findings and the new Refresh/alias cases, including standalone endpoint/deadline/confirmation boundaries, cancellation, reset races, temporary settings, context changes, stale selections, imported rules and malformed v3 traces;
-- extracted research ZIP generates and verifies scripted traces with the original checkout absent from the subprocess import path;
-- full Pylint gate: passed, `8.84/10`, no errors; existing warnings remain;
-- compilation, documentation validation, KV parsing and diff checks: passed;
-- Homebrew formula generation with actual dependency resolution/hashes: passed; `jsonschema` is now a runtime dependency;
-- isolated research pipeline and package build: passed (60 traces, 1,080 transitions, 5,000 reference cases, 1,560/1,560 injected faults detected and 180 serialisation controls accepted).
-
-The [post-merge audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md) retains the original `d86ae05` evidence and a separate current repair disposition. The combined repairs target `main`; hosted validation of the combined source is tracked in [PR #65](https://github.com/krahd/BatLLM/pull/65). Earlier repair checks are retained in merged PR #63. Historical repair evidence remains in [the first audit verification](docs/ADVERSARIAL_AUDIT_2026_10_25.md), the changelog and pull requests.
+Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEARSAL_2026_10_27.md), [26 October adversarial audit](docs/ADVERSARIAL_AUDIT_2026_10_26.md), changelog and merged pull requests. Those historical results are not substitutes for the current audit's explicit limits.
 
 ## Known limitations and pending work
 
-- The three native-audit usability defects are repaired: bounded/scrollable previews, both file lists refreshed and omitted-tag model status corrected. Native error/recovery and damage/exit combinations remain partially untested; see the native audit for exact scope.
-- Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity; use the research trace contract for research evidence.
-- Native first-run checks on macOS, Linux and Windows, and install-level Apple Silicon Homebrew validation remain release gates.
+- **A1 — bundle installation:** installers select an unqualified interpreter. The macOS bundle can install successfully under unsupported Python, then fail both launchers. Select/validate Python 3.10–3.12 and extend smoke checks to cover actual launch compatibility.
+- **A2 — analyser selection:** native main file-list row clicks did not update selection in either analyser at 800×600; Recent Sessions worked. Isolate the event-routing cause and repeat physical pointer acceptance.
+- **A3 — small-window gameplay:** command headings and footer actions clip/overlap at 800×600. Enlarging the window worked; responsive/minimum-size behaviour needs repair.
+- **A4 — download deadline:** management downloads check elapsed time only after an event arrives. A local delayed stream exceeded the requested total timeout. Enforce the remaining deadline during reads and add a partial-progress stall regression.
+- Native first-run on Linux/Windows, Homebrew GUI gameplay/save, missing/stopped/unresponsive Ollama UI recovery, actual download/deletion, native malformed-output and damage/fatal-shot paths, exhaustive save/exit/recovery and accessibility remain acceptance work. See the audit for the exact scope.
+- Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity. v2 analysis is weaker than the v3 research contract; neither authenticates a serving binary or model weights.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
-- Both dependency pins target published Modelito 1.4.8. Fresh uncached public-package installation and the complete isolated BatLLM suite passed: **308 passed, 2 skipped**, with version/import path verified. Modelito release CI passed Python 3.10–3.12 (486 passed, 1 skipped each), 125 Windows regressions, lint, typing and docs. BatLLM retains no-download startup and owned-process shutdown. Consumer hosted CI is tracked in [PR #66](https://github.com/krahd/BatLLM/pull/66). Its endpoint regression avoids constructing native widgets in headless runners; native cross-platform/install-level acceptance remains a separate gate; current native acceptance covers catalogue and installed-model warm-up only.
 - Console cancellation retires UI output immediately and closes its iterator when a fragment or configured read deadline returns; it does not abort a blocked provider read instantly.
-- v2 analysis is diagnostic and weaker than v3; neither format authenticates a serving binary or model weights.
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-29 02:26
+Last updated: 2026-10-30 17:19
