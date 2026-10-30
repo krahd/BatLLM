@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### Modelito 1.4.8 integration and main audit — 30 October 2026
+
+- merged the published Modelito 1.4.8 consumer migration, restoring remote model-family discovery while preserving explicit endpoints, no-download startup and owned-service shutdown;
+- verified merged main with all five hosted workflows, the full 310-test suite, real-model native gameplay/save/replay, research experiments and install-level Homebrew checks; and
+- recorded four open findings in [the main audit](MAIN_AUDIT_2026_10_30.md): unsupported interpreter selection in bundle installers, unresponsive analyser file-row selection, small-window gameplay clipping and a download deadline overrun. These are findings, not repairs or release sign-off.
+
 ### Native audit repairs — 27 October 2026
 
 - confirmed and repaired the three native-rehearsal findings: preview overflow, stale file-list refresh and false stopped status for an untagged model alias;

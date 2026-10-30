@@ -1,0 +1,12 @@
+{
+  "timeout_seconds": 0.75,
+  "event_interval_seconds": 0.5,
+  "elapsed_seconds": 1.015,
+  "events": 2,
+  "yielded_at_seconds": [
+    0.005,
+    0.51
+  ],
+  "error": "Model download exceeded 0.75s",
+  "error_type": "TimeoutError"
+}

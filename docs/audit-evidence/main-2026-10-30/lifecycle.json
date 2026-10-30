@@ -1,0 +1,9 @@
+{
+  "port": 56209,
+  "start_rc": 0,
+  "running": true,
+  "owned_receipt_exists": true,
+  "stop_rc": 0,
+  "running_after_stop": false,
+  "external_running": true
+}
