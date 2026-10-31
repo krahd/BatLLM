@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-10-30 17:44
+Last updated: 2026-10-31 01:41
 
 ## Project and release phase
 
@@ -71,6 +71,8 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 
 ## Known limitations and pending work
 
+- Homebrew publishing hardening (31 October 2026): the tap clone now uses pinned `actions/checkout@v6` with a scoped repository token, rather than embedding that token in the Git remote URL. Workflow execution after this change has not yet been validated; the shared token's provider-side scope and rotation remain to verify.
+
 - **A1/A2 repaired:** bundle installers select/check Python 3.10–3.12 and smoke checks validate the installed interpreter; the analyser uses a single custom file-list layout so native row selection works. Windows/Linux native installer acceptance remains unrun.
 - **A3 — small-window gameplay:** command headings and footer actions clip/overlap at 800×600. Enlarging the window worked; responsive/minimum-size behaviour needs repair.
 - **A4 — download deadline:** management downloads check elapsed time only after an event arrives. A local delayed stream exceeded the requested total timeout. Enforce the remaining deadline during reads and add a partial-progress stall regression.
@@ -81,4 +83,4 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-30 17:44
+Last updated: 2026-10-31 01:41
