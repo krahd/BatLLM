@@ -55,12 +55,14 @@ jobs:
             exit 1
           fi
 
-      - name: Clone shared tap repository
-        env:
-          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-        run: |
-          : "${HOMEBREW_TAP_TOKEN:?HOMEBREW_TAP_TOKEN is required}"
-          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/krahd/homebrew-tap.git" tap-repo
+      - name: Check out shared Homebrew tap with scoped publishing credential
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          repository: krahd/homebrew-tap
+          ref: main
+          path: tap-repo
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          persist-credentials: true
 
       - name: Render formula
         run: |
