@@ -1,10 +1,10 @@
 # BatLLM status
 
-Last updated: 2026-10-30 17:19
+Last updated: 2026-10-30 17:44
 
 ## Project and release phase
 
-BatLLM is a Python/Kivy research, education and two-player battle game. Human prompts mediate model commands inside a deterministic game world. Version `0.3.6` remains in `0.x` hardening. The published Modelito 1.4.8 migration is merged into `main`; the source baseline is tested, but installation and native UI findings keep stable 1.0 gates unsigned.
+BatLLM is a Python/Kivy research, education and two-player battle game. Human prompts mediate model commands inside a deterministic game world. Version `0.3.6` remains in `0.x` hardening. The published Modelito 1.4.8 migration is merged into `main`; the source baseline is tested, but native UI and download-deadline findings keep stable 1.0 gates unsigned.
 
 ## Current capabilities
 
@@ -55,6 +55,8 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 ## Validation evidence
 
+The targeted A1/A2 repairs passed **314 non-live tests, 2 live tests skipped**, the four-test core preflight, Pylint **8.83/10**, compilation and documentation checks. A fresh macOS bundle selected Python **3.12.16** despite a default Python **3.15.2**; both native launchers opened successfully. Physical analyser row selection, preview changes and opening the selected save passed in source and installed-bundle checks at 800×600. Directory navigation and Refresh also passed. See [repair verification](docs/MAIN_AUDIT_2026_10_30.md#targeted-repair-verification--30-october-2026).
+
 The [30 October main audit](docs/MAIN_AUDIT_2026_10_30.md) records results against merged application commit `b1f7d3d` and distinguishes source, live, native and installation acceptance:
 
 - All five post-merge hosted workflows passed, including the Python 3.10–3.12 Linux/macOS/Windows CI matrix, multiplatform validation, dependency audit, research validation and Pages deployment.
@@ -69,8 +71,7 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 
 ## Known limitations and pending work
 
-- **A1 — bundle installation:** installers select an unqualified interpreter. The macOS bundle can install successfully under unsupported Python, then fail both launchers. Select/validate Python 3.10–3.12 and extend smoke checks to cover actual launch compatibility.
-- **A2 — analyser selection:** native main file-list row clicks did not update selection in either analyser at 800×600; Recent Sessions worked. Isolate the event-routing cause and repeat physical pointer acceptance.
+- **A1/A2 repaired:** bundle installers select/check Python 3.10–3.12 and smoke checks validate the installed interpreter; the analyser uses a single custom file-list layout so native row selection works. Windows/Linux native installer acceptance remains unrun.
 - **A3 — small-window gameplay:** command headings and footer actions clip/overlap at 800×600. Enlarging the window worked; responsive/minimum-size behaviour needs repair.
 - **A4 — download deadline:** management downloads check elapsed time only after an event arrives. A local delayed stream exceeded the requested total timeout. Enforce the remaining deadline during reads and add a partial-progress stall regression.
 - Native first-run on Linux/Windows, Homebrew GUI gameplay/save, missing/stopped/unresponsive Ollama UI recovery, actual download/deletion, native malformed-output and damage/fatal-shot paths, exhaustive save/exit/recovery and accessibility remain acceptance work. See the audit for the exact scope.
@@ -80,4 +81,4 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-10-30 17:19
+Last updated: 2026-10-30 17:44

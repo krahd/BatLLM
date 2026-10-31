@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+### Targeted installer and analyser repairs — 30 October 2026
+
+- made bundle installers select a supported interpreter before creating an environment, and made installer smoke validation check the resulting interpreter;
+- removed overlapping inherited file-list layouts so analyser row clicks update the selected file and preview; and
+- verified actual macOS bundle installation, both launchers and native row selection. Only findings A1 and A2 are repaired; A3 and A4 remain open. See [repair verification](MAIN_AUDIT_2026_10_30.md#targeted-repair-verification--30-october-2026).
+
 ### Modelito 1.4.8 integration and main audit — 30 October 2026
 
 - merged the published Modelito 1.4.8 consumer migration, restoring remote model-family discovery while preserving explicit endpoints, no-download startup and owned-service shutdown;

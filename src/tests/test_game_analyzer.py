@@ -332,10 +332,32 @@ def test_analyzer_kv_files_load_with_registered_widgets() -> None:
 import sys
 sys.path.insert(0, "src")
 from kivy.lang import Builder
+from kivy.factory import Factory
+from unittest.mock import Mock
 import view.analyzer_load_screen
 import view.analyzer_review_screen
 Builder.load_file("src/view/analyzer_load_screen.kv")
 Builder.load_file("src/view/analyzer_review_screen.kv")
+
+def descendants(rule):
+    for child in rule.children:
+        yield child
+        yield from descendants(child)
+
+# Resolve inherited KV rules as Kivy does: an extra layout can intercept
+# touches even though the file entries remain visible underneath it.
+for widget_name, child_name in (
+    ("AnalyzerFileChooserListView", "AnalyzerFileChooserListLayout"),
+    ("AnalyzerFileChooserListLayout", "TreeView"),
+):
+    target = Mock(spec=Factory.get(widget_name))
+    target.cls = []
+    children = [child for rule in Builder.match(target) for child in descendants(rule)]
+    if child_name.endswith("Layout"):
+        matching = [child for child in children if child.name.endswith("FileChooserListLayout")]
+    else:
+        matching = [child for child in children if child.name == child_name]
+    assert len(matching) == 1, (widget_name, [child.name for child in matching])
 print("kv-ok")
 """
 

@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import tarfile
+import os
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
+
+import pytest
 
 from util import packaging_smoke
 
@@ -157,3 +163,94 @@ def test_run_homebrew_install_smoke_reports_missing_brew(monkeypatch, tmp_path: 
     )
 
     assert errors == ["homebrew install smoke failed: brew command not found on PATH"]
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX installer execution")
+@pytest.mark.parametrize("supported_available", [True, False])
+def test_bundle_installer_skips_unsupported_default(tmp_path, supported_available):
+    from create_release_bundles import macos_wrapper_contents
+
+    bundle = tmp_path / "Bundle with spaces"
+    bundle.mkdir()
+    script = bundle / "install-batllm.command"
+    script.write_text(macos_wrapper_contents("0.3.6")[script.name])
+    commands = tmp_path / "commands"
+    commands.mkdir()
+    (commands / "dirname").symlink_to(shutil.which("dirname"))
+    log = tmp_path / "commands.log"
+
+    # Test interpreter discovery without creating environments or using pip.
+    for name, supported in (("python3", False), ("python3.12", supported_available)):
+        candidate = commands / name
+        candidate.write_text(
+            f"#!{sys.executable}\n"
+            "import sys\nfrom pathlib import Path\n"
+            f"with Path({str(log)!r}).open('a') as log:\n"
+            f"    log.write({name!r} + ' ' + ' '.join(sys.argv[1:]) + '\\n')\n"
+            f"if not {supported!r}: sys.exit(1)\n"
+            "if sys.argv[1:3] == ['-m', 'venv']:\n"
+            "    target = Path(sys.argv[3]) / 'bin' / 'python'\n"
+            "    target.parent.mkdir(parents=True)\n"
+            "    target.write_text(Path(__file__).read_text())\n"
+            "    target.chmod(0o755)\n"
+        )
+        candidate.chmod(0o755)
+
+    result = subprocess.run(
+        [shutil.which("bash"), str(script)], cwd=tmp_path,
+        env={**os.environ, "PATH": str(commands)}, capture_output=True, text=True, check=False,
+    )
+    calls = log.read_text()
+    assert "python3 -m" not in calls
+    if supported_available:
+        assert result.returncode == 0, result.stderr
+        assert "python3.12 -m venv .venv_BatLLM" in calls
+        assert (bundle / ".venv_BatLLM/bin/python").exists()
+    else:
+        assert result.returncode != 0
+        assert "Install Python 3.10, 3.11, or 3.12" in result.stderr
+        assert "-m venv" not in calls and "-m pip" not in calls
+        assert not (bundle / ".venv_BatLLM").exists()
+
+
+@pytest.mark.parametrize("returncode", [0, 1])
+def test_installer_smoke_checks_created_python(monkeypatch, tmp_path, returncode):
+    (tmp_path / "VERSION").write_text("0.3.6")
+    archive = packaging_smoke.expected_release_artifact_paths(tmp_path, "0.3.6")["macos_zip"]
+    archive.parent.mkdir(parents=True)
+    with ZipFile(archive, "w") as bundle:
+        bundle.writestr("BatLLM-v0.3.6-macos/install-batllm.command", "exit 0\n")
+
+    def installed(stage, *_args):
+        python = stage / ".venv_BatLLM" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+        python.parent.mkdir(parents=True)
+        python.touch()
+        return 0, "", ""
+
+    def check_python(command, cwd, **_kwargs):
+        assert Path(command[0]).is_relative_to(cwd / ".venv_BatLLM")
+        assert command[1:] == ["src/util/compat.py"]
+        return returncode, "", "Detected Python 3.15.2." if returncode else ""
+
+    monkeypatch.setattr(packaging_smoke, "_run_installer_script", installed)
+    monkeypatch.setattr(packaging_smoke, "run_command", check_python)
+    errors = packaging_smoke.run_release_installer_smoke(
+        tmp_path, timeout_seconds=10, artifact_key="macos_zip")
+    if returncode:
+        assert errors and "Detected Python 3.15.2." in errors
+    else:
+        assert not errors
+
+
+@pytest.mark.parametrize("version, returncode", [((3, 12, 0), 0), ((3, 15, 2), 1)])
+def test_installer_python_probe_uses_launcher_version_bounds(version, returncode):
+    root = Path(__file__).resolve().parents[2]
+    result = subprocess.run(
+        [sys.executable, "-c",
+         f"import runpy, sys; sys.version_info = {version!r}; "
+         "runpy.run_path('src/util/compat.py', run_name='__main__')"],
+        cwd=root, capture_output=True, text=True, check=False,
+    )
+    assert result.returncode == returncode
+    if returncode:
+        assert "requires Python 3.10 through 3.12" in result.stderr

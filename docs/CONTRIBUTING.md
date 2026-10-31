@@ -247,6 +247,8 @@ Review generated changes carefully; `docs/code/` is large and noisy.
 
 ### Packaging checks
 
+Bundle installers check the default interpreter, then supported versioned interpreters, before creating the environment. If Python 3.10–3.12 is unavailable they stop before installation. The installer smoke check also validates the created environment against the launchers' Python compatibility check.
+
 Release bundles and formula rendering:
 
 ```bash

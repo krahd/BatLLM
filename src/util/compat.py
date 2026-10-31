@@ -28,3 +28,7 @@ def require_supported_python(app_name: str = "BatLLM") -> None:
         f"{app_name} requires Python {supported}. "
         f"Detected Python {version}."
     )
+
+
+if __name__ == "__main__":
+    require_supported_python()

@@ -1,9 +1,15 @@
 #:kivy 2.3.1
 #:import dp kivy.metrics.dp
 #:import theme view.analyzer_theme
+#:import FileChooserController kivy.uix.filechooser.FileChooserController
 
-<AnalyzerFileChooserListLayout@FileChooserListLayout>:
+# Replace the inherited visual tree so an empty overlay cannot intercept rows.
+<-AnalyzerFileChooserListLayout@FileChooserListLayout>:
     _ENTRY_TEMPLATE: "AnalyzerFileListEntry"
+    on_entry_added: treeview.add_node(args[1])
+    on_entries_cleared: treeview.root.nodes = []
+    on_subentry_to_entry: not args[2].locked and treeview.add_node(args[1], args[2])
+    on_remove_subentry: args[2].nodes = []
     canvas.before:
         Color:
             rgba: theme.NEUTRAL_BG
@@ -95,7 +101,7 @@
             font_name: ctx.controller().font_name
             color: theme.TEXT_SECONDARY
 
-<AnalyzerFileChooserListView@FileChooserListView>:
+<AnalyzerFileChooserListView@FileChooserController>:
     _ENTRY_TEMPLATE: "AnalyzerFileListEntry"
     layout: layout
     AnalyzerFileChooserListLayout:
