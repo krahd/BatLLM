@@ -4,6 +4,19 @@
 
 ## Unreleased
 
+### Workshop fork preparation — 6 November 2026
+
+- made source setup select Python 3.12 explicitly on Unix and Windows;
+- documented the organisation → student fork workflow, pinned Modelito baseline,
+  contributor checks and scripted trace exercise;
+- isolated non-live HTTP tests from inherited proxy settings;
+- fixed research and verifier CLI options being intercepted by Kivy in a clean
+  shell, and tested both launchers outside CI's Kivy environment;
+- restricted Homebrew publishing to the canonical repository; and
+- excluded local poster-capture state from newly built research packages, with a
+  regression check. The last two fixes carry forward focused changes from draft
+  PR #64 without its repository-wide cleanup or historical status snapshot.
+
 ### Targeted installer and analyser repairs — 30 October 2026
 
 - made bundle installers select a supported interpreter before creating an environment, and made installer smoke validation check the resulting interpreter;

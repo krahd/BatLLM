@@ -58,15 +58,20 @@ batllm-analyzer
 ```bash
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
-python3 -m venv .venv_BatLLM
+python3.12 -m venv .venv_BatLLM
 source .venv_BatLLM/bin/activate
 python -m pip install -r requirements.txt
 python run_batllm.py
 ```
 
-On Windows PowerShell, activate the environment with:
+Install Python 3.12 first. The unversioned `python3` or `py` command may select an
+unsupported interpreter. For workshop work, clone your personal fork instead of
+the canonical repository; see [workshop forks](docs/CONTRIBUTING.md#workshop-forks).
+
+On Windows PowerShell, create and activate the environment with:
 
 ```powershell
+py -3.12 -m venv .venv_BatLLM
 .\.venv_BatLLM\Scripts\Activate.ps1
 ```
 

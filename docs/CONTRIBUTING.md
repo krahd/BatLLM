@@ -22,13 +22,15 @@ For larger features or architecture changes, open an issue before implementation
 ### Python
 
 BatLLM supports Python `3.10`, `3.11`, and `3.12`. Python `3.12` is recommended.
+Install it before creating the environment; an unversioned `python3` or `py`
+may select a newer, unsupported interpreter.
 
 macOS and Linux:
 
 ```bash
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
-python3 -m venv .venv_BatLLM
+python3.12 -m venv .venv_BatLLM
 source .venv_BatLLM/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -39,7 +41,7 @@ Windows PowerShell:
 ```powershell
 git clone https://github.com/krahd/BatLLM.git
 cd BatLLM
-py -m venv .venv_BatLLM
+py -3.12 -m venv .venv_BatLLM
 .\.venv_BatLLM\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
@@ -70,6 +72,61 @@ Most tests do not require Ollama. Live gameplay and the explicitly live test mod
 - at least one installed model.
 
 BatLLM uses `modelito` for gameplay requests and model-management helpers. The repository-supported version is pinned in `requirements.txt`; contributors should install the complete requirements file rather than installing individual packages manually.
+
+## Workshop forks
+
+The coordinator forks canonical `krahd/BatLLM` into the workshop organisation.
+Students then fork that workshop repository into their own accounts. Use the
+reviewed canonical `main` as the starting point; old audit or stabilisation
+branches are not alternative workshop baselines.
+
+| Checkout | `origin` | `upstream` | Pull request destination |
+| --- | --- | --- | --- |
+| Coordinator | workshop organisation's BatLLM fork | `https://github.com/krahd/BatLLM.git` | canonical repository for selected upstream contributions |
+| Student | student's BatLLM fork | workshop organisation's BatLLM fork | workshop repository |
+
+Clone the appropriate fork URL, then follow the Python 3.12 setup above. Add the
+corresponding `upstream` URL with `git remote add upstream URL`, replacing `URL`
+with the repository URL from the table. Check `git remote -v` and the target
+repository shown on GitHub before opening a pull request. Use one task branch
+per issue, with ordinary pull requests into the workshop's `main`.
+
+Enable GitHub Actions on the workshop fork and protect its `main` with the
+available test checks. Keep upstream publishing credentials out of forks; the
+Homebrew publishing job runs only in `krahd/BatLLM`.
+
+The normal BatLLM setup installs the published `modelito==1.4.8`. A Modelito fork
+is needed only for library changes. To test such changes, install the local
+Modelito checkout into the active BatLLM environment with
+`python -m pip install -e ../modelito`, then rerun BatLLM's non-live suite. Record
+both repositories' commit IDs in the pull request. Restore the published
+dependency with `python -m pip install --force-reinstall modelito==1.4.8` before
+checking the standard workshop baseline again.
+
+Before the first session, run:
+
+```bash
+python run_tests.py non-live
+python tools/check_docs.py
+python -m pip check
+```
+
+For desktop play, install Ollama and download the agreed small model beforehand
+(the shipped default is `smollm2`; `ollama pull smollm2` downloads it). Select that
+installed model in **Settings → Ollama Config**. Expand the game window if
+headings or footer controls overlap at 800×600. The in-app download total-timeout
+defect remains open; pre-downloading avoids that path during class.
+
+An exercise without Ollama or a graphical display is also available:
+
+```bash
+python run_batllm_research.py --provider scripted --output saved_sessions/workshop-v3.json
+python run_batllm_verify.py saved_sessions/workshop-v3.json
+```
+
+This creates a scripted v3 trace for the CLI verifier. It does not run an LLM and
+does not create a v2 desktop Game Analyzer save. Keep a short issue/PR record of
+the problem, change, validation and remaining uncertainty for each task.
 
 ## Repository structure
 
@@ -215,7 +272,9 @@ export KIVY_NO_CONSOLELOG=1
 export PYTHONPATH=src
 ```
 
-Tests already set an isolated `BATLLM_HOME`; do not point tests at user state.
+Tests already set an isolated `BATLLM_HOME` and remove inherited proxy settings
+for their test-owned HTTP endpoints; do not point tests at user state. These
+test fixtures do not change the application's proxy configuration.
 
 ### Lint and compilation
 

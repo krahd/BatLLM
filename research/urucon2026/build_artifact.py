@@ -52,6 +52,8 @@ def selected_files() -> list[Path]:
         for path in item.rglob("*"):
             if not path.is_file() or path.name == ".DS_Store":
                 continue
+            if path.is_relative_to(RESEARCH / "results" / "poster_capture"):
+                continue
             if path in {PACKAGE, MANIFEST, PACKAGE_HASH}:
                 continue
             if any(part in {"__pycache__", ".pytest_cache"} for part in path.parts):

@@ -30,6 +30,23 @@ from view.settings_screen import SettingsScreen
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def test_research_package_excludes_local_poster_state(tmp_path, monkeypatch):
+    spec = import_util.spec_from_file_location(
+        "package_hygiene", ROOT / "research/urucon2026/build_artifact.py")
+    package = import_util.module_from_spec(spec)
+    spec.loader.exec_module(package)
+    research = tmp_path / "research/urucon2026"
+    canonical = research / "results/replay.json"
+    local = research / "results/poster_capture/kivy_user/config.ini"
+    for path in (canonical, local):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("test", encoding="utf-8")
+    monkeypatch.setattr(package, "ROOT", tmp_path)
+    monkeypatch.setattr(package, "RESEARCH", research)
+    monkeypatch.setattr(package, "CORE_PATHS", [research])
+    assert package.selected_files() == [canonical]
+
+
 @pytest.fixture
 def editor(monkeypatch):
     monkeypatch.setattr("kivy.core.window.Window", SimpleNamespace(), raising=False)
@@ -409,6 +426,11 @@ def test_extracted_research_package_generates_and_verifies_without_checkout(tmp_
         archive.extractall(extracted)
     assert (extracted / "VERSION").read_bytes() == (ROOT / "VERSION").read_bytes()
     env = {**os.environ, "PYTHONPATH": str(extracted / "src"), "BATLLM_HOME": str(tmp_path / "state")}
+    # CI disables Kivy's argument parser globally. A fresh workshop shell does
+    # not, so the packaged launchers must handle their own arguments unaided.
+    env.pop("KIVY_NO_ARGS", None)
+    env.pop("KIVY_WINDOW", None)
+    env["KIVY_HOME"] = str(tmp_path / "kivy")
     trace, report = tmp_path / "trace.json", tmp_path / "report.json"
     for arguments in (
         ["run_batllm_research.py", "--provider", "scripted", "--turns", "2", "--output", str(trace)],

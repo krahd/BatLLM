@@ -20,6 +20,7 @@ permissions:
 
 jobs:
   publish:
+    if: github.repository == 'krahd/BatLLM'
     name: Publish batllm formula
     runs-on: ubuntu-latest
     timeout-minutes: 20
