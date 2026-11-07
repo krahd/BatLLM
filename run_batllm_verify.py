@@ -4,8 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 import sys
+
+# These headless entry points own their CLI; imported configuration uses Kivy.
+os.environ["KIVY_NO_ARGS"] = "1"
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"

@@ -16,6 +16,16 @@ from configs.app_config import config
 
 
 @pytest.fixture(autouse=True)
+def _isolate_test_proxies(monkeypatch) -> None:
+    """Keep test-owned HTTP endpoints independent of the host's proxy setup."""
+    for key in ("http_proxy", "https_proxy", "all_proxy", "no_proxy"):
+        monkeypatch.delenv(key, raising=False)
+        monkeypatch.delenv(key.upper(), raising=False)
+    # Modelito caches urllib's proxy configuration when first imported.
+    monkeypatch.setattr("modelito._http_deadline._PROXIES", {})
+
+
+@pytest.fixture(autouse=True)
 def _disable_kivy_window_requirement(monkeypatch) -> None:
     monkeypatch.setattr("kivy.base.EventLoop.ensure_window", lambda *args, **kwargs: None)
     monkeypatch.setattr("kivy.base.EventLoop.window", SimpleNamespace(dpi=96), raising=False)
