@@ -47,6 +47,10 @@ brew install krahd/tap/batllm
 batllm
 ```
 
+The formula is published with tagged releases. If Homebrew reports that
+`batllm` is unavailable, the current version has not been published to the tap
+yet; install from source instead.
+
 Launch the standalone analyser with:
 
 ```bash

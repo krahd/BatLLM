@@ -4,6 +4,17 @@
 
 ## Unreleased
 
+### Homebrew publishing repair — 10 November 2026
+
+- moved the tap publishing job to an Apple Silicon macOS runner, because the
+  formula embeds the wheels that `pip download` resolves for the host and the
+  previous Linux runner would have produced Linux wheels for a macOS-only formula;
+- made the formula generator refuse dependency resolutions that contain wheels
+  for another platform; and
+- noted in the README that the formula is published with tagged releases. No
+  `batllm` formula is in `krahd/homebrew-tap` yet; publication still requires a
+  `v0.3.6` release tag and a run of the publishing workflow.
+
 ### Urgent audit repairs — 10 November 2026
 
 - fixed a crash when the prompt-history retrieve button was pressed before any

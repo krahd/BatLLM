@@ -387,6 +387,10 @@ python create_homebrew_formula.py \
   --formula-out /path/to/homebrew-krahd/Formula/batllm.rb
 ```
 
+Run the generator with Python 3.12 on Apple Silicon macOS. It embeds the wheels
+that `pip download` resolves for the host and refuses resolutions containing
+wheels for another platform.
+
 Tagged publication to `krahd/homebrew-tap` is handled by `.github/workflows/publish-homebrew-tap.yml` when the repository secret `HOMEBREW_TAP_TOKEN` is configured.
 
 Before a release candidate, use:

@@ -76,6 +76,49 @@ def parse_downloaded_artifact_name(filename: str) -> tuple[str, str]:
     raise ValueError(f"Unsupported artifact filename: {filename}")
 
 
+def wheel_platform_tags(filename: str) -> list[str]:
+    """Return the platform tags of a wheel filename, or an empty list for sdists."""
+    name = Path(filename).name
+    if not name.endswith(".whl"):
+        return []
+    return name[:-4].split("-")[-1].split(".")
+
+
+def is_formula_compatible_artifact(filename: str) -> bool:
+    """Report whether an artifact can be installed by the Apple Silicon macOS formula.
+
+    A wheel filename may carry several alternative platform tags; one matching
+    tag is enough. Source distributions are built by the formula itself.
+    """
+    tags = wheel_platform_tags(filename)
+    if not tags:
+        return True
+    return any(
+        tag == "any"
+        or (tag.startswith("macosx_") and tag.endswith(("_arm64", "_universal2")))
+        for tag in tags
+    )
+
+
+def ensure_formula_compatible_artifacts(filenames: list[str]) -> None:
+    """Refuse to render a formula that would embed wheels for another platform.
+
+    ``pip download`` resolves wheels for the interpreter that runs it, so the
+    generator must run on Apple Silicon macOS, the only platform the formula
+    supports. On any other host the formula would install foreign binaries.
+    """
+    incompatible = sorted(
+        name for name in filenames if not is_formula_compatible_artifact(name)
+    )
+    if incompatible:
+        raise SystemExit(
+            "The Homebrew formula targets Apple Silicon macOS, but dependency resolution "
+            "produced wheels for another platform: "
+            + ", ".join(incompatible)
+            + ". Run this generator with a Python 3.12 interpreter on Apple Silicon macOS."
+        )
+
+
 def pypi_release_file(project_name: str, version: str, filename: str) -> dict[str, str]:
     """Resolve the source URL and SHA for an exact artifact filename from PyPI."""
     request = Request(
@@ -119,10 +162,14 @@ def resolve_runtime_resources(
         ]
         subprocess.run(command, cwd=ROOT, check=True)
 
+        artifact_paths = sorted(
+            (path for path in temp_dir.iterdir() if path.is_file()),
+            key=lambda path: path.name.casefold(),
+        )
+        ensure_formula_compatible_artifacts([path.name for path in artifact_paths])
+
         resources: list[dict[str, str]] = []
-        for artifact_path in sorted(temp_dir.iterdir(), key=lambda path: path.name.casefold()):
-            if not artifact_path.is_file():
-                continue
+        for artifact_path in artifact_paths:
             project_name, version = parse_downloaded_artifact_name(artifact_path.name)
             resources.append(pypi_release_file(project_name, version, artifact_path.name))
 

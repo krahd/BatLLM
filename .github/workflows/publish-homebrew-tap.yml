@@ -22,7 +22,9 @@ jobs:
   publish:
     if: github.repository == 'krahd/BatLLM'
     name: Publish batllm formula
-    runs-on: ubuntu-latest
+    # The formula embeds the wheels that pip resolves for this runner, so it
+    # must be rendered on Apple Silicon macOS, the formula's only target.
+    runs-on: macos-latest
     timeout-minutes: 20
     env:
       FORMULA_NAME: batllm
@@ -65,8 +67,17 @@ jobs:
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           persist-credentials: true
 
+      - name: Confirm Apple Silicon macOS runner
+        run: |
+          set -euo pipefail
+          if [ "$(uname -s)" != "Darwin" ] || [ "$(uname -m)" != "arm64" ]; then
+            echo "Formula rendering requires Apple Silicon macOS, got: $(uname -sm)" >&2
+            exit 1
+          fi
+
       - name: Render formula
         run: |
+          set -euo pipefail
           mkdir -p tap-repo/Formula
           python create_homebrew_formula.py \
             --github-tag "$RELEASE_TAG" \
