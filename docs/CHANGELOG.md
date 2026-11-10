@@ -4,6 +4,20 @@
 
 ## Unreleased
 
+### Urgent audit repairs — 10 November 2026
+
+- fixed a crash when the prompt-history retrieve button was pressed before any
+  prompt had been submitted, including after New Game;
+- stopped the standalone configurator writing a placeholder user configuration on
+  first run, which replaced the shipped model, timeout and context-size defaults;
+- substituted the `[BULLET_DAMAGE]` and `[STEP_LENGTH]` placeholders in augmented
+  system instructions with the configured rules, documented `M{distance}`, and
+  corrected the `B` example, which previously showed an invalid command;
+- made `start_ollama.sh` and `stop_ollama.sh` work from any directory by adding
+  the checkout's `src` to the module path and selecting the project environment
+  or a supported interpreter (`BATLLM_PYTHON` overrides the choice); and
+- added regression tests for each repair, including executing both scripts.
+
 ### Workshop fork preparation — 6 November 2026
 
 - made source setup select Python 3.12 explicitly on Unix and Windows;

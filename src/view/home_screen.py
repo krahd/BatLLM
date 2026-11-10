@@ -360,6 +360,10 @@ class HomeScreen(Screen):
         # get the current prompt from the prompt store
         new_prompt = self.get_game_board().prompt_store.get_current_prompt(bot_id)
 
+        # Nothing has been submitted yet (fresh start or new game): keep the draft.
+        if new_prompt is None:
+            return
+
         #  set it as the current prompt being edited
         self.set_prompt_gui_input_text(bot_id, new_prompt)
 
