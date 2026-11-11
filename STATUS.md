@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-11-06 22:45
+Last updated: 2026-11-10 05:10
 
 ## Project and release phase
 
@@ -55,6 +55,16 @@ Both management interfaces use explicit BatLLM endpoints and the guarded service
 
 ## Validation evidence
 
+Urgent audit repairs on 10 November 2026 fixed the prompt-history retrieve crash,
+the configurator's first-run placeholder configuration, unsubstituted rule
+placeholders and an invalid example in the augmented system instructions, and
+the Ollama shell scripts' module path and interpreter selection. A fresh Python
+3.12 environment installed from `requirements.txt` passed **332 non-live tests,
+2 live tests skipped**, the four-test core preflight, the documentation check and
+Pylint at **8.83/10**. The 17 new regressions execute both shell scripts up to
+argument parsing; 15 of them fail against the previous code. No real Ollama
+operation, native GUI rehearsal or `python run_tests.py full` run was performed.
+
 Pre-fork verification on 6 November 2026 used a fresh Python 3.12 environment
 installed from `requirements.txt`, including the published Modelito 1.4.8:
 **315 non-live tests passed, 2 live tests skipped**, plus the four-test core
@@ -93,10 +103,12 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 - **A3 — small-window gameplay:** command headings and footer actions clip/overlap at 800×600. Enlarging the window worked; responsive/minimum-size behaviour needs repair.
 - **A4 — download deadline:** management downloads check elapsed time only after an event arrives. A local delayed stream exceeded the requested total timeout. Enforce the remaining deadline during reads and add a partial-progress stall regression.
 - Native first-run on Linux/Windows, Homebrew GUI gameplay/save, missing/stopped/unresponsive Ollama UI recovery, actual download/deletion, native malformed-output and damage/fatal-shot paths, exhaustive save/exit/recovery and accessibility remain acceptance work. See the audit for the exact scope.
+- User configurations created by the configurator's earlier first-run behaviour may still hold an empty model, a 10-second timeout and a null context size; they are not repaired automatically. Deleting those keys from the user `config.yaml` restores the shipped defaults.
+- The non-augmented system-instruction files are empty, so non-augmented games send no command grammar to the model. Whether this is intended remains to confirm.
 - Saved v2 sessions do not preserve context/augmentation modes per round or authenticate per-request model identity. v2 analysis is weaker than the v3 research contract; neither authenticates a serving binary or model weights.
 - Ownership receipts identify BatLLM-launched processes, not per-client model ownership within a shared server. Explicit model deletion/download controls still affect real shared resources.
 - Console cancellation retires UI output immediately and closes its iterator when a fragment or configured read deadline returns; it does not abort a blocked provider read instantly.
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-11-06 22:45
+Last updated: 2026-11-10 05:10

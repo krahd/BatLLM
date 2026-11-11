@@ -693,16 +693,15 @@ class BatLLMConfigApp(App):
                 pass
         self.tabs.do_layout()
     def _ensure_config_file(self, path: str):
-        if os.path.exists(path):
-            return
+        """Prepare the user config location without writing any values.
+
+        A missing user file means "use shipped defaults"; ``load_config_data``
+        already handles that. Writing placeholder values here would override
+        the shipped model, timeout and context defaults.
+        """
         base = os.path.dirname(path)
         if base:
             os.makedirs(base, exist_ok=True)
-        minimal = {'llm': {'url': 'http://localhost', 'port': 11434, 'model': '',
-                           'temperature': None, 'top_p': None, 'top_k': None, 'timeout': 10.0,
-                           'max_tokens': None, 'stop': None, 'seed': None, 'num_thread': None,
-                           'num_ctx': None, 'num_predict': None}}
-        ConfigManager(path).save(minimal)
     # Unified load/save methods (duplicates removed)
     def load_config(self):
         # Ensure cfg_path exists (can be called before build finishes)

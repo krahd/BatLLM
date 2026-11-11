@@ -9,6 +9,7 @@ from __future__ import annotations
 from util.utils import _maybe_float, _maybe_int
 from util.paths import resolve_repo_relative
 from configs.app_config import config
+from game.replay_engine import GameplaySettingsSnapshot
 from llm import service as ollama_service
 from llm.chat import Client
 
@@ -479,6 +480,23 @@ class OllamaConnector:
 
 
 
+    @staticmethod
+    def _render_system_instructions(template: str) -> str:
+        """Replace rule placeholders in a system-instruction template.
+
+        ``[BULLET_DAMAGE]`` and ``[STEP_LENGTH]`` take the configured gameplay
+        values. ``[GAME_STATE]`` and ``[PLAYER_INPUT]`` are literal section
+        labels used by augmented prompts and are left untouched.
+        """
+        rules = GameplaySettingsSnapshot.from_config(config)
+        replacements = {
+            "[BULLET_DAMAGE]": f"{rules.bullet_damage:g}",
+            "[STEP_LENGTH]": f"{rules.bot_step_length:g}",
+        }
+        for placeholder, value in replacements.items():
+            template = template.replace(placeholder, value)
+        return template
+
     def _get_system_instructions_text(self) -> str:
         """Loads from assets/headers the header (system prompt) text for the LLM request based on the mode.
 
@@ -508,7 +526,7 @@ class OllamaConnector:
         try:
             with path.open("r", encoding="utf-8") as f:
                 inst = f.read()
-                return inst
+                return self._render_system_instructions(inst)
 
         except FileNotFoundError as exc:
             raise FileNotFoundError(f"System instructions file not found: {path}") from exc
