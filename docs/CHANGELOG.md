@@ -10,7 +10,9 @@
   formula embeds the wheels that `pip download` resolves for the host and the
   previous Linux runner would have produced Linux wheels for a macOS-only formula;
 - made the formula generator refuse dependency resolutions that contain wheels
-  for another platform; and
+  for another platform or Python version;
+- moved the CI Homebrew dry-run from Linux with Python 3.11 to Apple Silicon
+  macOS with Python 3.12, so it renders the formula the tap would receive; and
 - noted in the README that the formula is published with tagged releases. No
   `batllm` formula is in `krahd/homebrew-tap` yet; publication still requires a
   `v0.3.6` release tag and a run of the publishing workflow.

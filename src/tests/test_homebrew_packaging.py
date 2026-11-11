@@ -157,6 +157,10 @@ def test_formula_accepts_only_apple_silicon_or_pure_python_artifacts() -> None:
     )
     assert not compatible("psutil-7.2.2-cp36-abi3-macosx_10_9_x86_64.whl")
     assert not compatible("PyYAML-6.0.3-cp312-cp312-win_amd64.whl")
+    # The formula's environment is Python 3.12.
+    assert not compatible("Kivy-2.3.1-cp311-cp311-macosx_10_15_universal2.whl")
+    assert not compatible("example-1.0-cp313-abi3-macosx_11_0_arm64.whl")
+    assert compatible("requests-2.34.2-py2.py3-none-any.whl")
 
 
 def test_resource_resolution_rejects_foreign_platform_wheels(monkeypatch) -> None:
@@ -222,7 +226,28 @@ def test_publish_workflow_renders_formula_on_apple_silicon_macos() -> None:
     step_names = [step.get("name") for step in job["steps"]]
 
     assert str(job["runs-on"]).startswith("macos-")
+    assert _setup_python_version(job) == "3.12"
     assert job["if"] == "github.repository == 'krahd/BatLLM'"
     assert step_names.index("Confirm Apple Silicon macOS runner") < step_names.index(
         "Render formula"
     )
+
+
+def _setup_python_version(job: dict) -> str:
+    versions = [
+        str(step["with"]["python-version"])
+        for step in job["steps"]
+        if "setup-python" in str(step.get("uses", ""))
+    ]
+    assert len(versions) == 1
+    return versions[0]
+
+
+def test_ci_dry_run_renders_formula_on_the_formula_target() -> None:
+    workflow = yaml.safe_load(
+        (ROOT / ".github/workflows/multiplatform.yml").read_text(encoding="utf-8")
+    )
+    job = workflow["jobs"]["homebrew"]
+
+    assert str(job["runs-on"]).startswith("macos-")
+    assert _setup_python_version(job) == "3.12"
