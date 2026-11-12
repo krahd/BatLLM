@@ -139,3 +139,115 @@ def test_create_worktree_archive_contains_launchers(tmp_path: Path) -> None:
 
     assert "BatLLM-worktree/run_batllm.py" in names
     assert "BatLLM-worktree/src/main.py" in names
+
+
+def test_formula_accepts_only_apple_silicon_or_pure_python_artifacts() -> None:
+    compatible = _homebrew_formula.is_formula_compatible_artifact
+
+    assert compatible("Kivy-2.3.1-cp312-cp312-macosx_10_15_universal2.whl")
+    assert compatible("psutil-7.2.2-cp36-abi3-macosx_11_0_arm64.whl")
+    assert compatible("requests-2.34.2-py3-none-any.whl")
+    assert compatible("kivymd-1.2.0.tar.gz")
+    # Alternative platform tags: one Apple Silicon tag is sufficient.
+    assert compatible(
+        "maturin-1.12.6-py3-none-macosx_10_12_x86_64.macosx_11_0_arm64.macosx_10_12_universal2.whl"
+    )
+    assert not compatible(
+        "Kivy-2.3.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+    )
+    assert not compatible("psutil-7.2.2-cp36-abi3-macosx_10_9_x86_64.whl")
+    assert not compatible("PyYAML-6.0.3-cp312-cp312-win_amd64.whl")
+    # The formula's environment is Python 3.12.
+    assert not compatible("Kivy-2.3.1-cp311-cp311-macosx_10_15_universal2.whl")
+    assert not compatible("example-1.0-cp313-abi3-macosx_11_0_arm64.whl")
+    assert compatible("requests-2.34.2-py2.py3-none-any.whl")
+
+
+def test_resource_resolution_rejects_foreign_platform_wheels(monkeypatch) -> None:
+    """A Linux resolution must fail before any formula resource is recorded."""
+    foreign = "Kivy-2.3.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+
+    def fake_pip_download(command, **_kwargs):
+        destination = Path(command[command.index("--dest") + 1])
+        (destination / foreign).write_bytes(b"")
+        (destination / "requests-2.34.2-py3-none-any.whl").write_bytes(b"")
+
+    looked_up = []
+    monkeypatch.setattr(_homebrew_formula.subprocess, "run", fake_pip_download)
+    monkeypatch.setattr(
+        _homebrew_formula, "pypi_release_file", lambda *args: looked_up.append(args)
+    )
+
+    try:
+        _homebrew_formula.resolve_runtime_resources(["Kivy==2.3.1"], python_executable="python")
+    except SystemExit as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("foreign-platform wheels were accepted")
+
+    assert foreign in message
+    assert "Apple Silicon macOS" in message
+    assert not looked_up
+
+
+def test_resource_resolution_accepts_apple_silicon_wheels(monkeypatch) -> None:
+    names = [
+        "Kivy-2.3.1-cp312-cp312-macosx_10_15_universal2.whl",
+        "kivymd-1.2.0.tar.gz",
+    ]
+
+    def fake_pip_download(command, **_kwargs):
+        destination = Path(command[command.index("--dest") + 1])
+        for name in names:
+            (destination / name).write_bytes(b"")
+
+    monkeypatch.setattr(_homebrew_formula.subprocess, "run", fake_pip_download)
+    monkeypatch.setattr(
+        _homebrew_formula,
+        "pypi_release_file",
+        lambda project, version, filename: {
+            "name": project, "url": f"https://example.invalid/{filename}",
+            "sha256": "0" * 64, "filename": filename, "packagetype": "bdist_wheel",
+        },
+    )
+
+    resources = _homebrew_formula.resolve_runtime_resources(
+        ["Kivy==2.3.1"], python_executable="python"
+    )
+
+    assert sorted(resource["filename"] for resource in resources) == sorted(names)
+
+
+def test_publish_workflow_renders_formula_on_apple_silicon_macos() -> None:
+    workflow = yaml.safe_load(
+        (ROOT / ".github/workflows/publish-homebrew-tap.yml").read_text(encoding="utf-8")
+    )
+    job = workflow["jobs"]["publish"]
+    step_names = [step.get("name") for step in job["steps"]]
+
+    assert str(job["runs-on"]).startswith("macos-")
+    assert _setup_python_version(job) == "3.12"
+    assert job["if"] == "github.repository == 'krahd/BatLLM'"
+    assert step_names.index("Confirm Apple Silicon macOS runner") < step_names.index(
+        "Render formula"
+    )
+
+
+def _setup_python_version(job: dict) -> str:
+    versions = [
+        str(step["with"]["python-version"])
+        for step in job["steps"]
+        if "setup-python" in str(step.get("uses", ""))
+    ]
+    assert len(versions) == 1
+    return versions[0]
+
+
+def test_ci_dry_run_renders_formula_on_the_formula_target() -> None:
+    workflow = yaml.safe_load(
+        (ROOT / ".github/workflows/multiplatform.yml").read_text(encoding="utf-8")
+    )
+    job = workflow["jobs"]["homebrew"]
+
+    assert str(job["runs-on"]).startswith("macos-")
+    assert _setup_python_version(job) == "3.12"

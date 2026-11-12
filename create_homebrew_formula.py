@@ -76,6 +76,66 @@ def parse_downloaded_artifact_name(filename: str) -> tuple[str, str]:
     raise ValueError(f"Unsupported artifact filename: {filename}")
 
 
+FORMULA_PYTHON_MINOR = 12
+
+
+def wheel_tags(filename: str) -> tuple[list[str], str, list[str]] | None:
+    """Return a wheel's (python tags, ABI tag, platform tags), or None for sdists."""
+    name = Path(filename).name
+    if not name.endswith(".whl"):
+        return None
+    python_tag, abi_tag, platform_tag = name[:-4].split("-")[-3:]
+    return python_tag.split("."), abi_tag, platform_tag.split(".")
+
+
+def _python_tag_matches_formula(tag: str, abi_tag: str) -> bool:
+    """Report whether a wheel python tag installs on the formula's Python 3.12."""
+    if tag in {"py3", f"py3{FORMULA_PYTHON_MINOR}", f"cp3{FORMULA_PYTHON_MINOR}"}:
+        return True
+    if abi_tag == "abi3" and tag.startswith("cp3") and tag[3:].isdigit():
+        return int(tag[3:]) <= FORMULA_PYTHON_MINOR
+    return False
+
+
+def is_formula_compatible_artifact(filename: str) -> bool:
+    """Report whether an artifact can be installed by the Apple Silicon macOS formula.
+
+    A wheel filename may carry several alternative tags; one matching python tag
+    and one matching platform tag are enough. Source distributions are built by
+    the formula itself.
+    """
+    tags = wheel_tags(filename)
+    if tags is None:
+        return True
+    python_tags, abi_tag, platform_tags = tags
+    python_ok = any(_python_tag_matches_formula(tag, abi_tag) for tag in python_tags)
+    platform_ok = any(
+        tag == "any"
+        or (tag.startswith("macosx_") and tag.endswith(("_arm64", "_universal2")))
+        for tag in platform_tags
+    )
+    return python_ok and platform_ok
+
+
+def ensure_formula_compatible_artifacts(filenames: list[str]) -> None:
+    """Refuse to render a formula that would embed wheels it cannot install.
+
+    ``pip download`` resolves wheels for the interpreter that runs it, so the
+    generator must run with Python 3.12 on Apple Silicon macOS, the formula's
+    only target. Any other host or interpreter yields foreign binaries.
+    """
+    incompatible = sorted(
+        name for name in filenames if not is_formula_compatible_artifact(name)
+    )
+    if incompatible:
+        raise SystemExit(
+            "The Homebrew formula targets Apple Silicon macOS, but dependency resolution "
+            "produced wheels for another platform or Python version: "
+            + ", ".join(incompatible)
+            + ". Run this generator with a Python 3.12 interpreter on Apple Silicon macOS."
+        )
+
+
 def pypi_release_file(project_name: str, version: str, filename: str) -> dict[str, str]:
     """Resolve the source URL and SHA for an exact artifact filename from PyPI."""
     request = Request(
@@ -119,10 +179,14 @@ def resolve_runtime_resources(
         ]
         subprocess.run(command, cwd=ROOT, check=True)
 
+        artifact_paths = sorted(
+            (path for path in temp_dir.iterdir() if path.is_file()),
+            key=lambda path: path.name.casefold(),
+        )
+        ensure_formula_compatible_artifacts([path.name for path in artifact_paths])
+
         resources: list[dict[str, str]] = []
-        for artifact_path in sorted(temp_dir.iterdir(), key=lambda path: path.name.casefold()):
-            if not artifact_path.is_file():
-                continue
+        for artifact_path in artifact_paths:
             project_name, version = parse_downloaded_artifact_name(artifact_path.name)
             resources.append(pypi_release_file(project_name, version, artifact_path.name))
 

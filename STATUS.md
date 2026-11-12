@@ -1,6 +1,6 @@
 # BatLLM status
 
-Last updated: 2026-11-10 05:10
+Last updated: 2026-11-11 16:35
 
 ## Project and release phase
 
@@ -59,9 +59,10 @@ Urgent audit repairs on 10 November 2026 fixed the prompt-history retrieve crash
 the configurator's first-run placeholder configuration, unsubstituted rule
 placeholders and an invalid example in the augmented system instructions, and
 the Ollama shell scripts' module path and interpreter selection. A fresh Python
-3.12 environment installed from `requirements.txt` passed **332 non-live tests,
+3.12 environment installed from `requirements.txt` passed **337 non-live tests,
 2 live tests skipped**, the four-test core preflight, the documentation check and
-Pylint at **8.83/10**. The 17 new regressions execute both shell scripts up to
+Pylint at **8.83/10**, including five new Homebrew generator and workflow
+checks. The 17 urgent-repair regressions execute both shell scripts up to
 argument parsing; 15 of them fail against the previous code. No real Ollama
 operation, native GUI rehearsal or `python run_tests.py full` run was performed.
 
@@ -97,7 +98,7 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 
 ## Known limitations and pending work
 
-- Homebrew publishing hardening (31 October 2026): the publish job is restricted to `krahd/BatLLM`, so workshop-fork tags cannot publish to the shared tap. The tap clone uses pinned `actions/checkout@v6` with a scoped repository token, rather than embedding that token in the Git remote URL. Workflow execution after this change has not yet been validated; the shared token's provider-side scope and rotation remain to verify.
+- **Homebrew channel not yet published:** `krahd/homebrew-tap` contains no `batllm` formula and the newest repository tag is `v0.3.0`, so the README's `brew install` command cannot succeed until a `v0.3.6` tag is pushed and the publishing workflow runs. The job is restricted to `krahd/BatLLM`, now renders the formula on an Apple Silicon macOS runner, and the generator rejects wheels for other platforms or Python versions. The CI Homebrew dry-run uses the same runner and Python 3.12. On 10 November 2026 the generator rendered a syntactically valid 31-resource formula from the worktree on Apple Silicon macOS; no Homebrew install was run against it, and the workflow itself, the shared token's provider-side scope and its rotation remain unvalidated.
 
 - **A1/A2 repaired:** bundle installers select/check Python 3.10–3.12 and smoke checks validate the installed interpreter; the analyser uses a single custom file-list layout so native row selection works. Windows/Linux native installer acceptance remains unrun.
 - **A3 — small-window gameplay:** command headings and footer actions clip/overlap at 800×600. Enlarging the window worked; responsive/minimum-size behaviour needs repair.
@@ -111,4 +112,4 @@ Earlier evidence remains in the [27 October native rehearsal](docs/NATIVE_REHEAR
 - Finish the UI consistency and accessibility work in `docs/UI_UNIFICATION_PLAN_1_0.md` before 1.0 sign-off.
 - Longer term: separate remaining Kivy coordination, then design the server contract for networked play before adding clients or shared repositories.
 
-Last updated: 2026-11-10 05:10
+Last updated: 2026-11-11 16:35
