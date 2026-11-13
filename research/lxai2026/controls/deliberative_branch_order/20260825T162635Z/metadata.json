@@ -1,0 +1,141 @@
+{
+  "condition_labels": {
+    "es_rioplatense": "Rioplatense voseo",
+    "es_standard": "Tuteo Spanish"
+  },
+  "conditions": [
+    "es_standard",
+    "es_rioplatense"
+  ],
+  "created_at_utc": "2026-08-25T16:26:35.441661+00:00",
+  "experiment": "LXAI 2026 deliberative branch-order post-freeze control",
+  "host": "http://localhost",
+  "models": [
+    "mistral-small3.2:24b-instruct-2506-q4_K_M",
+    "qwen3:30b-a3b-instruct-2507-q4_K_M"
+  ],
+  "n_invocations_planned": 128,
+  "n_semantic_cases": 32,
+  "num_predict": 256,
+  "order_seed": 20260825,
+  "port": 11434,
+  "provenance": {
+    "git_branch": "lxai-rioplatense-experiment",
+    "git_commit": "e9081896eac1a8ad2665a4d30c7061d50a374d46",
+    "models": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "capabilities": [
+          "vision",
+          "completion",
+          "tools"
+        ],
+        "details": {
+          "context_length": 131072,
+          "embedding_length": 5120,
+          "families": [
+            "mistral3"
+          ],
+          "family": "mistral3",
+          "format": "gguf",
+          "parameter_size": "24.0B",
+          "parent_model": "",
+          "quantization_level": "Q4_K_M"
+        },
+        "digest": "5a408ab55df5c1b5cf46533c368813b30bf9e4d8fc39263bf2a3338cfa3b895b",
+        "model": "mistral-small3.2:24b-instruct-2506-q4_K_M",
+        "modified_at": "2026-08-14T21:41:14.310503707-06:00",
+        "name": "mistral-small3.2:24b-instruct-2506-q4_K_M",
+        "size": 15177384862
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "capabilities": [
+          "completion",
+          "tools"
+        ],
+        "details": {
+          "context_length": 262144,
+          "embedding_length": 2048,
+          "families": [
+            "qwen3moe"
+          ],
+          "family": "qwen3moe",
+          "format": "gguf",
+          "parameter_size": "30.5B",
+          "parent_model": "",
+          "quantization_level": "Q4_K_M"
+        },
+        "digest": "19e422b0231392335cfc49cfd172de7034bb1aeabb08aa307cce745c60b272fe",
+        "model": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+        "modified_at": "2026-08-12T15:32:12.509959942-06:00",
+        "name": "qwen3:30b-a3b-instruct-2507-q4_K_M",
+        "size": 18556699186
+      }
+    },
+    "ollama_version": "0.32.15",
+    "python_version": "3.12.14 (main, Aug 12 2026, 13:57:54) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "rewrite_map_sha256": "70f7a5c45d322d1317f6e9563cca5d2a3a73932fc194546e3d3796bee6f278a7",
+    "source_suite_sha256": "52f729d15c45a97a793866d9b775bf7b35ab5ac55b1892807b63e464352ff727",
+    "system_prompt_sha256": "f09b124633ddbf3475d94030961640b5b4629f482ce9a6624dbcb6fa90e85255"
+  },
+  "relation_to_main_run": "Separate post-hoc interaction control completing the 2x2 direct/deliberative x original/reordered design on the eight binary policies. Frozen main unchanged.",
+  "repeats": 1,
+  "rewrites": {
+    "D1-P1": {
+      "en": "If your shield is down, fire; otherwise lower the shield.",
+      "es_rioplatense": "Si tenés el escudo bajo, dispará; si no, bajalo.",
+      "es_standard": "Si tienes el escudo bajo, dispara; si no, bájalo."
+    },
+    "D1-P2": {
+      "en": "If your health is 15 or higher, move forward; otherwise raise the shield.",
+      "es_rioplatense": "Si tenés 15 puntos de salud o más, avanzá; si no, levantá el escudo.",
+      "es_standard": "Si tienes 15 puntos de salud o más, avanza; si no, levanta el escudo."
+    },
+    "D2-P1": {
+      "en": "If your health is greater than or equal to the opponent's health, fire; otherwise raise the shield.",
+      "es_rioplatense": "Si tenés tanta o más salud que el rival, dispará; si no, levantá el escudo.",
+      "es_standard": "Si tienes tanta o más salud que el rival, dispara; si no, levanta el escudo."
+    },
+    "D2-P2": {
+      "en": "If your x coordinate is less than or equal to the opponent's x coordinate, turn clockwise 90 degrees; otherwise turn counterclockwise 90 degrees.",
+      "es_rioplatense": "Si tu coordenada x es menor o igual que la del rival, girá 90 grados en sentido horario; si no, girá 90 grados en sentido antihorario.",
+      "es_standard": "Si tu coordenada x es menor o igual que la del rival, gira 90 grados en sentido horario; si no, gira 90 grados en sentido antihorario."
+    },
+    "D3-P1": {
+      "en": "If your health is 15 or higher or your shield is raised, fire; otherwise raise the shield.",
+      "es_rioplatense": "Si tenés 15 puntos de salud o más o el escudo está levantado, dispará; si no, levantá el escudo.",
+      "es_standard": "Si tienes 15 puntos de salud o más o el escudo está levantado, dispara; si no, levanta el escudo."
+    },
+    "D3-P2": {
+      "en": "If both shields are in the same state, fire; otherwise move forward.",
+      "es_rioplatense": "Si los dos escudos están en el mismo estado, dispará; si no, avanzá.",
+      "es_standard": "Si los dos escudos están en el mismo estado, dispara; si no, avanza."
+    },
+    "D5-P1": {
+      "en": "If your health is not at least 10 points higher than the opponent's health, raise the shield; otherwise fire.",
+      "es_rioplatense": "Si no tenés al menos 10 puntos de salud más que el rival, levantá el escudo; si no, dispará.",
+      "es_standard": "Si no tienes al menos 10 puntos de salud más que el rival, levanta el escudo; si no, dispara."
+    },
+    "D5-P2": {
+      "en": "Compute the horizontal distance between your x coordinate and the opponent's x coordinate. If it is below 0.4, turn clockwise 90 degrees; otherwise move forward 0.1.",
+      "es_rioplatense": "Calculá la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es menor que 0.4, girá 90 grados en sentido horario; si no, avanzá 0.1.",
+      "es_standard": "Calcula la distancia horizontal entre tu coordenada x y la coordenada x del rival. Si es menor que 0.4, gira 90 grados en sentido horario; si no, avanza 0.1."
+    }
+  },
+  "rules": {
+    "bot_diameter": 0.1,
+    "bot_step_length": 0.03,
+    "bullet_damage": 5,
+    "bullet_diameter": 0.02,
+    "bullet_step_length": 0.01,
+    "initial_health": 30,
+    "shield_initial_state": false,
+    "shield_size": 70.0,
+    "total_rounds": 1,
+    "turns_per_round": 1
+  },
+  "seed": 20260825,
+  "source_suite": "/Users/tom/devel/projects/BatLLM/research/lxai2026/suite_decision_complexity.json",
+  "source_suite_version": 2,
+  "system_prompt": "You control bot 1 in BatLLM.\nIn [GAME_STATE], bot 1 is you and bot 2 is the opponent.\n[PLAYER_INPUT] gives a policy for choosing the current action.\n\nWork through the supplied state and policy explicitly before choosing the\ncommand. Check every comparison, Boolean condition, arithmetic operation and\nordered or nested branch needed by the policy. You may write a short scratchpad.\n\nFinish with one line in exactly this form:\nFINAL: <command>\n\nwhere <command> is exactly one valid BatLLM command token:\nB = fire\nS1 = set shield on\nS0 = set shield off\nS = toggle shield\nM = move forward by the default step\nM<number> = move forward by that normalised distance\nC<number> = rotate clockwise by that many degrees\nA<number> = rotate counterclockwise by that many degrees\n\nThe JSON state fields are health, x, y, rot (degrees), and shield. true means\nthe shield is on and false means it is off. Put nothing after the FINAL line.",
+  "temperature": 0.0
+}

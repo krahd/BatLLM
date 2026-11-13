@@ -1,0 +1,218 @@
+{
+  "format_run": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/format_only/20260825T194809Z",
+  "factorial_run": "/Users/tom/devel/projects/BatLLM/research/lxai2026/controls/symmetric_clause_factorial/20260825T165129Z",
+  "arms": {
+    "direct": {
+      "summary": {
+        "n": 256,
+        "correct": 135,
+        "valid": 256,
+        "correct_given_valid": 135,
+        "first_position": 214,
+        "extraction_errors": 0,
+        "provider_errors": 0
+      },
+      "truth_position": {
+        "oracle_first_n": 128,
+        "oracle_first_correct": 116,
+        "oracle_second_n": 128,
+        "oracle_second_correct": 19
+      },
+      "order_pairs": {
+        "pairs": 128,
+        "output_changed": 98,
+        "correct_both": 19,
+        "follows_first_in_both": 91
+      },
+      "policy_groups": {
+        "groups": 64,
+        "complete": 3,
+        "state_invariant": 51
+      }
+    },
+    "format_only": {
+      "summary": {
+        "n": 256,
+        "correct": 130,
+        "valid": 256,
+        "correct_given_valid": 130,
+        "first_position": 171,
+        "extraction_errors": 0,
+        "provider_errors": 0
+      },
+      "truth_position": {
+        "oracle_first_n": 128,
+        "oracle_first_correct": 99,
+        "oracle_second_n": 128,
+        "oracle_second_correct": 31
+      },
+      "order_pairs": {
+        "pairs": 128,
+        "output_changed": 83,
+        "correct_both": 27,
+        "follows_first_in_both": 58
+      },
+      "policy_groups": {
+        "groups": 64,
+        "complete": 3,
+        "state_invariant": 40
+      }
+    },
+    "deliberative_256": {
+      "summary": {
+        "n": 256,
+        "correct": 238,
+        "valid": 241,
+        "correct_given_valid": 238,
+        "first_position": 122,
+        "extraction_errors": 15,
+        "provider_errors": 0
+      },
+      "truth_position": {
+        "oracle_first_n": 128,
+        "oracle_first_correct": 120,
+        "oracle_second_n": 128,
+        "oracle_second_correct": 118
+      },
+      "order_pairs": {
+        "pairs": 128,
+        "output_changed": 16,
+        "correct_both": 111,
+        "follows_first_in_both": 2
+      },
+      "policy_groups": {
+        "groups": 64,
+        "complete": 54,
+        "state_invariant": 1
+      }
+    }
+  },
+  "by_model_language": {
+    "direct": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "es_rioplatense": {
+          "n": 64,
+          "correct": 33,
+          "valid": 64,
+          "correct_given_valid": 33,
+          "first_position": 48,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        },
+        "es_standard": {
+          "n": 64,
+          "correct": 33,
+          "valid": 64,
+          "correct_given_valid": 33,
+          "first_position": 47,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        }
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "es_rioplatense": {
+          "n": 64,
+          "correct": 35,
+          "valid": 64,
+          "correct_given_valid": 35,
+          "first_position": 58,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        },
+        "es_standard": {
+          "n": 64,
+          "correct": 34,
+          "valid": 64,
+          "correct_given_valid": 34,
+          "first_position": 61,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        }
+      }
+    },
+    "format_only": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "es_rioplatense": {
+          "n": 64,
+          "correct": 41,
+          "valid": 64,
+          "correct_given_valid": 41,
+          "first_position": 44,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        },
+        "es_standard": {
+          "n": 64,
+          "correct": 40,
+          "valid": 64,
+          "correct_given_valid": 40,
+          "first_position": 44,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        }
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "es_rioplatense": {
+          "n": 64,
+          "correct": 26,
+          "valid": 64,
+          "correct_given_valid": 26,
+          "first_position": 41,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        },
+        "es_standard": {
+          "n": 64,
+          "correct": 23,
+          "valid": 64,
+          "correct_given_valid": 23,
+          "first_position": 42,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        }
+      }
+    },
+    "deliberative_256": {
+      "mistral-small3.2:24b-instruct-2506-q4_K_M": {
+        "es_rioplatense": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "first_position": 33,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        },
+        "es_standard": {
+          "n": 64,
+          "correct": 63,
+          "valid": 64,
+          "correct_given_valid": 63,
+          "first_position": 33,
+          "extraction_errors": 0,
+          "provider_errors": 0
+        }
+      },
+      "qwen3:30b-a3b-instruct-2507-q4_K_M": {
+        "es_rioplatense": {
+          "n": 64,
+          "correct": 51,
+          "valid": 52,
+          "correct_given_valid": 51,
+          "first_position": 25,
+          "extraction_errors": 12,
+          "provider_errors": 0
+        },
+        "es_standard": {
+          "n": 64,
+          "correct": 61,
+          "valid": 61,
+          "correct_given_valid": 61,
+          "first_position": 31,
+          "extraction_errors": 3,
+          "provider_errors": 0
+        }
+      }
+    }
+  }
+}
